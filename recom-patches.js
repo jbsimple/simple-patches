@@ -1,5 +1,5 @@
 console.log('ReCom Patches Loaded');
-document.head.innerHTML += '<link rel="stylesheet" href="https://raw.githubusercontent.com/jbsimple/simple-patches/main/recom-patches.css?v=' + Date.now() + '" type="text/css"/>';
+document.head.innerHTML += '<link rel="stylesheet" href="https://raw.githubusercontent.com/jbsimple/simple-patches/main/recom-patches.css" type="text/css"/>';
 
 if (window.location.href.includes('/receiving/queues/listing/')) {
 
@@ -199,7 +199,7 @@ if (window.location.href.includes('/queues/conditions/')) {
 }
 
 if (window.location.href.includes('/products') || window.location.href.includes('/product/item')) {
-    document.head.innerHTML += '<link rel="stylesheet" href="https://raw.githubusercontent.com/jbsimple/simple-patches/main/recom-patches-product.css?v=' + Date.now() + '" type="text/css"/>';
+    document.head.innerHTML += '<link rel="stylesheet" href="https://raw.githubusercontent.com/jbsimple/simple-patches/main/recom-patches-product.css" type="text/css"/>';
 
     /*
     var media_tab = document.getElementById('rc_product_media_tab');
