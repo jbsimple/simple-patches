@@ -1,0 +1,58 @@
+.mb-9 {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	justify-content: center;
+	align-content: center;
+}
+
+.w-lg-300px {
+	min-width: 300px !important;
+	max-width: 300px !important;
+}
+
+.card {
+	width: 100% !important;
+}
+
+#rc_product_media {
+    min-height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.apexcharts-svg.apexcharts-zoomable.hovering-zoom {
+    cursor: default;
+}
+
+.card .card-body {
+  padding: 2rem;
+}
+
+.card .card-body .text-center a[data-fslightbox="gallery"] {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.card .card-body .text-center a[data-fslightbox="gallery"] .w-250px {
+  width: 244px;
+}
+
+.card .card-body .text-center a[data-fslightbox="gallery"] .card-rounded-bottom {
+  border-bottom-left-radius: unset;
+  border-bottom-right-radius: unset;
+
+  border-radius: 0.625rem;
+}
+
+.dtr-control {
+  word-break: break-word;
+}
+
+.h-600px {
+	height: unset !important;
+	min-height: 600px !important;
+	max-height: 85.5vh !important;
+}
