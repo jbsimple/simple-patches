@@ -31,3 +31,7 @@ body {
 .json__key {
   color: var(--bs-primary) !important;
 }
+
+.fc-popover {
+  background-color: var(--bs-card-bg) !important;
+}
