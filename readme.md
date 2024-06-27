@@ -12,4 +12,4 @@ Alternate way to use:
 - Get User JavaScript and CSS exension.
 - Go to system homepage
 - Add rule, make sure url uses '*' after the last directory separator
-- Paste code from 'recom-patches' into js side.
+- Paste code from 'recom-patches.js' into js side.
