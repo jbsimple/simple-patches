@@ -509,3 +509,130 @@ if (window.location.href.includes('/receiving')) {
         RCnewInventory.init();
     });
 }
+
+if (window.location.href.includes('/reports')) {
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const kt_app_content = document.getElementById('kt_app_content');
+        kt_app_content.style.display = "flex";
+        kt_app_content.style.width = "100%";
+        kt_app_content.style.height = "100%";
+        
+        const container = document.querySelector('.d-flex.flex-column.flex-lg-row');
+        container.style.height = "100%";
+        
+        const container_left = document.querySelector('.d-flex.flex-column.gap-7.gap-lg-10.w-100.w-lg-350px.mb-7.me-lg-10');
+        container_left.style.minWidth = "350px";
+        
+        const container_right = document.querySelector('.d-flex.flex-column.flex-row-fluid.gap-7.gap-lg-10');
+        container_right.style.height = "100%";
+    });
+    
+    const right = document.querySelector('.d-flex.flex-column.flex-row-fluid.gap-7.gap-lg-10');
+    const card = document.createElement('div');
+    card.classList = "card";
+    card.style.display = "none";  // normally flex
+    
+    const card_body = document.createElement('div');
+    card_body.setAttribute('style', 'padding: 0 !important; flex: 1; width: 100%; max-width: 100%; max-height: 60rem; overflow: scroll;');
+    card_body.classList = "card-body";
+    
+    const content = document.createElement('div');
+    card_body.appendChild(content);
+    
+    card.appendChild(card_body);
+    right.appendChild(card);
+    
+    const downloadReport = document.getElementById('report_download');
+    
+    var callback = function(mutationsList, observer) {
+        for (var mutation of mutationsList) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'href') {
+                console.log('The href attribute was modified.');
+    
+                fetch(downloadReport.href)
+                    .then(response => response.text())
+                    .then(data => {
+                        const table = parseCSVToTable(data);
+                        content.innerHTML = '';
+                        content.appendChild(table);
+                        card.style.display = "flex";
+                    })
+                    .catch(error => console.error('Error loading the CSV:', error));
+            }
+        }
+    };
+    var observer = new MutationObserver(callback);
+    var config = { attributes: true };
+    
+    observer.observe(downloadReport, config);
+    
+    function parseCSVToTable(csvData) {
+        const rows = csvData.split('\n').map(row => {
+              let cells = [];
+                let currentCell = '';
+                let inNullBlock = false;
+                let i = 0;
+            
+                while (i < row.length) {
+                    // Check for the start or end of a \x00 block
+                    if (row[i] === '\x00') {
+                        if (inNullBlock) {
+                            inNullBlock = false;
+                        } else {
+                            inNullBlock = true;
+                        }
+                        i++;
+                        continue;
+                    }
+            
+                    if (!inNullBlock && row[i] === ',') {
+                        // If it's a comma and we are not in a null block, we finalize the current cell
+                        cells.push(currentCell.trim());
+                        console.log(currentCell.trim(), inNullBlock);
+                        currentCell = ''; // Reset currentCell for the next one
+                    } else {
+                        // Otherwise, we add the character to the current cell
+                        currentCell += row[i];
+                    }
+                    i++;
+                }
+            
+                // Add the last cell if there's any data left in it after finishing the loop
+                if (currentCell !== '') {
+                    cells.push(currentCell.trim());
+                }
+            
+                return cells;
+        });
+        
+        const table = document.createElement('table');
+        table.style.width = '100%';
+        table.style.maxWidth = '100%';
+        table.style.overflow = 'auto';
+        table.classList.add('table', 'table-striped');
+    
+        const thead = table.createTHead();
+        const headerRow = thead.insertRow();
+        rows[0].forEach(headerText => {
+            const headerCell = document.createElement('th');
+            headerCell.textContent = headerCell.textContent = headerText.replace(/[\x00-\x1F\x7F-\x9F"']/g, '').trim();
+            headerCell.style.minWidth = '200px';
+            headerCell.style.padding = '2rem';
+            headerCell.style.fontWeight = '700';
+            headerRow.appendChild(headerCell);
+        });
+    
+        const tbody = table.createTBody();
+        rows.slice(1).forEach(rowData => {
+            const row = tbody.insertRow();
+            rowData.forEach(cellData => {
+                const cell = row.insertCell();
+                cell.textContent = cellData.replace(/[\x00-\x1F\x7F-\x9F"']/g, '').trim();
+                cell.style.minWidth = '200px';
+                cell.style.padding = '2rem';
+            });
+        });
+    
+        return table;
+    }
+}
