@@ -584,7 +584,6 @@ if (window.location.href.includes('/reports')) {
             
                     if (!inNullBlock && row[i] === ',') {
                         cells.push(currentCell.trim());
-                        console.log(currentCell.trim(), inNullBlock);
                         currentCell = '';
                     } else {
                         currentCell += row[i];
