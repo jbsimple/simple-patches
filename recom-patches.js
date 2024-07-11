@@ -60,7 +60,6 @@ if (window.location.href.includes('/receiving/queues/listing/')) {
         }
     } // end gtin verify for listing
 
-
 }
 
 if (window.location.href.includes('/queues/conditions/')) {
@@ -201,6 +200,7 @@ if (window.location.href.includes('/queues/conditions/')) {
 if (window.location.href.includes('/products') || window.location.href.includes('/product/item')) {
     document.head.innerHTML += '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jbsimple/simple-patches@main/recom-patches-product.css?v=' + Date.now() + '" type="text/css"/>';
 
+    // one day I will add this
     /*
     var media_tab = document.getElementById('rc_product_media_tab');
     var media_tree = document.getElementById('product-images-container');
@@ -296,7 +296,6 @@ if (window.location.href.includes('/receiving')) {
                 }
                 
                 // stop submission
-                
                 return false;
                 } else {
                     // reset style
@@ -319,8 +318,8 @@ if (window.location.href.includes('/receiving')) {
             }
         });
         };
+        
         // rest of this code is the same
-    
         const initSearch = () => {
         var searchKeyword = $("#pSearchProduct").val();
         var categoryId = $("#categoryId").val();
@@ -567,6 +566,7 @@ if (window.location.href.includes('/reports')) {
     observer.observe(downloadReport, config);
     
     function parseCSVToTable(csvData) {
+        // this function right here, this split function, was PAIN
         const rows = csvData.split('\n').map(row => {
               let cells = [];
                 let currentCell = '';
@@ -574,7 +574,6 @@ if (window.location.href.includes('/reports')) {
                 let i = 0;
             
                 while (i < row.length) {
-                    // Check for the start or end of a \x00 block
                     if (row[i] === '\x00') {
                         if (inNullBlock) {
                             inNullBlock = false;
@@ -586,18 +585,15 @@ if (window.location.href.includes('/reports')) {
                     }
             
                     if (!inNullBlock && row[i] === ',') {
-                        // If it's a comma and we are not in a null block, we finalize the current cell
                         cells.push(currentCell.trim());
                         console.log(currentCell.trim(), inNullBlock);
-                        currentCell = ''; // Reset currentCell for the next one
+                        currentCell = '';
                     } else {
-                        // Otherwise, we add the character to the current cell
                         currentCell += row[i];
                     }
                     i++;
                 }
-            
-                // Add the last cell if there's any data left in it after finishing the loop
+
                 if (currentCell !== '') {
                     cells.push(currentCell.trim());
                 }
