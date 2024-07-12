@@ -639,11 +639,11 @@ if (window.location.href.includes('/reports')) {
         card.id = 'patches-presents';
         
         const card_body = document.createElement('div');
-        card_body.setAttribute('style', 'display: flex; flex-direction: column; padding: 2rem;');
+        card_body.setAttribute('style', 'display: flex; flex-direction: column; padding: 2rem; gap: 2rem;');
         card_body.classList = "card-body";
         
         const content = document.createElement('div');
-        content.setAttribute('style', 'display: flex; flex-direction: row; gap: 1rem; margin-top: 2rem;');
+        content.setAttribute('style', 'display: flex; flex-direction: row; gap: 1rem;');
         
         const card_header = document.createElement('div');
         card_header.classList = 'card-header';
