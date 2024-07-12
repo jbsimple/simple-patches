@@ -19,6 +19,7 @@ Enhancements:
 - On item pages; CSS fix to have the inventory tab larger so you can see more.
 - On listing page; A warning for when the GTIN is invalid and needs to be regenerated before going to the last step.
 - On New Inventory Page; Disabled entry of new inventory sent to listing without a GTIN.
+- On reports page, after submitting to generate a new report, the report displays under the original card.
 - On Calendar; CSS fix to add a background color to the list of day's events.
 - On all pages; CSS fix to correct spacing issues in header.
 - On all pages; CSS fix to get rid of light mode logo.
