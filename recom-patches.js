@@ -622,7 +622,7 @@ if (window.location.href.includes('/reports')) {
                 const cell = row.insertCell();
                 cell.textContent = cellData.replace(/[\x00-\x1F\x7F-\x9F"']/g, '').trim();
                 cell.style.minWidth = '200px';
-                cell.style.padding = '0.75rem'; // page zoom makes this look weird
+                cell.style.padding = '0.75rem 2rem'; // top-bottom then left-right to make it look better
             });
         });
     
