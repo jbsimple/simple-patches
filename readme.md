@@ -21,6 +21,8 @@ Enhancements:
 - On New Inventory Page; Disabled entry of new inventory sent to listing without a GTIN.
 - On reports page, after submitting to generate a new report, the report displays under the original card.
 - On reports page, added a card to generate a preset report.
+  - Added Listing department productivity reporting preset.
+  - Added Marketing department productivity reporting preset.
 - On Calendar; CSS fix to add a background color to the list of day's events.
 - On all pages; CSS fix to correct spacing issues in header.
 - On all pages; CSS fix to get rid of light mode logo.
