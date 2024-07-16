@@ -10,7 +10,7 @@ if (nav_sidebar) {
     nav_sidebar_links.style.flex = '1';
 
     const version_container = document.createElement('div');
-    version_container.setAttribute('style', 'padding: 0 25px; margin-top: 1rem');
+    version_container.setAttribute('style', 'padding: 0 25px; margin-top: 1rem; display: flex; flex-direction: column;');
 
     const separator = document.createElement('div');
     separator.setAttribute('class', 'app-sidebar-separator separator');
