@@ -653,57 +653,12 @@ if (window.location.href.includes('/reports')) {
         card_title.innerHTML = '<h2>Report Presets</h2>';
         card_header.appendChild(card_title);
         card.appendChild(card_header);
-        card_body.appendChild(content);
+        
         card.appendChild(card_body);
         right.appendChild(card);
         
-        // start listing button
-        const listing_productivity = document.createElement('button');
-        listing_productivity.classList.add('btn');
-        listing_productivity.classList.add('btn-large');
-        listing_productivity.classList.add('btn-primary');
-        listing_productivity.setAttribute('onclick', `user_clock_listing_preset();`);
-        listing_productivity.innerHTML = `Create
-    <span class="svg-icon svg-icon-4 ms-1 me-0">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-    <rect opacity="0.5" x="18" y="13" width="13" height="2" rx="1" transform="rotate(-180 18 13)" fill="currentColor"></rect>
-    <path d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z" fill="currentColor"></path>
-    </svg>
-    </span>`;
-        
-        const today = new Date();
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const dd = String(today.getDate()).padStart(2, '0');
-        const yyyy = today.getFullYear();
-        
-        const userInput = document.createElement('input');
-        userInput.setAttribute('name', 'patches-userInput-dateListing');
-        userInput.setAttribute('id', 'patches-userInput-dateListing');
-        userInput.setAttribute('type', 'text');
-        userInput.setAttribute('autocomplete', 'false');
-        userInput.setAttribute('value', `${mm}/${dd}/${yyyy}`);
-        userInput.classList.add('form-control');
-        userInput.classList.add('rounded-1');
-        userInput.setAttribute('style', 'width: unset;');
-        
-        const userInputSubtext = document.createElement('div');
-        userInputSubtext.setAttribute('style', 'flex: 1; display: flex; align-items: center;');
-        userInputSubtext.innerHTML = "Generate a productivity report for Listing.<br>Date Entry Format: mm/dd/yyyy (leading 0s).";
-        
-        const userInputTitle = document.createElement('h4');
-        userInputTitle.classList.add('fw-bolder');
-        userInputTitle.classList.add('d-flex');
-        userInputTitle.classList.add('align-items-center');
-        userInputTitle.classList.add('text-dark');
-        userInputTitle.textContent = 'Listing Productivity:';
-
-        
-        content.appendChild(userInputTitle);
-        
-        content.appendChild(userInput);
-        content.appendChild(userInputSubtext);
-        
-        content.appendChild(listing_productivity);
+        card_body.appendChild(report_preset('listing_productivity'));
+        card_body.appendChild(report_preset('marketing_productivity'));
         
         const nextStepButton = document.getElementById('rc_reports_new_wizard').querySelectorAll('button[data-kt-stepper-action="next"]');
         const patchesPresentsDiv = document.getElementById('patches-presents');
@@ -747,8 +702,116 @@ if (window.location.href.includes('/reports')) {
         button.classList.remove('d-none');
     }
 
-    function user_clock_listing_preset() {
-        var date = document.getElementById('patches-userInput-dateListing').value;
+    function report_preset(name) {
+        const content = document.createElement('div');
+        content.setAttribute('style', 'display: flex; flex-direction: row; gap: 1rem;');
+
+        if (name === 'listing_productivity') {
+            const submit_button = document.createElement('button');
+            submit_button.classList.add('btn');
+            submit_button.classList.add('btn-large');
+            submit_button.classList.add('btn-primary');
+            submit_button.setAttribute('onclick', `report_listingProducivity_submit();`);
+            submit_button.innerHTML = `Create
+                <span class="svg-icon svg-icon-4 ms-1 me-0">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <rect opacity="0.5" x="18" y="13" width="13" height="2" rx="1" transform="rotate(-180 18 13)" fill="currentColor"></rect>
+                <path d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z" fill="currentColor"></path>
+                </svg>
+                </span>`;
+            
+            const today = new Date();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            const yyyy = today.getFullYear();
+            
+            const userInput = document.createElement('input');
+            userInput.setAttribute('name', 'patches-userInput-dateListing');
+            userInput.setAttribute('id', 'patches-reports-listing_productivity-input');
+            userInput.setAttribute('type', 'text');
+            userInput.setAttribute('autocomplete', 'false');
+            userInput.setAttribute('value', `${mm}/${dd}/${yyyy}`);
+            userInput.classList.add('form-control');
+            userInput.classList.add('rounded-1');
+            userInput.setAttribute('style', 'width: unset;');
+            
+            const userInputSubtext = document.createElement('div');
+            userInputSubtext.setAttribute('style', 'flex: 1; display: flex; align-items: center;');
+            userInputSubtext.innerHTML = "Generate a productivity report for Listing.<br>Date Entry Format: mm/dd/yyyy (leading 0s).";
+            
+            const userInputTitle = document.createElement('h4');
+            userInputTitle.classList.add('fw-bolder');
+            userInputTitle.classList.add('d-flex');
+            userInputTitle.classList.add('align-items-center');
+            userInputTitle.classList.add('text-dark');
+            userInputTitle.setAttribute('style', 'width: 200px;');
+            userInputTitle.textContent = 'Listing Productivity:';
+
+            
+            content.appendChild(userInputTitle);
+            
+            content.appendChild(userInput);
+            content.appendChild(userInputSubtext);
+            
+            content.appendChild(submit_button);
+
+        } else if (name === 'marketing_productivity') {
+
+            const submit_button = document.createElement('button');
+            submit_button.classList.add('btn');
+            submit_button.classList.add('btn-large');
+            submit_button.classList.add('btn-primary');
+            submit_button.setAttribute('onclick', `report_marketingProducivity_submit();`);
+            submit_button.innerHTML = `Create
+                <span class="svg-icon svg-icon-4 ms-1 me-0">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <rect opacity="0.5" x="18" y="13" width="13" height="2" rx="1" transform="rotate(-180 18 13)" fill="currentColor"></rect>
+                <path d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z" fill="currentColor"></path>
+                </svg>
+                </span>`;
+            
+            const today = new Date();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            const yyyy = today.getFullYear();
+            
+            const userInput = document.createElement('input');
+            userInput.setAttribute('name', 'patches-userInput-dateListing');
+            userInput.setAttribute('id', 'patches-reports-marketing_productivity-input');
+            userInput.setAttribute('type', 'text');
+            userInput.setAttribute('autocomplete', 'false');
+            userInput.setAttribute('value', `${mm}/${dd}/${yyyy}`);
+            userInput.classList.add('form-control');
+            userInput.classList.add('rounded-1');
+            userInput.setAttribute('style', 'width: unset;');
+            
+            const userInputSubtext = document.createElement('div');
+            userInputSubtext.setAttribute('style', 'flex: 1; display: flex; align-items: center;');
+            userInputSubtext.innerHTML = "Generate a productivity report for Listing.<br>Date Entry Format: mm/dd/yyyy (leading 0s).";
+            
+            const userInputTitle = document.createElement('h4');
+            userInputTitle.classList.add('fw-bolder');
+            userInputTitle.classList.add('d-flex');
+            userInputTitle.classList.add('align-items-center');
+            userInputTitle.classList.add('text-dark');
+            userInputTitle.setAttribute('style', 'width: 200px;');
+            userInputTitle.textContent = 'Marketing Productivity:';
+
+            
+            content.appendChild(userInputTitle);
+            
+            content.appendChild(userInput);
+            content.appendChild(userInputSubtext);
+            
+            content.appendChild(submit_button);
+            
+        }
+
+        return content;
+    }
+
+    function report_listingProducivity_submit() {
+        var date = document.getElementById('patches-reports-listing_productivity-input').value;
         const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
         var request = [
                                 {
@@ -864,6 +927,130 @@ if (window.location.href.includes('/reports')) {
                                     "value": csrfToken
                                 }
                             ];
+        getReport(request);
+    }
+
+    function report_marketingProducivity_submit() {
+        var date = document.getElementById('patches-reports-marketing_productivity-input').value;
+        const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
+        var request = [
+                                {
+                                    "name": "report[type]",
+                                    "value": "user_clock"
+                                },
+                                {
+                                    "name": "report[columns][]",
+                                    "value": "user_profile.user_id"
+                                },
+                                {
+                                    "name": "report[columns][]",
+                                    "value": "user_profile.department_id"
+                                },
+                                {
+                                    "name": "report[columns][]",
+                                    "value": "user_clocks.task_id"
+                                },
+                                {
+                                    "name": "report[columns][]",
+                                    "value": "purchase_orders.id"
+                                },
+                                {
+                                    "name": "report[columns][]",
+                                    "value": "purchase_orders.type"
+                                },
+                                {
+                                    "name": "report[columns][]",
+                                    "value": "user_clock_activity.activity_id"
+                                },
+                                {
+                                    "name": "report[columns][]",
+                                    "value": "user_clock_activity.activity_code"
+                                },
+                                {
+                                    "name": "report[columns][]",
+                                    "value": "user_clock_activity.notes"
+                                },
+                                {
+                                    "name": "report[columns][]",
+                                    "value": "user_clock_activity.units"
+                                },
+                                {
+                                    "name": "report[columns][]",
+                                    "value": "user_clock_activity.created_at"
+                                },
+                                {
+                                    "name": "report[columns][]",
+                                    "value": "user_clock_activity.time_spent"
+                                },
+                                {
+                                    "name": "report[columns][]",
+                                    "value": "user_clocks.time_in"
+                                },
+                                {
+                                    "name": "report[columns][]",
+                                    "value": "user_clocks.time_out"
+                                },
+                                {
+                                    "name": "report[columns][]",
+                                    "value": "user_clocks.user_id"
+                                },
+                                {
+                                    "name": "report[columns][]",
+                                    "value": "user_clocks.clock_date"
+                                },
+                                {
+                                    "name": "report[columns][]",
+                                    "value": "products.sid"
+                                },
+                                {
+                                    "name": "report[columns][]",
+                                    "value": "products.name"
+                                },
+                                {
+                                    "name": "report[columns][]",
+                                    "value": "product_items.sku"
+                                },
+                                {
+                                    "name": "report[columns][]",
+                                    "value": "product_items.condition_id"
+                                },
+                                {
+                                    "name": "report[columns][]",
+                                    "value": "products.category_id"
+                                },
+                                {
+                                    "name": "report[filters][0][column]",
+                                    "value": "user_profile.department_id"
+                                },
+                                {
+                                    "name": "report[filters][0][opr]",
+                                    "value": "{0} IN {1}"
+                                },
+                                {
+                                    "name": "report[filters][0][value][]",
+                                    "value": "26"
+                                },
+                                {
+                                    "name": "report[filters][1][column]",
+                                    "value": "user_clocks.clock_date"
+                                },
+                                {
+                                    "name": "report[filters][1][opr]",
+                                    "value": "between"
+                                },
+                                {
+                                    "name": "report[filters][1][value]",
+                                    "value": `${date} - ${date}`
+                                },
+                                {
+                                    "name": "csrf_recom",
+                                    "value": csrfToken
+                                }
+                            ];
+        getReport(request);
+    }
+
+    function getReport(request) {
         $.ajax({
             type: "POST",
             dataType: "json",
@@ -894,6 +1081,7 @@ if (window.location.href.includes('/reports')) {
             console.error("Request failed: " + textStatus + ", " + errorThrown);
         });
     }
+
 
     initPreset();
     initTable();
