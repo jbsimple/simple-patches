@@ -48,7 +48,8 @@ if (window.location.href.includes('/queues/conditions/')) {
 
 }
 
-if (window.location.href.includes('/products') || window.location.href.includes('/product/item')) {
+if (window.location.href.includes('/products/') || window.location.href.includes('/product/items/')) {
+    // ending slash is needed to ensure that the code only applies the patch for the sku and sid pages
 
     document.head.innerHTML += '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jbsimple/simple-patches@main/recom-patches-product.css?v=' + Date.now() + '" type="text/css"/>';
     script_patch.src = "https://cdn.jsdelivr.net/gh/jbsimple/simple-patches@main/recom-patches-productPage.js?v=" + Date.now();
