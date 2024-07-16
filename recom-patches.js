@@ -9,7 +9,7 @@ if (nav_sidebar) {
 
     const loaded_message = document.createElement('span');
     loaded_message.setAttribute('style', 'text-align: center;');
-    loaded_message.textContent = 'Patches Loaded: 7-16-2024__3';
+    loaded_message.textContent = 'Patches Loaded: 7-16-2024__4';
     nav_sidebar.appendChild(loaded_message);
 } else {
     console.error('Sidebar could not be found.');
