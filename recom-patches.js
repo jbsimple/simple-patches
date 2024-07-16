@@ -38,7 +38,7 @@ if (window.location.href.includes('/products') || window.location.href.includes(
 
 }
 
-if (window.location.href.includes('/receiving')) {
+if (window.location.href.includes('/receiving') && document.getElementById('searchProductForm')) {
     
     script.src = "https://cdn.jsdelivr.net/gh/jbsimple/simple-patches@main/recom-patches-newInventory.js?v=" + Date.now();
 
