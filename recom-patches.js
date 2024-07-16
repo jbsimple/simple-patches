@@ -7,6 +7,10 @@ if (nav_sidebar) {
     const nav_sidebar_links = document.getElementById('#kt_app_sidebar_menu');
     nav_sidebar_links.style.flex = '1';
 
+    const separator = document.createElement('div');
+    separator.setAttribute('class', 'app-sidebar-separator separator');
+    nav_sidebar.appendChild(separator);
+    
     const loaded_message = document.createElement('span');
     loaded_message.setAttribute('style', 'text-align: center;');
     loaded_message.textContent = 'Patches Loaded: 7-16-2024__4';
