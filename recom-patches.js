@@ -1,3 +1,5 @@
+const version = '7-16-2024__5';
+
 const nav_sidebar = document.getElementById('kt_app_sidebar_navs_wrappers');
 if (nav_sidebar) {
     nav_sidebar.style.display = 'flex';
@@ -7,15 +9,20 @@ if (nav_sidebar) {
     const nav_sidebar_links = document.getElementById('#kt_app_sidebar_menu');
     nav_sidebar_links.style.flex = '1';
 
+    const version_container = document.createElement('div');
+    version_container.setAttribute('style', 'padding: 0 25px; margin-top: 1rem');
+
     const separator = document.createElement('div');
     separator.setAttribute('class', 'app-sidebar-separator separator');
-    separator.setAttribute('style', 'padding: 0 25px;');
-    nav_sidebar.appendChild(separator);
+    version_container.appendChild(separator);
     
     const loaded_message = document.createElement('span');
-    loaded_message.setAttribute('style', 'text-align: center; padding: 0 25px;');
-    loaded_message.textContent = 'Patches Loaded: 7-16-2024__4';
-    nav_sidebar.appendChild(loaded_message);
+    loaded_message.setAttribute('style', 'text-align: center;');
+    loaded_message.textContent = 'Patches Loaded: ' + version;
+    version_container.appendChild(loaded_message);
+
+    nav_sidebar.appendChild(version_container);
+
 } else {
     console.error('Sidebar could not be found.');
 }
