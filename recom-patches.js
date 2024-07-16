@@ -787,7 +787,7 @@ if (window.location.href.includes('/reports')) {
             
             const userInputSubtext = document.createElement('div');
             userInputSubtext.setAttribute('style', 'flex: 1; display: flex; align-items: center;');
-            userInputSubtext.innerHTML = "Generate a productivity report for Listing.<br>Date Entry Format: mm/dd/yyyy (leading 0s).";
+            userInputSubtext.innerHTML = "Generate a productivity report for Marketing.<br>Date Entry Format: mm/dd/yyyy (leading 0s).";
             
             const userInputTitle = document.createElement('h4');
             userInputTitle.classList.add('fw-bolder');
