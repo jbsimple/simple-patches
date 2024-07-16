@@ -1,4 +1,4 @@
-const version = '7-16-2024__5';
+const version = '7-16-2024__6';
 
 const nav_sidebar = document.getElementById('kt_app_sidebar_navs_wrappers');
 if (nav_sidebar) {
@@ -28,47 +28,47 @@ if (nav_sidebar) {
 }
 
 document.head.innerHTML += '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jbsimple/simple-patches@main/recom-patches.css?v=' + Date.now() + '" type="text/css"/>';
-let script = document.createElement('script');
-script.name = 'n/a';
-script.onload = function() {
-    console.log('Patch Loaded:', script.name);
+let script_patch = document.createElement('script');
+script_patch.name = 'n/a';
+script_patch.onload = function() {
+    console.log('Patch Loaded:', script_patch.name);
 };
 
 if (window.location.href.includes('/receiving/queues/listing/')) {
 
-    script.src = "https://cdn.jsdelivr.net/gh/jbsimple/simple-patches@main/recom-patches-listing.js?v=" + Date.now();
-    script.name = 'recom-patches-listing.js';
+    script_patch.src = "https://cdn.jsdelivr.net/gh/jbsimple/simple-patches@main/recom-patches-listing.js?v=" + Date.now();
+    script_patch.name = 'recom-patches-listing.js';
 
 }
 
 if (window.location.href.includes('/queues/conditions/')) {
     
-    script.src = "https://cdn.jsdelivr.net/gh/jbsimple/simple-patches@main/recom-patches-condqueue.js?v=" + Date.now();
-    script.name = 'recom-patches-condqueue.js';
+    script_patch.src = "https://cdn.jsdelivr.net/gh/jbsimple/simple-patches@main/recom-patches-condqueue.js?v=" + Date.now();
+    script_patch.name = 'recom-patches-condqueue.js';
 
 }
 
 if (window.location.href.includes('/products') || window.location.href.includes('/product/item')) {
 
     document.head.innerHTML += '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jbsimple/simple-patches@main/recom-patches-product.css?v=' + Date.now() + '" type="text/css"/>';
-    script.src = "https://cdn.jsdelivr.net/gh/jbsimple/simple-patches@main/recom-patches-productPage.js?v=" + Date.now();
-    script.name = 'recom-patches-productPage.js';
+    script_patch.src = "https://cdn.jsdelivr.net/gh/jbsimple/simple-patches@main/recom-patches-productPage.js?v=" + Date.now();
+    script_patch.name = 'recom-patches-productPage.js';
 
 }
 
 if (window.location.href.includes('/receiving') && document.getElementById('searchProductForm')) {
     
-    script.src = "https://cdn.jsdelivr.net/gh/jbsimple/simple-patches@main/recom-patches-newInventory.js?v=" + Date.now();
-    script.name = 'recom-patches-newInventory.js';
+    script_patch.src = "https://cdn.jsdelivr.net/gh/jbsimple/simple-patches@main/recom-patches-newInventory.js?v=" + Date.now();
+    script_patch.name = 'recom-patches-newInventory.js';
 
 }
 
 if (window.location.href.includes('/reports')) {
 
-    script.src = "https://cdn.jsdelivr.net/gh/jbsimple/simple-patches@main/recom-patches-reports.js?v=" + Date.now();
-    script.name = "recom-patches-reports.js";
+    script_patch.src = "https://cdn.jsdelivr.net/gh/jbsimple/simple-patches@main/recom-patches-reports.js?v=" + Date.now();
+    script_patch.name = "recom-patches-reports.js";
 
 }
 
-document.body.appendChild(script);
+document.body.appendChild(script_patch);
 console.log('Patch Loading Complete');
