@@ -4,7 +4,6 @@ const nav_sidebar = document.getElementById('kt_app_sidebar_navs_wrappers');
 if (nav_sidebar) {
     nav_sidebar.style.display = 'flex';
     nav_sidebar.style.flexDirection = 'column';
-    nav_sidebar.style.height = '100%';
 
     const nav_sidebar_links = document.getElementById('#kt_app_sidebar_menu');
     nav_sidebar_links.style.flex = '1';
