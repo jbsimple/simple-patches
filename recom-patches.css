@@ -35,3 +35,8 @@ body {
 .fc-popover {
   background-color: var(--bs-card-bg) !important;
 }
+
+.app-sidebar-navs {
+  overflow: hidden;
+  overflow-y: auto !important;
+}
