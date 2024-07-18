@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Simple Patches Landing Page</title>
         <style>
             * {
@@ -16,22 +18,26 @@
                 flex-direction: column;
                 margin: 0;
                 padding: 0;
+                width: 100%;
             }
 
-            pre {
+            #readme {
                 background-color: transparent;
                 flex: 1;
+                width: 100%;
             }
         </style>
     </head>
     <body>
         <h1>Simple Patches</h1>
-        <pre id="readme"></pre>
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        <div id="readme"></div>
         <script>
             fetch('/readme.md')
                 .then(response => response.text())
                 .then(data => {
-                    document.getElementById('readme').textContent = data;
+                    const htmlContent = marked(data);
+                    document.getElementById('readme').innerHTML = htmlContent;
                 })
                 .catch(error => console.error('Error getting readme file.', error));
         </script>
