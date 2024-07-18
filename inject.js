@@ -2,4 +2,4 @@
 
 let script = document.createElement('script');
 script.src = "https://simple-patches.vercel.app/recom-patches.js?v=" + Date.now();
-document.head.appendChild(script);
+document.body.appendChild(script);
