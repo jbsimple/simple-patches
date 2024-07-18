@@ -30,4 +30,5 @@ Enhancements:
 - On all pages; CSS fixes to alter some colors for better dark mode enhancement.
 
 Future Requests or Patches:
-- A button on images tab to remove all existing images. The code is there but commented out because I don't fully trust it.
+- A button on images tab to remove all existing images.
+- A button on images tab to download all existing images into a zip.
