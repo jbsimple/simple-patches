@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Simple Patches Landing Page</title>
+        <style>
+            * {
+                font-family: Tahoma, Verdana, Arial, sans-serif;
+            }
+
+            html {
+                color-scheme: light dark;
+            }
+
+            body {
+                display: flex;
+                flex-direction: column;
+                margin: 0;
+                padding: 0;
+            }
+
+            pre {
+                background-color: transparent;
+                flex: 1;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Simple Patches</h1>
+        <pre id="readme"></pre>
+        <script>
+            fetch('/readme.md')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('readme').textContent = data;
+                })
+                .catch(error => console.error('Error getting readme file.', error));
+        </script>
+    </body>
+</html>
