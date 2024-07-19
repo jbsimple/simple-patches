@@ -7,6 +7,7 @@ if (submitButton && gtinInput) {
 
         // if gtin is not valid, don't run
         if (!verifyGTIN()) {
+            alert('Could not submit: Invalid GTIN');
             e.stopPropagation();
         }
     }, true);
