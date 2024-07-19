@@ -19,6 +19,8 @@ Enhancements:
 - On item pages; CSS fix to have the inventory tab larger so you can see more.
 - On listing page; A warning for when the GTIN is invalid and needs to be regenerated before going to the last step.
 - On New Inventory Page; Disabled entry of new inventory sent to listing without a GTIN.
+- On New Inventory Page; Disabled entry of new inventory sent to listing with a GTIN longer than 12 characters.
+- On New Inventory Page; Automatic response for invalid GTIN in input box.
 - On reports page, after submitting to generate a new report, the report displays under the original card.
 - On reports page, added a card to generate a preset report.
   - Added Listing department productivity reporting preset.
