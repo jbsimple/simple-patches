@@ -2,19 +2,29 @@
 var gtin_input = document.querySelectorAll('.product_gtin')[0]; //inital
 gtin_input = document.querySelector('input[name="product[gtin]"]'); //if specific loaded
 
+var listingSubmit = document.querySelector('button[data-kt-stepper-action="submit"]');
+var listingResults = document.getElementById('listing-results');
+
+var initGTIN = null;
+var curGTIN = null;
+
 var generateButton = document.querySelector('a[href="javascript:generateGtin();"]');
 
 if (gtin_input) {
-        if (gtin_input.value || gtin_input.getAttribute('value')) {
-                verifyGTIN();
-        }
-        
-        gtin_input.addEventListener('input', function() {
+    initGTIN = gtin_input.value;
+    curGTIN = gtin_input.value;
+
+    if (gtin_input.value || gtin_input.getAttribute('value')) {
+        verifyGTIN();
+    }
+    
+    gtin_input.addEventListener('input', function() {
         verifyGTIN();
     });
     
     if (generateButton) {
             generateButton.addEventListener('click', function() {
+
                     setTimeout(function() {
                             verifyGTIN();
                     }, 500); // yikes
@@ -22,6 +32,9 @@ if (gtin_input) {
     }
     
     function verifyGTIN() {
+        // update flag
+        curGTIN = gtin_input.value;
+
         var valueLength = gtin_input.value.length;
         console.log(valueLength);
         
@@ -52,5 +65,15 @@ if (gtin_input) {
         if (feedbackDiv) {
             feedbackDiv.parentNode.removeChild(feedbackDiv);
         }
+    }
+
+    if (listingSubmit && listingResults) {
+        listingSubmit.addEventListener('click', function() {
+            setTimeout(function() {
+                if (initGTIN !== curGTIN) {
+                    listingResults.innerHTML += `<br><strong style="color: var(--bs-warning)">GTIN Changed, Write SKU on Label Or Else.</strong>`;
+                }
+            }, 500); // yikes
+        });
     }
 } // end gtin verify for listing
