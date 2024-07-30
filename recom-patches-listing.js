@@ -71,7 +71,7 @@ if (gtin_input) {
         listingSubmit.addEventListener('click', function() {
             setTimeout(function() {
                 if (initGTIN !== curGTIN) {
-                    listingResults.innerHTML += `<br><strong style="color: var(--bs-warning)">GTIN Changed, Write SKU on Label Or Else.</strong>`;
+                    listingResults.innerHTML += `<br><strong style="padding: 0.775rem 1.5rem !important;font-size: 1.1rem;line-height: 1.5;font-weight: 500;background-color: transparent;color: var(--bs-danger);border: 1px solid var(--bs-danger);border-radius: 0.475rem;margin-top: 1rem;display: inline-block;">GTIN Changed, Write SKU on Label Or Else.</strong>`;
                 }
             }, 500); // yikes
         });
