@@ -73,9 +73,9 @@ if (gtin_input) {
                 if (initGTIN !== curGTIN) {
                     var code = '<br>';
                     code += '<strong style="padding: 0.775rem 1.5rem !important;font-size: 1.1rem;line-height: 1.5;font-weight: 500;background-color: transparent;color: var(--bs-danger) !important;border: 1px solid var(--bs-danger);border-radius: 0.475rem;margin-top: 1rem;display: inline-block;">';
-                    code += '<i class="fa fa-triangle-exclamation fs-2" style="color: inherit;margin-right: 0.25rem;text-align: center;">';
+                    code += '<i class="fa fa-triangle-exclamation fs-2" style="color: inherit;margin-right: 0.25rem;text-align: center;"></i>';
                     code += 'The GTIN was changed, please write the new SKU down on the label... or else.'
-                    code += '<i class="fa fa-triangle-exclamation fs-2" style="color: inherit;margin-left: 0.25rem;text-align: center;">';
+                    code += '<i class="fa fa-triangle-exclamation fs-2" style="color: inherit;margin-right: 0.25rem;text-align: center;"></i>';
                     code += '</strong>';
                     listingResults.innerHTML += code;
                 }
