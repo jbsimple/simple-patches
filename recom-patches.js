@@ -22,6 +22,7 @@ if (nav_sidebar) {
     const loaded_message = document.createElement('span');
     loaded_message.setAttribute('style', 'text-align: center;');
     loaded_message.textContent = 'Patches Loaded: ' + version;
+    loaded_message.classList = 'patches-loaded';
     version_container.appendChild(loaded_message);
 
     nav_sidebar.appendChild(version_container);
