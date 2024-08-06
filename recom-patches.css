@@ -48,3 +48,7 @@ div.dataTables_processing {
 div.dataTables_wrapper div.dataTables_processing {
   background-color: var(--bs-card-bg) !important;
 }
+
+.card.card-xl-stretch.mb-xl-8 {
+  background-color: inherit !important;
+}
