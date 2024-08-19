@@ -10,6 +10,24 @@ var curGTIN = null;
 
 var generateButton = document.querySelector('a[href="javascript:generateGtin();"]');
 
+// https://stackoverflow.com/questions/13605340/how-to-validate-a-ean-gtin-barcode-in-javascript
+// There are more checks in place for valid gtins I guess.
+function isValidBarcode(value) {
+    // We only allow correct length barcodes
+    if (!value.match(/^(\d{8}|\d{12,14})$/)) {
+      return false;
+    }
+  
+    const paddedValue = value.padStart(14, '0');
+  
+    let result = 0;
+    for (let i = 0; i < paddedValue.length - 1; i += 1) {
+      result += parseInt(paddedValue.charAt(i), 10) * ((i % 2 === 0) ? 3 : 1);
+    }
+  
+    return ((10 - (result % 10)) % 10) === parseInt(paddedValue.charAt(13), 10);
+}
+
 if (gtin_input) {
     initGTIN = gtin_input.value;
     curGTIN = gtin_input.value;
@@ -38,7 +56,7 @@ if (gtin_input) {
         var valueLength = gtin_input.value.length;
         console.log(valueLength);
         
-        if (valueLength > 12) {
+        if (valueLength > 12 && isValidBarcode(valueLength)) {
             gtin_input.style.outline = "2px solid var(--bs-danger)";
             gtin_input.style.backgroundColor = "color-mix(in srgb, var(--bs-danger) 15%, rgb(255,255,255,0))";
             addInvalidFeedback();
