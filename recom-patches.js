@@ -40,15 +40,14 @@ function getTheme() {
     return theme;
 }
 
-/* yeah idk about this it looks too wacky
 if ((typeof toggle_darkreader === 'undefined' || toggle_darkreader === true) && getTheme() === 'dark') {
     const darkreader = document.createElement('script');
     darkreader.src = 'https://cdn.jsdelivr.net/npm/darkreader@latest/darkreader.min.js';
     darkreader.onload = function() {
         DarkReader.enable({
             brightness: 100,
-            contrast: 90,
-            sepia: 10
+            contrast: 100,
+            sepia: 0
         });
         console.log('Patch Loaded: Darkreader');
     };
@@ -58,7 +57,6 @@ if ((typeof toggle_darkreader === 'undefined' || toggle_darkreader === true) && 
 } else {
     console.log('Patch Error: Darkreader');
 }
-    */
 
 const statcardfix = document.querySelectorAll('.card.card-xl-stretch.mb-xl-8');
 if (statcardfix && statcardfix.length === 3 && getTheme() === 'dark') {
