@@ -40,6 +40,7 @@ function getTheme() {
     return theme;
 }
 
+/* nah
 if ((typeof toggle_darkreader === 'undefined' || toggle_darkreader === true) && getTheme() === 'dark') {
     const darkreader = document.createElement('script');
     darkreader.src = 'https://cdn.jsdelivr.net/npm/darkreader@latest/darkreader.min.js';
@@ -57,6 +58,7 @@ if ((typeof toggle_darkreader === 'undefined' || toggle_darkreader === true) && 
 } else {
     console.log('Patch Error: Darkreader');
 }
+*/
 
 const statcardfix = document.querySelectorAll('.card.card-xl-stretch.mb-xl-8');
 if (statcardfix && statcardfix.length === 3 && getTheme() === 'dark') {
