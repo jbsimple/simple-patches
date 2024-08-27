@@ -34,6 +34,11 @@ if (nav_sidebar) {
 const darkreader = document.createElement('script');
 darkreader.src = 'https://cdn.jsdelivr.net/npm/darkreader@latest/darkreader.min.js';
 darkreader.onload = function() {
+    DarkReader.enable({
+        brightness: 100,
+        contrast: 90,
+        sepia: 10
+    });
     console.log('Patch Loaded: Darkreader');
 };
 document.body.appendChild(darkreader);
@@ -42,11 +47,6 @@ document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.
 let script_patch = document.createElement('script');
 script_patch.name = 'n/a';
 script_patch.onload = function() {
-    DarkReader.enable({
-        brightness: 100,
-        contrast: 90,
-        sepia: 10
-    });
     console.log('Patch Loaded:', script_patch.name);
 };
 
