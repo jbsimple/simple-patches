@@ -1,4 +1,4 @@
-const version = '8-27-2024__3';
+const version = '8-27-2024__4';
 
 const nav_sidebar = document.getElementById('kt_app_sidebar_navs_wrappers');
 if (nav_sidebar) {
@@ -31,19 +31,23 @@ if (nav_sidebar) {
     console.error('Sidebar could not be found.');
 }
 
-/*
-const darkreader = document.createElement('script');
-darkreader.src = 'https://cdn.jsdelivr.net/npm/darkreader@latest/darkreader.min.js';
-darkreader.onload = function() {
-    DarkReader.enable({
-        brightness: 100,
-        contrast: 90,
-        sepia: 10
-    });
-    console.log('Patch Loaded: Darkreader');
-};
-document.body.appendChild(darkreader);
-*/
+if (typeof toggle_darkreader === 'undefined' || toggle_darkreader === true) {
+    const darkreader = document.createElement('script');
+    darkreader.src = 'https://cdn.jsdelivr.net/npm/darkreader@latest/darkreader.min.js';
+    darkreader.onload = function() {
+        DarkReader.enable({
+            brightness: 100,
+            contrast: 90,
+            sepia: 10
+        });
+        console.log('Patch Loaded: Darkreader');
+    };
+    document.body.appendChild(darkreader);
+} else if (toggle_darkreader === false) {
+    console.log('Patch Skipped: Darkreader');
+} else {
+    console.log('Patch Error: Darkreader');
+}
 
 function getTheme() {
     var theme = 'light';
