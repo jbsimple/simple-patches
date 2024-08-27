@@ -31,6 +31,7 @@ if (nav_sidebar) {
     console.error('Sidebar could not be found.');
 }
 
+/*
 const darkreader = document.createElement('script');
 darkreader.src = 'https://cdn.jsdelivr.net/npm/darkreader@latest/darkreader.min.js';
 darkreader.onload = function() {
@@ -42,6 +43,7 @@ darkreader.onload = function() {
     console.log('Patch Loaded: Darkreader');
 };
 document.body.appendChild(darkreader);
+*/
 
 document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches.css?v=' + Date.now() + '" type="text/css"/>';
 let script_patch = document.createElement('script');
