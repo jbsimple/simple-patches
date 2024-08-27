@@ -32,7 +32,7 @@ if (nav_sidebar) {
 }
 
 const darkreader = document.createElement('script');
-darkreader.src = 'https://unpkg.com/browse/darkreader@latest/darkreader.js';
+darkreader.src = 'https://cdn.jsdelivr.net/npm/darkreader@latest/darkreader.min.js';
 darkreader.onload = function() {
     console.log('Patch Loaded: Darkreader');
 };
