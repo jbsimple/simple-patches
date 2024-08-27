@@ -31,7 +31,17 @@ if (nav_sidebar) {
     console.error('Sidebar could not be found.');
 }
 
-if (typeof toggle_darkreader === 'undefined' || toggle_darkreader === true) {
+/* theme stuff */
+function getTheme() {
+    var theme = 'light';
+    if (document.documentElement.getAttribute('data-bs-theme')) {
+        theme = document.documentElement.getAttribute('data-bs-theme');
+    }
+    return theme;
+}
+
+/* yeah idk about this it looks too wacky
+if ((typeof toggle_darkreader === 'undefined' || toggle_darkreader === true) && getTheme() === 'dark') {
     const darkreader = document.createElement('script');
     darkreader.src = 'https://cdn.jsdelivr.net/npm/darkreader@latest/darkreader.min.js';
     darkreader.onload = function() {
@@ -48,14 +58,7 @@ if (typeof toggle_darkreader === 'undefined' || toggle_darkreader === true) {
 } else {
     console.log('Patch Error: Darkreader');
 }
-
-function getTheme() {
-    var theme = 'light';
-    if (document.documentElement.getAttribute('data-bs-theme')) {
-        theme = document.documentElement.getAttribute('data-bs-theme');
-    }
-    return theme;
-}
+    */
 
 const statcardfix = document.querySelectorAll('.card.card-xl-stretch.mb-xl-8');
 if (statcardfix && statcardfix.length === 3 && getTheme() === 'dark') {
@@ -63,6 +66,8 @@ if (statcardfix && statcardfix.length === 3 && getTheme() === 'dark') {
     statcardfix[1].setAttribute('style', `background-color: rgb(15,50,50) !important; color: white !important;`);
     statcardfix[2].setAttribute('style', `background-color: rgb(50,60,85) !important; color: white !important;`);
 }
+
+/* end of theme stuff */
 
 document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches.css?v=' + Date.now() + '" type="text/css"/>';
 let script_patch = document.createElement('script');
