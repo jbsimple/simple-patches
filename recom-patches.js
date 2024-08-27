@@ -1,4 +1,4 @@
-const version = '8-19-2024__1';
+const version = '8-27-2024__1';
 
 const nav_sidebar = document.getElementById('kt_app_sidebar_navs_wrappers');
 if (nav_sidebar) {
@@ -30,6 +30,13 @@ if (nav_sidebar) {
 } else {
     console.error('Sidebar could not be found.');
 }
+
+const darkreader = document.createElement('script');
+darkreader.src = 'https://unpkg.com/browse/darkreader@latest/darkreader.js';
+darkreader.onload = function() {
+    console.log('Patch Loaded: Darkreader');
+};
+document.body.appendChild(darkreader);
 
 document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches.css?v=' + Date.now() + '" type="text/css"/>';
 let script_patch = document.createElement('script');
