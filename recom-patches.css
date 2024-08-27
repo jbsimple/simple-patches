@@ -49,6 +49,13 @@ div.dataTables_wrapper div.dataTables_processing {
   background-color: var(--bs-card-bg) !important;
 }
 
+.app-toolbar {
+  background-color: transparent !important;
+  box-shadow: unset !important;
+  border-top: unset !important;
+  border-bottom: unset !important;
+}
+
 .app-sidebar-menu-primary.menu > .menu-item .menu-item .menu-link {
   color: var(--bs-gray-700) !important;
 }
