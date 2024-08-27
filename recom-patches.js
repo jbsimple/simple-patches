@@ -1,4 +1,4 @@
-const version = '8-27-2024__1';
+const version = '8-27-2024__2';
 
 const nav_sidebar = document.getElementById('kt_app_sidebar_navs_wrappers');
 if (nav_sidebar) {
@@ -44,6 +44,13 @@ darkreader.onload = function() {
 };
 document.body.appendChild(darkreader);
 */
+
+const statcardfix = document.querySelectorAll('.card.card-xl-stretch.mb-xl-8');
+if (statcardfix && statcardfix.length === 3) {
+    statcardfix[0].setAttribute('style', `background-color: rgb(65,40,50) !important; color: white !important;`);
+    statcardfix[1].setAttribute('style', `background-color: rgb(15,50,50) !important; color: white !important;`);
+    statcardfix[2].setAttribute('style', `background-color: rgb(50,60,85) !important; color: white !important;`);
+}
 
 document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches.css?v=' + Date.now() + '" type="text/css"/>';
 let script_patch = document.createElement('script');
