@@ -1,4 +1,4 @@
-const version = '8-27-2024__2';
+const version = '8-27-2024__3';
 
 const nav_sidebar = document.getElementById('kt_app_sidebar_navs_wrappers');
 if (nav_sidebar) {
@@ -67,7 +67,7 @@ script_patch.onload = function() {
     console.log('Patch Loaded:', script_patch.name);
 };
 
-if (window.location.href.includes('/receiving/queues/listing/')) {
+if (window.location.href.includes('/receiving/queues/listing/') || window.location.href.includes('/products/new')) {
 
     script_patch.src = "https://simple-patches.vercel.app/recom-patches-listing.js?v=" + Date.now();
     script_patch.name = 'recom-patches-listing.js';
@@ -81,7 +81,7 @@ if (window.location.href.includes('/queues/conditions/')) {
 
 }
 
-if (window.location.href.includes('/products/') || window.location.href.includes('/product/items/')) {
+if ((window.location.href.includes('/products/') || window.location.href.includes('/product/items/')) && !window.location.href.includes('/products/new')) {
     // ending slash is needed to ensure that the code only applies the patch for the sku and sid pages
 
     document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches-product.css?v=' + Date.now() + '" type="text/css"/>';
