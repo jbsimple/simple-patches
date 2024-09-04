@@ -334,119 +334,119 @@ function report_listingProducivity_submit() {
     var date = document.getElementById('patches-reports-listing_productivity-input').value;
     const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
     var request = [
-                            {
-                                "name": "report[type]",
-                                "value": "user_clock"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "user_profile.user_id"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "user_profile.department_id"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "user_clocks.task_id"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "purchase_orders.id"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "purchase_orders.type"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "user_clock_activity.activity_id"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "user_clock_activity.activity_code"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "user_clock_activity.notes"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "user_clock_activity.units"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "user_clock_activity.created_at"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "user_clock_activity.time_spent"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "user_clocks.time_in"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "user_clocks.time_out"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "user_clocks.user_id"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "user_clocks.clock_date"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "products.sid"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "products.name"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "product_items.sku"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "product_items.condition_id"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "products.category_id"
-                            },
-                            {
-                                "name": "report[filters][0][column]",
-                                "value": "user_profile.department_id"
-                            },
-                            {
-                                "name": "report[filters][0][opr]",
-                                "value": "{0} IN {1}"
-                            },
-                            {
-                                "name": "report[filters][0][value][]",
-                                "value": "23"
-                            },
-                            {
-                                "name": "report[filters][1][column]",
-                                "value": "user_clocks.clock_date"
-                            },
-                            {
-                                "name": "report[filters][1][opr]",
-                                "value": "between"
-                            },
-                            {
-                                "name": "report[filters][1][value]",
-                                "value": `${date} - ${date}`
-                            },
-                            {
-                                "name": "csrf_recom",
-                                "value": csrfToken
-                            }
-                        ];
+        {
+            "name": "report[type]",
+            "value": "user_clock"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "user_profile.user_id"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "user_profile.department_id"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "user_clocks.task_id"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "purchase_orders.id"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "purchase_orders.type"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "user_clock_activity.activity_id"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "user_clock_activity.activity_code"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "user_clock_activity.notes"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "user_clock_activity.units"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "user_clock_activity.created_at"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "user_clock_activity.time_spent"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "user_clocks.time_in"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "user_clocks.time_out"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "user_clocks.user_id"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "user_clocks.clock_date"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "products.sid"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "products.name"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "product_items.sku"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "product_items.condition_id"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "products.category_id"
+        },
+        {
+            "name": "report[filters][0][column]",
+            "value": "user_profile.department_id"
+        },
+        {
+            "name": "report[filters][0][opr]",
+            "value": "{0} IN {1}"
+        },
+        {
+            "name": "report[filters][0][value][]",
+            "value": "23"
+        },
+        {
+            "name": "report[filters][1][column]",
+            "value": "user_clocks.clock_date"
+        },
+        {
+            "name": "report[filters][1][opr]",
+            "value": "between"
+        },
+        {
+            "name": "report[filters][1][value]",
+            "value": `${date} - ${date}`
+        },
+        {
+            "name": "csrf_recom",
+            "value": csrfToken
+        }
+    ];
     getReport(request);
 }
 
@@ -454,119 +454,119 @@ function report_marketingProducivity_submit() {
     var date = document.getElementById('patches-reports-marketing_productivity-input').value;
     const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
     var request = [
-                            {
-                                "name": "report[type]",
-                                "value": "user_clock"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "user_profile.user_id"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "user_profile.department_id"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "user_clocks.task_id"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "purchase_orders.id"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "purchase_orders.type"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "user_clock_activity.activity_id"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "user_clock_activity.activity_code"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "user_clock_activity.notes"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "user_clock_activity.units"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "user_clock_activity.created_at"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "user_clock_activity.time_spent"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "user_clocks.time_in"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "user_clocks.time_out"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "user_clocks.user_id"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "user_clocks.clock_date"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "products.sid"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "products.name"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "product_items.sku"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "product_items.condition_id"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "products.category_id"
-                            },
-                            {
-                                "name": "report[filters][0][column]",
-                                "value": "user_profile.department_id"
-                            },
-                            {
-                                "name": "report[filters][0][opr]",
-                                "value": "{0} IN {1}"
-                            },
-                            {
-                                "name": "report[filters][0][value][]",
-                                "value": "26"
-                            },
-                            {
-                                "name": "report[filters][1][column]",
-                                "value": "user_clocks.clock_date"
-                            },
-                            {
-                                "name": "report[filters][1][opr]",
-                                "value": "between"
-                            },
-                            {
-                                "name": "report[filters][1][value]",
-                                "value": `${date} - ${date}`
-                            },
-                            {
-                                "name": "csrf_recom",
-                                "value": csrfToken
-                            }
-                        ];
+        {
+            "name": "report[type]",
+            "value": "user_clock"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "user_profile.user_id"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "user_profile.department_id"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "user_clocks.task_id"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "purchase_orders.id"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "purchase_orders.type"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "user_clock_activity.activity_id"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "user_clock_activity.activity_code"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "user_clock_activity.notes"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "user_clock_activity.units"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "user_clock_activity.created_at"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "user_clock_activity.time_spent"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "user_clocks.time_in"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "user_clocks.time_out"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "user_clocks.user_id"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "user_clocks.clock_date"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "products.sid"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "products.name"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "product_items.sku"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "product_items.condition_id"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "products.category_id"
+        },
+        {
+            "name": "report[filters][0][column]",
+            "value": "user_profile.department_id"
+        },
+        {
+            "name": "report[filters][0][opr]",
+            "value": "{0} IN {1}"
+        },
+        {
+            "name": "report[filters][0][value][]",
+            "value": "26"
+        },
+        {
+            "name": "report[filters][1][column]",
+            "value": "user_clocks.clock_date"
+        },
+        {
+            "name": "report[filters][1][opr]",
+            "value": "between"
+        },
+        {
+            "name": "report[filters][1][value]",
+            "value": `${date} - ${date}`
+        },
+        {
+            "name": "csrf_recom",
+            "value": csrfToken
+        }
+    ];
     getReport(request);
 }
 
@@ -589,107 +589,148 @@ function report_pictureMissingSpecial_submit() {
 
     const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
     var request = [
-    {
-        "name": "report[type]",
-        "value": "item_images"
-    },
-    {
-        "name": "report[columns][]",
-        "value": "product_items.sku"
-    },
-    {
-        "name": "report[columns][]",
-        "value": "products.sid"
-    },
-    {
-        "name": "report[columns][]",
-        "value": "products.name"
-    },
-    {
-        "name": "report[columns][]",
-        "value": "products.brand_id"
-    },
-    {
-        "name": "report[columns][]",
-        "value": "products.category_id"
-    },
-    {
-        "name": "report[columns][]",
-        "value": "product_items.condition_id"
-    },
-    {
-        "name": "report[columns][]",
-        "value": "product_items.in_stock"
-    },
-    {
-        "name": "report[columns][]",
-        "value": "product_items.price"
-    },
-    {
-        "name": "report[columns][]",
-        "value": "product_items.created_at"
-    },
-    {
-        "name": "report[filters][0][column]",
-        "value": "product_items.status"
-    },
-    {
-        "name": "report[filters][0][opr]",
-        "value": "{0} = '{1}'"
-    },
-    {
-        "name": "report[filters][0][value][]",
-        "value": "1"
-    },
-    {
-        "name": "report[filters][1][column]",
-        "value": "product_items.condition_id"
-    },
-    {
-        "name": "report[filters][1][opr]",
-        "value": "{0} IN {1}"
-    },
-    {
-        "name": "report[filters][1][value]",
-        "value": "6"
-    },
-    {
-        "name": "report[filters][1][value]",
-        "value": "8"
-    },
-    {
-        "name": "report[filters][1][value]",
-        "value": "18"
-    },
-    {
-        "name": "report[filters][2][column]",
-        "value": "item_images.url"
-    },
-    {
-        "name": "report[filters][2][opr]",
-        "value": "({0} IS NULL OR {0} = '')"
-    },
-    {
-        "name": "report[filters][2][value]",
-        "value": ""
-    },
-    {
-        "name": "report[filters][3][column]",
-        "value": "product_items.created_at"
-    },
-    {
-        "name": "report[filters][3][opr]",
-        "value": "between"
-    },
-    {
-        "name": "report[filters][3][value]",
-        "value": `${pastDateFormatted} - ${todayFormatted}`
-    },
-    {
-        "name": "csrf_recom",
-        "value": csrfToken
-    }
+        {
+            "name": "report[type]",
+            "value": "item_images"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "product_items.sku"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "products.sid"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "products.name"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "products.brand_id"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "products.category_id"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "product_items.condition_id"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "product_items.in_stock"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "product_items.price"
+        },
+        {
+            "name": "report[columns][]",
+            "value": "product_items.created_at"
+        },
+        {
+            "name": "report[filters][0][column]",
+            "value": "product_items.status"
+        },
+        {
+            "name": "report[filters][0][opr]",
+            "value": "{0} = '{1}'"
+        },
+        {
+            "name": "report[filters][0][value][]",
+            "value": "1"
+        },
+        {
+            "name": "report[filters][1][column]",
+            "value": "product_items.condition_id"
+        },
+        {
+            "name": "report[filters][1][opr]",
+            "value": "{0} IN {1}"
+        },
+        {
+            "name": "report[filters][1][value]",
+            "value": "6"
+        },
+        {
+            "name": "report[filters][1][value]",
+            "value": "8"
+        },
+        {
+            "name": "report[filters][1][value]",
+            "value": "18"
+        },
+        {
+            "name": "report[filters][2][column]",
+            "value": "item_images.url"
+        },
+        {
+            "name": "report[filters][2][opr]",
+            "value": "({0} IS NULL OR {0} = '')"
+        },
+        {
+            "name": "report[filters][2][value]",
+            "value": ""
+        },
+        {
+            "name": "report[filters][3][column]",
+            "value": "product_items.created_at"
+        },
+        {
+            "name": "report[filters][3][opr]",
+            "value": "between"
+        },
+        {
+            "name": "report[filters][3][value]",
+            "value": `${pastDateFormatted} - ${todayFormatted}`
+        },
+        {
+            "name": "csrf_recom",
+            "value": csrfToken
+        }
 ];
+
+const request = {
+    report: {
+      type: "item_images",
+      columns: [
+        "product_items.sku",
+        "products.sid",
+        "products.name",
+        "products.brand_id",
+        "products.category_id",
+        "product_items.condition_id",
+        "product_items.in_stock",
+        "product_items.price",
+        "product_items.created_at"
+      ],
+      filters: [
+        {
+          column: "product_items.created_at",
+          opr: "between",
+          value: `${pastDateFormatted} - ${todayFormatted}`
+        },
+        {
+          column: "item_images.url",
+          opr: "({0} IS NULL OR {0} = '')",
+          value: ""
+        },
+        {
+          column: "product_items.condition_id",
+          opr: "{0} IN {1}",
+          value: [6, 8, 18]
+        },
+        {
+          column: "product_items.status",
+          opr: "{0} = '{1}'",
+          value: "1"
+        }
+      ]
+    },
+    csrf_recom: csrfToken
+  };
+  
 
     getReport(request);
 }
