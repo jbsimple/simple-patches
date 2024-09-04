@@ -588,7 +588,7 @@ function report_pictureMissingSpecial_submit() {
     let pastDateFormatted = formatDate(pastDate);
 
     const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
-    /*var request = [
+    var request = [
         {
             "name": "report[type]",
             "value": "item_images"
@@ -689,9 +689,9 @@ function report_pictureMissingSpecial_submit() {
             "name": "csrf_recom",
             "value": csrfToken
         }
-];/*
+];
 
-const request = {
+request = {
     report: {
       type: "item_images",
       columns: [
