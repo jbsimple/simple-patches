@@ -148,6 +148,7 @@ function initPreset() {
     card_body.appendChild(report_preset('listing_productivity'));
     card_body.appendChild(report_preset('marketing_productivity'));
     card_body.appendChild(report_preset('picture_missingSpecial'));
+    card_body.appendChild(report_preset('product_highQty'));
     
     const nextStepButton = document.getElementById('rc_reports_new_wizard').querySelectorAll('button[data-kt-stepper-action="next"]');
     const patchesPresentsDiv = document.getElementById('patches-presents');
