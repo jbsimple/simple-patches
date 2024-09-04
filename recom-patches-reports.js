@@ -591,7 +591,7 @@ function report_pictureMissingSpecial_submit() {
     var request = [
                             {
                                 "name": "report[type]",
-                                "value": "user_clock"
+                                "value": "item_images"
                             },
                             {
                                 "name": "report[columns][]",
