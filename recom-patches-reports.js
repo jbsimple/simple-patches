@@ -147,6 +147,7 @@ function initPreset() {
     
     card_body.appendChild(report_preset('listing_productivity'));
     card_body.appendChild(report_preset('marketing_productivity'));
+    card_body.appendChild(report_preset('picture_missingSpecial'));
     
     const nextStepButton = document.getElementById('rc_reports_new_wizard').querySelectorAll('button[data-kt-stepper-action="next"]');
     const patchesPresentsDiv = document.getElementById('patches-presents');
@@ -244,7 +245,6 @@ function report_preset(name) {
         content.appendChild(submit_button);
 
     } else if (name === 'marketing_productivity') {
-
         const submit_button = document.createElement('button');
         submit_button.classList.add('btn');
         submit_button.classList.add('btn-large');
@@ -293,6 +293,38 @@ function report_preset(name) {
         
         content.appendChild(submit_button);
         
+    } else if (name === 'picture_missingSpecial') {
+        const submit_button = document.createElement('button');
+        submit_button.classList.add('btn');
+        submit_button.classList.add('btn-large');
+        submit_button.classList.add('btn-primary');
+        submit_button.setAttribute('onclick', `report_pictureMissingSpecial_submit();`);
+        submit_button.innerHTML = `Create
+            <span class="svg-icon svg-icon-4 ms-1 me-0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <rect opacity="0.5" x="18" y="13" width="13" height="2" rx="1" transform="rotate(-180 18 13)" fill="currentColor"></rect>
+            <path d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z" fill="currentColor"></path>
+            </svg>
+            </span>`;
+        
+        const userInputSubtext = document.createElement('div');
+        userInputSubtext.setAttribute('style', 'flex: 1; display: flex; align-items: center;');
+        userInputSubtext.innerHTML = "Generate a report for missing pictures,<br>Specifically Defective, Incomplete and Image Issue items.";
+        
+        const userInputTitle = document.createElement('h4');
+        userInputTitle.classList.add('fw-bolder');
+        userInputTitle.classList.add('d-flex');
+        userInputTitle.classList.add('align-items-center');
+        userInputTitle.classList.add('text-dark');
+        userInputTitle.setAttribute('style', 'width: 200px;');
+        userInputTitle.textContent = 'Missing Pictures (1):';
+
+        
+        content.appendChild(userInputTitle);
+        
+        content.appendChild(userInputSubtext);
+        
+        content.appendChild(submit_button);
     }
 
     return content;
@@ -537,6 +569,134 @@ function report_marketingProducivity_submit() {
                         ];
     getReport(request);
 }
+
+function formatDate(date) {
+    let month = (date.getMonth() + 1).toString().padStart(2, '0');
+    let day = date.getDate().toString().padStart(2, '0');
+    let year = date.getFullYear();
+    return `${month}/${day}/${year}`;
+}
+
+function report_pictureMissingSpecial_submit() {
+    // Get today's date
+    let today = new Date();
+    let todayFormatted = formatDate(today);
+
+    // Get the date 30 days ago
+    let pastDate = new Date();
+    pastDate.setDate(today.getDate() - 30);
+    let pastDateFormatted = formatDate(pastDate);
+
+    const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
+    var request = [
+                            {
+                                "name": "report[type]",
+                                "value": "user_clock"
+                            },
+                            {
+                                "name": "report[columns][]",
+                                "value": "product_items.sku"
+                            },
+                            {
+                                "name": "report[columns][]",
+                                "value": "products.sid"
+                            },
+                            {
+                                "name": "report[columns][]",
+                                "value": "products.name"
+                            },
+                            {
+                                "name": "report[columns][]",
+                                "value": "products.brand_id"
+                            },
+                            {
+                                "name": "report[columns][]",
+                                "value": "products.category_id"
+                            },
+                            {
+                                "name": "report[columns][]",
+                                "value": "product_items.condition_id"
+                            },
+                            {
+                                "name": "report[columns][]",
+                                "value": "product_items.in_stock"
+                            },
+                            {
+                                "name": "report[columns][]",
+                                "value": "product_items.location"
+                            },
+                            {
+                                "name": "report[columns][]",
+                                "value": "product_items.price"
+                            },
+                            {
+                                "name": "report[columns][]",
+                                "value": "product_items.created_at"
+                            },
+                            {
+                                "name": "report[filters][0][column]",
+                                "value": "product_items.status"
+                            },
+                            {
+                                "name": "report[filters][0][opr]",
+                                "value": "{0} = '{1}'"
+                            },
+                            {
+                                "name": "report[filters][0][value][]",
+                                "value": "1"
+                            },
+                            {
+                                "name": "report[filters][1][column]",
+                                "value": "product_items.condition_id"
+                            },
+                            {
+                                "name": "report[filters][1][opr]",
+                                "value": "{0} IN {1}"
+                            },
+                            {
+                                "name": "report[filters][1][value]",
+                                "value": "6"
+                            },
+                            {
+                                "name": "report[filters][1][value]",
+                                "value": "8"
+                            },
+                            {
+                                "name": "report[filters][1][value]",
+                                "value": "18"
+                            },
+                            {
+                                "name": "report[filters][2][column]",
+                                "value": "item_images.url"
+                            },
+                            {
+                                "name": "report[filters][2][opr]",
+                                "value": "({0} IS NULL OR {0} = '')"
+                            },
+                            {
+                                "name": "report[filters][2][value]",
+                                "value": ""
+                            },
+                            {
+                                "name": "report[filters][3][column]",
+                                "value": "product_items.created_at"
+                            },
+                            {
+                                "name": "report[filters][3][opr]",
+                                "value": "between"
+                            },
+                            {
+                                "name": "report[filters][3][value]",
+                                "value": `${pastDateFormatted} - ${todayFormatted}`
+                            },
+                            {
+                                "name": "csrf_recom",
+                                "value": csrfToken
+                            }
+                        ];
+    getReport(request);
+}
+
 
 function getReport(request) {
     $.ajax({
