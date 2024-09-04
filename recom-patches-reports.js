@@ -589,116 +589,114 @@ function report_pictureMissingSpecial_submit() {
 
     const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
     var request = [
-                            {
-                                "name": "report[type]",
-                                "value": "item_images"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "product_items.sku"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "products.sid"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "products.name"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "products.brand_id"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "products.category_id"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "product_items.condition_id"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "product_items.in_stock"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "product_items.location"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "product_items.price"
-                            },
-                            {
-                                "name": "report[columns][]",
-                                "value": "product_items.created_at"
-                            },
-                            {
-                                "name": "report[filters][0][column]",
-                                "value": "product_items.status"
-                            },
-                            {
-                                "name": "report[filters][0][opr]",
-                                "value": "{0} = '{1}'"
-                            },
-                            {
-                                "name": "report[filters][0][value][]",
-                                "value": "1"
-                            },
-                            {
-                                "name": "report[filters][1][column]",
-                                "value": "product_items.condition_id"
-                            },
-                            {
-                                "name": "report[filters][1][opr]",
-                                "value": "{0} IN {1}"
-                            },
-                            {
-                                "name": "report[filters][1][value]",
-                                "value": "6"
-                            },
-                            {
-                                "name": "report[filters][1][value]",
-                                "value": "8"
-                            },
-                            {
-                                "name": "report[filters][1][value]",
-                                "value": "18"
-                            },
-                            {
-                                "name": "report[filters][2][column]",
-                                "value": "item_images.url"
-                            },
-                            {
-                                "name": "report[filters][2][opr]",
-                                "value": "({0} IS NULL OR {0} = '')"
-                            },
-                            {
-                                "name": "report[filters][2][value]",
-                                "value": ""
-                            },
-                            {
-                                "name": "report[filters][3][column]",
-                                "value": "product_items.created_at"
-                            },
-                            {
-                                "name": "report[filters][3][opr]",
-                                "value": "between"
-                            },
-                            {
-                                "name": "report[filters][3][value]",
-                                "value": `${pastDateFormatted} - ${todayFormatted}`
-                            },
-                            {
-                                "name": "csrf_recom",
-                                "value": csrfToken
-                            }
-                        ];
+    {
+        "name": "report[type]",
+        "value": "item_images"
+    },
+    {
+        "name": "report[columns][]",
+        "value": "product_items.sku"
+    },
+    {
+        "name": "report[columns][]",
+        "value": "products.sid"
+    },
+    {
+        "name": "report[columns][]",
+        "value": "products.name"
+    },
+    {
+        "name": "report[columns][]",
+        "value": "products.brand_id"
+    },
+    {
+        "name": "report[columns][]",
+        "value": "products.category_id"
+    },
+    {
+        "name": "report[columns][]",
+        "value": "product_items.condition_id"
+    },
+    {
+        "name": "report[columns][]",
+        "value": "product_items.in_stock"
+    },
+    {
+        "name": "report[columns][]",
+        "value": "product_items.price"
+    },
+    {
+        "name": "report[columns][]",
+        "value": "product_items.created_at"
+    },
+    {
+        "name": "report[filters][0][column]",
+        "value": "product_items.status"
+    },
+    {
+        "name": "report[filters][0][opr]",
+        "value": "{0} = '{1}'"
+    },
+    {
+        "name": "report[filters][0][value][]",
+        "value": "1"
+    },
+    {
+        "name": "report[filters][1][column]",
+        "value": "product_items.condition_id"
+    },
+    {
+        "name": "report[filters][1][opr]",
+        "value": "{0} IN {1}"
+    },
+    {
+        "name": "report[filters][1][value]",
+        "value": "6"
+    },
+    {
+        "name": "report[filters][1][value]",
+        "value": "8"
+    },
+    {
+        "name": "report[filters][1][value]",
+        "value": "18"
+    },
+    {
+        "name": "report[filters][2][column]",
+        "value": "item_images.url"
+    },
+    {
+        "name": "report[filters][2][opr]",
+        "value": "({0} IS NULL OR {0} = '')"
+    },
+    {
+        "name": "report[filters][2][value]",
+        "value": ""
+    },
+    {
+        "name": "report[filters][3][column]",
+        "value": "product_items.created_at"
+    },
+    {
+        "name": "report[filters][3][opr]",
+        "value": "between"
+    },
+    {
+        "name": "report[filters][3][value]",
+        "value": `${pastDateFormatted} - ${todayFormatted}`
+    },
+    {
+        "name": "csrf_recom",
+        "value": csrfToken
+    }
+];
+
     getReport(request);
 }
 
 
 function getReport(request) {
+    console.log(request);
     $.ajax({
         type: "POST",
         dataType: "json",
