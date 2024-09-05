@@ -56,7 +56,7 @@ if (gtin_input) {
         var valueLength = gtin_input.value.length;
         console.log(valueLength);
         
-        if (valueLength > 12 && isValidBarcode(curGTIN)) {
+        if (valueLength > 12 || !isValidBarcode(curGTIN)) {
             gtin_input.style.outline = "2px solid var(--bs-danger)";
             gtin_input.style.backgroundColor = "color-mix(in srgb, var(--bs-danger) 15%, rgb(255,255,255,0))";
             addInvalidFeedback();
