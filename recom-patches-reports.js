@@ -14,6 +14,8 @@ container_right.style.height = "100%";
 
 const right = document.querySelector('.d-flex.flex-column.flex-row-fluid.gap-7.gap-lg-10');
 
+var reportResults = null;
+
 function initTable() {
     const card = document.createElement('div');
     card.classList = "card";
@@ -41,10 +43,9 @@ function initTable() {
                         const contentLength = response.headers.get('content-length');
 
                         if (contentLength && contentLength > 1048576) {
-                            content.innerHTML = '';
-                            content.appendChild('Very Large Report, Download to View.');
+                            content.innerHTML = parseFetchResults();
                             card.style.display = "flex";
-                            throw new Error('CSV file is too large to process.');
+                            // throw new Error('CSV file is too large to process.');
                         }
                 
                         return response.text();
@@ -129,6 +130,33 @@ function parseCSVToTable(csvData) {
     });
 
     return table;
+}
+
+function parseFetchResults() {
+    const data = reportResults;
+    if (!data || data.length === 0 || data === null) {
+        return '<p>No data in report</p>';
+    }
+
+    let table = '<table border="1"><thead><tr>';
+    const keys = Object.keys(data[0]);
+
+    keys.forEach(key => {
+        table += `<th>${key}</th>`;
+    });
+    table += '</tr></thead><tbody>';
+
+    data.forEach(item => {
+        table += '<tr>';
+        keys.forEach(key => {
+            table += `<td>${item[key]}</td>`;
+        });
+        table += '</tr>';
+    });
+
+    table += '</tbody></table>';
+    return table;
+
 }
 
 function initPreset() {
@@ -572,7 +600,7 @@ function report_productHighQty() {
 }
 
 function getReport(request) {
-    console.log(request);
+    console.debug(request);
     $.ajax({
         type: "POST",
         dataType: "json",
@@ -580,6 +608,10 @@ function getReport(request) {
         data: request,
     }).done(function(data) {
         console.debug(data);
+
+        if (data.results) {
+            reportResults = data.results;
+        }
         
         if (data.results.filename) {
             $("#report_download")
