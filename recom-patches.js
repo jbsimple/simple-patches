@@ -1,4 +1,4 @@
-const version = '09-19-2024__1';
+const version = '09-19-2024__2';
 
 const nav_sidebar = document.getElementById('kt_app_sidebar_navs_wrappers');
 if (nav_sidebar) {
@@ -19,10 +19,13 @@ if (nav_sidebar) {
     separator.setAttribute('class', 'app-sidebar-separator separator');
     version_container.appendChild(separator);
     
-    const loaded_message = document.createElement('span');
+    const loaded_message = document.createElement('a');
+    loaded_message.href = "https://simple-patches.vercel.app/";
     loaded_message.setAttribute('style', 'text-align: center;');
     loaded_message.textContent = 'Patches Loaded: ' + version;
     loaded_message.classList = 'patches-loaded';
+    loaded_message.setAttribute('target', '_blank');
+    loaded_message.setAttribute('rel', 'noreferrer');
     version_container.appendChild(loaded_message);
 
     nav_sidebar.appendChild(version_container);

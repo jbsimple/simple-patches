@@ -23,9 +23,12 @@ Enhancements:
 - On New Inventory Page; Disabled entry of new inventory sent to listing with a GTIN longer than 12 characters.
 - On New Inventory Page; Automatic response for invalid GTIN in input box.
 - On reports page, after submitting to generate a new report, the report displays under the original card.
+  - If the file is larger than 1MB, the printing is disabled to save performance.
 - On reports page, added a card to generate a preset report.
   - Added Listing department productivity reporting preset.
   - Added Marketing department productivity reporting preset.
+  - Missing Picture report for Defective, Incomplete and Imaging Issues (Created last 30 days).
+  - Product Items list of products over QTY 50 with ASIN column.
 - On Calendar; CSS fix to add a background color to the list of day's events.
 - On all pages; CSS fix to correct spacing issues in header.
 - On all pages; CSS fix to get rid of light mode logo.
