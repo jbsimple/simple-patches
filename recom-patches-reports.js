@@ -37,7 +37,18 @@ function initTable() {
             if (mutation.type === 'attributes' && mutation.attributeName === 'href') {
     
                 fetch(downloadReport.href)
-                    .then(response => response.text())
+                    .then(response => {
+                        const contentLength = response.headers.get('content-length');
+
+                        if (contentLength && contentLength > 1048576) {
+                            content.innerHTML = '';
+                            content.appendChild('Very Large Report, Download to View.');
+                            card.style.display = "flex";
+                            throw new Error('CSV file is too large to process.');
+                        }
+                
+                        return response.text();
+                    })
                     .then(data => {
                         const table = parseCSVToTable(data);
                         content.innerHTML = '';
