@@ -14,8 +14,6 @@ container_right.style.height = "100%";
 
 const right = document.querySelector('.d-flex.flex-column.flex-row-fluid.gap-7.gap-lg-10');
 
-var reportResults = null;
-
 function initTable() {
     const card = document.createElement('div');
     card.classList = "card";
@@ -44,11 +42,10 @@ function initTable() {
                             const contentLength = blob.size;
 
                             if (contentLength > 1048576) { 
-                                console.debug('CSV is large, using alt method');
-                                content.innerHTML = parseFetchResults();
+                                content.innerHTML = '<h4>Size of the report too large to render. Download to view.</h4>';
                                 card.style.display = "flex";
                                 // throw new Error('CSV file is too large to process.');
-                                return Promise.reject('CSV is too large to process, using alt method.');
+                                return Promise.reject('CSV is too large to process.');
                             }
                     
                             return blob;
@@ -633,10 +630,6 @@ function getReport(request) {
         }
         
         goToLastStep();
-
-        if (data.results) {
-            reportResults = data.results;
-        }
             
     }).fail(function(jqXHR, textStatus, errorThrown) {
         console.error("Request failed: " + textStatus + ", " + errorThrown);
