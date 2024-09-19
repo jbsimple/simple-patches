@@ -58,6 +58,7 @@ function initTable() {
                         const table = parseCSVToTable(data);
                         content.innerHTML = '';
                         content.appendChild(table);
+                        content.removeAttribute('style');
                         card.setAttribute('style', 'display: flex;');
                     })
                     .catch(error => console.error('Error loading the CSV:', error));
