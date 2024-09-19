@@ -48,7 +48,7 @@ function initTable() {
                                 content.innerHTML = parseFetchResults();
                                 card.style.display = "flex";
                                 // throw new Error('CSV file is too large to process.');
-                                return Promise.reject('File is too large to process');
+                                return Promise.reject('CSV is too large to process, using alt method.');
                             }
                     
                             return blob;
@@ -615,10 +615,6 @@ function getReport(request) {
         data: request,
     }).done(function(data) {
         console.debug(data);
-
-        if (data.results) {
-            reportResults = data.results;
-        }
         
         if (data.results.filename) {
             $("#report_download")
@@ -637,6 +633,10 @@ function getReport(request) {
         }
         
         goToLastStep();
+
+        if (data.results) {
+            reportResults = data.results;
+        }
             
     }).fail(function(jqXHR, textStatus, errorThrown) {
         console.error("Request failed: " + textStatus + ", " + errorThrown);
