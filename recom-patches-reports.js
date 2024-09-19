@@ -39,18 +39,20 @@ function initTable() {
             if (mutation.type === 'attributes' && mutation.attributeName === 'href') {
     
                 fetch(downloadReport.href)
-                    .then(response => {
-                        const contentLength = response.headers.get('content-length');
-
-                        if (contentLength && contentLength > 1048576) {
-                            console.debug('CSV is large, using alt method');
-                            content.innerHTML = parseFetchResults();
-                            card.style.display = "flex";
-                            // throw new Error('CSV file is too large to process.');
-                        }
-                
-                        return response.text();
-                    })
+                .then(response => {
+                    const contentLengthHeader = response.headers.get('content-length');
+                    const contentLength = contentLengthHeader ? parseInt(contentLengthHeader, 10) : 0;
+            
+                    if (contentLength > 1048576) {
+                        console.debug('CSV is large, using alt method');
+                        content.innerHTML = parseFetchResults();
+                        card.style.display = "flex";
+                        // throw new Error('CSV file is too large to process.');
+                        return Promise.reject('File is too large to process');
+                    }
+            
+                    return response.text();
+                })
                     .then(data => {
                         const table = parseCSVToTable(data);
                         content.innerHTML = '';
