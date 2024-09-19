@@ -43,7 +43,8 @@ function initTable() {
 
                             if (contentLength > 1048576) { 
                                 content.innerHTML = '<h4>Size of the report too large to render. Download to view.</h4>';
-                                card.setAttribute('style', 'display: flex; justify-content: center; align-items: center; flex-direction: column;');
+                                content.setAttribute('style', 'display: flex; justify-content: center; align-items: center; flex-direction: column;');
+                                card.setAttribute('style', 'display: flex;');
                                 return Promise.reject('CSV is too large to process.');
                             }
                     
