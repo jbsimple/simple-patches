@@ -43,8 +43,7 @@ function initTable() {
 
                             if (contentLength > 1048576) { 
                                 content.innerHTML = '<h4>Size of the report too large to render. Download to view.</h4>';
-                                card.style.display = "flex";
-                                // throw new Error('CSV file is too large to process.');
+                                card.setAttribute('style', 'display: flex; justify-content: center; align-items: center; flex-direction: column;');
                                 return Promise.reject('CSV is too large to process.');
                             }
                     
@@ -58,7 +57,7 @@ function initTable() {
                         const table = parseCSVToTable(data);
                         content.innerHTML = '';
                         content.appendChild(table);
-                        card.style.display = "flex";
+                        card.setAttribute('style', 'display: flex;');
                     })
                     .catch(error => console.error('Error loading the CSV:', error));
             }
