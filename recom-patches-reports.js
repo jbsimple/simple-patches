@@ -154,7 +154,13 @@ function parseFetchResults() {
     data.forEach(item => {
         table += '<tr>';
         keys.forEach(key => {
-            table += `<td>${item[key]}</td>`;
+            if (key === 'SKU') {
+                table += `<td><a href="https://simplecell.recomapp.com/product/items/${item[key]}" target="_blank" rel="noreferrer">${item[key]}</a></td>`;
+            } else if (key === 'SID') {
+                table += `<td><a href="https://simplecell.recomapp.com/products/${item[key]}" target="_blank" rel="noreferrer">${item[key]}</a></td>`;
+            } else {
+                table += `<td><span>${item[key]}</span></td>`;
+            }
         });
         table += '</tr>';
     });
