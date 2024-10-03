@@ -24,6 +24,7 @@ Enhancements:
 - On New Inventory Page; Automatic response for invalid GTIN in input box.
 - On reports page, after submitting to generate a new report, the report displays under the original card.
   - If the file is larger than 1MB, the printing is disabled to save performance.
+  - Links for products and items are automatically added into the report preview for convenience.
 - On reports page, added a card to generate a preset report.
   - Added Listing department productivity reporting preset.
   - Added Marketing department productivity reporting preset.
