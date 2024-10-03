@@ -114,23 +114,34 @@ function parseCSVToTable(csvData) {
 
     const thead = table.createTHead();
     const headerRow = thead.insertRow();
+    var keys = [];
     rows[0].forEach(headerText => {
         const headerCell = document.createElement('th');
-        headerCell.textContent = headerCell.textContent = headerText.replace(/[\x00-\x1F\x7F-\x9F"']/g, '').trim();
+        headerCell.textContent = headerText.replace(/[\x00-\x1F\x7F-\x9F"']/g, '').trim();
         headerCell.style.minWidth = '200px';
         headerCell.style.padding = '2rem';
         headerCell.style.fontWeight = '700';
         headerRow.appendChild(headerCell);
+        keys.push(headerText.replace(/[\x00-\x1F\x7F-\x9F"']/g, '').trim());
     });
 
     const tbody = table.createTBody();
     rows.slice(1).forEach(rowData => {
         const row = tbody.insertRow();
+        var i = 0;
         rowData.forEach(cellData => {
             const cell = row.insertCell();
-            cell.textContent = cellData.replace(/[\x00-\x1F\x7F-\x9F"']/g, '').trim();
+            const textContent = cellData.replace(/[\x00-\x1F\x7F-\x9F"']/g, '').trim();
+            if (keys[i] && keys[i] === 'SKU') {
+                cell.innerHTML = `<a href="https://simplecell.recomapp.com/product/items/${textContent}" target="_blank" rel="noreferrer">${textContent}</a>`
+            } else if (keys[i] && keys[i] === 'SKU') {
+                cell.innerHTML = `<a href="https://simplecell.recomapp.com/products/${textContent}" target="_blank" rel="noreferrer">${textContent}</a>`;
+            } else {
+                cell.textContent = textContent;
+            }
             cell.style.minWidth = '200px';
             cell.style.padding = '0.75rem 2rem'; // top-bottom then left-right to make it look better
+            i++;
         });
     });
 
