@@ -134,7 +134,7 @@ function parseCSVToTable(csvData) {
             const textContent = cellData.replace(/[\x00-\x1F\x7F-\x9F"']/g, '').trim();
             if (keys[i] && keys[i] === 'SKU') {
                 cell.innerHTML = `<a href="https://simplecell.recomapp.com/product/items/${textContent}" target="_blank" rel="noreferrer">${textContent}</a>`
-            } else if (keys[i] && keys[i] === 'SKU') {
+            } else if (keys[i] && keys[i] === 'SID') {
                 cell.innerHTML = `<a href="https://simplecell.recomapp.com/products/${textContent}" target="_blank" rel="noreferrer">${textContent}</a>`;
             } else {
                 cell.textContent = textContent;
