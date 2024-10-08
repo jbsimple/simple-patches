@@ -69,13 +69,6 @@ div.dataTables_wrapper div.dataTables_processing {
 }
 
 /* rainbow css from https://stackoverflow.com/questions/54702124/rainbow-text-animation-using-only-css */
-.rainbow {
-  text-align: center;
-  text-decoration: underline;
-  font-size: 32px;
-  font-family: monospace;
-  letter-spacing: 5px;
-}
 .rainbow_text_animated {
   background: linear-gradient(to right, #6666ff, #0099ff , #00ff00, #ff3399, #6666ff);
   -webkit-background-clip: text;
