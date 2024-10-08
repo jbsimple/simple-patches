@@ -43,7 +43,7 @@ function getTheme() {
     return theme;
 }
 
-function raninbowMessage(message) {
+function rainbowMessage(message) {
     const mainelem = document.getElementById('rc_header_search').parentElement;
     if (mainelem) {
         const newMessage = document.createElement('div');
@@ -130,11 +130,11 @@ document.body.appendChild(script_patch);
 
 const today = new Date();
 if (today.getDate === 30 && today.getMonth === 10) {
-    raninbowMessage('Happy Birthday Luke!');
+    rainbowMessage('Happy Birthday Luke!');
 }
 
 if (today.getDate === 28 && today.getMonth === 12) {
-    raninbowMessage('Happy Birthday Nate!');
+    rainbowMessage('Happy Birthday Nate!');
 }
 
 console.log('Patch Loading Complete');
