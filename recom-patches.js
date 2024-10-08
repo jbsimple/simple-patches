@@ -43,6 +43,16 @@ function getTheme() {
     return theme;
 }
 
+function raninbowMessage(message) {
+    const mainelem = document.getElementById('rc_header_search').parentElement;
+    if (mainelem) {
+        const newMessage = document.createElement('div');
+        newMessage.innerHTML = `<strong style="font-size: 1.25rem;" class="rainbow_text_animated">${message}</strong>`;
+        newMessage.setAttribute('style', 'height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; margin-left: 1rem; margin-right: 1rem;');
+        mainelem.appendChild(newMessage);
+    }
+}
+
 /* nah
 if ((typeof toggle_darkreader === 'undefined' || toggle_darkreader === true) && getTheme() === 'dark') {
     const darkreader = document.createElement('script');
@@ -117,4 +127,14 @@ if (window.location.href.includes('/reports')) {
 }
 
 document.body.appendChild(script_patch);
+
+const today = new Date();
+if (today.getDate === 30 && today.getMonth === 10) {
+    raninbowMessage('Happy Birthday Luke!');
+}
+
+if (today.getDate === 28 && today.getMonth === 12) {
+    raninbowMessage('Happy Birthday Nate!');
+}
+
 console.log('Patch Loading Complete');
