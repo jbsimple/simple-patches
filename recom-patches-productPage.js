@@ -25,13 +25,12 @@ function getMetaName(meta_id) {
 
 document.querySelectorAll('.json__key').forEach(function(keyDiv) {
     if (keyDiv.textContent.trim() === 'meta_id') {
+        console.error(keyDiv.textContent.trim());  
         let nextDiv = keyDiv.nextElementSibling;
         if (nextDiv) {
             const meta_id = parseInt(nextDiv.textContent, 10);
             const meta_name = getMetaName(meta_id);
             nextDiv.textContent = `(${meta_id}) ${meta_name}`;
         }
-    } else {
-        console.error(keyDiv.textContent.trim());  
     }
 });
