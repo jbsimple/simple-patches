@@ -21,17 +21,15 @@ function getMetaName(meta_id) {
     ];
     const metaItem = meta.find(item => item.meta_id === meta_id);
     return metaItem ? metaItem.meta_name : null;
-  }
+}
 
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.json__key').forEach(function(keyDiv) {
-        if (keyDiv.textContent.trim() === 'meta_id') {
-            let nextDiv = keyDiv.nextElementSibling;
-            if (nextDiv) {
-                const meta_id = parseInt(nextDiv.textContent, 10);
-                const meta_name = getMetaName(meta_id);
-                nextDiv.textContent = `(${meta_id}) ${meta_name}`;
-            }
+document.querySelectorAll('.json__key').forEach(function(keyDiv) {
+    if (keyDiv.textContent.trim() === 'meta_id') {
+        let nextDiv = keyDiv.nextElementSibling;
+        if (nextDiv) {
+            const meta_id = parseInt(nextDiv.textContent, 10);
+            const meta_name = getMetaName(meta_id);
+            nextDiv.textContent = `(${meta_id}) ${meta_name}`;
         }
-    });
+    }
 });
