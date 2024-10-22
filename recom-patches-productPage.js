@@ -23,13 +23,15 @@ function getMetaName(meta_id) {
     return metaItem ? metaItem.meta_name : null;
   }
 
-document.querySelectorAll('.json__key').forEach(function(keyDiv) {
-    if (keyDiv.textContent.trim() === 'meta_id') {
-        let nextDiv = keyDiv.nextElementSibling;
-        if (nextDiv && nextDiv.classList.contains('json__value') && nextDiv.classList.contains('json__value--update')) {
-            const meta_id = parseInt(nextDiv.textContent, 10);
-            const meta_name = getMetaName(meta_id);
-            nextDiv.textContent = `(${meta_id}) ${meta_name}`;
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.json__key').forEach(function(keyDiv) {
+        if (keyDiv.textContent.trim() === 'meta_id') {
+            let nextDiv = keyDiv.nextElementSibling;
+            if (nextDiv && nextDiv.classList.contains('json__value') && nextDiv.classList.contains('json__value--update')) {
+                const meta_id = parseInt(nextDiv.textContent, 10);
+                const meta_name = getMetaName(meta_id);
+                nextDiv.textContent = `(${meta_id}) ${meta_name}`;
+            }
         }
-    }
+    });
 });
