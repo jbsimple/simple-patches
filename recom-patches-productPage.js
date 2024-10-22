@@ -30,8 +30,8 @@ document.querySelectorAll('.json__key').forEach(function(keyDiv) {
             const meta_id = parseInt(nextDiv.textContent, 10);
             const meta_name = getMetaName(meta_id);
             nextDiv.textContent = `(${meta_id}) ${meta_name}`;
-        } else {
-            console.error('Invalid NextDiv for Meta Fix');
         }
+    } else {
+        console.error(keyDiv.textContent.trim());  
     }
 });
