@@ -53,26 +53,6 @@ function rainbowMessage(message) {
     }
 }
 
-/* nah
-if ((typeof toggle_darkreader === 'undefined' || toggle_darkreader === true) && getTheme() === 'dark') {
-    const darkreader = document.createElement('script');
-    darkreader.src = 'https://cdn.jsdelivr.net/npm/darkreader@latest/darkreader.min.js';
-    darkreader.onload = function() {
-        DarkReader.enable({
-            brightness: 100,
-            contrast: 100,
-            sepia: 0
-        });
-        console.log('Patch Loaded: Darkreader');
-    };
-    document.body.appendChild(darkreader);
-} else if (toggle_darkreader === false) {
-    console.log('Patch Skipped: Darkreader');
-} else {
-    console.log('Patch Error: Darkreader');
-}
-*/
-
 const statcardfix = document.querySelectorAll('.card.card-xl-stretch.mb-xl-8');
 if (statcardfix && statcardfix.length === 3 && getTheme() === 'dark') {
     statcardfix[0].setAttribute('style', `background-color: rgb(65,40,50) !important; color: white !important;`);
@@ -139,8 +119,16 @@ if (today.getDate === 30 && today.getMonth === 10) {
     rainbowMessage('Happy Birthday Luke!');
 }
 
+if (today.getDate === 29 && today.getMonth === 10) {
+    rainbowMessage('Happy Early Birthday Luke!');
+}
+
 if (today.getDate === 28 && today.getMonth === 12) {
     rainbowMessage('Happy Birthday Nate!');
+}
+
+if (today.getDate === 27 && today.getMonth === 12) {
+    rainbowMessage('Happy Early Birthday Nate!');
 }
 
 console.log('Patch Loading Complete');
