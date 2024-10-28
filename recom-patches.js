@@ -128,7 +128,7 @@ if (window.location.href.includes('/reports')) {
 
 if (window.location.href.includes('/users/show')) {
 
-    document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches-usersShow.css?v=' + Date.now() + '" type="text/css"/>';
+    document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches-userShow.css?v=' + Date.now() + '" type="text/css"/>';
 
 }
 
