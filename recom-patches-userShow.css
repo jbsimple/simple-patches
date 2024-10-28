@@ -1,0 +1,6 @@
+.card-body .d-flex.flex-center.flex-column.py-5 .mb-9 {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
