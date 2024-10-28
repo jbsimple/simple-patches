@@ -16,6 +16,7 @@ Enhancements:
 - On product and item pages; CSS fix for image box being too small.
 - On product and item pages; CSS fix for images inside upload box not wrapping properly.
 - On product and item pages; CSS fix for activity log where the color of the name is dark even when the page is in dark mode.
+- On product and item pages; Fix to show metadata update name in activity log.
 - On item pages; CSS fix to have the inventory tab larger so you can see more.
 - On listing page; A warning for when the GTIN is invalid and needs to be regenerated before going to the last step.
 - On listing page; A warning for when the GTIN is changed to remind the user to replace the old label with a new one.
@@ -31,6 +32,7 @@ Enhancements:
   - Missing Picture report for Defective, Incomplete and Imaging Issues (Created last 30 days).
   - Product Items list of products over QTY 50 with ASIN column.
 - On Calendar; CSS fix to add a background color to the list of day's events.
+- On User's page, CSS fix to not have the roles list go beyond the card.
 - On all pages; CSS fix to correct spacing issues in header.
 - On all pages; CSS fix to get rid of light mode logo.
 - On all pages; CSS fix (that I shouldn't have to do) to fix page height issues not filling the full background.
