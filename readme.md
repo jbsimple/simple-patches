@@ -2,12 +2,16 @@ Hello,
 
 This is code I wrote to add features and fix issues with the work system.
 
-How to use:
+How to use (Chromium):
 - Get [User JavaScript and CSS extension.](https://chromewebstore.google.com/detail/user-javascript-and-css/nbhcbdghjpllgmfilhnhkllmkecfmpld?hl=en)
 - Go to system homepage (dashboard).
 - Click on the extention and add a new rule.
 - Add a '/*' to the end of the url to ensure it works on all pages.
-- Paste code from inject.js into js side.
+- Paste code from [inject.js](https://simple-patches.vercel.app/inject.js) into js side.
+
+How to use (Firefox):
+- I don't have a good recommendation for an extension, just find something that allows JS injects.
+- Paste the code from [inject.js](https://simple-patches.vercel.app/inject.js) into the code editor.
 
 Enhancements:
 - In conditions Queues; Export Table button to save each visible line item into a csv.
@@ -37,7 +41,3 @@ Enhancements:
 - On all pages; CSS fix to get rid of light mode logo.
 - On all pages; CSS fix (that I shouldn't have to do) to fix page height issues not filling the full background.
 - On all pages; CSS fixes to alter some colors for better dark mode enhancement.
-
-Future Requests or Patches:
-- A button on images tab to remove all existing images.
-- A button on images tab to download all existing images into a zip.
