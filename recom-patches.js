@@ -115,19 +115,19 @@ if (window.location.href.includes('/users/show')) {
 document.body.appendChild(script_patch);
 
 const today = new Date();
-if (today.getDate() === 30 && today.getMonth() === 10) {
+if (today.getDate() === 30 && today.getMonth() === 9) {
     rainbowMessage('Happy Birthday Luke!');
 }
 
-if (today.getDate() === 29 && today.getMonth() === 10) {
+if (today.getDate() === 29 && today.getMonth() === 9) {
     rainbowMessage('Happy Early Birthday Luke!');
 }
 
-if (today.getDate() === 28 && today.getMonth() === 12) {
+if (today.getDate() === 28 && today.getMonth() === 11) {
     rainbowMessage('Happy Birthday Nate!');
 }
 
-if (today.getDate() === 27 && today.getMonth() === 12) {
+if (today.getDate() === 27 && today.getMonth() === 11) {
     rainbowMessage('Happy Early Birthday Nate!');
 }
 
