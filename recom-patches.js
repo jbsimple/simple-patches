@@ -46,13 +46,9 @@ function getTheme() {
 function rainbowMessage(message) {
     const mainelem = document.getElementById('rc_header_search').parentElement;
     if (mainelem) {
-        const flexdiv = document.createElement('div');
-        flexdiv.setAttribute('style', 'flex: 1 !important;');
-        mainelem.appendChild(flexdiv);
-
         const newMessage = document.createElement('div');
         newMessage.innerHTML = `<strong style="font-size: 1.25rem;" class="rainbow_text_animated">${message}</strong>`;
-        newMessage.setAttribute('style', 'flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; margin-left: 1rem; margin-right: 1rem;');
+        newMessage.setAttribute('style', 'flex: 1; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; margin-left: 1rem; margin-right: 1rem;');
         mainelem.appendChild(newMessage);
     }
 }
