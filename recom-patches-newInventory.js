@@ -51,8 +51,3 @@ function verifyGTIN() {
         return true;
     }
 }
-
-const badgeSpan = document.querySelector('.badge.badge-lg.badge-light-danger.d-inline.me-1');
-if (badgeSpan && badgeSpan.textContent.trim() === "") {
-    badgeSpan.style.display = 'none';
-}
