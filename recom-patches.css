@@ -87,3 +87,7 @@ div.dataTables_wrapper div.dataTables_processing {
       background-position: 100% 0;
   }
 }
+
+.d-flex.align-items-center.ms-3.ms-lg-4.d-sm-block.d-none {
+  flex-shrink: 0;
+}
