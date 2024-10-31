@@ -627,16 +627,14 @@ async function report_getSpecial(request) {
 async function report_pictureMissingFull_init() {
     const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
 
-    let items_images_report = null;
-    var items_images = {
+    let items_images_qunique_report = null;
+    var items_images_unique = {
         report: {
             type: "item_images",
             columns: [
                 "product_items.sku",
                 "products.sid",
                 "item_images.url",
-                "products.brand_id",
-                "products.category_id",
                 "product_items.condition_id",
                 "product_items.in_stock",
                 "product_items.location",
@@ -658,6 +656,57 @@ async function report_pictureMissingFull_init() {
                     column: "product_items.status",
                     opr: "{0} = '{1}'",
                     value: "1"
+                },
+                {
+                    column: "product_items.condition_id",
+                    opr: "{0} IN {1}",
+                    value: ["6", "8", "18"]
+                }
+            ]
+        },
+        csrf_recom: csrfToken
+    };
+
+    try {
+        items_images_qunique_report = await report_getSpecial(items_images_unique);
+    } catch (error) {
+        console.error("Error fetching report:", error);
+    }
+
+    let items_images_report = null;
+    var items_images = {
+        report: {
+            type: "item_images",
+            columns: [
+                "product_items.sku",
+                "products.sid",
+                "item_images.url",
+                "product_items.condition_id",
+                "product_items.in_stock",
+                "product_items.location",
+                "product_items.price",
+                "product_items.created_at"
+            ],
+            filters: [
+                {
+                    column: "item_images.url",
+                    opr: "({0} IS NULL OR {0} = '')",
+                    value: ""
+                },
+                {
+                    column: "product_items.in_stock",
+                    opr: "{0} > {1}",
+                    value: 0
+                },
+                {
+                    column: "product_items.status",
+                    opr: "{0} = '{1}'",
+                    value: "1"
+                },
+                {
+                    column: "product_items.condition_id",
+                    opr: "{0} IN {1}",
+                    value: ["1", "2", "4", "5", "9", "31", "32", "34", "35", "39", "42", "44", "45", "49", "71", "92", "94", "95", "99"]
                 }
             ]
         },
@@ -704,9 +753,25 @@ async function report_pictureMissingFull_init() {
         console.error("Error fetching report:", error);
     }
 
-    if (items_images_report && product_images_report) {
+    if (items_images_report && Array.isArray(items_images_report) 
+            && product_images_report && Array.isArray(product_images_report) 
+            && items_images_qunique_report && Array.isArray(items_images_qunique_report)) {
+          
+        console.log("uniques:", items_images_qunique_report);
         console.log("items:", items_images_report);
         console.log("products:", product_images_report);
+
+        var specialCondition = ['6-Defective', '8-Incomplete', '18-Used Phones - Imaging'];
+        const defSku = items_images_report.filter(item => specialCondition.includes(item.Condition));
+
+        for (let i = 0; i < defSku.length; i++) {
+            var Value = parseInt(defSku[i].In_Stock) * parseFloat(defSku[i].Price);
+            defSku[i].Value = Value.toFixed(2);
+            defSku[i].pick = [];
+            list.push(defSku[i]);
+        }
+
+        console.log("final list:", list);
     }
 }
 
