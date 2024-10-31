@@ -796,6 +796,10 @@ async function report_pictureMissingFull_init() {
         }
 
         console.log('final list:', list);
+
+        goToLastStep();
+        const button = wizard.querySelector('a[href="reports"]');
+        button.setAttribute('onclick', 'event.preventDefault(); parseTableToCSV();');
     }
 }
 
