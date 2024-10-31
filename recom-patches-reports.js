@@ -356,7 +356,7 @@ function report_preset(name) {
         details.id = `patches-reports-picturesMissing1`;
         details.name = `patches-reports-picturesMissing1Name`;
         details.func = `report_pictureMissingSpecial_submit();`;
-        details.desc = "Generates a list of all defective, incomplete and imaging issue items<br>created in the last 30 days with no pictures.";
+        details.desc = "Generates a list of all conditions that need specific pictures created in the last 30 days with no pictures.<br>In and out of stock included.";
         details.title = "Recent Picture Check";
         return report_initHTML(details);
     } else if (name === 'product_highQty') {
@@ -372,7 +372,7 @@ function report_preset(name) {
         details.id = `patches-reports-picturesMissingFull`;
         details.name = `patches-reports-picturesMissingFullName`;
         details.func = `report_pictureMissingFull_init();`;
-        details.desc = "Generate a complete missing picture items report.<br>Defective, Incomplete and Imaging first, then products.";
+        details.desc = "Generate a complete missing picture items & products report.<br>Generates three different reports to get a list of all things that needs pictures..";
         details.title = "Missing Pictures";
         return report_initHTML(details);
     } else {
