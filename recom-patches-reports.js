@@ -308,10 +308,18 @@ function report_initHTML(det) {
             userInputTitle.textContent = `${det.title}:`;
         }
 
-        if (userInputTitle) { content.appendChild(userInputTitle); }
-        if (userInput) { content.appendChild(userInput); }
-        if (userInputSubtext) { content.appendChild(userInputSubtext); }
-        if (submit_button) { content.appendChild(submit_button); }
+        if (typeof userInputTitle !== 'undefined') {
+            content.appendChild(userInputTitle);
+        }
+        if (typeof userInput !== 'undefined') {
+            content.appendChild(userInput);
+        }
+        if (typeof userInputSubtext !== 'undefined') {
+            content.appendChild(userInputSubtext);
+        }
+        if (typeof submit_button !== 'undefined') {
+            content.appendChild(submit_button);
+        }        
     }
 }
 
