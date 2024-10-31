@@ -14,15 +14,15 @@ container_right.style.height = "100%";
 
 const right = document.querySelector('.d-flex.flex-column.flex-row-fluid.gap-7.gap-lg-10');
 
+const card_body = document.createElement('div');
+card_body.setAttribute('style', 'padding: 0 !important; flex: 1; width: 100%; max-width: 100%; max-height: 60rem; overflow: scroll;');
+card_body.classList = "card-body";
+
 function initTable() {
     const card = document.createElement('div');
     card.classList = "card";
     card.style.display = "none";  // normally flex
     card.id = 'patches-table';
-    
-    const card_body = document.createElement('div');
-    card_body.setAttribute('style', 'padding: 0 !important; flex: 1; width: 100%; max-width: 100%; max-height: 60rem; overflow: scroll;');
-    card_body.classList = "card-body";
     
     const content = document.createElement('div');
     card_body.appendChild(content);
@@ -806,6 +806,76 @@ async function report_pictureMissingFull_init() {
         button.removeAttribute('href');  
         button.classList.remove('d-none');
         button.setAttribute('onclick', 'event.preventDefault(); parseTableToCSV();');
+
+        const content = document.createElement('div');
+        card_body.appendChild(content);
+
+        const table = document.createElement('table');
+        const thead = document.createElement('thead');
+        const tbody = document.createElement('tbody');
+        
+        const headers = ['ID', 'Product Name', 'Created Date', 'Value ($)'];
+        const headerRow = document.createElement('tr');
+        headers.forEach(header => {
+            const th = document.createElement('th');
+            th.textContent = header;
+            headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+        
+        data.forEach(item => {
+            const row = document.createElement('tr');
+
+            const idCell = document.createElement('td');
+            idCell.textContent = item.SKU || item.SID;
+            row.appendChild(idCell);
+
+            const nameCell = document.createElement('td');
+            nameCell.textContent = item.Product_Name;
+            row.appendChild(nameCell);
+
+            const dateCell = document.createElement('td');
+            dateCell.textContent = item.Created_Date;
+            row.appendChild(dateCell);
+
+            const valueCell = document.createElement('td');
+            valueCell.textContent = `$${parseFloat(item.Value).toFixed(2)}`;
+            row.appendChild(valueCell);
+
+            tbody.appendChild(row);
+
+            if (item.items) {
+                item.items.forEach(subItem => {
+                    const subRow = document.createElement('tr');
+                    
+                    const subIdCell = document.createElement('td');
+                    subIdCell.textContent = subItem.SKU || subItem.SID;
+                    subRow.appendChild(subIdCell);
+                    
+                    const subNameCell = document.createElement('td');
+                    subNameCell.textContent = subItem.Product_Name;
+                    subRow.appendChild(subNameCell);
+                    
+                    const subDateCell = document.createElement('td');
+                    subDateCell.textContent = subItem.Created_Date;
+                    subRow.appendChild(subDateCell);
+                    
+                    const subValueCell = document.createElement('td');
+                    subValueCell.textContent = `$${parseFloat(subItem.Value).toFixed(2)}`;
+                    subRow.appendChild(subValueCell);
+                    
+                    tbody.appendChild(subRow);
+                });
+            }
+        });
+
+        table.appendChild(thead);
+        table.appendChild(tbody);
+
+        content.innerHTML = '';
+        content.appendChild(table);
+        content.removeAttribute('style');
+        card.setAttribute('style', 'display: flex;');
 
     }
 }
