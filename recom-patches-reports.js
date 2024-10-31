@@ -761,17 +761,29 @@ async function report_pictureMissingFull_init() {
         console.log("items:", items_images_report);
         console.log("products:", product_images_report);
 
-        var specialCondition = ['6-Defective', '8-Incomplete', '18-Used Phones - Imaging'];
-        const defSku = items_images_report.filter(item => specialCondition.includes(item.Condition));
-
-        for (let i = 0; i < defSku.length; i++) {
-            var Value = parseInt(defSku[i].In_Stock) * parseFloat(defSku[i].Price);
-            defSku[i].Value = Value.toFixed(2);
-            defSku[i].pick = [];
-            list.push(defSku[i]);
+        var list = [];
+        for (let i = 0; i < items_images_qunique_report.length; i++) {
+            var item = items_images_qunique_report[i];
+            item.value = parseInt(item.In_Stock) & parseFloat(item.Price);
+            list.push(item);
         }
 
-        console.log("final list:", list);
+        for (let i = 0; i < items_images_report.length; i++) {
+            for (let j = 0; j < product_images_report; j++) {
+                if (items_images_report[i].SID === product_images_report[j].SID) {
+                    if (product_images_report[j].items) {
+                        product_images_report[j].items.push(items_images_report[i]);
+                    } else {
+                        product_images_report[j].items = [];
+                        product_images_report[j].items.push(items_images_report[i])
+                    }
+                    break;
+                }
+            }
+        }
+
+        var married__product_images_report = product_images_report.filter(obj => obj.hasOwnProperty('items'));
+        console.log('filtered products:', married__product_images_report);
     }
 }
 
