@@ -767,7 +767,7 @@ async function report_pictureMissingFull_init() {
         var list = [];
         for (let i = 0; i < items_images_qunique_report.length; i++) {
             var item = items_images_qunique_report[i];
-            item.Value = parseInt(item.In_Stock) & parseFloat(item.Price);
+            item.Value = parseInt(item.In_Stock) * parseFloat(item.Price);
             list.push(item);
         }
 
