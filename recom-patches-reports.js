@@ -627,6 +627,7 @@ async function report_getSpecial(request) {
 async function report_pictureMissingFull_init() {
     const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
 
+    let items_images_report = null;
     var items_images = {
         report: {
             type: "item_images",
@@ -664,10 +665,13 @@ async function report_pictureMissingFull_init() {
     };
 
     try {
-        const items_images_report = await report_getSpecial(items_images);
-        console.log("Report data:", items_images_report);
+        items_images_report = await report_getSpecial(items_images);
     } catch (error) {
         console.error("Error fetching report:", error);
+    }
+
+    if (items_images_report) {
+        console.log("items_images_report:", items_images_report);
     }
 }
 
