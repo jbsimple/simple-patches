@@ -627,6 +627,21 @@ async function report_getSpecial(request) {
     });
 }
 
+function parseTableToCSV() {
+    const table = document.getElementById('recompatches-customreportTable')
+    const rows = Array.from(table.querySelectorAll('tr'));
+    return rows.map(row => {
+        const columns = Array.from(row.querySelectorAll('th,td'));
+        return columns.map(column => {
+        let cellData = column.textContent;
+        if (cellData.includes(',') || cellData.includes('"')) {
+            cellData = `"${cellData.replace(/"/g, '""')}"`; // Handle double quotes and commas
+        }
+        return cellData;
+        }).join(',');
+    }).join('\n');
+}
+
 async function report_pictureMissingFull_init() {
     const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
 
@@ -812,6 +827,7 @@ async function report_pictureMissingFull_init() {
         table.style.width = '100%';
         table.style.maxWidth = '100%';
         table.style.overflow = 'auto';
+        table.id = 'recompatches-customreportTable';
         table.classList.add('table', 'table-striped');
 
         const thead = document.createElement('thead');
