@@ -753,9 +753,11 @@ async function report_pictureMissingFull_init() {
         console.error("Error fetching report:", error);
     }
 
-    if (items_images_report && Array.isArray(items_images_report) 
-            && product_images_report && Array.isArray(product_images_report) 
-            && items_images_qunique_report && Array.isArray(items_images_qunique_report)) {
+    if (
+        items_images_report && Array.isArray(items_images_report) &&
+        product_images_report && Array.isArray(product_images_report) &&
+        items_images_qunique_report && Array.isArray(items_images_qunique_report)
+    ) {
           
         console.log("uniques:", items_images_qunique_report);
         console.log("items:", items_images_report);
@@ -769,21 +771,20 @@ async function report_pictureMissingFull_init() {
         }
 
         for (let i = 0; i < items_images_report.length; i++) {
-            for (let j = 0; j < product_images_report; j++) {
+            for (let j = 0; j < product_images_report.length; j++) { 
                 if (items_images_report[i].SID === product_images_report[j].SID) {
                     if (product_images_report[j].items) {
                         product_images_report[j].items.push(items_images_report[i]);
                     } else {
-                        product_images_report[j].items = [];
-                        product_images_report[j].items.push(items_images_report[i])
+                        product_images_report[j].items = [items_images_report[i]];
                     }
                     break;
                 }
             }
         }
 
-        var married__product_images_report = product_images_report.filter(obj => obj.hasOwnProperty('items'));
-        console.log('filtered products:', married__product_images_report);
+        var filtered__product_images_report = product_images_report.filter(obj => obj.hasOwnProperty('items'));
+        console.log('filtered products:', filtered__product_images_report);
     }
 }
 
