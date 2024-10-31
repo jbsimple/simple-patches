@@ -833,18 +833,26 @@ async function report_pictureMissingFull_init() {
 
             const idCell = document.createElement('td');
             idCell.textContent = item.SKU || item.SID;
+            idCell.style.minWidth = '200px';
+            idCell.style.padding = '0.75rem 2rem'; // top-bottom then left-right to make it look better
             row.appendChild(idCell);
 
             const nameCell = document.createElement('td');
             nameCell.textContent = item.Product_Name;
+            nameCell.style.minWidth = '200px';
+            nameCell.style.padding = '0.75rem 2rem';
             row.appendChild(nameCell);
 
             const dateCell = document.createElement('td');
             dateCell.textContent = item.Created_Date;
+            dateCell.style.minWidth = '200px';
+            dateCell.style.padding = '0.75rem 2rem';
             row.appendChild(dateCell);
 
             const valueCell = document.createElement('td');
             valueCell.textContent = `$${parseFloat(item.Value).toFixed(2)}`;
+            valueCell.style.minWidth = '200px';
+            valueCell.style.padding = '0.75rem 2rem';
             row.appendChild(valueCell);
 
             tbody.appendChild(row);
