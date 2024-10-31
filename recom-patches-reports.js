@@ -833,7 +833,19 @@ async function report_pictureMissingFull_init() {
             const row = document.createElement('tr');
 
             const idCell = document.createElement('td');
-            idCell.textContent = item.SKU || item.SID;
+            if (item.SKU) {
+                const skuLink = document.createElement('a');
+                skuLink.href = `/product/items/${item.SKU}`;
+                skuLink.textContent = item.SKU;
+                idCell.appendChild(skuLink);
+            } else if (item.SID) {
+                const sidLink = document.createElement('a');
+                sidLink.href = `/products/${item.SID}`;
+                sidLink.textContent = item.SID;
+                idCell.appendChild(skuLink);
+            } else {
+                idCell.textContent = item.SKU || item.SID;
+            }
             idCell.style.minWidth = '200px';
             idCell.style.padding = '0.75rem 2rem'; // top-bottom then left-right to make it look better
             row.appendChild(idCell);
