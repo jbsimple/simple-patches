@@ -600,24 +600,27 @@ function getReport(request) {
 
 async function report_getSpecial(request) {
     console.debug(request);
-    $.ajax({
-        type: "POST",
-        dataType: "json",
-        url: $("#rc_reports_new_form").attr("action"),
-        data: request,
-    }).done(function(data) {
-        if (data.results.results && Array.isArray(data.results.results)) {
-            return data.results.results;
-        } else if (data.results.filename) {
-            const href = 'renderfile/download?folder=reports&path=' + data.results.filename;
-            console.error('Report made, but no results array.', href);
-            return null;
-        } else {
-            console.error('No report.');
-            return null;
-        }
-    }).fail(function(jqXHR, textStatus, errorThrown) {
-        console.error("Request failed: " + textStatus + ", " + errorThrown);
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: $("#rc_reports_new_form").attr("action"),
+            data: request,
+        }).done(function(data) {
+            if (data.results.results && Array.isArray(data.results.results)) {
+                resolve(data.results.results);
+            } else if (data.results.filename) {
+                const href = 'renderfile/download?folder=reports&path=' + data.results.filename;
+                console.error('Report made, but no results array.', href);
+                resolve(null);
+            } else {
+                console.error('No report.');
+                resolve(null);
+            }
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error("Request failed: " + textStatus + ", " + errorThrown);
+            reject(new Error("Request failed: " + textStatus + ", " + errorThrown));
+        });
     });
 }
 
@@ -659,7 +662,13 @@ async function report_pictureMissingFull_init() {
         },
         csrf_recom: csrfToken
     };
-    const items_images_report = await report_getSpecial(items_images);
+
+    try {
+        const items_images_report = await report_getSpecial(items_images);
+        console.log("Report data:", items_images_report);
+    } catch (error) {
+        console.error("Error fetching report:", error);
+    }
 }
 
 
