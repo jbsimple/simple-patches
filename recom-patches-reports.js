@@ -808,6 +808,11 @@ async function report_pictureMissingFull_init() {
         button.setAttribute('onclick', 'event.preventDefault(); parseTableToCSV();');
 
         const table = document.createElement('table');
+        table.style.width = '100%';
+        table.style.maxWidth = '100%';
+        table.style.overflow = 'auto';
+        table.classList.add('table', 'table-striped');
+
         const thead = document.createElement('thead');
         const tbody = document.createElement('tbody');
         
@@ -816,6 +821,9 @@ async function report_pictureMissingFull_init() {
         headers.forEach(header => {
             const th = document.createElement('th');
             th.textContent = header;
+            th.style.minWidth = '200px';
+            th.style.padding = '2rem';
+            th.style.fontWeight = '700';
             headerRow.appendChild(th);
         });
         thead.appendChild(headerRow);
@@ -840,30 +848,6 @@ async function report_pictureMissingFull_init() {
             row.appendChild(valueCell);
 
             tbody.appendChild(row);
-
-            if (item.items) {
-                item.items.forEach(subItem => {
-                    const subRow = document.createElement('tr');
-                    
-                    const subIdCell = document.createElement('td');
-                    subIdCell.textContent = subItem.SKU || subItem.SID;
-                    subRow.appendChild(subIdCell);
-                    
-                    const subNameCell = document.createElement('td');
-                    subNameCell.textContent = subItem.Product_Name;
-                    subRow.appendChild(subNameCell);
-                    
-                    const subDateCell = document.createElement('td');
-                    subDateCell.textContent = subItem.Created_Date;
-                    subRow.appendChild(subDateCell);
-                    
-                    const subValueCell = document.createElement('td');
-                    subValueCell.textContent = `$${parseFloat(subItem.Value).toFixed(2)}`;
-                    subRow.appendChild(subValueCell);
-                    
-                    tbody.appendChild(subRow);
-                });
-            }
         });
 
         table.appendChild(thead);
