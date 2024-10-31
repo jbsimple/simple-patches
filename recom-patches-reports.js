@@ -798,8 +798,10 @@ async function report_pictureMissingFull_init() {
         console.log('final list:', list);
 
         goToLastStep();
-        const button = wizard.querySelector('a[href="reports"]');
+
+        const button = document.getElementById('rc_reports_new_wizard').querySelector('a[href="reports"]');
         button.setAttribute('onclick', 'event.preventDefault(); parseTableToCSV();');
+        button.setAttribute('style', 'display: block !important;');
     }
 }
 
