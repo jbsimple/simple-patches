@@ -774,11 +774,12 @@ async function report_pictureMissingFull_init() {
         for (let i = 0; i < items_images_report.length; i++) {
             for (let j = 0; j < product_images_report.length; j++) { 
                 if (items_images_report[i].SID === product_images_report[j].SID) {
-                    items_images_report[i].Value = parseInt(items_images_report[i].In_Stock) & parseFloat(items_images_report[i].Price);
+                    var item = items_images_report[i];
+                    item.Value = parseInt(item.In_Stock) & parseFloat(item.Price);
                     if (product_images_report[j].items) {
-                        product_images_report[j].items.push(items_images_report[i]);
+                        product_images_report[j].items.push(item);
                     } else {
-                        product_images_report[j].items = [items_images_report[i]];
+                        product_images_report[j].items = [item];
                     }
                     break;
                 }
