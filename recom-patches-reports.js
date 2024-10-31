@@ -634,7 +634,7 @@ async function report_pictureMissingFull_init() {
             columns: [
                 "product_items.sku",
                 "products.sid",
-                "item_images.url",
+                "products.name",
                 "product_items.condition_id",
                 "product_items.in_stock",
                 "product_items.location",
@@ -680,7 +680,7 @@ async function report_pictureMissingFull_init() {
             columns: [
                 "product_items.sku",
                 "products.sid",
-                "item_images.url",
+                "products.name",
                 "product_items.condition_id",
                 "product_items.in_stock",
                 "product_items.location",
@@ -726,8 +726,6 @@ async function report_pictureMissingFull_init() {
             columns: [
                 "products.sid",
                 "products.name",
-                "product_images.url",
-                "products.brand_id",
                 "products.category_id",
                 "products.created_at"
             ],
@@ -766,13 +764,14 @@ async function report_pictureMissingFull_init() {
         var list = [];
         for (let i = 0; i < items_images_qunique_report.length; i++) {
             var item = items_images_qunique_report[i];
-            item.value = parseInt(item.In_Stock) & parseFloat(item.Price);
+            item.Value = parseInt(item.In_Stock) & parseFloat(item.Price);
             list.push(item);
         }
 
         for (let i = 0; i < items_images_report.length; i++) {
             for (let j = 0; j < product_images_report.length; j++) { 
                 if (items_images_report[i].SID === product_images_report[j].SID) {
+                    items_images_report[i].Value = parseInt(items_images_report[i].In_Stock) & parseFloat(items_images_report[i].Price);
                     if (product_images_report[j].items) {
                         product_images_report[j].items.push(items_images_report[i]);
                     } else {
@@ -785,6 +784,18 @@ async function report_pictureMissingFull_init() {
 
         var filtered__product_images_report = product_images_report.filter(obj => obj.hasOwnProperty('items'));
         console.log('filtered products:', filtered__product_images_report);
+
+        for (let i = 0; i < filtered__product_images_report.length; i++) {
+            const married_product = filtered__product_images_report[i];
+            var value = 0;
+            for (let j = 0; j < married_product.items.length; j++) {
+                value += parseFloat(married_product.items[j].Value);
+            }
+            married_product.Value = value;
+            list.push(married_product);
+        }
+
+        console.log('final list:', list);
     }
 }
 
