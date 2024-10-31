@@ -253,175 +253,126 @@ function goToLastStep() {
     button.classList.remove('d-none');
 }
 
+function report_initHTML(det) {
+    if (det && det.id && det.func) {
+        const content = document.createElement('div');
+        content.setAttribute('style', 'display: flex; flex-direction: row; gap: 1rem;');
+    
+        const submit_button = document.createElement('button');
+        submit_button.classList.add('btn');
+        submit_button.classList.add('btn-large');
+        submit_button.classList.add('btn-primary');
+        submit_button.setAttribute('data-id', `${det.id}`);
+        submit_button.setAttribute('data-name', `${det.name}`);
+        submit_button.setAttribute('onclick', `${det.func}`);
+        submit_button.innerHTML = `Create
+            <span class="svg-icon svg-icon-4 ms-1 me-0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <rect opacity="0.5" x="18" y="13" width="13" height="2" rx="1" transform="rotate(-180 18 13)" fill="currentColor"></rect>
+            <path d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z" fill="currentColor"></path>
+            </svg>
+            </span>`;
+
+        if (det.input && det.input === 'text') {
+            const userInput = document.createElement('input');
+            userInput.setAttribute('name', 'patches-userInput-dateListing');
+            userInput.setAttribute('id', `${det.id}-input`);
+            userInput.setAttribute('type', 'text');
+            userInput.setAttribute('autocomplete', 'false');
+            userInput.classList.add('form-control');
+            userInput.classList.add('rounded-1');
+            userInput.setAttribute('style', 'width: unset;');
+
+            if (det.val && det.val === "today") {
+                const today = new Date();
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const dd = String(today.getDate()).padStart(2, '0');
+                const yyyy = today.getFullYear();
+                userInput.setAttribute('value', `${mm}/${dd}/${yyyy}`);
+            }
+        }
+
+        if (det.desc) {
+            const userInputSubtext = document.createElement('div');
+            userInputSubtext.setAttribute('style', 'flex: 1; display: flex; align-items: center;');
+            userInputSubtext.innerHTML = det.desc;
+        }
+
+        if (det.title) {
+            const userInputTitle = document.createElement('h4');
+            userInputTitle.classList.add('fw-bolder');
+            userInputTitle.classList.add('d-flex');
+            userInputTitle.classList.add('align-items-center');
+            userInputTitle.classList.add('text-dark');
+            userInputTitle.setAttribute('style', 'width: 200px;');
+            userInputTitle.textContent = `${det.title}:`;
+        }
+
+        if (userInputTitle) { content.appendChild(userInputTitle); }
+        if (userInput) { content.appendChild(userInput); }
+        if (userInputSubtext) { content.appendChild(userInputSubtext); }
+        if (submit_button) { content.appendChild(submit_button); }
+    }
+}
+
 function report_preset(name) {
     const content = document.createElement('div');
     content.setAttribute('style', 'display: flex; flex-direction: row; gap: 1rem;');
 
     if (name === 'listing_productivity') {
-        const submit_button = document.createElement('button');
-        submit_button.classList.add('btn');
-        submit_button.classList.add('btn-large');
-        submit_button.classList.add('btn-primary');
-        submit_button.setAttribute('onclick', `report_listingProducivity_submit();`);
-        submit_button.innerHTML = `Create
-            <span class="svg-icon svg-icon-4 ms-1 me-0">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <rect opacity="0.5" x="18" y="13" width="13" height="2" rx="1" transform="rotate(-180 18 13)" fill="currentColor"></rect>
-            <path d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z" fill="currentColor"></path>
-            </svg>
-            </span>`;
-        
-        const today = new Date();
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const dd = String(today.getDate()).padStart(2, '0');
-        const yyyy = today.getFullYear();
-        
-        const userInput = document.createElement('input');
-        userInput.setAttribute('name', 'patches-userInput-dateListing');
-        userInput.setAttribute('id', 'patches-reports-listing_productivity-input');
-        userInput.setAttribute('type', 'text');
-        userInput.setAttribute('autocomplete', 'false');
-        userInput.setAttribute('value', `${mm}/${dd}/${yyyy}`);
-        userInput.classList.add('form-control');
-        userInput.classList.add('rounded-1');
-        userInput.setAttribute('style', 'width: unset;');
-        
-        const userInputSubtext = document.createElement('div');
-        userInputSubtext.setAttribute('style', 'flex: 1; display: flex; align-items: center;');
-        userInputSubtext.innerHTML = "Generate a productivity report for Listing.<br>Date Entry Format: mm/dd/yyyy (leading 0s).";
-        
-        const userInputTitle = document.createElement('h4');
-        userInputTitle.classList.add('fw-bolder');
-        userInputTitle.classList.add('d-flex');
-        userInputTitle.classList.add('align-items-center');
-        userInputTitle.classList.add('text-dark');
-        userInputTitle.setAttribute('style', 'width: 200px;');
-        userInputTitle.textContent = 'Listing Productivity:';
 
-        
-        content.appendChild(userInputTitle);
-        
-        content.appendChild(userInput);
-        content.appendChild(userInputSubtext);
-        
-        content.appendChild(submit_button);
+        var details = {};
+        details.id = `patches-reports-listing_productivity`;
+        details.name = `patches-userInput-dateListing`;
+        details.func = `report_listingProducivity_submit();`;
+        details.input = "text";
+        details.val = "today";
+        details.desc = "Generate a productivity report for Listing.<br>Date Entry Format: mm/dd/yyyy (leading 0s).";
+        details.title = "Listing Productivity";
+        report_initHTML(details);
 
     } else if (name === 'marketing_productivity') {
-        const submit_button = document.createElement('button');
-        submit_button.classList.add('btn');
-        submit_button.classList.add('btn-large');
-        submit_button.classList.add('btn-primary');
-        submit_button.setAttribute('onclick', `report_marketingProducivity_submit();`);
-        submit_button.innerHTML = `Create
-            <span class="svg-icon svg-icon-4 ms-1 me-0">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <rect opacity="0.5" x="18" y="13" width="13" height="2" rx="1" transform="rotate(-180 18 13)" fill="currentColor"></rect>
-            <path d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z" fill="currentColor"></path>
-            </svg>
-            </span>`;
-        
-        const today = new Date();
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const dd = String(today.getDate()).padStart(2, '0');
-        const yyyy = today.getFullYear();
-        
-        const userInput = document.createElement('input');
-        userInput.setAttribute('name', 'patches-userInput-dateListing');
-        userInput.setAttribute('id', 'patches-reports-marketing_productivity-input');
-        userInput.setAttribute('type', 'text');
-        userInput.setAttribute('autocomplete', 'false');
-        userInput.setAttribute('value', `${mm}/${dd}/${yyyy}`);
-        userInput.classList.add('form-control');
-        userInput.classList.add('rounded-1');
-        userInput.setAttribute('style', 'width: unset;');
-        
-        const userInputSubtext = document.createElement('div');
-        userInputSubtext.setAttribute('style', 'flex: 1; display: flex; align-items: center;');
-        userInputSubtext.innerHTML = "Generate a productivity report for Marketing.<br>Date Entry Format: mm/dd/yyyy (leading 0s).";
-        
-        const userInputTitle = document.createElement('h4');
-        userInputTitle.classList.add('fw-bolder');
-        userInputTitle.classList.add('d-flex');
-        userInputTitle.classList.add('align-items-center');
-        userInputTitle.classList.add('text-dark');
-        userInputTitle.setAttribute('style', 'width: 200px;');
-        userInputTitle.textContent = 'Marketing Productivity:';
 
-        
-        content.appendChild(userInputTitle);
-        
-        content.appendChild(userInput);
-        content.appendChild(userInputSubtext);
-        
-        content.appendChild(submit_button);
+        var details = {};
+        details.id = `patches-reports-marketing_productivity`;
+        details.name = `patches-userInput-dateMarketing`;
+        details.func = `report_marketingProducivity_submit();`;
+        details.input = "text";
+        details.val = "today";
+        details.desc = "Generate a productivity report for Marketing.<br>Date Entry Format: mm/dd/yyyy (leading 0s).";
+        details.title = "Marketing Productivity";
+        report_initHTML(details);
         
     } else if (name === 'picture_missingSpecial') {
-        const submit_button = document.createElement('button');
-        submit_button.classList.add('btn');
-        submit_button.classList.add('btn-large');
-        submit_button.classList.add('btn-primary');
-        submit_button.setAttribute('onclick', `report_pictureMissingSpecial_submit();`);
-        submit_button.innerHTML = `Create
-            <span class="svg-icon svg-icon-4 ms-1 me-0">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <rect opacity="0.5" x="18" y="13" width="13" height="2" rx="1" transform="rotate(-180 18 13)" fill="currentColor"></rect>
-            <path d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z" fill="currentColor"></path>
-            </svg>
-            </span>`;
-        
-        const userInputSubtext = document.createElement('div');
-        userInputSubtext.setAttribute('style', 'flex: 1; display: flex; align-items: center;');
-        userInputSubtext.innerHTML = "Generate a report for missing pictures,<br>Specifically Defective, Incomplete and Image Issue items.";
-        
-        const userInputTitle = document.createElement('h4');
-        userInputTitle.classList.add('fw-bolder');
-        userInputTitle.classList.add('d-flex');
-        userInputTitle.classList.add('align-items-center');
-        userInputTitle.classList.add('text-dark');
-        userInputTitle.setAttribute('style', 'width: 200px;');
-        userInputTitle.textContent = 'Missing Pictures (1):';
 
-        
-        content.appendChild(userInputTitle);
-        
-        content.appendChild(userInputSubtext);
-        
-        content.appendChild(submit_button);
+        var details = {};
+        details.id = `patches-reports-picturesMissing1`;
+        details.name = `patches-reports-picturesMissing1Name`;
+        details.func = `report_pictureMissingSpecial_submit();`;
+        details.desc = "Generate a report for missing pictures,<br>Specifically recently created Defective, Incomplete and Image Issue items.";
+        details.title = "Missing Pictures (1)";
+        report_initHTML(details);
+
     } else if (name === 'product_highQty') {
-        const submit_button = document.createElement('button');
-        submit_button.classList.add('btn');
-        submit_button.classList.add('btn-large');
-        submit_button.classList.add('btn-primary');
-        submit_button.setAttribute('onclick', `report_productHighQty();`);
-        submit_button.innerHTML = `Create
-            <span class="svg-icon svg-icon-4 ms-1 me-0">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <rect opacity="0.5" x="18" y="13" width="13" height="2" rx="1" transform="rotate(-180 18 13)" fill="currentColor"></rect>
-            <path d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z" fill="currentColor"></path>
-            </svg>
-            </span>`;
-        
-        const userInputSubtext = document.createElement('div');
-        userInputSubtext.setAttribute('style', 'flex: 1; display: flex; align-items: center;');
-        userInputSubtext.innerHTML = "Generate a report of high quantity items.<br>Includes in stock 50+ qty items. Columns for ASIN and dates included.";
-        
-        const userInputTitle = document.createElement('h4');
-        userInputTitle.classList.add('fw-bolder');
-        userInputTitle.classList.add('d-flex');
-        userInputTitle.classList.add('align-items-center');
-        userInputTitle.classList.add('text-dark');
-        userInputTitle.setAttribute('style', 'width: 200px;');
-        userInputTitle.textContent = 'High Qty Items:';
 
-        
-        content.appendChild(userInputTitle);
-        
-        content.appendChild(userInputSubtext);
-        
-        content.appendChild(submit_button);
+        var details = {};
+        details.id = `patches-reports-highQty`;
+        details.name = `patches-reports-highQtyName`;
+        details.func = `report_productHighQty();`;
+        details.desc = "Generate a report of high quantity items.<br>Includes in stock 50+ qty items. Columns for ASIN and dates included.";
+        details.title = "High Qty Items";
+        report_initHTML(details);
+
     }
 
     return content;
+}
+
+function formatDate(date) {
+    let month = (date.getMonth() + 1).toString().padStart(2, '0');
+    let day = date.getDate().toString().padStart(2, '0');
+    let year = date.getFullYear();
+    return `${month}/${day}/${year}`;
 }
 
 function report_listingProducivity_submit() {
@@ -518,13 +469,6 @@ function report_marketingProducivity_submit() {
     };
     
     getReport(request);
-}
-
-function formatDate(date) {
-    let month = (date.getMonth() + 1).toString().padStart(2, '0');
-    let day = date.getDate().toString().padStart(2, '0');
-    let year = date.getFullYear();
-    return `${month}/${day}/${year}`;
 }
 
 function report_pictureMissingSpecial_submit() {
