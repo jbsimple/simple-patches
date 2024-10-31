@@ -660,6 +660,12 @@ function parseTableToCSV() {
 }
 
 async function report_pictureMissingFull_init() {
+    const createButton = document.querySelector(`button[data-id="patches-reports-picturesMissingFull"]`);
+    if (createButton) {
+        createButton.textContent = 'Loading...';
+        createButton.setAttribute('style', 'background-color: gray !important;');
+    }
+
     const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
 
     let items_images_qunique_report = null;
