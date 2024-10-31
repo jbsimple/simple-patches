@@ -837,11 +837,13 @@ async function report_pictureMissingFull_init() {
                 const skuLink = document.createElement('a');
                 skuLink.href = `/product/items/${item.SKU}`;
                 skuLink.textContent = item.SKU;
+                skuLink.target = "_blank";
                 idCell.appendChild(skuLink);
             } else if (item.SID) {
                 const sidLink = document.createElement('a');
                 sidLink.href = `/products/${item.SID}`;
                 sidLink.textContent = item.SID;
+                sidLink.target = "_blank";
                 idCell.appendChild(sidLink);
             } else {
                 idCell.textContent = item.SKU || item.SID;
