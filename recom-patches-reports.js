@@ -670,8 +670,43 @@ async function report_pictureMissingFull_init() {
         console.error("Error fetching report:", error);
     }
 
-    if (items_images_report) {
-        console.log("items_images_report:", items_images_report);
+    let product_images_report = null;
+    var product_images = {
+        report: {
+            type: "product_images",
+            columns: [
+                "products.sid",
+                "products.name",
+                "product_images.url",
+                "products.brand_id",
+                "products.category_id",
+                "products.created_at"
+            ],
+            filters: [
+                {
+                    column: "product_images.url",
+                    opr: "({0} IS NULL OR {0} = '')",
+                    value: ""
+                },
+                {
+                    column: "products.status",
+                    opr: "{0} = '{1}'",
+                    value: "1"
+                }
+            ]
+        },
+        csrf_recom: csrfToken
+    };
+
+    try {
+        product_images_report = await report_getSpecial(product_images);
+    } catch (error) {
+        console.error("Error fetching report:", error);
+    }
+
+    if (items_images_report && product_images_report) {
+        console.log("items:", items_images_report);
+        console.log("products:", product_images_report);
     }
 }
 
