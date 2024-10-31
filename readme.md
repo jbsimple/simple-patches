@@ -34,6 +34,7 @@ Enhancements:
   - Added Listing department productivity reporting preset.
   - Added Marketing department productivity reporting preset.
   - Missing Picture report for Defective, Incomplete and Imaging Issues (Created last 30 days).
+  - Complete Missing Picture report for all items and products in the system.
   - Product Items list of products over QTY 50 with ASIN column.
 - On Calendar; CSS fix to add a background color to the list of day's events.
 - On User's page, CSS fix to not have the roles list go beyond the card.
