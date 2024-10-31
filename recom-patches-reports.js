@@ -35,33 +35,34 @@ function initTable() {
     var callback = function(mutationsList, observer) {
         for (var mutation of mutationsList) {
             if (mutation.type === 'attributes' && mutation.attributeName === 'href') {
-    
-                fetch(downloadReport.href)
-                    .then(response => {
-                        return response.blob().then(blob => {
-                            const contentLength = blob.size;
+                if (downloadReport.href !== "#") {
+                    fetch(downloadReport.href)
+                        .then(response => {
+                            return response.blob().then(blob => {
+                                const contentLength = blob.size;
 
-                            if (contentLength > 1048576) { 
-                                content.innerHTML = '<h4>Size of the report too large to render. Download to view.</h4>';
-                                content.setAttribute('style', 'margin-top: 1rem; isplay: flex; justify-content: center; align-items: center; flex-direction: column;');
-                                card.setAttribute('style', 'display: flex;');
-                                return Promise.reject('CSV is too large to process.');
-                            }
-                    
-                            return blob;
-                        });
-                    })
-                    .then(blob => {
-                        return blob.text();
-                    })
-                    .then(data => {
-                        const table = parseCSVToTable(data);
-                        content.innerHTML = '';
-                        content.appendChild(table);
-                        content.removeAttribute('style');
-                        card.setAttribute('style', 'display: flex;');
-                    })
-                    .catch(error => console.error('Error loading the CSV:', error));
+                                if (contentLength > 1048576) { 
+                                    content.innerHTML = '<h4>Size of the report too large to render. Download to view.</h4>';
+                                    content.setAttribute('style', 'margin-top: 1rem; isplay: flex; justify-content: center; align-items: center; flex-direction: column;');
+                                    card.setAttribute('style', 'display: flex;');
+                                    return Promise.reject('CSV is too large to process.');
+                                }
+                        
+                                return blob;
+                            });
+                        })
+                        .then(blob => {
+                            return blob.text();
+                        })
+                        .then(data => {
+                            const table = parseCSVToTable(data);
+                            content.innerHTML = '';
+                            content.appendChild(table);
+                            content.removeAttribute('style');
+                            card.setAttribute('style', 'display: flex;');
+                        })
+                        .catch(error => console.error('Error loading the CSV:', error));
+                }
             }
         }
     };
