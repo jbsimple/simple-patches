@@ -842,7 +842,7 @@ async function report_pictureMissingFull_init() {
                 const sidLink = document.createElement('a');
                 sidLink.href = `/products/${item.SID}`;
                 sidLink.textContent = item.SID;
-                idCell.appendChild(skuLink);
+                idCell.appendChild(sidLink);
             } else {
                 idCell.textContent = item.SKU || item.SID;
             }
