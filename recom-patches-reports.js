@@ -823,7 +823,7 @@ async function report_pictureMissingFull_init() {
         });
         thead.appendChild(headerRow);
         
-        data.forEach(item => {
+        list.forEach(item => {
             const row = document.createElement('tr');
 
             const idCell = document.createElement('td');
