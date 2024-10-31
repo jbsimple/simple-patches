@@ -35,7 +35,8 @@ function initTable() {
     var callback = function(mutationsList, observer) {
         for (var mutation of mutationsList) {
             if (mutation.type === 'attributes' && mutation.attributeName === 'href') {
-                if (downloadReport.href !== "#") {
+                if (downloadReport.href.includes("renderfile/download?folder=reports&path=")) {
+                    console.log(downloadReport.href);
                     fetch(downloadReport.href)
                         .then(response => {
                             return response.blob().then(blob => {
@@ -806,7 +807,6 @@ async function report_pictureMissingFull_init() {
         button.classList.remove('d-none');
         button.setAttribute('onclick', 'event.preventDefault(); parseTableToCSV();');
 
-        document.getElementById('recom-patch-reports-table').innerHTML = '';
     }
 }
 
