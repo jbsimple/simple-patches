@@ -598,6 +598,69 @@ function getReport(request) {
     });
 }
 
+function report_getSpecial(request) {
+    console.debug(request);
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        url: $("#rc_reports_new_form").attr("action"),
+        data: request,
+    }).done(function(data) {
+        console.debug(data);
+        if (data.results.results && Array.isArray(data.results.results)) {
+            return data.results.results;
+        } else if (data.results.filename) {
+            const href = 'renderfile/download?folder=reports&path=' + data.results.filename;
+            console.error('Report made, but no results array.', href);
+            return null;
+        } else {
+            console.error('No report.');
+            return null;
+        }
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        console.error("Request failed: " + textStatus + ", " + errorThrown);
+    });
+}
+
+function report_pictureMissingFull_init() {
+    var items_images = {
+        report: {
+            type: "item_images",
+            columns: [
+                "product_items.sku",
+                "products.sid",
+                "item_images.url",
+                "products.brand_id",
+                "products.category_id",
+                "product_items.condition_id",
+                "product_items.in_stock",
+                "product_items.location",
+                "product_items.price",
+                "product_items.created_at"
+            ],
+            filters: [
+                {
+                    column: "item_images.url",
+                    opr: "({0} IS NULL OR {0} = '')",
+                    value: ""
+                },
+                {
+                    column: "product_items.in_stock",
+                    opr: "{0} > {1}",
+                    value: 0
+                },
+                {
+                    column: "product_items.status",
+                    opr: "{0} = '{1}'",
+                    value: "1"
+                }
+            ]
+        },
+        csrf_recom: csrfToken
+    };
+    console.log(report_getSpecial(items_images));
+}
+
 
 initPreset();
 initTable();
