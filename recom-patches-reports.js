@@ -273,8 +273,8 @@ function report_initHTML(det) {
             </svg>
             </span>`;
 
+        const userInput = document.createElement('input');
         if (det.input && det.input === 'text') {
-            const userInput = document.createElement('input');
             userInput.setAttribute('name', 'patches-userInput-dateListing');
             userInput.setAttribute('id', `${det.id}-input`);
             userInput.setAttribute('type', 'text');
@@ -292,14 +292,14 @@ function report_initHTML(det) {
             }
         }
 
+        const userInputSubtext = document.createElement('div');
         if (det.desc) {
-            const userInputSubtext = document.createElement('div');
             userInputSubtext.setAttribute('style', 'flex: 1; display: flex; align-items: center;');
             userInputSubtext.innerHTML = det.desc;
         }
 
+        const userInputTitle = document.createElement('h4');
         if (det.title) {
-            const userInputTitle = document.createElement('h4');
             userInputTitle.classList.add('fw-bolder');
             userInputTitle.classList.add('d-flex');
             userInputTitle.classList.add('align-items-center');
@@ -308,13 +308,13 @@ function report_initHTML(det) {
             userInputTitle.textContent = `${det.title}:`;
         }
 
-        if (typeof userInputTitle !== 'undefined') {
+        if (det.title) {
             content.appendChild(userInputTitle);
         }
-        if (typeof userInput !== 'undefined') {
+        if (det.input) {
             content.appendChild(userInput);
         }
-        if (typeof userInputSubtext !== 'undefined') {
+        if (det.desc) {
             content.appendChild(userInputSubtext);
         }
         if (typeof submit_button !== 'undefined') {
