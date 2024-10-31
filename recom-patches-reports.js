@@ -211,6 +211,7 @@ function initPreset() {
     
     card_body.appendChild(report_preset('listing_productivity'));
     card_body.appendChild(report_preset('marketing_productivity'));
+    card_body.appendChild(report_preset('picture_missingFull'));
     card_body.appendChild(report_preset('picture_missingSpecial'));
     card_body.appendChild(report_preset('product_highQty'));
     
@@ -355,8 +356,8 @@ function report_preset(name) {
         details.id = `patches-reports-picturesMissing1`;
         details.name = `patches-reports-picturesMissing1Name`;
         details.func = `report_pictureMissingSpecial_submit();`;
-        details.desc = "Generate a report for missing pictures,<br>Specifically recently created Defective, Incomplete and Image Issue items.";
-        details.title = "Missing Pictures (1)";
+        details.desc = "Generates a list of all defective, incomplete and imaging issue items<br>created in the last 30 days with no pictures.";
+        details.title = "Recent Picture Check";
         return report_initHTML(details);
     } else if (name === 'product_highQty') {
         var details = {};
@@ -365,6 +366,14 @@ function report_preset(name) {
         details.func = `report_productHighQty();`;
         details.desc = "Generate a report of high quantity items.<br>Includes in stock 50+ qty items. Columns for ASIN and dates included.";
         details.title = "High Qty Items";
+        return report_initHTML(details);
+    } else if (name === 'picture_missingFull') {
+        var details = {};
+        details.id = `patches-reports-picturesMissingFull`;
+        details.name = `patches-reports-picturesMissingFullName`;
+        details.func = `report_pictureMissingFull_init();`;
+        details.desc = "Generate a complete missing picture items report.<br>Defective, Incomplete and Imaging first, then products.";
+        details.title = "Missing Pictures";
         return report_initHTML(details);
     } else {
         return null;
