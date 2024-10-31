@@ -319,10 +319,10 @@ function report_initHTML(det) {
         }
         if (typeof submit_button !== 'undefined') {
             content.appendChild(submit_button);
-        }        
+        }    
+        return content;    
     }
-
-    return content;
+    return null;
 }
 
 function report_preset(name) {
