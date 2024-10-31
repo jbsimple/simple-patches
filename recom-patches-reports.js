@@ -14,15 +14,15 @@ container_right.style.height = "100%";
 
 const right = document.querySelector('.d-flex.flex-column.flex-row-fluid.gap-7.gap-lg-10');
 
-const card_body = document.createElement('div');
-card_body.setAttribute('style', 'padding: 0 !important; flex: 1; width: 100%; max-width: 100%; max-height: 60rem; overflow: scroll;');
-card_body.classList = "card-body";
-
 function initTable() {
     const card = document.createElement('div');
     card.classList = "card";
     card.style.display = "none";  // normally flex
     card.id = 'patches-table';
+
+    const card_body = document.createElement('div');
+    card_body.setAttribute('style', 'padding: 0 !important; flex: 1; width: 100%; max-width: 100%; max-height: 60rem; overflow: scroll;');
+    card_body.classList = "card-body";
     
     const content = document.createElement('div');
     card_body.appendChild(content);
@@ -807,9 +807,6 @@ async function report_pictureMissingFull_init() {
         button.classList.remove('d-none');
         button.setAttribute('onclick', 'event.preventDefault(); parseTableToCSV();');
 
-        const content = document.createElement('div');
-        card_body.appendChild(content);
-
         const table = document.createElement('table');
         const thead = document.createElement('thead');
         const tbody = document.createElement('tbody');
@@ -871,6 +868,21 @@ async function report_pictureMissingFull_init() {
 
         table.appendChild(thead);
         table.appendChild(tbody);
+
+        const card = document.createElement('div');
+        card.classList = "card";
+        card.style.display = "none";  // normally flex
+        card.id = 'patches-table';
+
+        const card_body = document.createElement('div');
+        card_body.setAttribute('style', 'padding: 0 !important; flex: 1; width: 100%; max-width: 100%; max-height: 60rem; overflow: scroll;');
+        card_body.classList = "card-body";
+        
+        const content = document.createElement('div');
+        card_body.appendChild(content);
+        
+        card.appendChild(card_body);
+        right.appendChild(card);
 
         content.innerHTML = '';
         content.appendChild(table);
