@@ -792,7 +792,7 @@ async function report_pictureMissingFull_init() {
             const married_product = filtered__product_images_report[i];
             var value = 0;
             for (let j = 0; j < married_product.items.length; j++) {
-                value += parseFloat(married_product.items[j].Value);
+                value += parseInt(married_product.items[j].In_Stock) * parseFloat(married_product.items[j].Price);
             }
             married_product.Value = value;
             list.push(married_product);
