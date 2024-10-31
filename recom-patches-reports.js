@@ -799,9 +799,10 @@ async function report_pictureMissingFull_init() {
 
         goToLastStep();
 
-        const button = document.getElementById('rc_reports_new_wizard').querySelector('a[href="reports"]');
+        const button = document.getElementById('report_download');
+        button.removeAttribute('href');  
+        button.classList.remove('d-none');
         button.setAttribute('onclick', 'event.preventDefault(); parseTableToCSV();');
-        button.setAttribute('style', 'display: block !important;');
     }
 }
 
