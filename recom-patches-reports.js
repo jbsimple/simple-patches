@@ -321,12 +321,13 @@ function report_initHTML(det) {
             content.appendChild(submit_button);
         }        
     }
+
+    return content;
 }
 
 function report_preset(name) {
 
     if (name === 'listing_productivity') {
-
         var details = {};
         details.id = `patches-reports-listing_productivity`;
         details.name = `patches-userInput-dateListing`;
@@ -335,10 +336,8 @@ function report_preset(name) {
         details.val = "today";
         details.desc = "Generate a productivity report for Listing.<br>Date Entry Format: mm/dd/yyyy (leading 0s).";
         details.title = "Listing Productivity";
-        report_initHTML(details);
-
+        return report_initHTML(details);
     } else if (name === 'marketing_productivity') {
-
         var details = {};
         details.id = `patches-reports-marketing_productivity`;
         details.name = `patches-userInput-dateMarketing`;
@@ -347,31 +346,26 @@ function report_preset(name) {
         details.val = "today";
         details.desc = "Generate a productivity report for Marketing.<br>Date Entry Format: mm/dd/yyyy (leading 0s).";
         details.title = "Marketing Productivity";
-        report_initHTML(details);
-        
+        return report_initHTML(details);
     } else if (name === 'picture_missingSpecial') {
-
         var details = {};
         details.id = `patches-reports-picturesMissing1`;
         details.name = `patches-reports-picturesMissing1Name`;
         details.func = `report_pictureMissingSpecial_submit();`;
         details.desc = "Generate a report for missing pictures,<br>Specifically recently created Defective, Incomplete and Image Issue items.";
         details.title = "Missing Pictures (1)";
-        report_initHTML(details);
-
+        return report_initHTML(details);
     } else if (name === 'product_highQty') {
-
         var details = {};
         details.id = `patches-reports-highQty`;
         details.name = `patches-reports-highQtyName`;
         details.func = `report_productHighQty();`;
         details.desc = "Generate a report of high quantity items.<br>Includes in stock 50+ qty items. Columns for ASIN and dates included.";
         details.title = "High Qty Items";
-        report_initHTML(details);
-
+        return report_initHTML(details);
+    } else {
+        return null;
     }
-
-    return content;
 }
 
 function formatDate(date) {
