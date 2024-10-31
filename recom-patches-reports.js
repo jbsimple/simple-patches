@@ -623,6 +623,8 @@ function report_getSpecial(request) {
 }
 
 function report_pictureMissingFull_init() {
+    const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
+    
     var items_images = {
         report: {
             type: "item_images",
