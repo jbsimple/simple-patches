@@ -598,7 +598,7 @@ function getReport(request) {
     });
 }
 
-function report_getSpecial(request) {
+async function report_getSpecial(request) {
     console.debug(request);
     $.ajax({
         type: "POST",
@@ -606,7 +606,6 @@ function report_getSpecial(request) {
         url: $("#rc_reports_new_form").attr("action"),
         data: request,
     }).done(function(data) {
-        console.debug(data);
         if (data.results.results && Array.isArray(data.results.results)) {
             return data.results.results;
         } else if (data.results.filename) {
@@ -622,9 +621,9 @@ function report_getSpecial(request) {
     });
 }
 
-function report_pictureMissingFull_init() {
+async function report_pictureMissingFull_init() {
     const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
-    
+
     var items_images = {
         report: {
             type: "item_images",
@@ -660,7 +659,7 @@ function report_pictureMissingFull_init() {
         },
         csrf_recom: csrfToken
     };
-    console.log(report_getSpecial(items_images));
+    const items_images_report = await report_getSpecial(items_images);
 }
 
 
