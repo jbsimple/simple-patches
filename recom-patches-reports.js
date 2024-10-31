@@ -324,8 +324,6 @@ function report_initHTML(det) {
 }
 
 function report_preset(name) {
-    const content = document.createElement('div');
-    content.setAttribute('style', 'display: flex; flex-direction: row; gap: 1rem;');
 
     if (name === 'listing_productivity') {
 
