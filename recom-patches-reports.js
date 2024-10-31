@@ -630,7 +630,7 @@ async function report_getSpecial(request) {
 function parseTableToCSV() {
     const table = document.getElementById('recompatches-customreportTable')
     const rows = Array.from(table.querySelectorAll('tr'));
-    return rows.map(row => {
+    const csvContent = rows.map(row => {
         const columns = Array.from(row.querySelectorAll('th,td'));
         return columns.map(column => {
         let cellData = column.textContent;
@@ -640,6 +640,14 @@ function parseTableToCSV() {
         return cellData;
         }).join(',');
     }).join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `picture-missing-${Math.floor(Date.now() / 1000)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
 }
 
 async function report_pictureMissingFull_init() {
