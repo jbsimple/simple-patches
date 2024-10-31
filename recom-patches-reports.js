@@ -107,6 +107,7 @@ function parseCSVToTable(csvData) {
     });
     
     const table = document.createElement('table');
+    table.id = 'recom-patch-reports-table';
     table.style.width = '100%';
     table.style.maxWidth = '100%';
     table.style.overflow = 'auto';
@@ -803,6 +804,8 @@ async function report_pictureMissingFull_init() {
         button.removeAttribute('href');  
         button.classList.remove('d-none');
         button.setAttribute('onclick', 'event.preventDefault(); parseTableToCSV();');
+
+        document.getElementById('recom-patch-reports-table').innerHTML = '';
     }
 }
 
