@@ -1,4 +1,4 @@
-@media (min-width: 1600px) {
+@media (max-width: 1599px) {
     .flex-lg-row {
         flex-direction: row-reverse !important;
     }
