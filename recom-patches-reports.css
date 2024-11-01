@@ -1,0 +1,9 @@
+@media (min-width: 1600px) {
+    .flex-lg-row {
+        flex-direction: row-reverse !important;
+    }
+
+    .flex-lg-row .d-flex.flex-column {
+        width: 100%;
+    }
+}

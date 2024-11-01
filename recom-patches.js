@@ -101,6 +101,7 @@ if (window.location.href.includes('/receiving') && document.getElementById('sear
 
 if (window.location.href.includes('/reports')) {
 
+    document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches-reports.css?v=' + Date.now() + '" type="text/css"/>';
     script_patch.src = "https://simple-patches.vercel.app/recom-patches-reports.js?v=" + Date.now();
     script_patch.name = "recom-patches-reports.js";
 
