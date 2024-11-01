@@ -372,7 +372,7 @@ function report_preset(name) {
         details.id = `patches-reports-picturesMissingFull`;
         details.name = `patches-reports-picturesMissingFullName`;
         details.func = `report_pictureMissingFull_init();`;
-        details.desc = "Generate a complete missing picture items & products report.<br>Generates three different reports to get a list of all things that needs pictures..";
+        details.desc = "Generate a complete missing picture items & products report. Like, the real deaal one.<br>Generates three different reports to get a list of all things that needs pictures.";
         details.title = "Missing Pictures";
         return report_initHTML(details);
     } else {
