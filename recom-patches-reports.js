@@ -874,9 +874,9 @@ async function report_pictureMissingFull_init() {
         const tbody = document.createElement('tbody');
 
         const headerRow = document.createElement('tr');
-        
+
         const thID = document.createElement('th');
-        thID.innerHTML = `<span data="ID Link"></span>`;
+        thID.innerHTML = `<span data="ID Link">ID</span>`;
         thID.style.minWidth = '200px';
         thID.style.padding = '2rem';
         thID.style.fontWeight = '700';
@@ -897,7 +897,7 @@ async function report_pictureMissingFull_init() {
         headerRow.appendChild(thCreatedAt);
 
         const thValue = document.createElement('th');
-        thValue.textContent = `Valye ($)`;
+        thValue.textContent = `Value ($)`;
         thValue.style.minWidth = '200px';
         thValue.style.padding = '2rem';
         thValue.style.fontWeight = '700';
