@@ -1,6 +1,6 @@
 @media (max-width: 1599px) {
     .flex-lg-row {
-        flex-direction: row-reverse !important;
+        flex-direction: column-reverse !important;
     }
 
     .flex-lg-row .d-flex.flex-column {
