@@ -894,8 +894,8 @@ async function report_pictureMissingFull_init() {
                 
                     return conditionA - conditionB;
                 });
-                dateCell.innerHTML = `<span data="${skus[0].Created_Date}">${item.Created_Date}</span>`
             }
+            
             const row = document.createElement('tr');
 
             const idCell = document.createElement('td');
