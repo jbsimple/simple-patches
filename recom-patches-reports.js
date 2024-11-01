@@ -918,6 +918,8 @@ async function report_pictureMissingFull_init() {
                     return conditionA - conditionB;
                 });
                 locationCell.textContent = `(${skus[0].SKU}) ${skus[0].Full_Location}`;
+            } else if (item.SKU) {
+                locationCell.textContent = `${item.Full_Location}`;
             } else {
                 locationCell.textContent = `N/a`;
             }
