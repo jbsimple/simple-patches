@@ -136,9 +136,9 @@ function parseCSVToTable(csvData) {
             const cell = row.insertCell();
             const textContent = cellData.replace(/[\x00-\x1F\x7F-\x9F"']/g, '').trim();
             if (keys[i] && keys[i] === 'SKU' && textContent && textContent !== 'N/a') {
-                cell.innerHTML = `<a href="https://simplecell.recomapp.com/product/items/${textContent}" target="_blank" rel="noreferrer">${textContent}</a>`
+                cell.innerHTML = `<a title="View SKU ${textContent}" href="https://simplecell.recomapp.com/product/items/${textContent}" target="_blank">${textContent}</a>`
             } else if (keys[i] && keys[i] === 'SID' && textContent && textContent !== 'N/a') {
-                cell.innerHTML = `<a href="https://simplecell.recomapp.com/products/${textContent}" target="_blank" rel="noreferrer">${textContent}</a>`;
+                cell.innerHTML = `<a title="View SID ${textContent}" href="https://simplecell.recomapp.com/products/${textContent}" target="_blank">${textContent}</a>`;
             } else {
                 cell.textContent = textContent;
             }
@@ -636,6 +636,7 @@ async function report_getSpecial(request) {
     });
 }
 
+// this prints empty rows for each column if no link.
 function parseTableToCSV() {
     const table = document.getElementById('recompatches-customreportTable');
     const rows = Array.from(table.querySelectorAll('tr'));
