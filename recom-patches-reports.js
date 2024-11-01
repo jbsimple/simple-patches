@@ -636,7 +636,6 @@ async function report_getSpecial(request) {
     });
 }
 
-// this prints empty rows for each column if no link.
 function parseTableToCSV() {
     const table = document.getElementById('recompatches-customreportTable');
     const rows = Array.from(table.querySelectorAll('tr'));
@@ -644,25 +643,24 @@ function parseTableToCSV() {
         const columns = Array.from(row.querySelectorAll('th,td'));
         return columns.flatMap(column => {
             let cellData = column.textContent;
-            let hrefData = '';
+            let extraColumnData = '';
 
             const link = column.querySelector('a');
             const span = column.querySelector('span');
             if (link && link.href) {
-                hrefData = link.href;
+                extraColumnData = link.href;
             } else if (span && span.hasAttribute('data')) {
-                hrefData = span.getAttribute('data');
+                extraColumnData = span.getAttribute('data');
             }
-            
 
             if (cellData.includes(',') || cellData.includes('"')) {
                 cellData = `"${cellData.replace(/"/g, '""')}"`;
             }
-            if (hrefData.includes(',') || hrefData.includes('"')) {
-                hrefData = `"${hrefData.replace(/"/g, '""')}"`;
+            if (extraColumnData && (extraColumnData.includes(',') || extraColumnData.includes('"'))) {
+                extraColumnData = `"${extraColumnData.replace(/"/g, '""')}"`;
             }
-            
-            return [cellData, hrefData];
+
+            return extraColumnData ? [cellData, extraColumnData] : [cellData];
         }).join(',');
     }).join('\n');
 
@@ -674,7 +672,6 @@ function parseTableToCSV() {
     a.click();
     URL.revokeObjectURL(url);
 }
-
 
 async function report_pictureMissingFull_init() {
     const createButton = document.querySelector(`button[data-id="patches-reports-picturesMissingFull"]`);
@@ -895,7 +892,7 @@ async function report_pictureMissingFull_init() {
                     return conditionA - conditionB;
                 });
             }
-            
+
             const row = document.createElement('tr');
 
             const idCell = document.createElement('td');
