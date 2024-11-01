@@ -636,6 +636,7 @@ async function report_getSpecial(request) {
     });
 }
 
+// this prints empty rows for each column if no link.
 function parseTableToCSV() {
     const table = document.getElementById('recompatches-customreportTable');
     const rows = Array.from(table.querySelectorAll('tr'));
@@ -643,24 +644,25 @@ function parseTableToCSV() {
         const columns = Array.from(row.querySelectorAll('th,td'));
         return columns.flatMap(column => {
             let cellData = column.textContent;
-            let extraColumnData = '';
+            let hrefData = '';
 
             const link = column.querySelector('a');
             const span = column.querySelector('span');
             if (link && link.href) {
-                extraColumnData = link.href;
+                hrefData = link.href;
             } else if (span && span.hasAttribute('data')) {
-                extraColumnData = span.getAttribute('data');
+                hrefData = span.getAttribute('data');
             }
+            
 
             if (cellData.includes(',') || cellData.includes('"')) {
                 cellData = `"${cellData.replace(/"/g, '""')}"`;
             }
-            if (extraColumnData && (extraColumnData.includes(',') || extraColumnData.includes('"'))) {
-                extraColumnData = `"${extraColumnData.replace(/"/g, '""')}"`;
+            if (hrefData.includes(',') || hrefData.includes('"')) {
+                hrefData = `"${hrefData.replace(/"/g, '""')}"`;
             }
-
-            return extraColumnData ? [cellData, extraColumnData] : [cellData];
+            
+            return [cellData, hrefData];
         }).join(',');
     }).join('\n');
 
@@ -672,6 +674,7 @@ function parseTableToCSV() {
     a.click();
     URL.revokeObjectURL(url);
 }
+
 
 async function report_pictureMissingFull_init() {
     const createButton = document.querySelector(`button[data-id="patches-reports-picturesMissingFull"]`);
@@ -869,17 +872,42 @@ async function report_pictureMissingFull_init() {
 
         const thead = document.createElement('thead');
         const tbody = document.createElement('tbody');
-        
-        const headers = ['ID', 'Product Name', 'Created Date', 'Value ($)', 'Location'];
-        const headerRow = document.createElement('tr');
-        headers.forEach(header => {
-            const th = document.createElement('th');
-            th.textContent = header;
-            th.style.minWidth = '200px';
-            th.style.padding = '2rem';
-            th.style.fontWeight = '700';
-            headerRow.appendChild(th);
-        });
+
+        const thID = document.createElement('th');
+        thID.innerHTML = `<span data="ID Link"></span>`;
+        thID.style.minWidth = '200px';
+        thID.style.padding = '2rem';
+        thID.style.fontWeight = '700';
+        headerRow.appendChild(thID);
+
+        const thProductName = document.createElement('th');
+        thProductName.textContent = `Product Name`;
+        thProductName.style.minWidth = '200px';
+        thProductName.style.padding = '2rem';
+        thProductName.style.fontWeight = '700';
+        headerRow.appendChild(thProductName);
+
+        const thCreatedAt = document.createElement('th');
+        thCreatedAt.innerHTML = `<span data="SKU Created At">ID Created At</span>`;
+        thCreatedAt.style.minWidth = '200px';
+        thCreatedAt.style.padding = '2rem';
+        thCreatedAt.style.fontWeight = '700';
+        headerRow.appendChild(thCreatedAt);
+
+        const thValue = document.createElement('th');
+        thValue.textContent = `Valye ($)`;
+        thValue.style.minWidth = '200px';
+        thValue.style.padding = '2rem';
+        thValue.style.fontWeight = '700';
+        headerRow.appendChild(thValue);
+
+        const thLocation = document.createElement('th');
+        thLocation.innerHTML = `<span data="SKU Link">(SKU) Location</span>`;
+        thLocation.style.minWidth = '200px';
+        thLocation.style.padding = '2rem';
+        thLocation.style.fontWeight = '700';
+        headerRow.appendChild(thLocation);
+
         thead.appendChild(headerRow);
         
         list.forEach(item => {
@@ -892,7 +920,7 @@ async function report_pictureMissingFull_init() {
                     return conditionA - conditionB;
                 });
             }
-
+            
             const row = document.createElement('tr');
 
             const idCell = document.createElement('td');
