@@ -873,6 +873,8 @@ async function report_pictureMissingFull_init() {
         const thead = document.createElement('thead');
         const tbody = document.createElement('tbody');
 
+        const headerRow = document.createElement('tr');
+        
         const thID = document.createElement('th');
         thID.innerHTML = `<span data="ID Link"></span>`;
         thID.style.minWidth = '200px';
