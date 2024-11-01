@@ -856,7 +856,7 @@ async function report_pictureMissingFull_init() {
         const thead = document.createElement('thead');
         const tbody = document.createElement('tbody');
         
-        const headers = ['ID', 'Product Name', 'Created Date', 'Value ($)'];
+        const headers = ['ID', 'Product Name', 'Created Date', 'Value ($)', 'Location'];
         const headerRow = document.createElement('tr');
         headers.forEach(header => {
             const th = document.createElement('th');
@@ -908,6 +908,22 @@ async function report_pictureMissingFull_init() {
             valueCell.style.minWidth = '200px';
             valueCell.style.padding = '0.75rem 2rem';
             row.appendChild(valueCell);
+
+            const locationCell = document.createElement('td');
+            if (item.items && Array.isArray(item.items) && item.items.length > 0) {
+                const skus = item.items.sort((a, b) => {
+                    const conditionA = parseInt(a.Condition.split('-')[0], 10);
+                    const conditionB = parseInt(b.Condition.split('-')[0], 10);
+                
+                    return conditionA - conditionB;
+                });
+                locationCell.textContent = `${skus.Full_Location}`;
+            } else {
+                locationCell.textContent = `N/a`;
+            }
+            locationCell.style.minWidth = '200px';
+            locationCell.style.padding = '0.75rem 2rem';
+            locationCell.appendChild(valueCell);
 
             tbody.appendChild(row);
         });
