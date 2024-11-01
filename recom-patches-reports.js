@@ -923,7 +923,7 @@ async function report_pictureMissingFull_init() {
             }
             locationCell.style.minWidth = '200px';
             locationCell.style.padding = '0.75rem 2rem';
-            locationCell.appendChild(valueCell);
+            row.appendChild(locationCell);
 
             tbody.appendChild(row);
         });
