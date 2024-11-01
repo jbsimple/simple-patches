@@ -637,16 +637,27 @@ async function report_getSpecial(request) {
 }
 
 function parseTableToCSV() {
-    const table = document.getElementById('recompatches-customreportTable')
+    const table = document.getElementById('recompatches-customreportTable');
     const rows = Array.from(table.querySelectorAll('tr'));
     const csvContent = rows.map(row => {
         const columns = Array.from(row.querySelectorAll('th,td'));
-        return columns.map(column => {
-        let cellData = column.textContent;
-        if (cellData.includes(',') || cellData.includes('"')) {
-            cellData = `"${cellData.replace(/"/g, '""')}"`; // Handle double quotes and commas
-        }
-        return cellData;
+        return columns.flatMap(column => {
+            let cellData = column.textContent;
+            let hrefData = '';
+
+            const link = column.querySelector('a');
+            if (link) {
+                hrefData = link.href;
+            }
+
+            if (cellData.includes(',') || cellData.includes('"')) {
+                cellData = `"${cellData.replace(/"/g, '""')}"`;
+            }
+            if (hrefData.includes(',') || hrefData.includes('"')) {
+                hrefData = `"${hrefData.replace(/"/g, '""')}"`;
+            }
+            
+            return [cellData, hrefData];
         }).join(',');
     }).join('\n');
 
@@ -658,6 +669,7 @@ function parseTableToCSV() {
     a.click();
     URL.revokeObjectURL(url);
 }
+
 
 async function report_pictureMissingFull_init() {
     const createButton = document.querySelector(`button[data-id="patches-reports-picturesMissingFull"]`);
