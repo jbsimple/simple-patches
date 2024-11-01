@@ -886,12 +886,14 @@ async function report_pictureMissingFull_init() {
             const idCell = document.createElement('td');
             if (item.SKU) {
                 const skuLink = document.createElement('a');
+                skuLink.title = `View SKU ${item.SKU}`;
                 skuLink.href = `/product/items/${item.SKU}`;
                 skuLink.textContent = item.SKU;
                 skuLink.target = "_blank";
                 idCell.appendChild(skuLink);
             } else if (item.SID) {
                 const sidLink = document.createElement('a');
+                sidLink.title = `View SID ${item.SID}`;
                 sidLink.href = `/products/${item.SID}`;
                 sidLink.textContent = item.SID;
                 sidLink.target = "_blank";
@@ -929,7 +931,7 @@ async function report_pictureMissingFull_init() {
                 
                     return conditionA - conditionB;
                 });
-                locationCell.textContent = `(${skus[0].SKU}) ${skus[0].Full_Location}`;
+                locationCell.innerHTML = `(<a title="View SKU ${skus[0].SKU}" href="/product/items/${skus[0].SKU}" target="_blank">${skus[0].SKU}</a>) ${skus[0].Full_Location}`;
             } else if (item.SKU) {
                 locationCell.textContent = `${item.Full_Location}`;
             } else {
