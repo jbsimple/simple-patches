@@ -636,33 +636,39 @@ async function report_getSpecial(request) {
     });
 }
 
-// this prints empty rows for each column if no link.
 function parseTableToCSV() {
     const table = document.getElementById('recompatches-customreportTable');
     const rows = Array.from(table.querySelectorAll('tr'));
-    const csvContent = rows.map(row => {
+
+    const firstRow = rows[0];
+    const headerColumns = Array.from(firstRow.querySelectorAll('th,td'));
+    const includeHrefInColumn = headerColumns.map(column => {
+        const span = column.querySelector('span');
+        return span && span.hasAttribute('data');
+    });
+
+    const csvContent = rows.map((row, rowIndex) => {
         const columns = Array.from(row.querySelectorAll('th,td'));
-        return columns.flatMap(column => {
+        return columns.flatMap((column, colIndex) => {
             let cellData = column.textContent;
             let hrefData = '';
 
             const link = column.querySelector('a');
             const span = column.querySelector('span');
-            if (link && link.href) {
+            if (link && link.href && (includeHrefInColumn[colIndex] || rowIndex === 0)) {
                 hrefData = link.href;
-            } else if (span && span.hasAttribute('data')) {
+            } else if (span && span.hasAttribute('data') && (includeHrefInColumn[colIndex] || rowIndex === 0)) {
                 hrefData = span.getAttribute('data');
             }
-            
 
             if (cellData.includes(',') || cellData.includes('"')) {
                 cellData = `"${cellData.replace(/"/g, '""')}"`;
             }
-            if (hrefData.includes(',') || hrefData.includes('"')) {
+            if (hrefData && (hrefData.includes(',') || hrefData.includes('"'))) {
                 hrefData = `"${hrefData.replace(/"/g, '""')}"`;
             }
-            
-            return [cellData, hrefData];
+
+            return includeHrefInColumn[colIndex] ? [cellData, hrefData] : [cellData];
         }).join(',');
     }).join('\n');
 
@@ -674,6 +680,7 @@ function parseTableToCSV() {
     a.click();
     URL.revokeObjectURL(url);
 }
+
 
 
 async function report_pictureMissingFull_init() {
