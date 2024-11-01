@@ -647,9 +647,13 @@ function parseTableToCSV() {
             let hrefData = '';
 
             const link = column.querySelector('a');
-            if (link) {
+            const span = column.querySelector('span');
+            if (link && link.href) {
                 hrefData = link.href;
+            } else if (span && span.hasAttribute('data')) {
+                hrefData = span.getAttribute('data');
             }
+            
 
             if (cellData.includes(',') || cellData.includes('"')) {
                 cellData = `"${cellData.replace(/"/g, '""')}"`;
@@ -882,6 +886,16 @@ async function report_pictureMissingFull_init() {
         thead.appendChild(headerRow);
         
         list.forEach(item => {
+            let skus = null;
+            if (item.items && Array.isArray(item.items) && item.items.length > 0) {
+                skus = item.items.sort((a, b) => {
+                    const conditionA = parseInt(a.Condition.split('-')[0], 10);
+                    const conditionB = parseInt(b.Condition.split('-')[0], 10);
+                
+                    return conditionA - conditionB;
+                });
+                dateCell.innerHTML = `<span data="${skus[0].Created_Date}">${item.Created_Date}</span>`
+            }
             const row = document.createElement('tr');
 
             const idCell = document.createElement('td');
@@ -913,7 +927,11 @@ async function report_pictureMissingFull_init() {
             row.appendChild(nameCell);
 
             const dateCell = document.createElement('td');
-            dateCell.textContent = item.Created_Date;
+            if (skus !== null) {
+                dateCell.innerHTML = `<span data="${skus[0].Created_Date}">${item.Created_Date}</span>`
+            } else {
+                dateCell.textContent = item.Created_Date;
+            }
             dateCell.style.minWidth = '200px';
             dateCell.style.padding = '0.75rem 2rem';
             row.appendChild(dateCell);
@@ -925,13 +943,7 @@ async function report_pictureMissingFull_init() {
             row.appendChild(valueCell);
 
             const locationCell = document.createElement('td');
-            if (item.items && Array.isArray(item.items) && item.items.length > 0) {
-                const skus = item.items.sort((a, b) => {
-                    const conditionA = parseInt(a.Condition.split('-')[0], 10);
-                    const conditionB = parseInt(b.Condition.split('-')[0], 10);
-                
-                    return conditionA - conditionB;
-                });
+            if (skus !== null) {
                 locationCell.innerHTML = `(<a title="View SKU ${skus[0].SKU}" href="/product/items/${skus[0].SKU}" target="_blank">${skus[0].SKU}</a>) ${skus[0].Full_Location}`;
             } else if (item.SKU) {
                 locationCell.textContent = `${item.Full_Location}`;
