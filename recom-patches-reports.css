@@ -5,6 +5,7 @@
     }
 
     .flex-lg-row .d-flex.flex-column {
-        width: 100%;
+        width: 100% !important;
+        margin: 0 auto !important;
     }
 }
