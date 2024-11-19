@@ -96,3 +96,8 @@ div.dataTables_wrapper div.dataTables_processing {
 .d-flex.align-items-center.ms-3.ms-lg-4.d-sm-block.d-none {
   flex-shrink: 0;
 }
+
+.menu.menu-sub.menu-sub-dropdown.menu-column.menu-rounded.w-300px {
+  width: unset !important;
+  max-width: 400px !important;
+}
