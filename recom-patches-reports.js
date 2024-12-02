@@ -278,21 +278,20 @@ function report_initHTML(det) {
             </span>`;
 
         const userInput = document.createElement('input');
-        if (det.input && det.input === 'text') {
+        if (det.input && det.input === 'date') {
             userInput.setAttribute('name', 'patches-userInput-dateListing');
             userInput.setAttribute('id', `${det.id}-input`);
-            userInput.setAttribute('type', 'text');
-            userInput.setAttribute('autocomplete', 'false');
-            userInput.classList.add('form-control');
-            userInput.classList.add('rounded-1');
-            userInput.setAttribute('style', 'width: unset;');
+            userInput.setAttribute('type', 'date');
+            userInput.setAttribute('autocomplete', 'off');
+            userInput.classList.add('form-control', 'rounded-1');
+            userInput.style.width = 'unset';
 
             if (det.val && det.val === "today") {
                 const today = new Date();
+                const yyyy = today.getFullYear();
                 const mm = String(today.getMonth() + 1).padStart(2, '0');
                 const dd = String(today.getDate()).padStart(2, '0');
-                const yyyy = today.getFullYear();
-                userInput.setAttribute('value', `${mm}/${dd}/${yyyy}`);
+                userInput.value = `${yyyy}-${mm}-${dd}`;
             }
         }
 
@@ -336,7 +335,7 @@ function report_preset(name) {
         details.id = `patches-reports-listing_productivity`;
         details.name = `patches-userInput-dateListing`;
         details.func = `report_listingProducivity_submit();`;
-        details.input = "text";
+        details.input = "date";
         details.val = "today";
         details.desc = "Generate a productivity report for Listing.<br>Date Entry Format: mm/dd/yyyy (leading 0s).";
         details.title = "Listing Productivity";
@@ -346,7 +345,7 @@ function report_preset(name) {
         details.id = `patches-reports-marketing_productivity`;
         details.name = `patches-userInput-dateMarketing`;
         details.func = `report_marketingProducivity_submit();`;
-        details.input = "text";
+        details.input = "date";
         details.val = "today";
         details.desc = "Generate a productivity report for Marketing.<br>Date Entry Format: mm/dd/yyyy (leading 0s).";
         details.title = "Marketing Productivity";
@@ -388,7 +387,22 @@ function formatDate(date) {
 }
 
 function report_listingProducivity_submit() {
-    var date = document.getElementById('patches-reports-listing_productivity-input').value;
+    const dateInput = document.getElementById('patches-reports-listing_productivity-input');
+    var date = null;
+    if (dateInput) {
+        const rawValue = dateInput.value; // yyyy-mm-dd
+        if (rawValue) {
+            const [yyyy, mm, dd] = rawValue.split('-'); // Split the value
+            date = `${mm}/${dd}/${yyyy}`; // Format to mm/dd/yyyy
+        } else {
+            console.error('No Date Input (2)', rawValue);
+            return false;
+        }
+    } else {
+        console.error('No Date Input (1)', dateInput);
+        return false;
+    }
+
     const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
     
     var request = {
@@ -436,7 +450,21 @@ function report_listingProducivity_submit() {
 }
 
 function report_marketingProducivity_submit() {
-    var date = document.getElementById('patches-reports-marketing_productivity-input').value;
+    const dateInput = document.getElementById('patches-reports-marketing_productivity-input');
+    var date = null;
+    if (dateInput) {
+        const rawValue = dateInput.value; // yyyy-mm-dd
+        if (rawValue) {
+            const [yyyy, mm, dd] = rawValue.split('-'); // Split the value
+            date = `${mm}/${dd}/${yyyy}`; // Format to mm/dd/yyyy
+        } else {
+            console.error('No Date Input (2)', rawValue);
+            return false;
+        }
+    } else {
+        console.error('No Date Input (1)', dateInput);
+        return false;
+    }
     const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
     
     var request = {
