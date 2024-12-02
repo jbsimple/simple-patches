@@ -93,7 +93,9 @@ function modifiedClockInit() {
 }
 
 function modifiedClock(task) {
-	if (confirm("You are about to Clock out, Time will Record Automatically")) {
+    const notes = prompt('You are about to clock out, enter notes below or leave blank.');
+
+	if (notes !== null) {
 		var action = "OFF_SYSTEM";
 		if (task && task !== '') {
 			action = task;
@@ -107,7 +109,7 @@ function modifiedClock(task) {
             csrf_recom: $('meta[name="X-CSRF-TOKEN"]').attr("content"),
                 "clock_activity[activity_code]": action,
                 "clock_activity[units]": "0",
-                "clock_activity[notes]": "Off System Clock Out",
+                "clock_activity[notes]": notes || "Off System Clock Out",
                 "clock_activity[clock_out]": "1"
             },
             headers: {
