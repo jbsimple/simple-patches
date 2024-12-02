@@ -337,7 +337,7 @@ function report_preset(name) {
         details.func = `report_listingProducivity_submit();`;
         details.input = "date";
         details.val = "today";
-        details.desc = "Generate a productivity report for Listing.<br>Date Entry Format: mm/dd/yyyy (leading 0s).";
+        details.desc = "Generate a productivity report for Listing.<br>Click the calendar icon to select date or double click numbers and type date.";
         details.title = "Listing Productivity";
         return report_initHTML(details);
     } else if (name === 'marketing_productivity') {
@@ -347,7 +347,7 @@ function report_preset(name) {
         details.func = `report_marketingProducivity_submit();`;
         details.input = "date";
         details.val = "today";
-        details.desc = "Generate a productivity report for Marketing.<br>Date Entry Format: mm/dd/yyyy (leading 0s).";
+        details.desc = "Generate a productivity report for Marketing.<br>Click the calendar icon to select date or double click numbers and type date.";
         details.title = "Marketing Productivity";
         return report_initHTML(details);
     } else if (name === 'picture_missingSpecial') {
@@ -390,10 +390,10 @@ function report_listingProducivity_submit() {
     const dateInput = document.getElementById('patches-reports-listing_productivity-input');
     var date = null;
     if (dateInput) {
-        const rawValue = dateInput.value; // yyyy-mm-dd
+        const rawValue = dateInput.value;
         if (rawValue) {
-            const [yyyy, mm, dd] = rawValue.split('-'); // Split the value
-            date = `${mm}/${dd}/${yyyy}`; // Format to mm/dd/yyyy
+            const [yyyy, mm, dd] = rawValue.split('-');
+            date = `${mm}/${dd}/${yyyy}`;
         } else {
             console.error('No Date Input (2)', rawValue);
             return false;
@@ -453,10 +453,10 @@ function report_marketingProducivity_submit() {
     const dateInput = document.getElementById('patches-reports-marketing_productivity-input');
     var date = null;
     if (dateInput) {
-        const rawValue = dateInput.value; // yyyy-mm-dd
+        const rawValue = dateInput.value;
         if (rawValue) {
-            const [yyyy, mm, dd] = rawValue.split('-'); // Split the value
-            date = `${mm}/${dd}/${yyyy}`; // Format to mm/dd/yyyy
+            const [yyyy, mm, dd] = rawValue.split('-');
+            date = `${mm}/${dd}/${yyyy}`;
         } else {
             console.error('No Date Input (2)', rawValue);
             return false;
