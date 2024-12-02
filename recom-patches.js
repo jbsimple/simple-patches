@@ -1,4 +1,4 @@
-const version = '12-02-2024__1';
+const version = '12-02-2024__2';
 
 const nav_sidebar = document.getElementById('kt_app_sidebar_navs_wrappers');
 if (nav_sidebar) {
@@ -61,6 +61,70 @@ if (statcardfix && statcardfix.length === 3 && getTheme() === 'dark') {
 }
 
 /* end of theme stuff */
+
+/* clock in stuff */
+$(document).ready(function() {
+    modifiedClockInit();
+});
+
+function modifiedClockInit() {
+	const recordTime_button = document.querySelector('a[data-url="productivity/record"]');
+	if (recordTime_button) {
+		const recordTime_parent = recordTime_button.parentElement;
+		if (recordTime_parent) {
+			const taskHTML = recordTime_button.nextSibling.innerHTML;
+			const tempDiv = document.createElement("div");
+			tempDiv.innerHTML = taskHTML;
+			const task = tempDiv.textContent.trim().replace("Clock out -", "").trim();
+			
+			const newButton = document.createElement('a');
+      newButton.className = 'btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-warning me-2';
+      newButton.href = `javascript:modifiedClock('${task}');`;
+      newButton.innerHTML = '<i class="bi bi-stopwatch-fill fs-2"></i> Record Clock Out';
+      newButton.title = 'Off System: Clock Out';
+      // newButton.setAttribute('onclick', 'modifiedClock();');
+
+      recordTime_button.innerHTML = '<i class="bi bi-hourglass fs-2"></i> Record Time';
+      recordTime_button.title = 'Off System: Record Time';
+      
+      recordTime_parent.insertBefore(newButton, recordTime_button.nextSibling);
+		}
+	}
+}
+
+function modifiedClock(task) {
+	if (confirm("You are about to Clock out, Time will Record Automatically")) {
+		var action = "OFF_SYSTEM";
+		if (task && task !== '') {
+			action = task;
+		}
+
+		$.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "/productivity/record",
+            data: {
+            csrf_recom: $('meta[name="X-CSRF-TOKEN"]').attr("content"),
+                "clock_activity[activity_code]": action,
+                "clock_activity[units]": "0",
+                "clock_activity[notes]": "Off System Clock Out",
+                "clock_activity[clock_out]": "1"
+            },
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="X-CSRF-TOKEN"]').attr("content"),
+            },
+        })
+        .done(function (data) {
+            apiResponseAlert(data);
+        })
+        .fail(function (error) {
+            console.log("FAIL", error);
+            ajaxFailAlert(error);
+        });
+    }
+}
+
+/* end of clock in stuff */
 
 document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches.css?v=' + Date.now() + '" type="text/css"/>';
 let script_patch = document.createElement('script');
