@@ -79,7 +79,7 @@ function modifiedClockInit() {
 			tempDiv.innerHTML = taskHTML;
 			const task = tempDiv.textContent.trim().replace("Clock out -", "").trim();
 
-            clockButton.innerHTML = `<i class="bi bi-stopwatch-fill fs-2 mobilefix"></i><span class="mobilefix">CLock Out - ${task}</span>`;
+            clockButton.innerHTML = `<i class="bi bi-stopwatch-fill fs-2 mobilefix"></i><span class="mobilefix">Clock Out - ${task}</span>`;
 			
 			const newButton = document.createElement('a');
             newButton.className = 'btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-warning me-2';
