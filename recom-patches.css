@@ -5,12 +5,22 @@
   padding-top: calc(var(--bs-btn-padding-y) + 1px);
 }
 
-.app-navbar-item a.btn.btn-outline i.fs-2 {
+.app-navbar-item a.btn.btn-outline i.fs-2.mobilefix {
   margin-right: 0.15rem;
 }
 
 @media (max-width: 1399px) {
-  .app-navbar-item a.btn.btn-outline i.fs-2 {
+  .app-navbar-item a.btn.btn-outline i.fs-2.mobilefix {
+    display: none !important;
+  }
+}
+
+@media (max-width: 1279px) {
+  .app-navbar-item a.btn.btn-outline i.fs-2.mobilefix {
+    display: inherit !important;
+  }
+
+  .app-navbar-item a.btn.btn-outline span.mobilefix {
     display: none !important;
   }
 }
