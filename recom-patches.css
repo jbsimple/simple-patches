@@ -1,4 +1,4 @@
-.app-navbar-item a.btn{
+.app-navbar-item a.btn.btn-outline {
 	margin-right: 0.5rem !important;
   display: inline-flex;
   align-items: center;
