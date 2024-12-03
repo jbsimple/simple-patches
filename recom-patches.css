@@ -6,7 +6,13 @@
 }
 
 .app-navbar-item a.btn.btn-outline i.fs-2 {
-  margin-right: 0.5rem;
+  margin-right: 0.15rem;
+}
+
+@media (max-width: 899px) {
+  .app-navbar-item a.btn.btn-outline i.fs-2 {
+    display: none !important;
+  }
 }
 
 .ms-lg-4 {
