@@ -44,3 +44,7 @@ Enhancements:
 - On all pages; CSS fix to get rid of light mode logo.
 - On all pages; CSS fix (that I shouldn't have to do) to fix page height issues not filling the full background.
 - On all pages; CSS fixes to alter some colors for better dark mode enhancement.
+- On all pages; Added new button to quickly clock out and record time at the same time.
+  - The activity name mirrors the clock task.
+  - Field to input notes.
+- On all pages; CSS additions to header and clock buttons to handle the additional buttons.
