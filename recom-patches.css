@@ -1,5 +1,7 @@
-.me-2 {
-	margin-right: 1rem !important;
+.app-navbar-item a.btn{
+	margin-right: 0.5rem !important;
+  display: inline-flex;
+  align-items: center;
 }
 
 .ms-lg-4 {
