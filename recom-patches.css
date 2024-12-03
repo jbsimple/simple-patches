@@ -9,7 +9,7 @@
   margin-right: 0.15rem;
 }
 
-@media (max-width: 13999px) {
+@media (max-width: 1399px) {
   .app-navbar-item a.btn.btn-outline i.fs-2.mobilefix {
     display: inherit !important;
   }
