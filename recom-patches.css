@@ -5,10 +5,6 @@
   padding-top: calc(var(--bs-btn-padding-y) + 1px);
 }
 
-.card-body .btn {
-  margin: 1rem;
-}
-
 .ms-lg-4 {
 	margin-right: 1rem !important;
 }
