@@ -1,6 +1,12 @@
+.btn {
+  margin: 0.5rem;
+}
+
 .app-navbar-item a.btn{
 	margin-right: 0.5rem !important;
   display: inline-flex;
+  align-items: center;
+  padding-top: calc(var(--bs-btn-padding-y) + 1px);
 }
 
 .ms-lg-4 {
