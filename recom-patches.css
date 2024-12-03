@@ -5,6 +5,10 @@
   padding-top: calc(var(--bs-btn-padding-y) + 1px);
 }
 
+.app-navbar-item a.btn.btn-outline i.fs-2 {
+  margin-right: 0.5rem;
+}
+
 .ms-lg-4 {
 	margin-right: 0.5rem !important;
 }

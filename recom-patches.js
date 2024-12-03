@@ -72,22 +72,26 @@ function modifiedClockInit() {
 	if (recordTime_button) {
 		const recordTime_parent = recordTime_button.parentElement;
 		if (recordTime_parent) {
-			const taskHTML = recordTime_button.nextSibling.innerHTML;
+            const clockButton = recordTime_button.nextSibling;
+            
+			const taskHTML = clockButton.innerHTML;
 			const tempDiv = document.createElement("div");
 			tempDiv.innerHTML = taskHTML;
 			const task = tempDiv.textContent.trim().replace("Clock out -", "").trim();
+
+            clockButton.innerHTML = `<i class="bi bi-stopwatch-fill fs-2"></i>CLock Out - ${task}`;
 			
 			const newButton = document.createElement('a');
-      newButton.className = 'btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-warning me-2';
-      newButton.href = `javascript:modifiedClock('${task}');`;
-      newButton.innerHTML = '<i class="bi bi-stopwatch-fill fs-2"></i> Record Clock Out';
-      newButton.title = 'Off System: Clock Out';
-      // newButton.setAttribute('onclick', 'modifiedClock();');
+            newButton.className = 'btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-warning me-2';
+            newButton.href = `javascript:modifiedClock('${task}');`;
+            newButton.innerHTML = '<i class="bi bi-stopwatch-fill fs-2"></i>Record Clock Out';
+            newButton.title = 'Off System: Clock Out';
+            // newButton.setAttribute('onclick', 'modifiedClock();');
 
-      recordTime_button.innerHTML = '<i class="bi bi-hourglass fs-2"></i> Record Time';
-      recordTime_button.title = 'Off System: Record Time';
-      
-      recordTime_parent.insertBefore(newButton, recordTime_button.nextSibling);
+            recordTime_button.innerHTML = '<i class="bi bi-hourglass fs-2"></i>Record Time';
+            recordTime_button.title = 'Off System: Record Time';
+            
+            recordTime_parent.insertBefore(newButton, recordTime_button.nextSibling);
 		}
 	}
 }
