@@ -16,10 +16,20 @@ function fixSimilarProduct() {
     const newTitleInput = titleInput.cloneNode(true);
     titleInput.parentNode.replaceChild(newTitleInput, titleInput);
 
+    const divRow = document.createElement('div');
+    divRow.setAttribute('style', 'display: inline-flex; flex-direction: row; align-items: center;');
+
     const charCountSpan = document.createElement("span");
     charCountSpan.textContent = "0 / 80";
-    newTitleInput.parentNode.insertBefore(charCountSpan, newTitleInput.nextSibling);
-    const styles = 'padding: 1.5rem; border-radius: 0.75rem; font-weight: 700; color: white; margin-top: 0.5rem;';
+    divRow.appendChild(charCountSpan);
+
+    const spacer = document.createElement('div');
+    spacer.setAttribute('style', 'flex: 1;');
+    divRow.appendChild(spacer);
+
+    newTitleInput.parentNode.insertBefore(divRow, newTitleInput.nextSibling);
+
+    const styles = 'padding: 0.75rem; border-radius: 0.25rem; font-weight: 700; color: white; margin-top: 0.5rem;';
     newTitleInput.addEventListener("input", () => {
         if (newTitleInput.value.length > 80) {
             charCountSpan.setAttribute('style', `background-color: var(--bs-danger) !important; ${styles}`);
