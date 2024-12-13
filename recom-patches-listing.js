@@ -19,8 +19,10 @@ function fixSimilarProduct() {
     const divRow = document.createElement('div');
     divRow.setAttribute('style', 'display: inline-flex; flex-direction: row; align-items: center;');
 
+    const styles = 'margin-left: 0.5rem; padding: 0.5rem; border-radius: 0 0 0.5rem 0.5rem; font-weight: 700; color: white;';
     const charCountSpan = document.createElement("span");
     charCountSpan.textContent = "0 / 80";
+    charCountSpan.setAttribute('style', `background-color: var(--bs-info-active) !important; ${styles}`);
     divRow.appendChild(charCountSpan);
 
     const spacer = document.createElement('div');
@@ -29,7 +31,6 @@ function fixSimilarProduct() {
 
     newTitleInput.parentNode.insertBefore(divRow, newTitleInput.nextSibling);
 
-    const styles = 'margin-left: 0.5rem; padding: 0.5rem; border-radius: 0 0 0.5rem 0.5rem; font-weight: 700; color: white;';
     newTitleInput.addEventListener("input", () => {
         if (newTitleInput.value.length === 80) {
             charCountSpan.setAttribute('style', `background-color: var(--bs-danger) !important; ${styles}`);
