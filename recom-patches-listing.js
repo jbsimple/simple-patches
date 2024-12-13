@@ -17,10 +17,15 @@ function fixSimilarProduct() {
     titleInput.parentNode.replaceChild(newTitleInput, titleInput);
 
     const charCountSpan = document.createElement("span");
-    charCountSpan.style.marginLeft = "10px"; // Add some spacing
     charCountSpan.textContent = "0 / 80";
     newTitleInput.parentNode.insertBefore(charCountSpan, newTitleInput.nextSibling);
+    const styles = 'padding: 1.5rem; border-radius: 0.75rem; font-weight: 700; color: white; margin-top: 0.5rem;';
     newTitleInput.addEventListener("input", () => {
+        if (newTitleInput.value.length > 80) {
+            charCountSpan.setAttribute('style', `background-color: var(--bs-danger) !important; ${styles}`);
+        } else {
+            charCountSpan.setAttribute('style', `background-color: var(--bs-info-active) !important; ${styles}`);
+        }
         charCountSpan.textContent = `${newTitleInput.value.length} / 80`;
     });
 }
