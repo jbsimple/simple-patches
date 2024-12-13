@@ -31,7 +31,7 @@ function fixSimilarProduct() {
 
     const styles = 'margin-left: 1rem; padding: 0.65rem; border-radius: 0 0 0.5rem 0.5rem; font-weight: 700; color: white;';
     newTitleInput.addEventListener("input", () => {
-        if (newTitleInput.value.length > 80) {
+        if (newTitleInput.value.length === 80) {
             charCountSpan.setAttribute('style', `background-color: var(--bs-danger) !important; ${styles}`);
         } else {
             charCountSpan.setAttribute('style', `background-color: var(--bs-info-active) !important; ${styles}`);
