@@ -10,10 +10,21 @@ var curGTIN = null;
 
 var generateButton = document.querySelector('a[href="javascript:generateGtin();"]');
 
-// No more similar product
-const titleInput = document.querySelector('[name="product[name]"]');
-const newTitleInput = titleInput.cloneNode(true);
-titleInput.parentNode.replaceChild(newTitleInput, titleInput);
+function fixSimilarProduct() {
+    const titleInput = document.querySelector('[name="product[name]"]');
+    
+    const newTitleInput = titleInput.cloneNode(true);
+    titleInput.parentNode.replaceChild(newTitleInput, titleInput);
+
+    const charCountSpan = document.createElement("span");
+    charCountSpan.style.marginLeft = "10px"; // Add some spacing
+    charCountSpan.textContent = "0 / 80";
+    newTitleInput.parentNode.insertBefore(charCountSpan, newTitleInput.nextSibling);
+    newTitleInput.addEventListener("input", () => {
+        charCountSpan.textContent = `${newTitleInput.value.length} / 80`;
+    });
+}
+fixSimilarProduct();
 
 // https://stackoverflow.com/questions/13605340/how-to-validate-a-ean-gtin-barcode-in-javascript
 // There are more checks in place for valid gtins I guess.
