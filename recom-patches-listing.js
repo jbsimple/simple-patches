@@ -40,7 +40,6 @@ function fixSimilarProduct() {
         charCountSpan.textContent = `${newTitleInput.value.length} / 80`;
     });
 }
-fixSimilarProduct();
 
 // https://stackoverflow.com/questions/13605340/how-to-validate-a-ean-gtin-barcode-in-javascript
 // There are more checks in place for valid gtins I guess.
