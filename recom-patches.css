@@ -1,3 +1,8 @@
+body {
+  overflow: hidden;
+  overflow-y: auto;
+}
+
 .app-navbar-item a.btn.btn-outline {
 	margin-right: 0.5rem !important;
   display: inline-flex;
