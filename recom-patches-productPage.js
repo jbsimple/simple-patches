@@ -101,23 +101,22 @@ if (dropbox) {
     };
 }
 
-async function openAllImages() {
+function openAllImages() {
     if (imageElements && imageElements.length > 0) {
         console.debug('Opening all images:', imageElements);
         
         for (let i = 0; i < imageElements.length; i++) {
             const imageElement = imageElements[i];
             const url = imageElement.href;
-            console.debug(imageElement);
             if (url) {
-                await new Promise(resolve => {
+                setTimeout(() => {
                     window.open(url, '_blank');
-                    setTimeout(resolve, 500);
-                });
+                }, i * 500);
             }
         }
     }
 }
+
 
 
 if (media_tab && media_tree) {
