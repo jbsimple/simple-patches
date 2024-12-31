@@ -103,6 +103,7 @@ if (dropbox) {
 
 function openAllImages() {
     if (imageElements && imageElements.length > 0) {
+        console.debug('Opening all images:', imageElements);
         imageElements.forEach((imageElement, index) => {
             const url = imageElement.href;
             if (url) {
