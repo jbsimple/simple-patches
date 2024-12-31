@@ -25,6 +25,7 @@ Enhancements:
 - On product and item pages; Fix to prevent newly uploaded images when clicked to default a-tag behavior. It also opens in a new tab.
 - On product and item pages; Fix to prevent navigation away while images are still uploading.
 - On product and item pages; Added button to open all images in new tabs (enable popups in browser for it to work).
+- On product and item pages; Added a popups check message next to the above button.
 - On item pages; CSS fix to have the inventory tab larger so you can see more.
 - On listing page; A warning for when the GTIN is invalid and needs to be regenerated before going to the last step.
 - On listing page; A warning for when the GTIN is changed to remind the user to replace the old label with a new one.

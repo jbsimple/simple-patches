@@ -103,12 +103,12 @@ if (dropbox) {
 
 function openAllImages() {
     if (imageElements && imageElements.length > 0) {
-        console.debug('Opening all images by simulating clicks with delay:', imageElements);
+        console.debug('Patches: Opening all images by simulating clicks with delay:', imageElements);
 
         for (let i = 0; i < imageElements.length; i++) {
             setTimeout(() => {
                 const imageElement = imageElements[i];
-                console.debug(`Simulating click for URL: ${imageElement.href}`);
+                console.debug(`Patches: Simulating click for URL: ${imageElement.href}`);
                 imageElement.click();
             }, i * 50);
         }
@@ -155,10 +155,10 @@ if (media_tab && media_tree) {
 function checkPopup() {
     const popupStatus = getCookie("popupsEnabled");
     if (popupStatus === "true") {
-        console.log("Popups are enabled (from cookie).");
+        console.debug("Patches: Popups are enabled (from cookie).");
         return true;
     } else if (popupStatus === "false") {
-        console.log("Popups are disabled (from cookie).");
+        console.debug("Patches: Popups are disabled (from cookie).");
         return false;
     }
 
