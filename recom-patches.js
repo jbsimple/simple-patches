@@ -99,7 +99,7 @@ function modifiedClockInit() {
 function modifiedClock(task) {
     const modal = `<style>
         #patch_clockout_fullModal .modal-content {
-            transform: translateY(-25vh) !important;
+            transform: translateY(-15vh) !important;
             opacity: 0.25 !important;
             transition: all 0.1s ease !important;
         }
