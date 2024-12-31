@@ -126,19 +126,24 @@ if (media_tab && media_tree) {
     if (imageElements.length > 0) {
 
         // test for popups that sucks
-        let popupTest = null;
+        let isPopupBlocked = false;
         try {
-            popupTest = window.open('', '_blank');
-            if (popupTest) {
-                popupTest.close();
+            const options = 'width=100,height=100,left=100,top=100,resizable=yes';
+            const testWindow = window.open('', '', options);
+            if (!testWindow || testWindow.closed || typeof testWindow.closed === 'undefined') {
+                isPopupBlocked = true;
             } else {
-                throw new Error('Popups blocked');
+                testWindow.close();
             }
         } catch (e) {
+            isPopupBlocked = true;
+        }
+
+        if (isPopupBlocked) {
             var button_label = document.createElement('label');
             button_label.for = 'patch_openAllImages';
             button_label.textContent = '(Enable Popups):';
-            button_label.setAttribute('style', 'color: var(--bs-danger); font-weight: 500');
+            button_label.setAttribute('style', 'color: var(--bs-danger); font-weight: 500; font-size: 1.1rem;');
             newElement.appendChild(button_label);
         }
 
