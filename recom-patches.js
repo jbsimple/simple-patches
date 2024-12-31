@@ -97,7 +97,20 @@ function modifiedClockInit() {
 }
 
 function modifiedClock(task) {
-    const modal = `<div class="modal fade" id="patch_clockout_fullModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true" role="dialog" style="display: none; background: rgba(0, 0, 0, .4) !important;">
+    const modal = `<style>
+    #patch_clockout_fullModal .modal-content {
+        transform: translateY(25vh);
+        opacity: 0.25;
+        transition: all 0.1s ease;
+    }
+
+    #patch_clockout_fullModal.show .modal-content {
+        transform: unset !important;
+        opacity: 1.0 !important;
+    }
+
+    </style>
+    <div class="modal fade" id="patch_clockout_fullModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true" role="dialog" style="display: none; background: rgba(0, 0, 0, .4) !important;">
         <div class="modal-dialog modal-dialog-centered mw-650px">
             <div class="modal-content rounded">
                 <div class="modal-header">
