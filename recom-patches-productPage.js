@@ -188,7 +188,7 @@ function checkPopup() {
     }
     
     function getCookie(name) {
-        const nameEQ = name + "=";
+        const nameEQ = `patch_${name}` + "=";
         const cookies = document.cookie.split(';');
         for (let i = 0; i < cookies.length; i++) {
             let cookie = cookies[i];
