@@ -97,7 +97,7 @@ function modifiedClockInit() {
 }
 
 function modifiedClock(task) {
-    const modal = `<div class="modal fade" id="patch_clockout_fullModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true" role="dialog" style="background: rgba(0, 0, 0, .4) !important;">
+    const modal = `<div class="modal fade" id="patch_clockout_fullModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true" role="dialog" style="display: none; background: rgba(0, 0, 0, .4) !important;">
         <div class="modal-dialog modal-dialog-centered mw-650px">
             <div class="modal-content rounded">
                 <div class="modal-header">
@@ -115,7 +115,7 @@ function modifiedClock(task) {
                     <div class="d-flex flex-column mb-8">
                         <label class="fs-6 fw-bold mb-2">You are about to clock out!</label>
                         <label class="fs-6 fw-semibold form-label">Type notes below and clock out while recording time.</label>
-                        <label class="fs-6 fw-semibold form-label">* Please Note: Activity Code will be a mirror of the task name.</label>
+                        <label class="fs-6 fw-semibold form-label">* Please Note: Activity Code will be a mirror of the task name, units will be 0, and no PO will be attached.</label>
                     </div>
                     <div class="d-flex flex-column mb-8">
                         <label class="fs-6 fw-bold mb-2" for="patch-clockout-textarea-notes">Notes:</label>
