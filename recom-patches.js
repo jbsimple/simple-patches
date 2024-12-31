@@ -97,7 +97,7 @@ function modifiedClockInit() {
 }
 
 function modifiedClock(task) {
-    const modal = `<div class="modal fade" id="patch_clockout_fullModal" data-bs-backdrop="static" tabindex="-1" aria-modal="true" role="dialog" style="background: rgba(0, 0, 0, .4) !important;">
+    const modal = `<div class="modal fade" id="patch_clockout_fullModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true" role="dialog" style="background: rgba(0, 0, 0, .4) !important;">
         <div class="modal-dialog modal-dialog-centered mw-650px">
             <div class="modal-content rounded">
                 <div class="modal-header">
@@ -198,6 +198,8 @@ function modifiedClock(task) {
         if (newModal) {
             newModal.style.display = 'block';
             newModal.classList.add('show');
+            newModal.removeAttribute('aria-hidden');
+            newModal.setAttribute('aria-modal', 'true');
         }
 
     } else {
