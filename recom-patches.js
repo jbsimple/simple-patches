@@ -97,12 +97,12 @@ function modifiedClockInit() {
 }
 
 function modifiedClock(task) {
-    const modal = `<div class="modal fade show" data-bs-backdrop="static" tabindex="-1" aria-modal="true" role="dialog" style="display: block;">
+    const modal = `<div class="modal fade show" id="patch_clockout_fullModal" data-bs-backdrop="static" tabindex="-1" aria-modal="true" role="dialog" style="display: block;">
         <div class="modal-dialog modal-dialog-centered mw-650px">
             <div class="modal-content rounded">
                 <div class="modal-header">
                     <h2 class="fw-bolder">Record Clock Out</h2>
-                    <div class="btn btn-icon btn-sm btn-active-icon-primary" data-bs-dismiss="modal">
+                    <div class="btn btn-icon btn-sm btn-active-icon-primary" id="patches_clockout_close">
                         <span class="svg-icon svg-icon-1">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                                 <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
@@ -111,7 +111,6 @@ function modifiedClock(task) {
                         </span>
                     </div>
                 </div>
-                <div class="separator my-10"></div>
                 <div class="modal-body scroll-y px-10 px-lg-15 pt-0 pb-15">
                     <div class="d-flex flex-column mb-8">
                         <label class="fs-6 fw-bold mb-2">You are about to clock out!</label>
@@ -182,6 +181,17 @@ function modifiedClock(task) {
                 } 
             };
         }
+
+        const close = document.getElementById('patches_clockout_close');
+        if (close) {
+            close.onclick = function() {
+                const fullModal = document.getElementById('patch_clockout_fullModal');
+                if (fullModal) {
+                    fullModal.remove();
+                }
+            };
+        }
+
     } else {
         console.error("Element with ID 'rc_ajax_modal' not found.");
     }
