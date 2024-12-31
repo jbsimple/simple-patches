@@ -84,23 +84,21 @@ if (media_tree) {
     observer.observe(media_tree, { childList: true, subtree: true });
 }
 
-// adding in a preventative measure to dissalow navigating away while images aqre uploading.
 const dropbox = document.getElementById('rc_product_media');
+
 if (dropbox) {
     const expectedClasses = ['dropzone', 'dz-clickable'];
-    const hasExactClasses = 
-        dropbox.classList.length === expectedClasses.length &&
-        expectedClasses.every(cls => dropbox.classList.contains(cls));
 
-    if (!hasExactClasses) {
-        window.onbeforeunload = function () {
+    window.onbeforeunload = function () {
+        const hasExactClasses = 
+            dropbox.classList.length === expectedClasses.length &&
+            expectedClasses.every(cls => dropbox.classList.contains(cls));
+
+        if (!hasExactClasses) {
             return "Are you sure you want to leave? Images are still uploading.";
-        };
-    } else {
-        window.onbeforeunload = null;
-    }
-    // if the classlist of the dropbox is ANYTHING but the default state, don't allow navigation away.
-    // even after images are done being uploaded, the dropbox reverts back to this classlist.
-    // its only changed when dragging or there actually is something uploaded.
-    // not a perfect catch-all solution but it should work for this specific instance
+        }
+
+        // Returning undefined allows the navigation to proceed without the prompt.
+        return undefined;
+    };
 }
