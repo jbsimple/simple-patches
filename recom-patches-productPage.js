@@ -103,27 +103,22 @@ if (dropbox) {
 
 function openAllImages() {
     if (imageElements && imageElements.length > 0) {
-        console.debug('Opening all images:', imageElements);
-        
+        console.debug('Opening all images by simulating clicks:', imageElements);
+
         for (let i = 0; i < imageElements.length; i++) {
             const imageElement = imageElements[i];
-            const url = imageElement.href;
-            if (url) {
-                setTimeout(() => {
-                    window.open(url, '_blank');
-                }, i * 500);
-            }
+            setTimeout(() => {
+                imageElement.click();
+            }, i * 500);
         }
     }
 }
-
-
 
 if (media_tab && media_tree) {
     var newElement = document.createElement('div');
     newElement.classList.add('fv-row');
     newElement.classList.add('mb-2');
-    newElement.setAttribute('style', 'padding-bottom: 1rem; display: flex; flex-direction: row; gap: 1rem;');
+    newElement.setAttribute('style', 'padding-bottom: 1.5rem; display: flex; flex-direction: row; gap: 1rem;');
     
     // Add button if there are image elements
     if (imageElements.length > 0) {
