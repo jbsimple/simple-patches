@@ -110,7 +110,7 @@ function openAllImages() {
                 const imageElement = imageElements[i];
                 console.debug(`Simulating click for URL: ${imageElement.href}`);
                 imageElement.click();
-            }, i * 500); // Delay each click by 500ms
+            }, i * 50);
         }
     }
 }
