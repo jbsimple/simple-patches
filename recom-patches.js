@@ -148,8 +148,8 @@ function modifiedClock(task) {
             submit.onclick = function() {
                 const notes = document.getElementById('patch-clockout-textarea-notes');
                 if (notes.value.length > 0) {
-                    submit.querySelector('indicator-label').style.display = 'none';
-                    submit.querySelector('indicator-progress').style.display = 'inherit';
+                    submit.querySelector('.indicator-label').style.display = 'none';
+                    submit.querySelector('.indicator-progress').style.display = 'inherit';
 
                     var action = "OFF_SYSTEM";
                     if (task && task !== '') {
