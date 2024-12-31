@@ -103,14 +103,18 @@ if (dropbox) {
 
 function openAllImages() {
     if (imageElements && imageElements.length > 0) {
-        console.debug('Opening all images by simulating clicks:', imageElements);
+        console.debug('Opening all images by simulating clicks with delay:', imageElements);
 
         for (let i = 0; i < imageElements.length; i++) {
-            const imageElement = imageElements[i];
-            imageElement.click();
+            setTimeout(() => {
+                const imageElement = imageElements[i];
+                console.debug(`Simulating click for URL: ${imageElement.href}`);
+                imageElement.click();
+            }, i * 500); // Delay each click by 500ms
         }
     }
 }
+
 
 if (media_tab && media_tree) {
     var newElement = document.createElement('div');
