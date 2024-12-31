@@ -97,36 +97,93 @@ function modifiedClockInit() {
 }
 
 function modifiedClock(task) {
-    const notes = prompt('You are about to clock out, enter notes below or leave blank.');
+    const modal = `<div class="modal fade show" data-bs-backdrop="static" tabindex="-1" aria-modal="true" role="dialog" style="display: block;">
+        <div class="modal-dialog modal-dialog-centered mw-650px">
+            <div class="modal-content rounded">
+                <div class="modal-header">
+                    <h2 class="fw-bolder">Record Clock Out</h2>
+                    <div class="btn btn-icon btn-sm btn-active-icon-primary" data-bs-dismiss="modal">
+                        <span class="svg-icon svg-icon-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
+                                <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="currentColor"></rect>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+                <div class="separator my-10"></div>
+                <div class="modal-body scroll-y px-10 px-lg-15 pt-0 pb-15">
+                    <div class="d-flex flex-column mb-8">
+                        <label class="fs-6 fw-bold mb-2">You are about to clock out!</label>
+                        <label class="fs-6 fw-semibold form-label" for="record_and_clockout">Type notes below and clock out while recording time.</label>
+                    </div>
+                    <div class="d-flex flex-column mb-8">
+                        <label class="fs-6 fw-bold mb-2" for="patch-clockout-textarea-notes">Notes:</label>
+                        <textarea class="form-control form-control-solid" rows="3" name="notes" id="patch-clockout-textarea-notes" placeholder="Provide some notes if any" spellcheck="false"></textarea>
+                    </div>
+                </div>
+                <div class="separator my-10"></div>
+                <div class="text-center">
+                    <button type="reset" data-bs-dismiss="modal" class="btn btn-light me-3">Cancel</button>
+                    <button type="submit" id="patches_clockout_submit" class="btn btn-primary">
+                        <span class="indicator-label">Submit</span>
+                        <span class="indicator-progress" style="display: none;">Please wait...
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>`;
 
-	if (notes !== null) {
-		var action = "OFF_SYSTEM";
-		if (task && task !== '') {
-			action = task;
-		}
+    const rcAjaxModal = document.getElementById("rc_ajax_modal");
 
-		$.ajax({
-            type: "POST",
-            dataType: "json",
-            url: "/productivity/record",
-            data: {
-            csrf_recom: $('meta[name="X-CSRF-TOKEN"]').attr("content"),
-                "clock_activity[activity_code]": action,
-                "clock_activity[units]": "0",
-                "clock_activity[notes]": notes || "Off System Clock Out",
-                "clock_activity[clock_out]": "1"
-            },
-            headers: {
-                "X-CSRF-TOKEN": $('meta[name="X-CSRF-TOKEN"]').attr("content"),
-            },
-        })
-        .done(function (data) {
-            apiResponseAlert(data);
-        })
-        .fail(function (error) {
-            console.log("FAIL", error);
-            ajaxFailAlert(error);
-        });
+    if (rcAjaxModal) {
+        const modalContainer = document.createElement("div");
+        modalContainer.innerHTML = modal;
+
+        rcAjaxModal.parentNode.insertBefore(modalContainer.firstElementChild, rcAjaxModal);
+
+        const submit = document.getElementById('patches_clockout_submit');
+        if (submit) {
+            submit.onclick = function() {
+                const notes = document.getElementById('patch-clockout-textarea-notes');
+                if (notes.value.length > 0) {
+                    submit.querySelector('indicator-label').style.display = 'none';
+                    submit.querySelector('indicator-progress').style.display = 'inherit';
+
+                    var action = "OFF_SYSTEM";
+                    if (task && task !== '') {
+                        action = task;
+                    }
+
+                    $.ajax({
+                        type: "POST",
+                        dataType: "json",
+                        url: "/productivity/record",
+                        data: {
+                        csrf_recom: $('meta[name="X-CSRF-TOKEN"]').attr("content"),
+                            "clock_activity[activity_code]": action,
+                            "clock_activity[units]": "0",
+                            "clock_activity[notes]": notes.value || "Off System Clock Out",
+                            "clock_activity[clock_out]": "1"
+                        },
+                        headers: {
+                            "X-CSRF-TOKEN": $('meta[name="X-CSRF-TOKEN"]').attr("content"),
+                        },
+                    })
+                    .done(function (data) {
+                        apiResponseAlert(data);
+                    })
+                    .fail(function (error) {
+                        console.log("FAIL", error);
+                        ajaxFailAlert(error);
+                    });
+                } 
+            };
+        }
+    } else {
+        console.error("Element with ID 'rc_ajax_modal' not found.");
     }
 }
 
