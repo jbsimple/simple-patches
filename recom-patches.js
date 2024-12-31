@@ -98,18 +98,18 @@ function modifiedClockInit() {
 
 function modifiedClock(task) {
     const modal = `<style>
-    #patch_clockout_fullModal .modal-content {
-        transform: translateY(25vh);
-        opacity: 0.25;
-        transition: all 0.1s ease;
-    }
+        #patch_clockout_fullModal .modal-content {
+            transform: translateY(25vh);
+            opacity: 0.25;
+            transition: all 0.1s ease;
+        }
 
-    #patch_clockout_fullModal.show .modal-content {
-        transform: unset !important;
-        opacity: 1.0 !important;
-    }
-
+        #patch_clockout_fullModal.show .modal-content {
+            transform: unset !important;
+            opacity: 1.0 !important;
+        }
     </style>
+
     <div class="modal fade" id="patch_clockout_fullModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true" role="dialog" style="display: none; background: rgba(0, 0, 0, .4) !important;">
         <div class="modal-dialog modal-dialog-centered mw-650px">
             <div class="modal-content rounded">
@@ -155,7 +155,8 @@ function modifiedClock(task) {
         const modalContainer = document.createElement("div");
         modalContainer.innerHTML = modal;
 
-        rcAjaxModal.parentNode.insertBefore(modalContainer.firstElementChild, rcAjaxModal);
+        rcAjaxModal.parentNode.insertBefore(modalContainer, rcAjaxModal);
+        //rcAjaxModal.parentNode.insertBefore(modalContainer.firstElementChild, rcAjaxModal);
 
         const submit = document.getElementById('patches_clockout_submit');
         if (submit) {
