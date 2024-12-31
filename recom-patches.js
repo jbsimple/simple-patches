@@ -199,24 +199,24 @@ function modifiedClock(task) {
             };
         }
 
-        const close = document.getElementById('patches_clockout_close');
-        if (close) {
-            close.onclick = function() {
-                const fullModal = document.getElementById('patch_clockout_fullModal');
-                if (fullModal) {
-                    fullModal.remove();
-                }
-            };
+        const closeButton = document.getElementById('patches_clockout_close');
+        if (closeButton) {
+            closeButton.onclick = closeModal;
         }
 
-        const cancel = document.getElementById('patches_clockout_cancel');
-        if (cancel) {
-            cancel.onclick = function() {
-                const fullModal = document.getElementById('patch_clockout_fullModal');
-                if (fullModal) {
+        const cancelButton = document.getElementById('patches_clockout_cancel');
+        if (cancelButton) {
+            cancelButton.onclick = closeModal;
+        }
+
+        function closeModal() {
+            const fullModal = document.getElementById('patch_clockout_fullModal');
+            if (fullModal) {
+                newModal.classList.remove('show');
+                setTimeout(() => {
                     fullModal.remove();
-                }
-            };
+                }, 200);
+            }
         }
 
         const newModal = document.getElementById('patch_clockout_fullModal');
