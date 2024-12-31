@@ -120,13 +120,20 @@ if (media_tab && media_tree) {
     var newElement = document.createElement('div');
     newElement.classList.add('fv-row');
     newElement.classList.add('mb-2');
-    newElement.setAttribute('style', 'padding-bottom: 1.5rem; display: flex; flex-direction: row; gap: 1rem;');
+    newElement.setAttribute('style', 'padding-bottom: 1.5rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center');
     
     // Add button if there are image elements
     if (imageElements.length > 0) {
+        var button_label = document.createElement('label');
+        button_label.for = 'patch_openAllImages';
+        button_label.textContent = '(Enable Popups):';
+        button_label.setAttribute('style', 'color: var(--bs-danger); font-weight: 500');
+        newElement.appendChild(button_label);
+
         var button = document.createElement('button');
         button.classList.add('btn');
         button.classList.add('btn-info');
+        button.id = 'patch_openAllImages';
         button.textContent = 'Open All Images';
         button.style.color = 'white';
         button.style.border = 'none';
@@ -135,6 +142,7 @@ if (media_tab && media_tree) {
         button.style.borderRadius = '5px';
         button.onclick = openAllImages;
         newElement.appendChild(button);
+
     }
     
     media_tree_parent.insertBefore(newElement, media_tree);
