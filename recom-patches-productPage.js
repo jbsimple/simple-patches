@@ -125,21 +125,7 @@ if (media_tab && media_tree) {
     // Add button if there are image elements
     if (imageElements.length > 0) {
 
-        // test for popups that sucks
-        let isPopupBlocked = false;
-        try {
-            const options = 'width=100,height=100,left=100,top=100,resizable=yes';
-            const testWindow = window.open('', '', options);
-            if (!testWindow || testWindow.closed || typeof testWindow.closed === 'undefined') {
-                isPopupBlocked = true;
-            } else {
-                testWindow.close();
-            }
-        } catch (e) {
-            isPopupBlocked = true;
-        }
-
-        if (isPopupBlocked) {
+        if (checkPopup) {
             var button_label = document.createElement('label');
             button_label.for = 'patch_openAllImages';
             button_label.textContent = '(Enable Popups):';
@@ -163,4 +149,52 @@ if (media_tab && media_tree) {
     }
     
     media_tree_parent.insertBefore(newElement, media_tree);
+}
+
+
+function checkPopup() {
+    const popupStatus = getCookie("popupsEnabled");
+    if (popupStatus === "true") {
+        console.log("Popups are enabled (from cookie).");
+        return true;
+    } else if (popupStatus === "false") {
+        console.log("Popups are disabled (from cookie).");
+        return false;
+    }
+
+    let isPopupBlocked = false;
+    try {
+        const options = 'width=100,height=100,left=100,top=100,resizable=yes';
+        const testWindow = window.open('', '', options);
+        if (!testWindow || testWindow.closed || typeof testWindow.closed === 'undefined') {
+            isPopupBlocked = true;
+        } else {
+            testWindow.close();
+        }
+    } catch (e) {
+        isPopupBlocked = true;
+    }
+
+    setCookie("popupsEnabled", !isPopupBlocked, 7);
+
+    return !isPopupBlocked;
+
+    // functions
+    function setCookie(name, value, days) {
+        const date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        const expires = "; expires=" + date.toUTCString();
+        document.cookie = name + "=" + value + expires + "; path=/";
+    }
+    
+    function getCookie(name) {
+        const nameEQ = name + "=";
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            let cookie = cookies[i];
+            while (cookie.charAt(0) === ' ') cookie = cookie.substring(1, cookie.length);
+            if (cookie.indexOf(nameEQ) === 0) return cookie.substring(nameEQ.length, cookie.length);
+        }
+        return null;
+    }
 }
