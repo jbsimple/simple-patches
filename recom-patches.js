@@ -114,7 +114,8 @@ function modifiedClock(task) {
                 <div class="modal-body scroll-y px-10 px-lg-15 pt-0 pb-15" style="padding-top: 1.5rem !important;">
                     <div class="d-flex flex-column mb-8">
                         <label class="fs-6 fw-bold mb-2">You are about to clock out!</label>
-                        <label class="fs-6 fw-semibold form-label" for="record_and_clockout">Type notes below and clock out while recording time.</label>
+                        <label class="fs-6 fw-semibold form-label">Type notes below and clock out while recording time.</label>
+                        <label class="fs-6 fw-semibold form-label">* Please Note: Activity Code will be a mirror of the task name.</label>
                     </div>
                     <div class="d-flex flex-column mb-8">
                         <label class="fs-6 fw-bold mb-2" for="patch-clockout-textarea-notes">Notes:</label>
@@ -122,7 +123,7 @@ function modifiedClock(task) {
                     </div>
                      <div class="separator my-10"></div>
                     <div class="text-center">
-                        <button type="reset" data-bs-dismiss="modal" class="btn btn-light me-3">Cancel</button>
+                        <button type="reset" id="patches_clockout_cancel" data-bs-dismiss="modal" class="btn btn-light me-3">Cancel</button>
                         <button type="submit" id="patches_clockout_submit" class="btn btn-primary">
                             <span class="indicator-label">Submit</span>
                             <span class="indicator-progress" style="display: none;">Please wait...
@@ -187,6 +188,16 @@ function modifiedClock(task) {
         const close = document.getElementById('patches_clockout_close');
         if (close) {
             close.onclick = function() {
+                const fullModal = document.getElementById('patch_clockout_fullModal');
+                if (fullModal) {
+                    fullModal.remove();
+                }
+            };
+        }
+
+        const cancel = document.getElementById('patches_clockout_cancel');
+        if (cancel) {
+            cancel.onclick = function() {
                 const fullModal = document.getElementById('patch_clockout_fullModal');
                 if (fullModal) {
                     fullModal.remove();
