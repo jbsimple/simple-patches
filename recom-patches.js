@@ -222,9 +222,12 @@ function modifiedClock(task) {
         const newModal = document.getElementById('patch_clockout_fullModal');
         if (newModal) {
             newModal.style.display = 'block';
-            newModal.classList.add('show');
             newModal.removeAttribute('aria-hidden');
             newModal.setAttribute('aria-modal', 'true');
+
+            setTimeout(() => {
+                newModal.classList.add('show');
+            }, 200);
         }
 
     } else {
