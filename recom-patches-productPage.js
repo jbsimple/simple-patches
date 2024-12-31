@@ -101,39 +101,40 @@ if (dropbox) {
     };
 }
 
-// open all images in new tabs
-// add picture action buttons
-if (media_tab && media_tree) {
-	var newElement = document.createElement('div');
-  newElement.classList.add('fv-row');
-  newElement.classList.add('mb-2');
-  newElement.setAttribute('style', 'padding-bottom: 1rem; display: flex; flex-direction: row; gap: 1rem;');
-  
-  // code for download button
-  if (imageElements.length > 0) {
-  	var button = document.createElement('button');
-	  button.classList.add('btn');
-	  button.classList.add('btn-info');
-	  button.textContent = 'Open All Images';
-	  button.style.color = 'white';
-	  button.style.border = 'none';
-	  button.style.padding = '10px 20px';
-	  button.style.cursor = 'pointer';
-	  button.style.borderRadius = '5px';
-	  button.setAttribute('onclick', `openAllImages();`);
-	  newElement.appendChild(button);
-  }
-  
-  media_tree_parent.insertBefore(newElement, media_tree);
-}
-
 function openAllImages() {
     if (imageElements && imageElements.length > 0) {
-        imageElements.forEach(imageElement => {
+        imageElements.forEach((imageElement, index) => {
             const url = imageElement.href;
             if (url) {
-                window.open(url, '_blank');
+                setTimeout(() => {
+                    window.open(url, '_blank');
+                }, index * 100);
             }
         });
     }
+}
+
+
+if (media_tab && media_tree) {
+    var newElement = document.createElement('div');
+    newElement.classList.add('fv-row');
+    newElement.classList.add('mb-2');
+    newElement.setAttribute('style', 'padding-bottom: 1rem; display: flex; flex-direction: row; gap: 1rem;');
+    
+    // Add button if there are image elements
+    if (imageElements.length > 0) {
+        var button = document.createElement('button');
+        button.classList.add('btn');
+        button.classList.add('btn-info');
+        button.textContent = 'Open All Images';
+        button.style.color = 'white';
+        button.style.border = 'none';
+        button.style.padding = '10px 20px';
+        button.style.cursor = 'pointer';
+        button.style.borderRadius = '5px';
+        button.onclick = openAllImages;
+        newElement.appendChild(button);
+    }
+    
+    media_tree_parent.insertBefore(newElement, media_tree);
 }
