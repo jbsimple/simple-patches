@@ -146,39 +146,41 @@ function modifiedClock(task) {
         const submit = document.getElementById('patches_clockout_submit');
         if (submit) {
             submit.onclick = function() {
-                const notes = document.getElementById('patch-clockout-textarea-notes');
-                if (notes.value.length > 0) {
-                    submit.querySelector('.indicator-label').style.display = 'none';
-                    submit.querySelector('.indicator-progress').style.display = 'inherit';
+                const noteTextBox = document.getElementById('patch-clockout-textarea-notes');
+                let notes = '';
+                if (noteTextBox.value.length > 0) {
+                    notes = noteTextBox.value;
+                }
+                submit.querySelector('.indicator-label').style.display = 'none';
+                submit.querySelector('.indicator-progress').style.display = 'inherit';
 
-                    var action = "OFF_SYSTEM";
-                    if (task && task !== '') {
-                        action = task;
-                    }
+                var action = "OFF_SYSTEM";
+                if (task && task !== '') {
+                    action = task;
+                }
 
-                    $.ajax({
-                        type: "POST",
-                        dataType: "json",
-                        url: "/productivity/record",
-                        data: {
-                        csrf_recom: $('meta[name="X-CSRF-TOKEN"]').attr("content"),
-                            "clock_activity[activity_code]": action,
-                            "clock_activity[units]": "0",
-                            "clock_activity[notes]": notes.value || "Off System Clock Out",
-                            "clock_activity[clock_out]": "1"
-                        },
-                        headers: {
-                            "X-CSRF-TOKEN": $('meta[name="X-CSRF-TOKEN"]').attr("content"),
-                        },
-                    })
-                    .done(function (data) {
-                        apiResponseAlert(data);
-                    })
-                    .fail(function (error) {
-                        console.log("FAIL", error);
-                        ajaxFailAlert(error);
-                    });
-                } 
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: "/productivity/record",
+                    data: {
+                    csrf_recom: $('meta[name="X-CSRF-TOKEN"]').attr("content"),
+                        "clock_activity[activity_code]": action,
+                        "clock_activity[units]": "0",
+                        "clock_activity[notes]": notes.value || "Off System Clock Out",
+                        "clock_activity[clock_out]": "1"
+                    },
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="X-CSRF-TOKEN"]').attr("content"),
+                    },
+                })
+                .done(function (data) {
+                    apiResponseAlert(data);
+                })
+                .fail(function (error) {
+                    console.log("FAIL", error);
+                    ajaxFailAlert(error);
+                });
             };
         }
 
