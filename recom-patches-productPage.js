@@ -107,9 +107,7 @@ function openAllImages() {
 
         for (let i = 0; i < imageElements.length; i++) {
             const imageElement = imageElements[i];
-            setTimeout(() => {
-                imageElement.click();
-            }, i * 500);
+            imageElement.click();
         }
     }
 }
