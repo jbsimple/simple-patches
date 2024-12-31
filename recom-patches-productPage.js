@@ -101,17 +101,20 @@ if (dropbox) {
     };
 }
 
-function openAllImages() {
+async function openAllImages() {
     if (imageElements && imageElements.length > 0) {
         console.debug('Opening all images:', imageElements);
-        imageElements.forEach((imageElement, index) => {
+        
+        for (let i = 0; i < imageElements.length; i++) {
+            const imageElement = imageElements[i];
             const url = imageElement.href;
             if (url) {
-                setTimeout(() => {
+                await new Promise(resolve => {
                     window.open(url, '_blank');
-                }, index * 100);
+                    setTimeout(resolve, 500);
+                });
             }
-        });
+        }
     }
 }
 
