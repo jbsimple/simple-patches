@@ -124,11 +124,23 @@ if (media_tab && media_tree) {
     
     // Add button if there are image elements
     if (imageElements.length > 0) {
-        var button_label = document.createElement('label');
-        button_label.for = 'patch_openAllImages';
-        button_label.textContent = '(Enable Popups):';
-        button_label.setAttribute('style', 'color: var(--bs-danger); font-weight: 500');
-        newElement.appendChild(button_label);
+
+        // test for popups that sucks
+        let popupTest = null;
+        try {
+            popupTest = window.open('', '_blank');
+            if (popupTest) {
+                popupTest.close();
+            } else {
+                throw new Error('Popups blocked');
+            }
+        } catch (e) {
+            var button_label = document.createElement('label');
+            button_label.for = 'patch_openAllImages';
+            button_label.textContent = '(Enable Popups):';
+            button_label.setAttribute('style', 'color: var(--bs-danger); font-weight: 500');
+            newElement.appendChild(button_label);
+        }
 
         var button = document.createElement('button');
         button.classList.add('btn');
