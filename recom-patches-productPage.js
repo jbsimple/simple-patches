@@ -125,7 +125,7 @@ if (media_tab && media_tree) {
     // Add button if there are image elements
     if (imageElements.length > 0) {
 
-        if (checkPopup()) {
+        if (!checkPopup()) {
             var button_label = document.createElement('label');
             button_label.for = 'patch_openAllImages';
             button_label.textContent = '(Enable Popups):';
