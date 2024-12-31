@@ -108,6 +108,7 @@ async function openAllImages() {
         for (let i = 0; i < imageElements.length; i++) {
             const imageElement = imageElements[i];
             const url = imageElement.href;
+            console.debug(imageElement);
             if (url) {
                 await new Promise(resolve => {
                     window.open(url, '_blank');
