@@ -35,3 +35,51 @@ setTimeout(function() {
         }
     });
 }, 500);
+
+// Getting rid of bad gallery viewer
+var media_tab = document.getElementById('rc_product_media_tab');
+var media_tree = document.getElementById('product-images-container');
+var media_tree_parent = null;
+
+if (media_tree) {
+	media_tree_parent = media_tree.parentNode;
+}
+
+var imageElements = media_tree.querySelectorAll('[data-type="image"]');
+
+if (imageElements && imageElements.length > 0) {
+    $(imageElements).off(); //jQuery ftw
+
+    imageElements.forEach(imgLink => {
+        imgLink.onclick = null;
+        imgLink.setAttribute('target', '_blank');
+    });
+}
+
+// Handle new uploads
+// Before, clicking a picture freshly uploaded by accident just opens the <a> default.
+// AT LEAST it should be in a new tab.
+if (media_tree) {
+    const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+            mutation.addedNodes.forEach(node => {
+                if (node instanceof HTMLElement && node.matches('[data-type="image"]')) {
+                    $(node).off(); //jQuery ftw
+                    node.onclick = null;
+                    node.setAttribute('target', '_blank');
+                }
+
+                const newImages = node.querySelectorAll?.('[data-type="image"]');
+                if (newImages) {
+                    newImages.forEach(imgLink => {
+                        $(imgLink).off(); //jQuery ftw
+                        imgLink.onclick = null;
+                        imgLink.setAttribute('target', '_blank');
+                    });
+                }
+            });
+        });
+    });
+
+    observer.observe(media_tree, { childList: true, subtree: true });
+}

@@ -21,6 +21,8 @@ Enhancements:
 - On product and item pages; CSS fix for images inside upload box not wrapping properly.
 - On product and item pages; CSS fix for activity log where the color of the name is dark even when the page is in dark mode.
 - On product and item pages; Fix to show metadata update name in activity log.
+- On product and item pages; Fix to the media tab by removing the existing, bad gallery viewer. Opens image in a new tab (as god intended).
+- On product and item pages; Fix to prevent newly uploaded images when clicked to default a-tag behavior. It also opens in a new tab.
 - On item pages; CSS fix to have the inventory tab larger so you can see more.
 - On listing page; A warning for when the GTIN is invalid and needs to be regenerated before going to the last step.
 - On listing page; A warning for when the GTIN is changed to remind the user to replace the old label with a new one.
