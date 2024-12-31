@@ -97,8 +97,43 @@ if (dropbox) {
         if (!hasExactClasses) {
             return "Are you sure you want to leave? Images are still uploading.";
         }
-
-        // Returning undefined allows the navigation to proceed without the prompt.
         return undefined;
     };
+}
+
+// open all images in new tabs
+// add picture action buttons
+if (media_tab && media_tree) {
+	var newElement = document.createElement('div');
+  newElement.classList.add('fv-row');
+  newElement.classList.add('mb-2');
+  newElement.setAttribute('style', 'padding-bottom: 1rem; display: flex; flex-direction: row; gap: 1rem;');
+  
+  // code for download button
+  if (imageElements.length > 0) {
+  	var button = document.createElement('button');
+	  button.classList.add('btn');
+	  button.classList.add('btn-info');
+	  button.textContent = 'Open All Images';
+	  button.style.color = 'white';
+	  button.style.border = 'none';
+	  button.style.padding = '10px 20px';
+	  button.style.cursor = 'pointer';
+	  button.style.borderRadius = '5px';
+	  button.setAttribute('onclick', `openAllImages();`);
+	  newElement.appendChild(button);
+  }
+  
+  media_tree_parent.insertBefore(newElement, media_tree);
+}
+
+function openAllImages() {
+    if (imageElements && imageElements.length > 0) {
+        imageElements.forEach(imageElement => {
+            const url = imageElement.href;
+            if (url) {
+                window.open(url, '_blank');
+            }
+        });
+    }
 }
