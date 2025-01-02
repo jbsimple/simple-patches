@@ -55,7 +55,6 @@ function verifyGTIN() {
 // fix the In Catalog button.
 const inventory_results = document.getElementById('inventory_results');
 if (inventory_results) {
-    observer.observe(inventory_results, config);
     const observerCallback = (mutationsList, observer) => {
         for (const mutation of mutationsList) {
             if (mutation.type === 'childList') {
@@ -70,6 +69,7 @@ if (inventory_results) {
         childList: true,
         subtree: false,
     };
+    observer.observe(inventory_results, config);
 
     function parseInventoryResults() {
         const spans = inventory_results.querySelectorAll('span');
