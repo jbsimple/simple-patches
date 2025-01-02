@@ -51,3 +51,44 @@ function verifyGTIN() {
         return true;
     }
 }
+
+// fix the In Catalog button.
+const inventory_results = document.getElementById('inventory_results');
+if (inventory_results) {
+    observer.observe(inventory_results, config);
+    const observerCallback = (mutationsList, observer) => {
+        for (const mutation of mutationsList) {
+            if (mutation.type === 'childList') {
+                console.debug('Patch- Inventory results updated');
+                parseInventoryResults();
+            }
+        }
+    };
+      
+    const observer = new MutationObserver(observerCallback);
+    const config = {
+        childList: true,
+        subtree: false,
+    };
+
+    function parseInventoryResults() {
+        const spans = inventory_results.querySelectorAll('span');
+        const inCatalogSpans = Array.from(spans).filter(span => span.textContent.includes('In Catalog'));
+        inCatalogSpans.forEach(span => {
+            const nextElement = span.nextElementSibling;
+            if (nextElement && nextElement.tagName === 'A') {
+                const href = nextElement.getAttribute('href');
+                const target = nextElement.getAttribute('target');
+                if (href && target === '_blank') {
+                    const newLink = document.createElement('a');
+                    newLink.href = href;
+                    newLink.target = '_blank';
+                    newLink.textContent = span.textContent;
+                    newLink.classList.add('text-success', 'fw-bold');
+
+                    span.replaceWith(newLink);
+                }
+            }
+        });
+    }
+}
