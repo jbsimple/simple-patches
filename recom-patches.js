@@ -413,8 +413,6 @@ async function checkWeatherAndCreateEffects() {
     }
 }
 
-window.onload = checkWeatherAndCreateEffects;
-
 function modalPictureCount() {
     const modal = document.getElementById('rc_ajax_modal');
     let lastEvent = null;
@@ -579,6 +577,10 @@ function modalPictureCount() {
     });
 }
 
-window.onload = modalPictureCount;
+function patchInit() {
+    modalPictureCount();
+    checkWeatherAndCreateEffects();
+}
+window.onload = patchInit;
 
 console.log('Patch Loading Complete');
