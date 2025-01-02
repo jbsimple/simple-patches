@@ -193,7 +193,7 @@ function modifiedClock(task) {
                     apiResponseAlert(data);
                 })
                 .fail(function (error) {
-                    console.log("FAIL", error);
+                    console.error("FAIL", error);
                     ajaxFailAlert(error);
                 });
             };
@@ -241,7 +241,7 @@ document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.
 let script_patch = document.createElement('script');
 script_patch.name = 'n/a';
 script_patch.onload = function() {
-    console.log('Patch Loaded:', script_patch.name);
+    console.debug('Patch Loaded:', script_patch.name);
 };
 
 if (window.location.href.includes('/receiving/queues/listing/') || window.location.href.includes('/products/new')) {
@@ -430,7 +430,7 @@ function modalPictureCount() {
     modal.addEventListener('hidden.bs.modal', () => {
         processedContent.clear();
         inProgressContent.clear();
-        console.log('Modal closed. Resetting processed and in-progress content.');
+        console.debug('Patch: Modal closed. Resetting processed and in-progress content.');
     });
 
     const observer = new MutationObserver((mutationsList) => {
@@ -455,7 +455,7 @@ function modalPictureCount() {
                                 processedContent.add(descriptionText);
                                 const image_counts = countUrlsBySku(item_images);
 
-                                console.log('SKU img counts:', image_counts);
+                                console.debug('Patch: SKU img counts:', image_counts);
                                 const table = modal.querySelector('table.table-row-bordered');
                                 if (table) {
                                     const thead = table.querySelector('thead');
@@ -478,7 +478,7 @@ function modalPictureCount() {
                                         row.appendChild(newCell);
                                     });
                                 } else {
-                                    console.log('Table not found in the modal content.');
+                                    console.debug('Patch: Table not found in the modal content.');
                                 }
                             } catch (error) {
                                 console.error('API call failed for:', descriptionText, error);
@@ -486,10 +486,10 @@ function modalPictureCount() {
                                 inProgressContent.delete(descriptionText);
                             }
                         } else {
-                            console.log('API call already in progress or completed for:', descriptionText);
+                            console.debug('Patch: API call already in progress or completed for:', descriptionText);
                         }
                     } else {
-                        console.log('Description div not found in the modal content.');
+                        console.debug('Patch: Description div not found in the modal content.');
                     }
                 }
             }
@@ -505,7 +505,7 @@ function modalPictureCount() {
 
     observer.observe(modal, config);
 
-    console.log('MutationObserver is now monitoring the modal content.');
+    console.debug('Patch: MutationObserver is now monitoring the modal content.');
 
     async function getItemPictureCount(SID) {
         const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]')
@@ -575,7 +575,7 @@ function modalPictureCount() {
     }
 
     modal.addEventListener('hidden.bs.modal', () => {
-        console.log('Modal has been hidden.');
+        console.debug('Patch: Modal has been hidden.');
     });
 }
 
