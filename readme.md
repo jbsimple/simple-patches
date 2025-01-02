@@ -55,3 +55,4 @@ Enhancements:
   - Field to input notes.
   - Hijacks existing modal layout for data entry (with animations).
 - On all pages; CSS additions to header and clock buttons to handle the additional buttons.
+- On all pages; When opening the product window, the number of images on each item appears in the table as a new column (uses reports).

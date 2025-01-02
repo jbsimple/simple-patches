@@ -1,4 +1,4 @@
-const version = '01-02-2025__2';
+const version = '01-02-2025__3';
 
 const nav_sidebar = document.getElementById('kt_app_sidebar_navs_wrappers');
 if (nav_sidebar) {
@@ -415,5 +415,170 @@ async function checkWeatherAndCreateEffects() {
 
 window.onload = checkWeatherAndCreateEffects;
 
+function modalPictureCount() {
+    const modal = document.getElementById('rc_ajax_modal');
+    let lastEvent = null;
+    const processedContent = new Set();
+    const inProgressContent = new Set();
+
+    ['click', 'input', 'keyup', 'change', 'mousedown', 'mouseup'].forEach((eventType) => {
+        document.addEventListener(eventType, (event) => {
+            lastEvent = event;
+        }, true);
+    });
+
+    modal.addEventListener('hidden.bs.modal', () => {
+        processedContent.clear();
+        inProgressContent.clear();
+        console.log('Modal closed. Resetting processed and in-progress content.');
+    });
+
+    const observer = new MutationObserver((mutationsList) => {
+        mutationsList.forEach(async (mutation) => {
+            if (lastEvent) {
+                const { target } = lastEvent;
+
+                if (
+                    target.tagName === 'A' &&
+                    target.hasAttribute('data-url') &&
+                    target.getAttribute('data-url').includes('ajax/modals/productitems/')
+                ) {
+                    const descriptionDiv = modal.querySelector('div.d-flex.flex-wrap.fw-bold.mb-4.fs-5.text-gray-400');
+                    if (descriptionDiv) {
+                        const descriptionText = descriptionDiv.textContent.trim();
+
+                        if (!processedContent.has(descriptionText) && !inProgressContent.has(descriptionText)) {
+                            inProgressContent.add(descriptionText);
+
+                            try {
+                                const item_images = await getItemPictureCount(descriptionText);
+                                processedContent.add(descriptionText);
+                                const image_counts = countUrlsBySku(item_images);
+
+                                console.log('SKU img counts:', image_counts);
+                                const table = modal.querySelector('table.table-row-bordered');
+                                if (table) {
+                                    const thead = table.querySelector('thead');
+                                    if (thead) {
+                                        const headerRow = thead.querySelector('tr');
+                                        if (headerRow) {
+                                            const newHeader = document.createElement('th');
+                                            newHeader.textContent = 'Pictures';
+                                            headerRow.appendChild(newHeader);
+                                        }
+                                    }
+
+                                    const rows = table.querySelectorAll('tbody tr');
+                                    rows.forEach((row) => {
+                                        const newCell = document.createElement('td');
+                                        const sku = row.querySelector('td:nth-child(1)')?.textContent?.trim();
+                                        const countObj = image_counts.find((item) => item.sku === sku);
+
+                                        newCell.textContent = countObj ? countObj.count : '0';
+                                        row.appendChild(newCell);
+                                    });
+                                } else {
+                                    console.log('Table not found in the modal content.');
+                                }
+                            } catch (error) {
+                                console.error('API call failed for:', descriptionText, error);
+                            } finally {
+                                inProgressContent.delete(descriptionText);
+                            }
+                        } else {
+                            console.log('API call already in progress or completed for:', descriptionText);
+                        }
+                    } else {
+                        console.log('Description div not found in the modal content.');
+                    }
+                }
+            }
+        });
+    });
+
+
+    const config = {
+        childList: true,
+        attributes: true,
+        subtree: true,
+    };
+
+    observer.observe(modal, config);
+
+    console.log('MutationObserver is now monitoring the modal content.');
+
+    async function getItemPictureCount(SID) {
+        const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]')
+        if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
+            const csrfToken = csrfMeta.getAttribute('content');
+            const request = {
+                report: {
+                    type: "item_images",
+                    columns: [
+                        "product_items.sku",
+                        "item_images.url",
+                    ],
+                    filters: [{
+                            column: "products.sid",
+                            opr: "{0} = '{1}'",
+                            value: `${SID}`
+                        },
+                        {
+                            column: "product_items.status",
+                            opr: "{0} = '{1}'",
+                            value: "1"
+                        }
+                    ]
+                },
+                csrf_recom: csrfToken
+            };
+
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: "/reports/create",
+                    data: request,
+                }).done(function(data) {
+                    if (data.success && data.results.results && Array.isArray(data.results.results)) {
+                        resolve(data.results.results);
+                    } else {
+                        resolve(null);
+                    }
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    console.error("Request failed: " + textStatus + ", " + errorThrown);
+                    reject(new Error("Request failed: " + textStatus + ", " + errorThrown));
+                });
+            });
+        } else {
+            return null;
+        }
+    }
+
+    function countUrlsBySku(data) {
+        const skuCounts = {};
+
+        data.forEach((item) => {
+            const { SKU, URL } = item;
+            if (!skuCounts[SKU]) {
+                skuCounts[SKU] = 0;
+            }
+            if (URL !== null) {
+                skuCounts[SKU]++;
+            }
+        });
+
+        return Object.entries(skuCounts).map(([sku, count]) => ({
+            sku,
+            count,
+        }));
+    }
+
+    modal.addEventListener('hidden.bs.modal', () => {
+        console.log('Modal has been hidden.');
+    });
+}
+
+window.onload = modalPictureCount;
 
 console.log('Patch Loading Complete');
