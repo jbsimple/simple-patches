@@ -647,7 +647,7 @@ async function report_getSpecial(request) {
             url: $("#rc_reports_new_form").attr("action"),
             data: request,
         }).done(function(data) {
-            if (data.results.results && Array.isArray(data.results.results)) {
+            if (data && data.results && data.results.results && Array.isArray(data.results.results)) {
                 resolve(data.results.results);
             } else if (data.results.filename) {
                 const href = 'renderfile/download?folder=reports&path=' + data.results.filename;
@@ -842,6 +842,18 @@ async function report_pictureMissingFull_init() {
         product_images_report = await report_getSpecial(product_images);
     } catch (error) {
         console.error("Error fetching report:", error);
+    }
+
+    if (items_images_report === null) {
+        items_images_report = [];
+    }
+
+    if (product_images_report === null) {
+        product_images_report = [];
+    }
+
+    if (items_images_qunique_report === null) {
+        items_images_qunique_report = []
     }
 
     if (
