@@ -81,16 +81,9 @@ if (inventory_results) {
                 const target = nextElement.getAttribute('target');
                 if (href && target === '_blank') {
                     const newLink = document.createElement('a');
-                    /*
-                        newLink.href = href;
-                        newLink.target = '_blank';
-                        newLink.classList.add('text-success', 'fw-bold');
-                    */
-                    
-                    // seeing if I can hijack the special modal view
                     newLink.href = "#";
                     newLink.textContent = span.textContent;
-                    newLink.classList.add('text-success', 'fw-bold', 'fs-7', 'ajax-modal');
+                    newLink.classList.add('text-success', 'fw-bold', 'ajax-modal');
                     newLink.setAttribute('data-url', `ajax/modals/productitems/${href.split("/").pop()}`);
 
                     span.replaceWith(newLink);
