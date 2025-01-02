@@ -186,7 +186,7 @@ div.dataTables_wrapper div.dataTables_processing {
   }
   100% {
     transform: translateY(100vh) rotate(360deg);
-    opacity: 0.3;
+    opacity: 0.0;
   }
 }
 
@@ -207,6 +207,6 @@ div.dataTables_wrapper div.dataTables_processing {
   }
   100% {
       transform: translateY(100vh);
-      opacity: 0.3;
+      opacity: 0.0;
   }
 }
