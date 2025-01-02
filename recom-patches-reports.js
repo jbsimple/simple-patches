@@ -649,7 +649,7 @@ async function report_getSpecial(request) {
         }).done(function(data) {
             if (data && data.results && data.results.results && Array.isArray(data.results.results)) {
                 resolve(data.results.results);
-            } else if (data.results.filename) {
+            } else if (data && data.results && data.results.filename) {
                 const href = 'renderfile/download?folder=reports&path=' + data.results.filename;
                 console.error('Report made, but no results array.', href);
                 resolve(null);
