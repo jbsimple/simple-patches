@@ -307,8 +307,7 @@ if (today.getDate() === 27 && today.getMonth() === 11) {
     rainbowMessage('Happy Early Birthday Nate!');
 }
 
-// SNOW code
-async function checkWeatherAndCreateSnow() {
+async function checkWeatherAndCreateEffects() {
     function setCookie(name, value, minutes) {
         const expires = new Date();
         expires.setMinutes(expires.getMinutes() + minutes);
@@ -343,12 +342,32 @@ async function checkWeatherAndCreateSnow() {
         }
     }
 
+    function createRain() {
+        const appMain = document.getElementById('kt_app_main');
+        const rainContainer = document.createElement('div');
+        rainContainer.classList.add('rain');
+        appMain.appendChild(rainContainer);
+
+        const raindropCount = 100;
+        for (let i = 0; i < raindropCount; i++) {
+            const raindrop = document.createElement('div');
+            raindrop.classList.add('raindrop');
+            raindrop.style.left = `${Math.random() * 100}%`;
+            raindrop.style.animationDelay = `${Math.random() * 2}s`;
+            raindrop.style.animationDuration = `${2 + Math.random()}s`;
+            rainContainer.appendChild(raindrop);
+        }
+    }
+
     const snowStatus = getCookie('patch_snowStatus');
+    const rainStatus = getCookie('patch_rainStatus');
 
     if (snowStatus !== null) {
         console.debug(`Patch - Using cached snow status: ${snowStatus}`);
         if (snowStatus === 'true') {
             createSnow();
+        } else if (rainStatus === 'true') {
+            createRain();
         }
         return;
     }
@@ -369,23 +388,32 @@ async function checkWeatherAndCreateSnow() {
 
         const currentWeatherCode = weatherData.current_weather.weathercode;
         const isSnowingNow = [71, 73, 75, 77, 85, 86].includes(currentWeatherCode);
+        const isRainingNow = [61, 63, 65, 80, 81, 82].includes(currentWeatherCode);
 
         const dailyForecast = weatherData.daily.weathercode || [];
         const isSnowInForecast = dailyForecast.some(code => [71, 73, 75, 77, 85, 86].includes(code));
+        const isRainInForecast = dailyForecast.some(code => [61, 63, 65, 80, 81, 82].includes(code));
 
         const shouldShowSnow = isSnowingNow || isSnowInForecast;
+        const shouldShowRain = isRainingNow || isRainInForecast;
+
         console.debug(`Patch - Snow detected: ${shouldShowSnow}`);
+        console.debug(`Patch - Rain detected: ${shouldShowRain}`);
 
         setCookie('patch_snowStatus', shouldShowSnow, 30);
+        setCookie('patch_rainStatus', shouldShowRain, 30);
 
         if (shouldShowSnow) {
             createSnow();
+        } else if (shouldShowRain) {
+            createRain();
         }
     } catch (error) {
         console.error('Patch - Error fetching or processing weather data:', error);
     }
 }
 
-window.onload = checkWeatherAndCreateSnow;
+window.onload = checkWeatherAndCreateEffects;
+
 
 console.log('Patch Loading Complete');

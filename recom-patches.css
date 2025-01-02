@@ -157,7 +157,8 @@ div.dataTables_wrapper div.dataTables_processing {
 	padding: 0 !important;
 }
 
-#kt_app_main .snow {
+#kt_app_main .snow,
+#kt_app_main .rain {
   position: absolute;
   top: 0;
   left: 0;
@@ -189,3 +190,23 @@ div.dataTables_wrapper div.dataTables_processing {
   }
 }
 
+.raindrop {
+  position: absolute;
+  top: -20px;
+  width: 2px;
+  height: 10px;
+  background: blue;
+  opacity: 0.6;
+  animation: rain linear infinite;
+}
+
+@keyframes rain {
+  0% {
+      transform: translateY(0);
+      opacity: 1;
+  }
+  100% {
+      transform: translateY(100vh);
+      opacity: 0.3;
+  }
+}
