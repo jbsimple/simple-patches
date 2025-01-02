@@ -130,10 +130,27 @@ div.dataTables_wrapper div.dataTables_processing {
   background-color: transparent !important;
 }
 
-#kt_app_main {
-  position: relative;
-  overflow: hidden;
-  background-color: transparent !important;
+#kt_app_toolbar {
+  background-color: var(--bs-body-bg) !important;
+  padding: 2rem 0.25rem !important;
+  margin: 2rem 2.5rem !important;
+  margin-bottom: 0 !important;
+  border: var(--bs-border-width) solid var(--bs-border-color) !important;
+  border-radius: 0.625rem !important;
+}
+
+#kt_app_content {
+  flex: 1 0 auto;
+  padding: unset !important;
+}
+
+#kt_app_content_container {
+  padding: 30px !important;
+}
+
+.pb-15 {
+	/* because of the new toolbar layout */
+	padding: 0 !important;
 }
 
 #kt_app_main .snow {
