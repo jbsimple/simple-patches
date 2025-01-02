@@ -1,4 +1,4 @@
-const version = '01-02-2025__1';
+const version = '01-02-2025__2';
 
 const nav_sidebar = document.getElementById('kt_app_sidebar_navs_wrappers');
 if (nav_sidebar) {
@@ -306,5 +306,86 @@ if (today.getDate() === 28 && today.getMonth() === 11) {
 if (today.getDate() === 27 && today.getMonth() === 11) {
     rainbowMessage('Happy Early Birthday Nate!');
 }
+
+// SNOW code
+async function checkWeatherAndCreateSnow() {
+    function setCookie(name, value, minutes) {
+        const expires = new Date();
+        expires.setMinutes(expires.getMinutes() + minutes);
+        document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+    }
+
+    function getCookie(name) {
+        const cookies = document.cookie.split('; ');
+        for (const cookie of cookies) {
+            const [key, value] = cookie.split('=');
+            if (key === name) {
+                return value;
+            }
+        }
+        return null;
+    }
+
+    function createSnow() {
+        const appMain = document.getElementById('kt_app_main');
+        const snowContainer = document.createElement('div');
+        snowContainer.classList.add('snow');
+        appMain.appendChild(snowContainer);
+
+        const snowflakeCount = 50;
+        for (let i = 0; i < snowflakeCount; i++) {
+            const snowflake = document.createElement('div');
+            snowflake.classList.add('snowflake');
+            snowflake.style.left = `${Math.random() * 100}%`;
+            snowflake.style.animationDelay = `${Math.random() * 5}s`;
+            snowflake.style.animationDuration = `${5 + Math.random() * 5}s`;
+            snowContainer.appendChild(snowflake);
+        }
+    }
+
+    const snowStatus = getCookie('patch_snowStatus');
+
+    if (snowStatus !== null) {
+        console.debug(`Patch - Using cached snow status: ${snowStatus}`);
+        if (snowStatus === 'true') {
+            createSnow();
+        }
+        return;
+    }
+
+    const latitude = 39.3737;
+    const longitude = -76.9678;
+
+    try {
+        const response = await fetch(
+            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&daily=weathercode&timezone=auto`
+        );
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch weather data');
+        }
+
+        const weatherData = await response.json();
+
+        const currentWeatherCode = weatherData.current_weather.weathercode;
+        const isSnowingNow = [71, 73, 75, 77, 85, 86].includes(currentWeatherCode);
+
+        const dailyForecast = weatherData.daily.weathercode || [];
+        const isSnowInForecast = dailyForecast.some(code => [71, 73, 75, 77, 85, 86].includes(code));
+
+        const shouldShowSnow = isSnowingNow || isSnowInForecast;
+        console.debug(`Patch - Snow detected: ${shouldShowSnow}`);
+
+        setCookie('patch_snowStatus', shouldShowSnow, 30);
+
+        if (shouldShowSnow) {
+            createSnow();
+        }
+    } catch (error) {
+        console.error('Patch - Error fetching or processing weather data:', error);
+    }
+}
+
+window.onload = checkWeatherAndCreateSnow;
 
 console.log('Patch Loading Complete');
