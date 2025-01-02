@@ -144,11 +144,11 @@ div.dataTables_wrapper div.dataTables_processing {
   padding: unset !important;
 }
 
-#kt_app_content_container {
+#kt_app_content #kt_app_content_container {
   padding: 30px !important;
 }
 
-.pb-15 {
+#kt_app_content .pb-15 {
 	/* because of the new toolbar layout */
 	padding: 0 !important;
 }
