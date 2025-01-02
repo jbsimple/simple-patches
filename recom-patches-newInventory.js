@@ -90,7 +90,7 @@ if (inventory_results) {
                     // seeing if I can hijack the special modal view
                     newLink.href = "#";
                     newLink.textContent = span.textContent;
-                    newLink.classList.add('text-muted', 'fw-bold', 'fs-7', 'ajax-modal');
+                    newLink.classList.add('text-success', 'fw-bold', 'fs-7', 'ajax-modal');
                     newLink.setAttribute('data-url', `ajax/modals/productitems/${href.split("/").pop()}`);
 
                     span.replaceWith(newLink);
