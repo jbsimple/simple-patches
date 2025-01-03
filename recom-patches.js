@@ -174,6 +174,8 @@ function modifiedClock(task) {
                     action = task;
                 }
 
+                console.debug('Patch: Notes for Clock Out:', notes);
+
                 $.ajax({
                     type: "POST",
                     dataType: "json",
