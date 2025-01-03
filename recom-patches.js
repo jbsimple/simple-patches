@@ -182,7 +182,7 @@ function modifiedClock(task) {
                     csrf_recom: $('meta[name="X-CSRF-TOKEN"]').attr("content"),
                         "clock_activity[activity_code]": action,
                         "clock_activity[units]": "0",
-                        "clock_activity[notes]": notes.value || "Off System Clock Out",
+                        "clock_activity[notes]": notes || "Off System Clock Out",
                         "clock_activity[clock_out]": "1"
                     },
                     headers: {
