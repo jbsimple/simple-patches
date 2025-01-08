@@ -761,8 +761,7 @@ async function report_createdRecent_submit() {
                 "products.asin",
                 "product_items.store_settings",
                 "product_items.has_fba",
-                "product_items.created_at",
-                "products.created_at"
+                "product_items.created_at"
             ],
             filters: [
                 {
@@ -774,6 +773,11 @@ async function report_createdRecent_submit() {
                     column: "product_items.created_at",
                     opr: "between",
                     value: `${date} - ${date}`
+                },
+                {
+                    column: "product_items.condition_id",
+                    opr: "{0} NOT IN {1}",
+                    value: [10, 11, 12, 13, 14, 15, 16, 104, 103, 102, 101, 72, 27] /* hide auto create and udeless conditions */
                 }
             ]
         },
