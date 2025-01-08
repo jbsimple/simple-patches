@@ -211,6 +211,7 @@ function initPreset() {
     
     card_body.appendChild(report_preset('listing_productivity'));
     card_body.appendChild(report_preset('marketing_productivity'));
+    card_body.appendChild(report_preset('items_createdRecent'));
     card_body.appendChild(report_preset('picture_missingFull'));
     card_body.appendChild(report_preset('picture_missingSpecial'));
     card_body.appendChild(report_preset('product_highQty'));
@@ -373,6 +374,16 @@ function report_preset(name) {
         details.func = `report_pictureMissingFull_init();`;
         details.desc = "Generate a complete missing picture items & products report. Like, the real deaal one.<br>Generates three different reports to get a list of all things that needs pictures.";
         details.title = "Missing Pictures";
+        return report_initHTML(details);
+    } else if (name === 'items_createdRecent') {
+        var details = {};
+        details.id = `patches-reports-createdRecent`;
+        details.name = `patches-userInput-createdRecent`;
+        details.func = `report_createdRecent_submit();`;
+        details.input = "date";
+        details.val = "today";
+        details.desc = "Testing";
+        details.title = "Created Recent Check";
         return report_initHTML(details);
     } else {
         return null;
@@ -709,7 +720,68 @@ function parseTableToCSV() {
     URL.revokeObjectURL(url);
 }
 
+async function report_createdRecent_submit() {
+    const createButton = document.querySelector(`button[data-id="patches-reports-createdRecent"]`);
+    if (createButton) {
+        createButton.textContent = 'Loading...';
+        createButton.setAttribute('style', 'background-color: gray !important;');
+    }
 
+    const dateInput = document.getElementById('patches-reports-createdRecent-input');
+    var date = null;
+    if (dateInput) {
+        const rawValue = dateInput.value;
+        if (rawValue) {
+            const [yyyy, mm, dd] = rawValue.split('-');
+            date = `${mm}/${dd}/${yyyy}`;
+        } else {
+            console.error('No Date Input (2)', rawValue);
+            return false;
+        }
+    } else {
+        console.error('No Date Input (1)', dateInput);
+        return false;
+    }
+
+    const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
+    const request = {
+        report: {
+            type: "active_inventory",
+            columns: [
+                "products.sid",
+                "products.name",
+                "product_items.sku",
+                "product_items.condition_id",
+                "products.price",
+                "products.brand_id",
+                "products.category_id",
+                "categories.type",
+                "products.mpn",
+                "products.gtin",
+                "products.asin",
+                "product_items.store_settings",
+                "product_items.has_fba",
+                "product_items.created_at",
+                "products.created_at"
+            ],
+            filters: [
+                {
+                    column: "product_items.in_stock",
+                    opr: "{0} >= {1}",
+                    value: -100
+                },
+                {
+                    column: "product_items.created_at",
+                    opr: "between",
+                    value: `${date} - ${date}`
+                }
+            ]
+        },
+        csrf_recom: csrfToken
+    };
+
+    getReport(request);
+}
 
 async function report_pictureMissingFull_init() {
     const createButton = document.querySelector(`button[data-id="patches-reports-picturesMissingFull"]`);
