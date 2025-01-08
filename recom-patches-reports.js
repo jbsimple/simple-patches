@@ -382,7 +382,7 @@ function report_preset(name) {
         details.func = `report_createdRecent_submit();`;
         details.input = "date";
         details.val = "today";
-        details.desc = "Testing";
+        details.desc = "Generate a report of all created items from a specific date.<br>Includes ASIN, MPN, Category, Shipping Template and Has FBA";
         details.title = "Created Recent Check";
         return report_initHTML(details);
     } else {
@@ -755,9 +755,9 @@ async function report_createdRecent_submit() {
                 "products.price",
                 "products.brand_id",
                 "products.category_id",
-                "categories.type",
                 "products.mpn",
                 "products.gtin",
+                "products.asin",
                 "products.asin",
                 "product_items.store_settings",
                 "product_items.has_fba",
