@@ -579,9 +579,18 @@ function modalPictureCount() {
     });
 }
 
+function adjustToolbar() {
+    const toolbar = document.getElementById('kt_app_toolbar');
+    const text = toolbar.querySelector('h1.page-heading').textContent;
+    if (text === 'Dashboard') {
+        toolbar.style.display = 'none';
+    }
+}
+
 function patchInit() {
     modalPictureCount();
     checkWeatherAndCreateEffects();
+    adjustToolbar();
 }
 window.onload = patchInit;
 
