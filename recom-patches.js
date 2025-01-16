@@ -507,7 +507,7 @@ function modalPictureCount() {
 
                                             const labelDiv = document.createElement('div');
                                             labelDiv.className = 'fw-bold fs-6 text-gray-400';
-                                            labelDiv.textContent = 'Filename';
+                                            labelDiv.textContent = 'SID Image Filename';
 
                                             newElement.appendChild(numberContainer);
                                             newElement.appendChild(labelDiv);
