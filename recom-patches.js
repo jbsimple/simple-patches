@@ -483,39 +483,51 @@ function modalPictureCount() {
                                 }
 
                                 const images = modal.querySelectorAll('img');
-                                images.forEach((img) => {
+
+                                if (images.length > 0) {
+                                    const img = images[0];
                                     const filename = img.src.split('/').pop();
 
-                                    const parentContainer = modal.querySelector(
-                                        '.d-flex.flex-wrap.justify-content-start'
-                                    );
+                                    if (filename !== 'no-image.png') {
+                                        const parentContainer = modal.querySelector(
+                                            '.d-flex.flex-wrap.justify-content-start'
+                                        );
 
-                                    if (parentContainer) {
-                                        const targetContainer = parentContainer.querySelector('.d-flex.flex-wrap');
+                                        if (parentContainer) {
+                                            const targetContainer = parentContainer.querySelector('.d-flex.flex-wrap');
 
-                                        if (targetContainer) {
-                                            const newElement = document.createElement('div');
-                                            newElement.className = 'border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3';
+                                            if (targetContainer) {
+                                                const newElement = document.createElement('div');
+                                                newElement.className = 'border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3';
 
-                                            const numberContainer = document.createElement('div');
-                                            numberContainer.className = 'd-flex align-items-center';
-                                            const filenameDiv = document.createElement('div');
-                                            filenameDiv.className = 'fs-4 fw-bolder';
-                                            filenameDiv.textContent = filename;
+                                                const numberContainer = document.createElement('div');
+                                                numberContainer.className = 'd-flex align-items-center';
+                                                const filenameDiv = document.createElement('div');
+                                                filenameDiv.className = 'fs-4 fw-bolder';
+                                                filenameDiv.textContent = filename;
 
-                                            numberContainer.appendChild(filenameDiv);
+                                                numberContainer.appendChild(filenameDiv);
 
-                                            const labelDiv = document.createElement('div');
-                                            labelDiv.className = 'fw-bold fs-6 text-gray-400';
-                                            labelDiv.textContent = 'SID Image Filename';
+                                                const labelDiv = document.createElement('div');
+                                                labelDiv.className = 'fw-bold fs-6 text-gray-400';
+                                                labelDiv.textContent = 'SID Image Filename';
 
-                                            newElement.appendChild(numberContainer);
-                                            newElement.appendChild(labelDiv);
+                                                newElement.appendChild(numberContainer);
+                                                newElement.appendChild(labelDiv);
 
-                                            targetContainer.appendChild(newElement);
-                                        } else { console.error('Patches - Target container with class "d-flex flex-wrap" not found.'); }
-                                    } else { console.error('Patches - Parent container with class "d-flex flex-wrap justify-content-start" not found.'); }
-                                });
+                                                targetContainer.appendChild(newElement);
+                                            } else {
+                                                console.error('Patches - Target container with class "d-flex flex-wrap" not found.');
+                                            }
+                                        } else {
+                                            console.error('Patches - Parent container with class "d-flex flex-wrap justify-content-start" not found.');
+                                        }
+                                    } else {
+                                        console.debug('Patches - Skipping "no-image.png".');
+                                    }
+                                } else {
+                                    console.debug('Patches - No images found.');
+                                }
                             } catch (error) {
                                 console.error('API call failed for:', descriptionText, error);
                             } finally {
