@@ -477,9 +477,25 @@ function modalPictureCount() {
                                         newCell.textContent = countObj ? countObj.count : '0';
                                         row.appendChild(newCell);
                                     });
+                                    
                                 } else {
                                     console.debug('Patch: Table not found in the modal content.');
                                 }
+
+                                const images = modal.querySelectorAll('img');
+                                images.forEach((img) => {
+                                    const filename = img.src.split('/').pop();
+                                    const filenameElement = document.createElement('div');
+                                    filenameElement.textContent = filename;
+                                    filenameElement.style.fontSize = '0.9em';
+                                    filenameElement.style.color = '#666';
+                                    filenameElement.style.marginTop = '5px';
+
+                                    if (!img.nextSibling || img.nextSibling.textContent !== filename) {
+                                        img.insertAdjacentElement('afterend', filenameElement);
+                                    }
+                                });
+
                             } catch (error) {
                                 console.error('API call failed for:', descriptionText, error);
                             } finally {
