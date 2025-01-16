@@ -487,9 +487,7 @@ function modalPictureCount() {
                                     const filename = img.src.split('/').pop();
                                     const filenameElement = document.createElement('div');
                                     filenameElement.textContent = filename;
-                                    filenameElement.style.fontSize = '0.9em';
-                                    filenameElement.style.color = '#666';
-                                    filenameElement.style.marginTop = '5px';
+                                    filenameElement.setAttribute('style', 'font-color: var(--bs-gray) !important; text-align: center;');
 
                                     if (!img.nextSibling || img.nextSibling.textContent !== filename) {
                                         img.insertAdjacentElement('afterend', filenameElement);
