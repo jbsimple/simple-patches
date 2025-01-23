@@ -29,6 +29,7 @@ Enhancements:
 - On item pages; CSS fix to have the inventory tab larger so you can see more.
 - On listing page; A warning for when the GTIN is invalid and needs to be regenerated before going to the last step.
 - On listing page; A warning for when the GTIN is changed to remind the user to replace the old label with a new one.
+- On listing page; when a GTIN is generated/replaced from the original, an option appears to replace the product's GTIN back to the originally listed GTIN and the generated GTIN as the secondary.
 - On New Inventory Page; When a result appears that's In Catalog, the text is replaced with a link to open the SID modal.
 - On New Inventory Page; Disabled entry of new inventory sent to listing without a GTIN.
 - On New Inventory Page; Disabled entry of new inventory sent to listing with a GTIN longer than 12 characters.
