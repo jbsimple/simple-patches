@@ -148,12 +148,17 @@ const observer = new MutationObserver(() => {
             const block = element.querySelector('div');
             if (block) {
                 const field = block.getAttribute('data-field');
+                const validation = block.getAttribute('data-validator');
                 if (field) {
                     const input = document.querySelector(`input[name="${field}"]`);
                     if (input) {
                         input.addEventListener('input', function handleError() {
-                            element.remove();
-                            input.removeEventListener('input', handleError);
+                            if (validation === "notEmpty" && input.value.length > 0) {
+                                element.remove();
+                                input.removeEventListener('input', handleError);
+                            } else {
+                                input.removeEventListener('input', handleError);
+                            }
                         });
                     }
                 }
