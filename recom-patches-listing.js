@@ -120,18 +120,70 @@ if (gtin_input) {
         listingSubmit.addEventListener('click', function() {
             setTimeout(function() {
                 if (initGTIN !== curGTIN) {
-                    var code = '<br>';
-                    code += '<strong style="padding: 0.775rem 1.5rem !important;font-size: 1.1rem;line-height: 1.5;font-weight: 500;background-color: transparent;color: var(--bs-danger) !important;border: 1px solid var(--bs-danger);border-radius: 0.475rem;margin-top: 1rem;display: inline-block;">';
-                    code += '<i class="fa fa-triangle-exclamation fs-2" style="color: inherit;margin-right: 0.25rem;text-align: center;"></i>';
-                    code += 'The GTIN was changed, please write the new SKU down on the label... or else.'
-                    code += '<i class="fa fa-triangle-exclamation fs-2" style="color: inherit;margin-right: 0.25rem;text-align: center;"></i>';
-                    code += '</strong>';
+                    var code = `<br>
+                    <style>
+                        .patches-warning {
+                            padding: 0.775rem 1.5rem !important;
+                            font-size: 1.1rem;
+                            line-height: 1.5;
+                            font-weight: 500;
+                            background-color: transparent;
+                            color: var(--bs-danger) !important;
+                            border: 1px solid var(--bs-danger);
+                            border-radius: 0.475rem;
+                            display: inline-block;
+                            margin: 1rem 0;
+                        }
+
+                        .patches-warning i {
+                            color: inherit;
+                            margin-right: 0.25rem;
+                            text-align: center;
+                        }
+
+                        .patches-row {
+                            display: flex;
+                            flex-direction: row;
+                            gap: 0.5rem;
+                            margin: 0.5rem 0;
+                        }
+                    </style>
+                    <strong class="patches-warning">
+                        <i class="fa fa-triangle-exclamation fs-2"></i>
+                        <span>GTIN Change Detected!</span>
+                        <i class="fa fa-triangle-exclamation fs-2"></i>
+                    </strong>
+                    <br>
+                    <div class="patches-row">
+                        <label for="patches-oldgtin">Old GTIN:</label>
+                        <input type="text" id="patches-oldgtin" class="form-control form-control-solid form-control-lg" value="${initGTIN}"></input>
+                    </div>
+                    <div class="patches-row">
+                        <label for="patches-newgtin">Current GTIN:</label>
+                        <input type="text" id="patches-newgtin" class="form-control form-control-solid form-control-lg" value="${curGTIN}"></input>
+                    </div>
+                    <div class="patches-row">
+                        <span style="flex: 1;">You can set the GTIN back to the original and the generated GTIN as the secondary by pressing the button below.<br>
+                            Old GTIN becomes the product's real GTIN.<br>
+                            Current GTIN becomes the product's secondary GTIN.
+                        </span>
+                    </div>
+                    <div class="patches-row">
+                        <a class="btn btn-lg btn-light-success me-3" onclick="productGTIN(${initGTIN}, ${curGTIN})">Update GTINS</a>
+                        <div style="flex: 1;"></div>
+                    </div>`;
                     listingResults.innerHTML += code;
                 }
             }, 500); // yikes
         });
     }
-} // end gtin verify for listing
+}
+
+function productGTIN(gtin, secondary) {
+    console.log('gtin', gtin);
+    console.log('secondary', secondary);
+}
+
 
 // fix for the duplicated error messages
 const observer = new MutationObserver(() => {
