@@ -132,3 +132,25 @@ if (gtin_input) {
         });
     }
 } // end gtin verify for listing
+
+// fix for the duplicated error messages
+const observer = new MutationObserver(() => {
+    const elements = document.querySelectorAll('.fv-plugins-message-container.invalid-feedback');
+  
+    let previousText = null;
+    elements.forEach((element, index) => {
+      const currentText = element.textContent.trim();
+  
+      if (currentText === previousText) {
+        element.remove();
+      } else {
+        previousText = currentText;
+      }
+    });
+  });
+
+observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+});
+  
