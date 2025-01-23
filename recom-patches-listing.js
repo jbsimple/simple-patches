@@ -199,10 +199,10 @@ if (gtin_input) {
 function productGTIN() {
     const gtin_input = document.getElementById('patches-oldgtin');
     const secondary_input = document.getElementById('patches-newgtin');
-    
+
     if (gtin_input && secondary_input && listingResults) {
-        const gtin = gtin_input.input;
-        const secondary = secondary_input.input;
+        const gtin = gtin_input.value;
+        const secondary = secondary_input.value;
 
         console.debug('Patches - gtin', gtin);
         console.debug('Patches - secondary', secondary);
@@ -262,7 +262,6 @@ function productGTIN() {
                             console.debug('Patches - Response:', data);
                         }).fail(function(jqXHR, textStatus, errorThrown) {
                             console.error("Request failed: " + textStatus + ", " + errorThrown);
-                            reject(new Error("Request failed: " + textStatus + ", " + errorThrown));
                         });
                     }
                 }
