@@ -139,15 +139,25 @@ const observer = new MutationObserver(() => {
   
     let previousText = null;
     elements.forEach((element, index) => {
-      const currentText = element.textContent.trim();
+        const currentText = element.textContent.trim();
   
-      if (currentText === previousText) {
-        element.remove();
-      } else {
-        previousText = currentText;
-      }
+        if (currentText === previousText) {
+            element.remove();
+        } else {
+            previousText = currentText;
+            const field = element.getAttribute('data-field');
+            if (field) {
+                const input = document.querySelector(`input[name="${field}"]`);
+                if (input) {
+                    input.addEventListener('input', function handleError() {
+                        element.remove();
+                        input.removeEventListener('input', handleError);
+                    });
+                }
+            }
+        }
     });
-  });
+});
 
 observer.observe(document.body, {
     childList: true,
