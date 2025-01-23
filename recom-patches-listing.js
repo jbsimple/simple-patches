@@ -186,7 +186,7 @@ if (gtin_input) {
                         </span>
                     </div>
                     <div class="patches-row">
-                        <a class="btn btn-lg btn-light-warning me-3" onclick="productGTIN(${initGTIN}, ${curGTIN})">Update GTINS</a>
+                        <a class="btn btn-lg btn-light-warning me-3" onclick="productGTIN()">Update GTINS</a>
                         <div style="flex: 1;" id="productsGTIN-response"></div>
                     </div>`;
                     listingResults.innerHTML += code;
@@ -196,10 +196,17 @@ if (gtin_input) {
     }
 }
 
-function productGTIN(gtin, secondary) {
-    console.debug('Patches - gtin', gtin);
-    console.debug('Patches - secondary', secondary);
-    if (listingResults) {
+function productGTIN() {
+    const gtin_input = document.getElementById('patches-oldgtin');
+    const secondary_input = document.getElementById('patches-newgtin');
+    
+    if (gtin_input && secondary_input && listingResults) {
+        const gtin = gtin_input.input;
+        const secondary = secondary_input.input;
+
+        console.debug('Patches - gtin', gtin);
+        console.debug('Patches - secondary', secondary);
+
         const atags = listingResults.querySelectorAll('a');
         if (atags) {
             atags.forEach(atag => {
