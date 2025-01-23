@@ -172,11 +172,11 @@ if (gtin_input) {
                     </strong>
                     <br>
                     <div class="patches-column">
-                        <label for="patches-oldgtin">Old GTIN:</label>
+                        <label for="patches-oldgtin">Original GTIN -> GTIN:</label>
                         <input type="text" id="patches-oldgtin" class="form-control form-control-solid form-control-lg" value="${initGTIN}"></input>
                     </div>
                     <div class="patches-column">
-                        <label for="patches-newgtin">Current GTIN:</label>
+                        <label for="patches-newgtin">Listed GTIN -> Secondary GTIN:</label>
                         <input type="text" id="patches-newgtin" class="form-control form-control-solid form-control-lg" value="${curGTIN}"></input>
                     </div>
                     <div class="patches-column">
