@@ -244,25 +244,32 @@ function productGTIN() {
                         }).done(function(data) {
                             const responseBlock = document.getElementById('productsGTIN-response');
                             if (responseBlock && data.success) {
-                                responseBlock.innerHTML += '<span style="color: var(--bs-primary);">Updated!</span>';
-                            } else if (responseBlock && data.error) {
-                                const err = JSON.parse(data.error);
-                                let errors = '[,';
-                                Object.entries(err).forEach(([key, value]) => {
-                                    errors += `"${key}" => "${value},"`;
-                                });
-                                errors = `${errors.slice(0, -1)}]`;
-
-                                if (errors === '[]') {
-                                    errors = 'Unknown Error, Check Console.';
-                                }
-                                responseBlock.innerHTML += `<span style="color: var(--bs-danger);">Could not Update: ${errors}</span>`;
+                                responseBlock.innerHTML = '<span style="color: var(--bs-primary);">Updated!</span>';
                             }
-
+                        
                             console.debug('Patches - Response:', data);
                         }).fail(function(jqXHR, textStatus, errorThrown) {
                             console.error("Request failed: " + textStatus + ", " + errorThrown);
+                            
+                            const responseBlock = document.getElementById('productsGTIN-response');
+                            let errors = 'Unknown Error, Check Console.';
+                            
+                            if (jqXHR.responseText) {
+                                try {
+                                    const errorResponse = JSON.parse(jqXHR.responseText);
+                                    errors = Object.entries(errorResponse)
+                                        .map(([key, value]) => `"${key}" => "${value}"`)
+                                        .join(", ");
+                                } catch (e) {
+                                    errors = jqXHR.responseText;
+                                }
+                            }
+                        
+                            if (responseBlock) {
+                                responseBlock.innerHTML = `<span style="color: var(--bs-danger);">Could not Update: ${errors}</span>`;
+                            }
                         });
+                        
                     }
                 }
             })
