@@ -154,10 +154,9 @@ const observer = new MutationObserver(() => {
                     if (input) {
                         input.addEventListener('input', function handleError() {
                             if (validation === "notEmpty" && input.value.length > 0) {
-                                element.remove();
-                                input.removeEventListener('input', handleError);
+                                element.style.display = 'none';
                             } else {
-                                input.removeEventListener('input', handleError);
+                                element.style.display = 'inherit';
                             }
                         });
                     }
