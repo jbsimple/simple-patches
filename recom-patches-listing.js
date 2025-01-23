@@ -137,8 +137,11 @@ if (gtin_input) {
 
                         .patches-warning i {
                             color: inherit;
-                            margin-right: 0.25rem;
                             text-align: center;
+                        }
+
+                        .patches-warning span {
+                            margin: 0 0.5rem;
                         }
 
                         .patches-row {
@@ -177,7 +180,7 @@ if (gtin_input) {
                     </div>
                     <div class="patches-row">
                         <a class="btn btn-lg btn-light-success me-3" onclick="productGTIN(${initGTIN}, ${curGTIN})">Update GTINS</a>
-                        <div style="flex: 1;"></div>
+                        <div style="flex: 1;" id="productsGTIN-response"></div>
                     </div>`;
                     listingResults.innerHTML += code;
                 }
@@ -187,16 +190,57 @@ if (gtin_input) {
 }
 
 function productGTIN(gtin, secondary) {
-    console.log('gtin', gtin);
-    console.log('secondary', secondary);
+    console.debug('Patches - gtin', gtin);
+    console.debug('Patches - secondary', secondary);
     if (listingResults) {
         const atags = listingResults.querySelectorAll('a');
         if (atags) {
             atags.forEach(atag => {
-                const href = atag.href;
+                const href = atag.getAttribute('href');
                 if (href.includes('products/')) {
                     const productid = href.replace('products/', '');
-                    console.log('product id', productid);
+                    console.debug('Patches - product id', productid);
+                    const update = `/products/update/${productid}`;
+                    const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]')
+                    if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
+                        const csrfToken = csrfMeta.getAttribute('content');
+                        let meta_id = 14;
+                        if (document.location.href.includes('dev.')) {
+                            meta_id = 14;
+                        } else if (document.location.href.includes('cell.')) {
+                            meta_id = 5;
+                        }
+                        const request = {
+                            product: {
+                                gtin: gtin,
+                            },
+                            meta: [{
+                                    meta_id: meta_id,
+                                    value: secondary,
+                                }
+                            ],
+                            csrf_recom: csrfToken,
+                        };
+
+                        $.ajax({
+                            type: "POST",
+                            dataType: "json",
+                            url: update,
+                            data: request,
+                        }).done(function(data) {
+                            const responseBlock = document.getElementById('productsGTIN-response');
+                            if (responseBlock && data.success) {
+                                responseBlock.innerHTML += '<span style="color: var(--bs-primary);">Updated!</span>';
+                            } else if (responseBlock) {
+                                responseBlock.innerHTML += '<span style="color: var(--bs-danger);">Could not Update :(</span>';
+                            }
+
+                            console.debug('Patches - Response:', data);
+                        }).fail(function(jqXHR, textStatus, errorThrown) {
+                            console.error("Request failed: " + textStatus + ", " + errorThrown);
+                            reject(new Error("Request failed: " + textStatus + ", " + errorThrown));
+                        });
+                    }
                 }
             })
         }
