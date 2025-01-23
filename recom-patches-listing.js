@@ -157,6 +157,13 @@ if (gtin_input) {
                             gap: 0.5rem;
                             margin: 1.5rem 0;
                         }
+
+                        #productsGTIN-response {
+                            display: flex;
+                            align-items: center;
+                            font-size: 1.25rem;
+                            font-weight: 700;
+                        }
                     </style>
                     <strong class="patches-warning">
                         <i class="fa fa-triangle-exclamation fs-2"></i>
@@ -173,13 +180,13 @@ if (gtin_input) {
                         <input type="text" id="patches-newgtin" class="form-control form-control-solid form-control-lg" value="${curGTIN}"></input>
                     </div>
                     <div class="patches-column">
-                        <span style="flex: 1;">You can set the GTIN back to the original and the generated GTIN as the secondary by pressing the button below.<br>
-                            Old GTIN becomes the product's real GTIN.<br>
-                            Current GTIN becomes the product's secondary GTIN.
+                        <span style="flex: 1;">You can set the GTIN back to the original and the generated GTIN as the secondary by pressing the button below.<br><br>
+                            * Old GTIN becomes the product's real GTIN.<br>
+                            * Current GTIN becomes the product's secondary GTIN.
                         </span>
                     </div>
                     <div class="patches-row">
-                        <a class="btn btn-lg btn-light-success me-3" onclick="productGTIN(${initGTIN}, ${curGTIN})">Update GTINS</a>
+                        <a class="btn btn-lg btn-light-warning me-3" onclick="productGTIN(${initGTIN}, ${curGTIN})">Update GTINS</a>
                         <div style="flex: 1;" id="productsGTIN-response"></div>
                     </div>`;
                     listingResults.innerHTML += code;
@@ -197,7 +204,7 @@ function productGTIN(gtin, secondary) {
         if (atags) {
             atags.forEach(atag => {
                 const href = atag.getAttribute('href');
-                if (href.includes('products/')) {
+                if (href && href.includes('products/')) {
                     const productid = href.replace('products/', '');
                     console.debug('Patches - product id', productid);
                     const update = `/products/update/${productid}`;
