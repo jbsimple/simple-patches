@@ -252,17 +252,24 @@ function productGTIN() {
                             console.error("Request failed: " + textStatus + ", " + errorThrown);
                             
                             const responseBlock = document.getElementById('productsGTIN-response');
-                            let errors = 'Unknown Error, Check Console.';
-                            
+                            let errors = 'Loading...';
                             if (jqXHR.responseText) {
                                 try {
                                     const errorResponse = JSON.parse(jqXHR.responseText);
-                                    errors = Object.entries(errorResponse)
-                                        .map(([key, value]) => `"${key}" => "${value}"`)
-                                        .join(", ");
+                                    errors = '[';
+                                    if (errorResponse.errors) {
+                                        Object.entries(errorResponse.errors).forEach(([key, value]) => {
+                                            errors += `${key} => ${value}, `;
+                                        });
+                                        errors = errors.slice(0, -2) + ']';
+                                    } else {
+                                        errors = '[Unknown Error]';
+                                    }
                                 } catch (e) {
-                                    errors = jqXHR.responseText;
+                                    errors = `[${jqXHR.responseText}]`;
                                 }
+                            } else {
+                                errors = '[Unknown Error, See Console]';
                             }
                         
                             if (responseBlock) {
