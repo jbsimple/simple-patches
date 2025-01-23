@@ -182,6 +182,7 @@ if (gtin_input) {
                         <span style="flex: 1;">You can set the GTIN back to the original and the generated GTIN as the secondary by pressing the button below.<br><br>
                             * Old GTIN becomes the product's real GTIN.<br>
                             * Current GTIN becomes the product's secondary GTIN.
+                            * If it doesn't save here, the GTIN is REALLY invalid and there's nothing that can be done.
                         </span>
                     </div>
                     <div class="patches-row">
