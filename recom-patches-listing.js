@@ -145,7 +145,7 @@ const observer = new MutationObserver(() => {
             element.remove();
         } else {
             previousText = currentText;
-            const field = element.getAttribute('data-field');
+            const field = element.querySelector('div').getAttribute('data-field');
             if (field) {
                 const input = document.querySelector(`input[name="${field}"]`);
                 if (input) {
