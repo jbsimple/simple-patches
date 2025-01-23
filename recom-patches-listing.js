@@ -189,6 +189,18 @@ if (gtin_input) {
 function productGTIN(gtin, secondary) {
     console.log('gtin', gtin);
     console.log('secondary', secondary);
+    if (listingResults) {
+        const atags = listingResults.querySelectorAll('a');
+        if (atags) {
+            atags.forEach(atag => {
+                const href = atag.href;
+                if (href.includes('products/')) {
+                    const productid = href.replace('products/', '');
+                    console.log('product id', productid);
+                }
+            })
+        }
+    }
 }
 
 
