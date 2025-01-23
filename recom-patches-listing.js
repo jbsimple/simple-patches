@@ -145,7 +145,14 @@ if (gtin_input) {
                             display: flex;
                             flex-direction: row;
                             gap: 0.5rem;
-                            margin: 0.5rem 0;
+                            margin: 1.5rem 0;
+                        }
+
+                        .patches-column {
+                            display: flex;
+                            flex-direction: column;
+                            gap: 0.5rem;
+                            margin: 1.5rem 0;
                         }
                     </style>
                     <strong class="patches-warning">
@@ -154,15 +161,15 @@ if (gtin_input) {
                         <i class="fa fa-triangle-exclamation fs-2"></i>
                     </strong>
                     <br>
-                    <div class="patches-row">
+                    <div class="patches-column">
                         <label for="patches-oldgtin">Old GTIN:</label>
                         <input type="text" id="patches-oldgtin" class="form-control form-control-solid form-control-lg" value="${initGTIN}"></input>
                     </div>
-                    <div class="patches-row">
+                    <div class="patches-column">
                         <label for="patches-newgtin">Current GTIN:</label>
                         <input type="text" id="patches-newgtin" class="form-control form-control-solid form-control-lg" value="${curGTIN}"></input>
                     </div>
-                    <div class="patches-row">
+                    <div class="patches-column">
                         <span style="flex: 1;">You can set the GTIN back to the original and the generated GTIN as the secondary by pressing the button below.<br>
                             Old GTIN becomes the product's real GTIN.<br>
                             Current GTIN becomes the product's secondary GTIN.
