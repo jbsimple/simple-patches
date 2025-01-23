@@ -161,7 +161,6 @@ if (gtin_input) {
                         #productsGTIN-response {
                             display: flex;
                             align-items: center;
-                            font-size: 1.25rem;
                             font-weight: 700;
                         }
                     </style>
@@ -238,8 +237,18 @@ function productGTIN(gtin, secondary) {
                             const responseBlock = document.getElementById('productsGTIN-response');
                             if (responseBlock && data.success) {
                                 responseBlock.innerHTML += '<span style="color: var(--bs-primary);">Updated!</span>';
-                            } else if (responseBlock) {
-                                responseBlock.innerHTML += '<span style="color: var(--bs-danger);">Could not Update :(</span>';
+                            } else if (responseBlock && data.error) {
+                                const err = JSON.parse(data.error);
+                                let errors = '[,';
+                                Object.entries(err).forEach(([key, value]) => {
+                                    errors += `"${key}" => "${value},"`;
+                                });
+                                errors = `${errors.slice(0, -1)}]`;
+
+                                if (errors === '[]') {
+                                    errors = 'Unknown Error, Check Console.';
+                                }
+                                responseBlock.innerHTML += `<span style="color: var(--bs-danger);">Could not Update: ${errors}</span>`;
                             }
 
                             console.debug('Patches - Response:', data);
