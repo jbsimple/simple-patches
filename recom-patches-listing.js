@@ -145,14 +145,17 @@ const observer = new MutationObserver(() => {
             element.remove();
         } else {
             previousText = currentText;
-            const field = element.querySelector('div').getAttribute('data-field');
-            if (field) {
-                const input = document.querySelector(`input[name="${field}"]`);
-                if (input) {
-                    input.addEventListener('input', function handleError() {
-                        element.remove();
-                        input.removeEventListener('input', handleError);
-                    });
+            const block = element.querySelector('div');
+            if (block) {
+                const field = block.getAttribute('data-field');
+                if (field) {
+                    const input = document.querySelector(`input[name="${field}"]`);
+                    if (input) {
+                        input.addEventListener('input', function handleError() {
+                            element.remove();
+                            input.removeEventListener('input', handleError);
+                        });
+                    }
                 }
             }
         }
