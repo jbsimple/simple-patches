@@ -182,6 +182,7 @@ if (gtin_input) {
                         </div>
                         <span>Below, the fields are filled out to replace the product's GTIN with the original listing queue GTIN. The GTIN used when creating becomes the secondary GTIN. 
                         Modify the fields as needed, secondary gtin is not required.</span>
+                        <strong>In order for the switch to happen, you must hit the 'Update GTINS' button! It is NOT Automatic!</strong>
                     </div>
                     <div class="patches-column">
                         <label for="patches-oldgtin">Product GTIN:</label>
