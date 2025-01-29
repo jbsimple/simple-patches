@@ -171,11 +171,23 @@ if (gtin_input) {
                     </strong>
                     <br>
                     <div class="patches-column">
-                        <label for="patches-oldgtin">Original GTIN -> GTIN:</label>
+                        <span>Because the GTIN was rewritten from the original listing, scanning it in won't work. Below is a wizard to fix that.</span>
+                        <div class="patches-row">
+                            <strong>Original Queue GTIN:</strong>
+                            <input type="text" disabled value="${initGTIN}"></input>
+                        </div>
+                        <div class="patches-row">
+                            <strong>Current Listing GTIN:</strong>
+                            <input type="text" disabled value="${curGTIN}"></input>
+                        </div>
+                        <span>Below, the fields are filled out to replace the product's GTIN with the original listing GTIN and put the listed GTIN as the secondar.</span>
+                    </div>
+                    <div class="patches-column">
+                        <label for="patches-oldgtin">Product GTIN:</label>
                         <input type="text" id="patches-oldgtin" class="form-control form-control-solid form-control-lg" value="${initGTIN}"></input>
                     </div>
                     <div class="patches-column">
-                        <label for="patches-newgtin">Listed GTIN -> Secondary GTIN:</label>
+                        <label for="patches-newgtin">Product Secondary GTIN:</label>
                         <input type="text" id="patches-newgtin" class="form-control form-control-solid form-control-lg" value="${curGTIN}"></input>
                     </div>
                     <div class="patches-column">
