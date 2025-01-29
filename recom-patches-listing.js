@@ -180,7 +180,8 @@ if (gtin_input) {
                             <strong>Current Listing GTIN:</strong>
                             <input type="text" disabled value="${curGTIN}"></input>
                         </div>
-                        <span>Below, the fields are filled out to replace the product's GTIN with the original listing GTIN and put the listed GTIN as the secondar.</span>
+                        <span>Below, the fields are filled out to replace the product's GTIN with the original listing queue GTIN. The GTIN used when creating becomes the secondary GTIN. 
+                        Modify the fields as needed, secondary gtin is not required.</span>
                     </div>
                     <div class="patches-column">
                         <label for="patches-oldgtin">Product GTIN:</label>
