@@ -30,6 +30,11 @@ if (nav_sidebar) {
 
     nav_sidebar.appendChild(version_container);
 
+    const name = nav_sidebar_links.querySelectorAll('menu-heading')[0];
+    if (name.textContent.includes('Hi, Luke')) {
+        name.textContent('Hi, Psychopath');
+    }
+
 } else {
     console.error('Sidebar could not be found.');
 }

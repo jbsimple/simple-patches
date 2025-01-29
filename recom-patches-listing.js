@@ -174,11 +174,11 @@ if (gtin_input) {
                         <span>Because the GTIN was rewritten from the original listing, scanning it in won't work. Below is a wizard to fix that.</span>
                         <div class="patches-row">
                             <strong>Original Queue GTIN:</strong>
-                            <input type="text" disabled value="${initGTIN}"></input>
+                            <input type="text" class="form-control form-control-solid form-control-lg" disabled value="${initGTIN}"></input>
                         </div>
                         <div class="patches-row">
                             <strong>Current Listing GTIN:</strong>
-                            <input type="text" disabled value="${curGTIN}"></input>
+                            <input type="text" class="form-control form-control-solid form-control-lg" disabled value="${curGTIN}"></input>
                         </div>
                         <span>Below, the fields are filled out to replace the product's GTIN with the original listing queue GTIN. The GTIN used when creating becomes the secondary GTIN. 
                         Modify the fields as needed, secondary gtin is not required.</span>
