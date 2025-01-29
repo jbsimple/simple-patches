@@ -33,6 +33,8 @@ if (nav_sidebar) {
     const name = nav_sidebar_links.querySelectorAll('.menu-heading')[0];
     if (name && name.textContent.includes('Hi, Luke')) {
         name.textContent = 'Hi, Psychopath';
+    } else if (name && name.textContent.includes('Hi, Nate')) {
+        name.textContent = 'Hi, Nasty Nate';
     }
 
 } else {
