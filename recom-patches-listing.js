@@ -171,18 +171,17 @@ if (gtin_input) {
                     </strong>
                     <br>
                     <div class="patches-column">
-                        <span>Because the GTIN was rewritten from the original listing, scanning it in won't work. Below is a wizard to fix that.</span>
                         <div class="patches-row">
                             <strong>Original Queue GTIN:</strong>
                             <input type="text" class="form-control form-control-solid form-control-lg" disabled value="${initGTIN}"></input>
                         </div>
                         <div class="patches-row">
-                            <strong>Current Listing GTIN:</strong>
+                            <strong>Created Listing GTIN:</strong>
                             <input type="text" class="form-control form-control-solid form-control-lg" disabled value="${curGTIN}"></input>
                         </div>
-                        <span>Below, the fields are filled out to replace the product's GTIN with the original listing queue GTIN. The GTIN used when creating becomes the secondary GTIN. 
-                        Modify the fields as needed, secondary gtin is not required.</span>
-                        <strong>In order for the switch to happen, you must hit the 'Update GTINS' button! It is NOT Automatic!</strong>
+                    </div>
+                    <div class="patches-column">
+                        <span>With the GTIN change detected, you can change it back here. The fields below will update the product.</span>
                     </div>
                     <div class="patches-column">
                         <label for="patches-oldgtin">Product GTIN:</label>
@@ -198,6 +197,7 @@ if (gtin_input) {
                             * Current GTIN becomes the product's secondary GTIN.
                             * If it doesn't save here, the GTIN is REALLY invalid and there's nothing that can be done.
                         </span>
+                        <strong>In order for the switch to happen, you must hit the 'Update GTINS' button! It is NOT Automatic!</strong>
                     </div>
                     <div class="patches-row">
                         <a class="btn btn-lg btn-light-warning me-3" onclick="productGTIN()">Update GTINS</a>
@@ -232,7 +232,7 @@ function productGTIN() {
                     const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]')
                     if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
                         const csrfToken = csrfMeta.getAttribute('content');
-                        let meta_id = 14;
+                        let meta_id = 5;
                         if (document.location.href.includes('dev.')) {
                             meta_id = 14;
                         } else if (document.location.href.includes('cell.')) {
