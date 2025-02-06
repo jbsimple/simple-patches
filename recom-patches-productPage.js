@@ -1,3 +1,4 @@
+/* transcribe meta fields in activity log */
 function getMetaName(meta_id) {
     const meta = [
         { meta_id: 7, meta_name: "asin_check" },
@@ -36,6 +37,104 @@ setTimeout(function() {
     });
 }, 500);
 
+
+/* pretty print links for asins */
+function prettyLinkAsins() {
+    const productForm = document.getElementById('el_product_form');
+    if (productForm) {
+        const labels = productForm.querySelectorAll('.form-label');
+        if (labels) {
+            labels.forEach(label => {
+                const parent = label.parentElement;
+                if (label.textContent === 'Secondary ASINs' && parent) {
+                    const select = parent.querySelector('select');
+                    if (select) {
+                        const createASINLinks = () => {
+                            const existingLinks = document.getElementById('patches-meta-secondaryAsins');
+                            if (existingLinks) {
+                                existingLinks.remove();
+                            }
+                            const asinLinks = document.createElement('div');
+                            asinLinks.setAttribute('style', 'display: flex; flex-wrap: wrap; gap: 1rem; margin-top: .75rem !important; margin-right: .5rem !important; margin-left: .5rem !important;');
+                            asinLinks.id = 'patches-meta-secondaryAsins';
+
+                            const options = select.querySelectorAll('option');
+                            options.forEach(option => {
+                                if (option.value && option.value !== '') {
+                                    const asinLink = document.createElement('a');
+                                    asinLink.target = '_blank';
+                                    asinLink.href = `https://amazon.com/dp/${option.value}`;
+                                    asinLink.textContent = option.value;
+                                    asinLinks.appendChild(asinLink);
+                                }
+                            });
+
+                            parent.appendChild(asinLinks);
+                        };
+
+                        createASINLinks();
+
+                        const observer = new MutationObserver(() => {
+                            createASINLinks();
+                        });
+
+                        observer.observe(select, {
+                            childList: true
+                        });
+                    }
+                } else if (label.textContent === 'ASIN Renewed' && parent) {
+                    asinSingleLink(parent, 'patches-meta-renewedAsin');
+                } else if (label.textContent === 'ASIN' && parent) {
+                    asinSingleLink(parent, 'patches-meta-asin');
+                }
+            });
+        } else {
+            console.error(labels);
+        }
+    }
+
+    function asinSingleLink(parent, id) {
+        const input = parent.querySelector('input[type="text"]');
+        if (input) {
+            const createASINLink = () => {
+                const existingLinks = document.getElementById(id);
+                if (existingLinks) {
+                    existingLinks.remove();
+                }
+                if (input.value && input.value !== '') {
+                    const asinLink = document.createElement('div');
+                    asinLink.setAttribute('style', 'display: flex; flex-wrap: wrap; gap: 1rem; margin-top: .75rem !important; margin-right: .5rem !important; margin-left: .5rem !important;');
+                    asinLink.id = id;
+                    const link = document.createElement('a');
+                    link.target = '_blank';
+                    link.href = `https://amazon.com/dp/${input.value}`;
+                    link.textContent = input.value;
+                    asinLink.appendChild(link);
+                    parent.appendChild(asinLink);
+                }
+            };
+
+            createASINLink();
+
+            const observer = new MutationObserver(() => {
+                createASINLink();
+            });
+
+            observer.observe(input, {
+                attributes: true,
+                attributeFilter: ['value']
+            });
+
+            input.addEventListener('input', () => {
+                createASINLink();
+            });
+        }
+    }
+}
+
+setTimeout(function () { prettyLinkAsins(); }, 500);
+
+/* photo stuff */
 // Getting rid of bad gallery viewer
 var media_tab = document.getElementById('rc_product_media_tab');
 var media_tree = document.getElementById('product-images-container');
@@ -151,7 +250,7 @@ if (media_tab && media_tree) {
     media_tree_parent.insertBefore(newElement, media_tree);
 }
 
-
+// get it to open all images
 function checkPopup() {
     const popupStatus = getCookie("popupsEnabled");
     if (popupStatus === "true") {
