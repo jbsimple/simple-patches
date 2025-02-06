@@ -4,7 +4,7 @@ function prettyLinkSkus() {
         const tds = table.querySelectorAll('td');
         if (tds) {
             tds.forEach(td => {
-                if (td.innerHTML.startsWith('SC-')) {
+                if (td.innerHTML.startsWith('SC-') || td.innerHTML.startsWith('RF_SC-')) {
                     const sku = td.innerHTML;
                     td.innerHTML = `<a href="/product/items/${sku}" target="_blank">${sku}</a>`;
                 }
