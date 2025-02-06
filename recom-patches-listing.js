@@ -121,49 +121,6 @@ if (gtin_input) {
             setTimeout(function() {
                 if (initGTIN !== curGTIN) {
                     var code = `<br>
-                    <style>
-                        .patches-warning {
-                            padding: 0.775rem 1.5rem !important;
-                            font-size: 1.1rem;
-                            line-height: 1.5;
-                            font-weight: 500;
-                            background-color: transparent;
-                            color: var(--bs-danger) !important;
-                            border: 1px solid var(--bs-danger);
-                            border-radius: 0.475rem;
-                            display: inline-block;
-                            margin: 1rem 0;
-                        }
-
-                        .patches-warning i {
-                            color: inherit;
-                            text-align: center;
-                        }
-
-                        .patches-warning span {
-                            margin: 0 0.5rem;
-                        }
-
-                        .patches-row {
-                            display: flex;
-                            flex-direction: row;
-                            gap: 0.5rem;
-                            margin: 1.5rem 0;
-                        }
-
-                        .patches-column {
-                            display: flex;
-                            flex-direction: column;
-                            gap: 0.5rem;
-                            margin: 1.5rem 0;
-                        }
-
-                        #productsGTIN-response {
-                            display: flex;
-                            align-items: center;
-                            font-weight: 700;
-                        }
-                    </style>
                     <strong class="patches-warning">
                         <i class="fa fa-triangle-exclamation fs-2"></i>
                         <span>GTIN Change Detected!</span>

@@ -1,4 +1,4 @@
-const version = '01-23-2025__1';
+const version = '02-06-2025__1';
 
 const nav_sidebar = document.getElementById('kt_app_sidebar_navs_wrappers');
 if (nav_sidebar) {
@@ -255,6 +255,7 @@ script_patch.onload = function() {
 
 if (window.location.href.includes('/receiving/queues/listing/') || window.location.href.includes('/products/new')) {
 
+    document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches-listing.css?v=' + Date.now() + '" type="text/css"/>';
     script_patch.src = "https://simple-patches.vercel.app/recom-patches-listing.js?v=" + Date.now();
     script_patch.name = 'recom-patches-listing.js';
 

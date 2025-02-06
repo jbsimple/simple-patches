@@ -210,7 +210,7 @@ function initPreset() {
     right.appendChild(card);
     
     card_body.appendChild(report_preset('listing_productivity'));
-    card_body.appendChild(report_preset('marketing_productivity'));
+    //card_body.appendChild(report_preset('marketing_productivity'));
     card_body.appendChild(report_preset('items_createdRecent'));
     card_body.appendChild(report_preset('picture_missingFull'));
     card_body.appendChild(report_preset('picture_missingSpecial'));
