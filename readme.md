@@ -26,6 +26,7 @@ Enhancements:
 - On product and item pages; Fix to prevent navigation away while images are still uploading.
 - On product and item pages; Added button to open all images in new tabs (enable popups in browser for it to work).
 - On product and item pages; Added a popups check message next to the above button.
+- On product pahes; On all ASIN inputs, a link is generated under the input to view that asin in a new tab.
 - On item pages; CSS fix to have the inventory tab larger so you can see more.
 - On listing page; A warning for when the GTIN is invalid and needs to be regenerated before going to the last step.
 - On listing page; A warning for when the GTIN is changed to remind the user to replace the old label with a new one.
@@ -48,6 +49,7 @@ Enhancements:
 - On reports page, added css rule to flip the order of recents and main reporting tool because recents aren't THAT important.
 - On Calendar; CSS fix to add a background color to the list of day's events.
 - On User's page, CSS fix to not have the roles list go beyond the card.
+- On Integrations Error Page, replaced SKU references with links to the actual SKUs.
 - On all pages; CSS fix to correct spacing issues in header.
 - On all pages; CSS fix to get rid of light mode logo.
 - On all pages; CSS fix (that I shouldn't have to do) to fix page height issues not filling the full background.
