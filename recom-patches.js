@@ -37,6 +37,21 @@ if (nav_sidebar) {
         name.textContent = 'Hi, Nasty Nate';
     }
 
+    const links = nav_sidebar_links.querySelectorAll('.menu-link');
+    if (links.length > 0) {
+        links.forEach(link => {
+            const href = link.getAttribute('href'); 
+            const title = link.querySelector('.menu-title');
+            if (href && href.includes('productivity/employee')) {
+                title.textContent = 'My Productivity';
+            } else if (href && href.includes('productivity')) {
+                title.textContent = 'Team Productivity';
+            }
+        });
+    } else {
+        console.error('PATCHES - Unable to parse button links');
+    }
+
 } else {
     console.error('Sidebar could not be found.');
 }
