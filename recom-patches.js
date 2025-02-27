@@ -337,6 +337,13 @@ if (window.location.href.includes('/integrations/store/logs')) {
 
 }
 
+if (window.location.href.includes('/productivity')) {
+    
+    script_patch.src = "https://simple-patches.vercel.app/recom-patches-errors.js?v=" + Date.now();
+    script_patch.name = 'recom-patches-productivity.js';
+
+}
+
 document.body.appendChild(script_patch);
 
 const today = new Date();
