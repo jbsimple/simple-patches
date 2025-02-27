@@ -50,6 +50,11 @@ Enhancements:
 - On Calendar; CSS fix to add a background color to the list of day's events.
 - On User's page, CSS fix to not have the roles list go beyond the card.
 - On Integrations Error Page, replaced SKU references with links to the actual SKUs.
+- Replaced the broken productivity pages with real information.
+  - Replaced first button on sidebar to team productivity.
+  - Replaced second button on sidebar to user producivity.
+  - On team productivity, gets Listing Team employee producivity report, handles duplicates and calculates statistics per user for each task they do. Then prints the full report table.
+  - On user productivity, gets user's employee producivity report and breaks down each task they do and shows stats for each task. Then prints the full report table.
 - On all pages; CSS fix to correct spacing issues in header.
 - On all pages; CSS fix to get rid of light mode logo.
 - On all pages; CSS fix (that I shouldn't have to do) to fix page height issues not filling the full background.
