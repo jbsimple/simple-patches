@@ -44,7 +44,7 @@ if (nav_sidebar) {
             const title = link.querySelector('.menu-title');
             if (href && href.includes('productivity/employee')) {
                 title.textContent = 'My Productivity';
-            } else if (href && href.includes('productivity')) {
+            } else if (href && href.includes('productivity') && !href.includes('productivity/board')) {
                 title.textContent = 'Team Productivity';
             }
         });
