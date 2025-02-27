@@ -139,7 +139,7 @@ async function getReport(type) {
     }
 }
 
-(async () => {
+window.onload = async () => {
     console.log('test');
     const content = document.getElementById('kt_app_content');
 
@@ -414,4 +414,4 @@ async function getReport(type) {
             content.innerHTML = '<p>No data available</p>';
         }
     }
-})();
+};
