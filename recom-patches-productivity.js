@@ -190,7 +190,7 @@ window.onload = async () => {
             Object.keys(taskData).forEach(task => {
                 const { totalUnits, totalTime } = taskData[task];
                 const timeSpentHours = (totalTime / 60).toFixed(2);
-                const timePerUnit = totalTime > 0 ? (totalTime / totalUnits).toFixed(2) : "0";
+                const timePerUnit = totalUnits > 0 ? (totalTime / totalUnits).toFixed(2) : "0";
 
                 const unitBox = `
                     <div class="card card-xl-stretch mb-xl-8" style="background-color: rgb(65,40,50) !important; color: white !important; flex: 1; min-width: 300px;">
@@ -333,7 +333,7 @@ window.onload = async () => {
                 Object.keys(userDataMap[user]).forEach(task => {
                     const { totalUnits, totalTime } = userDataMap[user][task];
                     const timeSpentHours = (totalTime / 60).toFixed(2);
-                    const timePerUnit = totalTime > 0 ? (totalTime / totalUnits).toFixed(2) : "0";
+                    const timePerUnit = totalUnits > 0 ? (totalTime / totalUnits).toFixed(2) : "0";
 
                     const unitBox = `
                         <div class="card card-xl-stretch mb-xl-8" style="background-color: rgb(65,40,50) !important; color: white !important; flex: 1; min-width: 300px;">
