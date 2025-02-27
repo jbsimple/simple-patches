@@ -140,6 +140,7 @@ async function getReport(type) {
 }
 
 (async () => {
+    console.log('test');
     const content = document.getElementById('kt_app_content');
 
     if (content && window.location.href.includes('/productivity/employee')) {
