@@ -437,9 +437,13 @@ function injectDateSelect(funct, content) {
     const dateInput = document.createElement("input");
     dateInput.type = "date";
     dateInput.id = "patches-productivity-dateInput";
+    dateInput.classList.add('form-control', 'rounded-1');
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.value = today;
 
     const submitButton = document.createElement("button");
     submitButton.textContent = "Submit";
+    submitButton.classList.add('btn', 'btn-large', 'btn-primary');
     submitButton.addEventListener("click", () => {
         if (typeof window[funct] === "function") {
             window[funct](dateInput.value);
@@ -455,7 +459,6 @@ function injectDateSelect(funct, content) {
 }
 
 window.onload = async () => {
-    console.log('test');
     const content = document.getElementById('kt_app_content');
 
     if (content && window.location.href.includes('/productivity/employee')) {
