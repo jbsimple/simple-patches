@@ -74,7 +74,7 @@ async function getReport(type) {
                     filters: [{
                             column: "user_profile.user_id",
                             opr: "{0} = '{1}'",
-                            value: [userId]
+                            value: `${userId}`
                         },
                         {
                             column: "user_clocks.clock_date",
