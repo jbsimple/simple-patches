@@ -21,19 +21,21 @@ async function getUserID() {
     }
 }
 
-async function getReport(type) {
+async function getReport(type, date) {
     const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
     if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
         const csrfToken = csrfMeta.getAttribute('content');
 
-        const today = new Date();
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const dd = String(today.getDate()).padStart(2, '0');
-        const yyyy = today.getFullYear();
-
-        const date = `${mm}/${dd}/${yyyy}`;
-
-				let request = null;
+        if (date === null) {
+            const today = new Date();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            const yyyy = today.getFullYear();
+    
+            const date = `${mm}/${dd}/${yyyy}`;
+        }
+        
+        let request = null;
         if (type === 'self') {
             const userId = await getUserID();
             request = {
@@ -139,10 +141,10 @@ async function getReport(type) {
     }
 }
 
-async function injectUserReport(content) {
+async function injectUserReport(content, date = null) {
     content.innerHTML = '';
 
-    const userData = await getReport('self');
+    const userData = await getReport('self', date);
     console.debug('PATCHES - User Data', userData);
 
     if (userData.length > 0) {
@@ -259,15 +261,17 @@ async function injectUserReport(content) {
 
         tableWrapper.appendChild(table);
         content.appendChild(tableWrapper);
+
+        injectDateSelect('injectUserReport', content);
     } else {
         content.innerHTML = '<p>No data available</p>';
     }
 }
 
-async function injectTeamReport(content) {
+async function injectTeamReport(content, date = null) {
     content.innerHTML = '';
 
-    const teamData = await getReport();
+    const teamData = await getReport('team', date);
     console.debug('PATCHES - Team Data (Before Deduplication)', teamData);
 
     if (teamData.length > 0) {
@@ -408,9 +412,15 @@ async function injectTeamReport(content) {
 
         tableWrapper.appendChild(table);
         content.appendChild(tableWrapper);
+
+        injectDateSelect('injectTeamReport', content);
     } else {
         content.innerHTML = '<p>No data available</p>';
     }
+}
+
+async function injectDateSelect(funct, content) {
+
 }
 
 window.onload = async () => {
