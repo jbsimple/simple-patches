@@ -281,8 +281,6 @@ async function injectTeamReport() {
     const content = document.getElementById('kt_app_content');
     content.innerHTML = '';
 
-    injectDateSelect('injectTeamReport', content);
-
     const teamData = await getReport('team');
     console.debug('PATCHES - Team Data (Before Deduplication)', teamData);
 
@@ -455,6 +453,7 @@ function injectDateSelect(funct, content) {
     submitButton.addEventListener("click", () => {
         if (typeof window[funct] === "function") {
             window[funct](dateInput.value);
+            injectDateSelect(funct, content);
         } else {
             console.error(`Function ${funct} is not defined.`);
         }
@@ -474,7 +473,10 @@ window.onload = async () => {
 
     if (test && window.location.href.includes('/productivity/employee')) {
         injectUserReport();
+        injectDateSelect('injectUserReport', content);
     } else if (test && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board')) {
         injectTeamReport();
+        injectDateSelect('injectTeamReport', content);
     }
+    
 };
