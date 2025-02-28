@@ -219,7 +219,7 @@ async function injectUserReport() {
         console.debug('PATCHES - User Data (After Deduplication)', uniqueData);
         
         const taskData = {};
-        userData.forEach(row => {
+        uniqueData.forEach(row => {
             const task = row.Task;
             
             if (task === "BREAK" || task === "LUNCH") return;
