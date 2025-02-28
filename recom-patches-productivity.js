@@ -167,7 +167,7 @@ async function injectUserReport() {
         const seenKeys = new Set();
 
         userData.forEach(row => {
-            const key = `${row.Task}-${row.SKU}-${row.Event_Date}`;
+            const key = `${row.User}-${row.Task}-${row.SKU}-${row.Event_Date}`;
             if (!seenKeys.has(key)) {
                 seenKeys.add(key);
                 uniqueData.push(row);
