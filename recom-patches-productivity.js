@@ -155,7 +155,7 @@ async function injectUserReport() {
 
     injectDateSelect('injectUserReport', content);
 
-    const userData = await getReport('self', date);
+    const userData = await getReport('self');
     console.debug('PATCHES - User Data', userData);
 
     if (userData.length > 0) {
@@ -283,7 +283,7 @@ async function injectTeamReport() {
 
     injectDateSelect('injectTeamReport', content);
 
-    const teamData = await getReport('team', date);
+    const teamData = await getReport('team');
     console.debug('PATCHES - Team Data (Before Deduplication)', teamData);
 
     if (teamData.length > 0) {
