@@ -484,11 +484,11 @@ window.onload = async () => {
     if (content && window.location.href.includes('/productivity/employee')) {
         injectUserReport();
         injectDateSelect('injectUserReport', content);
-        document.title = document.title.replace('Productivity', 'Team Productivity');
+        document.title = document.title.replace('Employee Productivity', 'My Productivity');
     } else if (content && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board')) {
         injectTeamReport();
         injectDateSelect('injectTeamReport', content);
-        document.title = document.title.replace('Employee Productivity', 'My Productivity');
+        document.title = document.title.replace('Productivity', 'Team Productivity');
     }
     
 };
