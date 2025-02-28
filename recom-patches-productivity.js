@@ -149,7 +149,7 @@ async function getReport(type) {
     }
 }
 
-async function injectUserReport(content, date = null) {
+async function injectUserReport() {
     const content = document.getElementById('kt_app_content');
     content.innerHTML = '';
 
@@ -277,7 +277,7 @@ async function injectUserReport(content, date = null) {
     }
 }
 
-async function injectTeamReport(content, date = null) {
+async function injectTeamReport() {
     const content = document.getElementById('kt_app_content');
     content.innerHTML = '';
 
