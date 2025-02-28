@@ -85,7 +85,7 @@ async function getReport(type) {
                 },
                 csrf_recom: csrfToken
             };
-        } else {
+        } else if (type === 'team') {
             request = {
                 report: {
                     type: "user_clock",
@@ -115,6 +115,46 @@ async function getReport(type) {
                             column: "user_profile.department_id",
                             opr: "{0} IN {1}",
                             value: ["23"]
+                        },
+                        {
+                            column: "user_clocks.clock_date",
+                            opr: "between",
+                            value: `${date} - ${date}`
+                        }
+                    ]
+                },
+                csrf_recom: csrfToken
+            };
+        } else {
+            request = {
+                report: {
+                    type: "user_clock",
+                    columns: [
+                        "user_profile.user_id",
+                        "user_profile.department_id",
+                        "user_clocks.task_id",
+                        "purchase_orders.id",
+                        "purchase_orders.type",
+                        "user_clock_activity.activity_id",
+                        "user_clock_activity.activity_code",
+                        "user_clock_activity.notes",
+                        "user_clock_activity.units",
+                        "user_clock_activity.created_at",
+                        "user_clock_activity.time_spent",
+                        "user_clocks.time_in",
+                        "user_clocks.time_out",
+                        "user_clocks.user_id",
+                        "user_clocks.clock_date",
+                        "products.sid",
+                        "products.name",
+                        "product_items.sku",
+                        "product_items.condition_id",
+                        "products.category_id"
+                    ],
+                    filters: [{
+                            column: "user_profile.user_id",
+                            opr: "{0} = '{1}'",
+                            value: 87
                         },
                         {
                             column: "user_clocks.clock_date",
