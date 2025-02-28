@@ -162,7 +162,7 @@ async function injectUserReport() {
     const userData = await getReport('self');
     console.debug('PATCHES - User Data', userData);
 
-    if (userData.length > 0) {
+    if (userData && userData.length > 0) {
         const uniqueData = [];
         const seenKeys = new Set();
 
@@ -294,7 +294,7 @@ async function injectTeamReport() {
     const teamData = await getReport('team');
     console.debug('PATCHES - Team Data (Before Deduplication)', teamData);
 
-    if (teamData.length > 0) {
+    if (teamData && teamData.length > 0) {
         const uniqueData = [];
         const seenKeys = new Set();
 
