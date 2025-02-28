@@ -21,19 +21,26 @@ async function getUserID() {
     }
 }
 
-async function getReport(type, dateInput) {
+async function getReport(type) {
     const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
     if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
         const csrfToken = csrfMeta.getAttribute('content');
 
         const today = new Date();
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const dd = String(today.getDate()).padStart(2, '0');
-        const yyyy = today.getFullYear();
+        const today_mm = String(today.getMonth() + 1).padStart(2, '0');
+        const today_dd = String(today.getDate()).padStart(2, '0');
+        const today_yyyy = today.getFullYear();
+        const todayFormatted = `${today_mm}/${today_dd}/${today_yyyy}`;
 
-        const date = `${mm}/${dd}/${yyyy}`;
-        if (dateInput !== null) {
-            
+        let date = todayFormatted;
+
+        const dateInput = document.getElementById('patches-productivity-dateInput');
+        if (dateInput) {
+            const rawValue = dateInput.value;
+            if (rawValue) {
+                const [yyyy, mm, dd] = rawValue.split('-');
+                date = `${mm}/${dd}/${yyyy}`;
+            }
         }
         
         let request = null;
@@ -420,8 +427,30 @@ async function injectTeamReport(content, date = null) {
     }
 }
 
-async function injectDateSelect(funct, content) {
+function injectDateSelect(funct, content) {
+    const wrapper = document.createElement("div");
+    wrapper.style.display = "flex";
+    wrapper.style.gap = "10px";
+    wrapper.style.alignItems = "center";
 
+    const dateInput = document.createElement("input");
+    dateInput.type = "date";
+    dateInput.id = "patches-productivity-dateInput";
+
+    const submitButton = document.createElement("button");
+    submitButton.textContent = "Submit";
+    submitButton.addEventListener("click", () => {
+        if (typeof window[funct] === "function") {
+            window[funct](dateInput.value);
+        } else {
+            console.error(`Function ${funct} is not defined.`);
+        }
+    });
+
+    wrapper.appendChild(dateInput);
+    wrapper.appendChild(submitButton);
+
+    content.prepend(wrapper);
 }
 
 window.onload = async () => {
