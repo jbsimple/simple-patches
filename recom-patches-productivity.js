@@ -21,18 +21,19 @@ async function getUserID() {
     }
 }
 
-async function getReport(type, date) {
+async function getReport(type, dateInput) {
     const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
     if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
         const csrfToken = csrfMeta.getAttribute('content');
 
-        if (date === null) {
-            const today = new Date();
-            const mm = String(today.getMonth() + 1).padStart(2, '0');
-            const dd = String(today.getDate()).padStart(2, '0');
-            const yyyy = today.getFullYear();
-    
-            const date = `${mm}/${dd}/${yyyy}`;
+        const today = new Date();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        const yyyy = today.getFullYear();
+
+        const date = `${mm}/${dd}/${yyyy}`;
+        if (dateInput !== null) {
+            
         }
         
         let request = null;
