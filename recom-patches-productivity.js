@@ -464,7 +464,7 @@ function injectDateSelect(funct, content) {
     wrapper.appendChild(dateInput);
     wrapper.appendChild(submitButton);
 
-    content.prepend(wrapper);
+    content.appendChild(wrapper);
 }
 
 window.onload = async () => {
