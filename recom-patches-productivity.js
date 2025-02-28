@@ -437,7 +437,7 @@ function injectDateSelect(funct, content) {
     const label = document.createElement('label');
     label.for = "patches-productivity-dateInput";
     label.textContent = 'Select Date:';
-    label.classList.add('fw-bolder', 'd-flex align-items-center', 'text-dark');
+    label.classList.add('fw-bolder', 'd-flex', 'align-items-center', 'text-dark');
 
     const dateInput = document.createElement("input");
     dateInput.type = "date";
