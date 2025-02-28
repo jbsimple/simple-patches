@@ -470,11 +470,11 @@ function injectDateSelect(funct, content) {
 }
 
 window.onload = async () => {
-    const content = document.getElementById('kt_app_content');
+    const test = document.getElementById('kt_app_content');
 
-    if (content && window.location.href.includes('/productivity/employee')) {
+    if (test && window.location.href.includes('/productivity/employee')) {
         injectUserReport();
-    } else if (content && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board')) {
+    } else if (test && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board')) {
         injectTeamReport();
     }
 };
