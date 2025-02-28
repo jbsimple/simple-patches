@@ -150,6 +150,7 @@ async function getReport(type) {
 }
 
 async function injectUserReport(content, date = null) {
+    const content = document.getElementById('kt_app_content');
     content.innerHTML = '';
 
     injectDateSelect('injectUserReport', content);
@@ -277,6 +278,7 @@ async function injectUserReport(content, date = null) {
 }
 
 async function injectTeamReport(content, date = null) {
+    const content = document.getElementById('kt_app_content');
     content.innerHTML = '';
 
     injectDateSelect('injectTeamReport', content);
@@ -464,15 +466,15 @@ function injectDateSelect(funct, content) {
     wrapper.appendChild(dateInput);
     wrapper.appendChild(submitButton);
 
-    content.appendChild(wrapper);
+    content.prepend(wrapper);
 }
 
 window.onload = async () => {
     const content = document.getElementById('kt_app_content');
 
     if (content && window.location.href.includes('/productivity/employee')) {
-        injectUserReport(content);
+        injectUserReport();
     } else if (content && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board')) {
-        injectTeamReport(content);
+        injectTeamReport();
     }
 };
