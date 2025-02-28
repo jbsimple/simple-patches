@@ -169,6 +169,7 @@ async function injectUserReport() {
         userData.forEach(row => {
             const key = `${row.User}-${row.SKU}-${row.Event_Date}`;
             if (!seenKeys.has(key)) {
+                console.debug(`PATCHES - Deduplication Key: ${key}`);
                 seenKeys.add(key);
                 uniqueData.push(row);
             }
