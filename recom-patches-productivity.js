@@ -152,6 +152,8 @@ async function getReport(type) {
 async function injectUserReport(content, date = null) {
     content.innerHTML = '';
 
+    injectDateSelect('injectUserReport', content);
+
     const userData = await getReport('self', date);
     console.debug('PATCHES - User Data', userData);
 
@@ -269,8 +271,6 @@ async function injectUserReport(content, date = null) {
 
         tableWrapper.appendChild(table);
         content.appendChild(tableWrapper);
-
-        injectDateSelect('injectUserReport', content);
     } else {
         content.innerHTML = '<p>No data available</p>';
     }
@@ -278,6 +278,8 @@ async function injectUserReport(content, date = null) {
 
 async function injectTeamReport(content, date = null) {
     content.innerHTML = '';
+
+    injectDateSelect('injectTeamReport', content);
 
     const teamData = await getReport('team', date);
     console.debug('PATCHES - Team Data (Before Deduplication)', teamData);
@@ -420,8 +422,6 @@ async function injectTeamReport(content, date = null) {
 
         tableWrapper.appendChild(table);
         content.appendChild(tableWrapper);
-
-        injectDateSelect('injectTeamReport', content);
     } else {
         content.innerHTML = '<p>No data available</p>';
     }
@@ -432,6 +432,7 @@ function injectDateSelect(funct, content) {
     wrapper.style.display = "flex";
     wrapper.style.gap = "10px";
     wrapper.style.alignItems = "center";
+    wrapper.style.margin = '2rem 30px';
 
     const dateInput = document.createElement("input");
     dateInput.type = "date";
