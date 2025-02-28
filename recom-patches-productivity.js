@@ -480,15 +480,29 @@ function injectDateSelect(funct, content) {
 
 window.onload = async () => {
     const content = document.getElementById('kt_app_content');
+    const toolbar = document.getElementById('kt_app_toolbar');
+    let heading = null;
+    if (toolbar) {
+        heading = toolbar.querySelector('.page-heading');
+    }
 
     if (content && window.location.href.includes('/productivity/employee')) {
         injectUserReport();
         injectDateSelect('injectUserReport', content);
         document.title = document.title.replace('Employee Productivity', 'My Productivity');
+        
+        if (heading) {
+            heading.textContent = 'My Productivity';
+        }
+        
     } else if (content && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board')) {
         injectTeamReport();
         injectDateSelect('injectTeamReport', content);
         document.title = document.title.replace('Productivity', 'Team Productivity');
+
+        if (heading) {
+            heading.textContent = 'Team Productivity';
+        }
     }
     
 };
