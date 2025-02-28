@@ -464,7 +464,6 @@ function injectDateSelect(funct, content) {
     submitButton.addEventListener("click", () => {
         if (typeof window[funct] === "function") {
             window[funct](dateInput.value);
-            injectDateSelect(funct, content);
         } else {
             console.error(`Function ${funct} is not defined.`);
         }
