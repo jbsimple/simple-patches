@@ -495,9 +495,6 @@ window.onload = async () => {
             </li>
             <li class="breadcrumb-item text-muted">
                 <a href="/productivity" class="text-muted text-hover-primary">Productivity</a>
-            </li>
-            <li class="breadcrumb-item">
-                <span class="bullet bg-gray-400 w-5px h-2px"></span>
             </li>`;
         }
     }
@@ -514,6 +511,9 @@ window.onload = async () => {
 
         if (breadcrumb) {
             breadcrumb.innerHTML += `<!-- ADDITIONAL -->
+            <li class="breadcrumb-item">
+                <span class="bullet bg-gray-400 w-5px h-2px"></span>
+            </li>
             <li class="breadcrumb-item text-muted">
                 <a href="/productivity/employee/0" class="text-muted text-hover-primary">My Productivity</a>
             </li>`;
