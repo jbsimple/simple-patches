@@ -469,12 +469,12 @@ function injectDateSelect(funct, content) {
 }
 
 window.onload = async () => {
-    const test = document.getElementById('kt_app_content');
+    const content = document.getElementById('kt_app_content');
 
-    if (test && window.location.href.includes('/productivity/employee')) {
+    if (content && window.location.href.includes('/productivity/employee')) {
         injectUserReport();
         injectDateSelect('injectUserReport', content);
-    } else if (test && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board')) {
+    } else if (content && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board')) {
         injectTeamReport();
         injectDateSelect('injectTeamReport', content);
     }
