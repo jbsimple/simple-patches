@@ -159,8 +159,6 @@ async function injectUserReport() {
         });
     }
 
-    injectDateSelect('injectUserReport', content);
-
     const userData = await getReport('self');
     console.debug('PATCHES - User Data', userData);
 
