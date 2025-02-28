@@ -8,7 +8,7 @@ async function getUserID() {
             for (const script of scriptMatch) {
                 const userIdMatch = script.match(/userID\s*=\s*(\d+);/);
                 if (userIdMatch) {
-                    console.log('PATCHES - Extracted userID:', userIdMatch[1]);
+                    console.debug('PATCHES - Extracted userID:', userIdMatch[1]);
                     return parseInt(userIdMatch[1], 10);
                 }
             }
@@ -125,46 +125,6 @@ async function getReport(type) {
                 },
                 csrf_recom: csrfToken
             };
-        } else {
-            request = {
-                report: {
-                    type: "user_clock",
-                    columns: [
-                        "user_profile.user_id",
-                        "user_profile.department_id",
-                        "user_clocks.task_id",
-                        "purchase_orders.id",
-                        "purchase_orders.type",
-                        "user_clock_activity.activity_id",
-                        "user_clock_activity.activity_code",
-                        "user_clock_activity.notes",
-                        "user_clock_activity.units",
-                        "user_clock_activity.created_at",
-                        "user_clock_activity.time_spent",
-                        "user_clocks.time_in",
-                        "user_clocks.time_out",
-                        "user_clocks.user_id",
-                        "user_clocks.clock_date",
-                        "products.sid",
-                        "products.name",
-                        "product_items.sku",
-                        "product_items.condition_id",
-                        "products.category_id"
-                    ],
-                    filters: [{
-                            column: "user_profile.user_id",
-                            opr: "{0} = '{1}'",
-                            value: "87"
-                        },
-                        {
-                            column: "user_clocks.clock_date",
-                            opr: "between",
-                            value: `${date} - ${date}`
-                        }
-                    ]
-                },
-                csrf_recom: csrfToken
-            };
         }
 
         return new Promise((resolve, reject) => {
@@ -208,9 +168,7 @@ async function injectUserReport() {
 
         userData.forEach(row => {
             const key = `${row.User}-${row.SKU}-${row.Event_Date}`;
-            console.debug(`PATCHES - Key: ${key}`);
             if (!seenKeys.has(key)) {
-                console.debug(`PATCHES - Detected Deduplicate Key: ${key}`);
                 seenKeys.add(key);
                 uniqueData.push(row);
             }
