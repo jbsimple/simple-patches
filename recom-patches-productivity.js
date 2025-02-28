@@ -434,6 +434,11 @@ function injectDateSelect(funct, content) {
     wrapper.style.alignItems = "center";
     wrapper.style.margin = '2rem 30px';
 
+    const label = document.createElement('label');
+    label.for = "patches-productivity-dateInput";
+    label.textContent = 'Select Date:';
+    label.classList.add('fw-bolder', 'd-flex align-items-center', 'text-dark');
+
     const dateInput = document.createElement("input");
     dateInput.type = "date";
     dateInput.id = "patches-productivity-dateInput";
@@ -451,6 +456,8 @@ function injectDateSelect(funct, content) {
             console.error(`Function ${funct} is not defined.`);
         }
     });
+
+    wrapper.innerHTML = `<span style="flex: 1;"></span>`;
 
     wrapper.appendChild(dateInput);
     wrapper.appendChild(submitButton);
