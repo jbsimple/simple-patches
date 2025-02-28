@@ -460,6 +460,7 @@ function injectDateSelect(funct, content) {
 
     wrapper.innerHTML = `<span style="flex: 1;"></span>`;
 
+    wrapper.appendChild(label);
     wrapper.appendChild(dateInput);
     wrapper.appendChild(submitButton);
 
