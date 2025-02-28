@@ -151,7 +151,13 @@ async function getReport(type) {
 
 async function injectUserReport() {
     const content = document.getElementById('kt_app_content');
-    content.innerHTML = '';
+    if (content) {
+        Array.from(content.children).forEach(child => {
+            if (child.id !== "patches-productivity-donotremove") {
+                child.remove();
+            }
+        });
+    }
 
     injectDateSelect('injectUserReport', content);
 
@@ -279,7 +285,13 @@ async function injectUserReport() {
 
 async function injectTeamReport() {
     const content = document.getElementById('kt_app_content');
-    content.innerHTML = '';
+    if (content) {
+        Array.from(content.children).forEach(child => {
+            if (child.id !== "patches-productivity-donotremove") {
+                child.remove();
+            }
+        });
+    }
 
     const teamData = await getReport('team');
     console.debug('PATCHES - Team Data (Before Deduplication)', teamData);
@@ -433,6 +445,7 @@ function injectDateSelect(funct, content) {
     wrapper.style.gap = "10px";
     wrapper.style.alignItems = "center";
     wrapper.style.margin = '2rem 30px';
+    wrapper.id = "patches-productivity-donotremove";
 
     const label = document.createElement('label');
     label.for = "patches-productivity-dateInput";
