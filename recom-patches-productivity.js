@@ -320,7 +320,7 @@ async function injectTeamReport() {
             // Use Time_Spent_in_mintues instead of filtering by "Clock In"
             const timeSpentInMinutes = parseFloat(row.Time_Spent_in_mintues) || 0;
 
-            if (task === "BREAK" || task === "LUNCH") return; // Skip BREAK and LUNCH tasks
+            if (task === "BREAK" || task === "LUNCH" || eventCode === 'Clock In') return; // Skip BREAK LUNCH and Clock In
 
             if (!userDataMap[user]) {
                 userDataMap[user] = {};
@@ -370,7 +370,7 @@ async function injectTeamReport() {
                         <div class="card card-xl-stretch mb-xl-8" style="background-color: rgb(65,40,50) !important; color: white !important; flex: 1; min-width: 300px;">
                             <div class="card-body d-flex flex-column">
                                 <div class="d-flex flex-column flex-grow-1" style="margin-bottom: 1.5rem;">
-                                    <span class="text-white fw-bolder fs-3">Units Added - ${eventCode} while in ${task}</span>
+                                    <span class="text-white fw-bolder fs-3">Units Added | ${eventCode} while in ${task}</span>
                                 </div>
                                 <div class="pt-5">
                                     <span class="text-white fw-bolder fs-3x me-2 lh-0">${totalUnits}</span>
@@ -384,7 +384,7 @@ async function injectTeamReport() {
                         <div class="card card-xl-stretch mb-xl-8" style="background-color: rgb(50,60,85) !important; color: white !important; flex: 1; min-width: 300px;">
                             <div class="card-body d-flex flex-column">
                                 <div class="d-flex flex-column flex-grow-1">
-                                    <span class="text-white fw-bolder fs-3">Time Spent - ${eventCode} while in ${task}</span>
+                                    <span class="text-white fw-bolder fs-3">Time Spent | ${eventCode} while in ${task}</span>
                                 </div>
                                 <div class="pt-5">
                                     <span class="text-white fw-bolder fs-3x me-2 lh-0">${totalTime.toFixed(2)} min</span>
