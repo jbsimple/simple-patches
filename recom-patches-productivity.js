@@ -160,14 +160,15 @@ async function injectUserReport() {
     }
 
     const userData = await getReport('self');
-    console.debug('PATCHES - User Data', userData);
+    console.debug('PATCHES - User Data (Before Deduplication)', userData);
 
     if (userData && userData.length > 0) {
+        // Remove duplicates based on "Task", "SKU", and "Event_Date"
         const uniqueData = [];
         const seenKeys = new Set();
 
         userData.forEach(row => {
-            const key = `${row.User}-${row.SKU}-${row.Event_Date}`;
+            const key = `${row.User}-${row.Task}-${row.SKU}-${row.Event_Date}`;
             if (!seenKeys.has(key)) {
                 seenKeys.add(key);
                 uniqueData.push(row);
@@ -175,22 +176,26 @@ async function injectUserReport() {
         });
 
         console.debug('PATCHES - User Data (After Deduplication)', uniqueData);
-        
+
+        // Group data by Task -> Event_Code
         const taskData = {};
         uniqueData.forEach(row => {
             const task = row.Task;
-            
-            if (task === "BREAK" || task === "LUNCH") return;
-            
+            const eventCode = row.Event_Code;
+            const timeSpentInMinutes = parseFloat(row.Time_Spent_in_mintues) || 0;
+
+            if (task === "BREAK" || task === "LUNCH" || eventCode === "Clock In") return; // Skip unnecessary entries
+
             if (!taskData[task]) {
-                taskData[task] = { totalUnits: 0, totalTime: 0 };
+                taskData[task] = {};
+            }
+            if (!taskData[task][eventCode]) {
+                taskData[task][eventCode] = { totalUnits: 0, totalTime: 0 };
             }
 
-            if (row.Event_Code === "Clock In") {
-                taskData[task].totalTime += parseFloat(row.Total_Time) || 0;
-            }
-
-            taskData[task].totalUnits += parseFloat(row.Units) || 0;
+            // Sum time spent instead of filtering by "Clock In"
+            taskData[task][eventCode].totalTime += timeSpentInMinutes;
+            taskData[task][eventCode].totalUnits += parseFloat(row.Units) || 0;
         });
 
         const summaryWrapper = document.createElement('div');
@@ -201,39 +206,46 @@ async function injectUserReport() {
         summaryWrapper.style.margin = '2rem 30px';
 
         Object.keys(taskData).forEach(task => {
-            const { totalUnits, totalTime } = taskData[task];
-            const timeSpentHours = (totalTime / 60).toFixed(2);
-            const timePerUnit = totalUnits > 0 ? (totalTime / totalUnits).toFixed(2) : "0";
+            Object.keys(taskData[task]).forEach(eventCode => {
+                const { totalUnits, totalTime } = taskData[task][eventCode];
+                const timeSpentHours = (totalTime / 60).toFixed(2);
+                const timePerUnit = totalUnits > 0 ? (totalTime / totalUnits).toFixed(2) : "0";
 
-            const unitBox = `
-                <div class="card card-xl-stretch mb-xl-8" style="background-color: rgb(65,40,50) !important; color: white !important; flex: 1; min-width: 300px;">
-                    <div class="card-body d-flex flex-column">
-                        <div class="d-flex flex-column flex-grow-1" style="margin-bottom: 1.5rem;">
-                            <span class="text-white fw-bolder fs-3">Units Added In ${task}</span>
-                        </div>
-                        <div class="pt-5">
-                            <span class="text-white fw-bolder fs-3x me-2 lh-0">${totalUnits}</span>
-                            <span class="text-white fw-bolder fs-6 lh-0">${timePerUnit} mins/unit</span>
+                let label = `"${eventCode}" while in ${task}`;
+                if (eventCode === task) {
+                    label = `${task}`;
+                }
+
+                const unitBox = `
+                    <div class="card card-xl-stretch mb-xl-8" style="background-color: rgb(65,40,50) !important; color: white !important; flex: 1; min-width: 400px;">
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex flex-column flex-grow-1" style="margin-bottom: 1.5rem;">
+                                <span class="text-white fw-bolder fs-3">Units Added | ${label}</span>
+                            </div>
+                            <div class="pt-5">
+                                <span class="text-white fw-bolder fs-3x me-2 lh-0">${totalUnits}</span>
+                                <span class="text-white fw-bolder fs-6 lh-0">${timePerUnit} mins/unit</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `;
+                `;
 
-            const timeBox = `
-                <div class="card card-xl-stretch mb-xl-8" style="background-color: rgb(50,60,85) !important; color: white !important; flex: 1; min-width: 300px;">
-                    <div class="card-body d-flex flex-column">
-                        <div class="d-flex flex-column flex-grow-1">
-                            <span class="text-white fw-bolder fs-3">Time Spent In ${task}</span>
-                        </div>
-                        <div class="pt-5">
-                            <span class="text-white fw-bolder fs-3x me-2 lh-0">${totalTime} min</span>
-                            <span class="text-white fw-bolder fs-6 lh-0">${timeSpentHours} hours</span>
+                const timeBox = `
+                    <div class="card card-xl-stretch mb-xl-8" style="background-color: rgb(50,60,85) !important; color: white !important; flex: 1; min-width: 400px;">
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex flex-column flex-grow-1">
+                                <span class="text-white fw-bolder fs-3">Time Spent | ${label}</span>
+                            </div>
+                            <div class="pt-5">
+                                <span class="text-white fw-bolder fs-3x me-2 lh-0">${totalTime.toFixed(2)} min</span>
+                                <span class="text-white fw-bolder fs-6 lh-0">${timeSpentHours} hours</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `;
+                `;
 
-            summaryWrapper.innerHTML += unitBox + timeBox;
+                summaryWrapper.innerHTML += unitBox + timeBox;
+            });
         });
 
         content.appendChild(summaryWrapper);
@@ -250,7 +262,7 @@ async function injectUserReport() {
 
         const thead = document.createElement('thead');
         const headerRow = document.createElement('tr');
-        Object.keys(userData[0]).forEach(key => {
+        Object.keys(uniqueData[0]).forEach(key => {
             const th = document.createElement('th');
             th.textContent = key;
             th.style.padding = '8px';
@@ -261,7 +273,7 @@ async function injectUserReport() {
         table.appendChild(thead);
 
         const tbody = document.createElement('tbody');
-        userData.forEach(row => {
+        uniqueData.forEach(row => {
             const tr = document.createElement('tr');
             Object.values(row).forEach(value => {
                 const td = document.createElement('td');
