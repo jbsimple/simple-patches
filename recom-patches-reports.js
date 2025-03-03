@@ -284,6 +284,7 @@ function report_initHTML(det) {
             userInput.setAttribute('id', `${det.id}-input`);
             userInput.setAttribute('type', 'date');
             userInput.setAttribute('autocomplete', 'off');
+            userInput.setAttribute('style', 'color: var(--bs-dark-light); width: unset;');
             userInput.classList.add('form-control', 'rounded-1');
             userInput.style.width = 'unset';
 
