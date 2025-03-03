@@ -317,6 +317,9 @@ async function injectTeamReport() {
             const task = row.Task;
             const eventCode = row.Event_Code;
 
+            // Use Time_Spent_in_mintues instead of filtering by "Clock In"
+            const timeSpentInMinutes = parseFloat(row.Time_Spent_in_mintues) || 0;
+
             if (task === "BREAK" || task === "LUNCH") return; // Skip BREAK and LUNCH tasks
 
             if (!userDataMap[user]) {
@@ -329,21 +332,18 @@ async function injectTeamReport() {
                 userDataMap[user][task][eventCode] = { totalUnits: 0, totalTime: 0 };
             }
 
-            if (row.Event_Code === "Clock In") {
-                userDataMap[user][task][eventCode].totalTime += parseFloat(row.Total_Time) || 0;
-            }
+            // **NEW: Summing up all Time_Spent_in_mintues instead of checking "Clock In"**
+            userDataMap[user][task][eventCode].totalTime += timeSpentInMinutes;
 
             userDataMap[user][task][eventCode].totalUnits += parseFloat(row.Units) || 0;
         });
 
-        // Create a wrapper for all user sections
         const summaryWrapper = document.createElement('div');
         summaryWrapper.style.display = 'flex';
         summaryWrapper.style.flexDirection = 'column';
         summaryWrapper.style.gap = '40px';
         summaryWrapper.style.marginBottom = '30px';
 
-        // Generate user sections with summary cards
         Object.keys(userDataMap).forEach(user => {
             const userContainer = document.createElement('div');
             userContainer.style.marginBottom = '30px';
@@ -360,9 +360,7 @@ async function injectTeamReport() {
             userSummaryWrapper.style.gap = '20px';
             userSummaryWrapper.style.margin = '2rem 30px';
 
-            // Iterate over tasks
             Object.keys(userDataMap[user]).forEach(task => {
-                // Iterate over event codes
                 Object.keys(userDataMap[user][task]).forEach(eventCode => {
                     const { totalUnits, totalTime } = userDataMap[user][task][eventCode];
                     const timeSpentHours = (totalTime / 60).toFixed(2);
@@ -389,7 +387,7 @@ async function injectTeamReport() {
                                     <span class="text-white fw-bolder fs-3">${eventCode} - Time Spent In ${task}</span>
                                 </div>
                                 <div class="pt-5">
-                                    <span class="text-white fw-bolder fs-3x me-2 lh-0">${totalTime} min</span>
+                                    <span class="text-white fw-bolder fs-3x me-2 lh-0">${totalTime.toFixed(2)} min</span>
                                     <span class="text-white fw-bolder fs-6 lh-0">${timeSpentHours} hours</span>
                                 </div>
                             </div>
@@ -406,7 +404,6 @@ async function injectTeamReport() {
 
         content.appendChild(summaryWrapper);
 
-        // Create a wrapper div for scrollable table
         const tableWrapper = document.createElement('div');
         tableWrapper.style.overflowX = 'auto';
         tableWrapper.style.maxWidth = '100%';
@@ -449,6 +446,7 @@ async function injectTeamReport() {
         content.innerHTML = '<p>No data available</p>';
     }
 }
+
 
 function injectDateSelect(funct, content) {
     const wrapper = document.createElement("div");
