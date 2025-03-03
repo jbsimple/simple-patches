@@ -482,7 +482,7 @@ function injectDateSelect(funct, content) {
     dateInput.type = "date";
     dateInput.id = "patches-productivity-dateInput";
     dateInput.classList.add('form-control', 'rounded-1');
-    dateInput.setAttribute('style', 'color: var(--bs-light-inverse); width: unset;');
+    dateInput.setAttribute('style', 'color:var(--bs-text-gray-800); width: unset;');
 
     const today = new Date().toISOString().split('T')[0];
     dateInput.value = today;
