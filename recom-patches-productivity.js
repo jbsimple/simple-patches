@@ -295,11 +295,12 @@ async function injectTeamReport() {
     console.debug('PATCHES - Team Data (Before Deduplication)', teamData);
 
     if (teamData && teamData.length > 0) {
+        // Remove duplicates based on "User", "Task", "SKU", and "Event_Date"
         const uniqueData = [];
         const seenKeys = new Set();
 
         teamData.forEach(row => {
-            const key = `${row.User}-${row.SKU}-${row.Event_Date}`;
+            const key = `${row.User}-${row.Task}-${row.SKU}-${row.Event_Date}`;
             if (!seenKeys.has(key)) {
                 seenKeys.add(key);
                 uniqueData.push(row);
@@ -308,34 +309,41 @@ async function injectTeamReport() {
 
         console.debug('PATCHES - Team Data (After Deduplication)', uniqueData);
 
+        // Group data by User -> Task -> Event_Code
         const userDataMap = {};
 
         uniqueData.forEach(row => {
             const user = row.User;
             const task = row.Task;
+            const eventCode = row.Event_Code;
 
-            if (task === "BREAK" || task === "LUNCH") return;
+            if (task === "BREAK" || task === "LUNCH") return; // Skip BREAK and LUNCH tasks
 
             if (!userDataMap[user]) {
                 userDataMap[user] = {};
             }
             if (!userDataMap[user][task]) {
-                userDataMap[user][task] = { totalUnits: 0, totalTime: 0 };
+                userDataMap[user][task] = {};
+            }
+            if (!userDataMap[user][task][eventCode]) {
+                userDataMap[user][task][eventCode] = { totalUnits: 0, totalTime: 0 };
             }
 
             if (row.Event_Code === "Clock In") {
-                userDataMap[user][task].totalTime += parseFloat(row.Total_Time) || 0;
+                userDataMap[user][task][eventCode].totalTime += parseFloat(row.Total_Time) || 0;
             }
 
-            userDataMap[user][task].totalUnits += parseFloat(row.Units) || 0;
+            userDataMap[user][task][eventCode].totalUnits += parseFloat(row.Units) || 0;
         });
 
+        // Create a wrapper for all user sections
         const summaryWrapper = document.createElement('div');
         summaryWrapper.style.display = 'flex';
         summaryWrapper.style.flexDirection = 'column';
         summaryWrapper.style.gap = '40px';
         summaryWrapper.style.marginBottom = '30px';
 
+        // Generate user sections with summary cards
         Object.keys(userDataMap).forEach(user => {
             const userContainer = document.createElement('div');
             userContainer.style.marginBottom = '30px';
@@ -352,40 +360,44 @@ async function injectTeamReport() {
             userSummaryWrapper.style.gap = '20px';
             userSummaryWrapper.style.margin = '2rem 30px';
 
+            // Iterate over tasks
             Object.keys(userDataMap[user]).forEach(task => {
-                const { totalUnits, totalTime } = userDataMap[user][task];
-                const timeSpentHours = (totalTime / 60).toFixed(2);
-                const timePerUnit = totalUnits > 0 ? (totalTime / totalUnits).toFixed(2) : "0";
+                // Iterate over event codes
+                Object.keys(userDataMap[user][task]).forEach(eventCode => {
+                    const { totalUnits, totalTime } = userDataMap[user][task][eventCode];
+                    const timeSpentHours = (totalTime / 60).toFixed(2);
+                    const timePerUnit = totalUnits > 0 ? (totalTime / totalUnits).toFixed(2) : "0";
 
-                const unitBox = `
-                    <div class="card card-xl-stretch mb-xl-8" style="background-color: rgb(65,40,50) !important; color: white !important; flex: 1; min-width: 300px;">
-                        <div class="card-body d-flex flex-column">
-                            <div class="d-flex flex-column flex-grow-1" style="margin-bottom: 1.5rem;">
-                                <span class="text-white fw-bolder fs-3">Units Added In ${task}</span>
-                            </div>
-                            <div class="pt-5">
-                                <span class="text-white fw-bolder fs-3x me-2 lh-0">${totalUnits}</span>
-                                <span class="text-white fw-bolder fs-6 lh-0">${timePerUnit} mins/unit</span>
+                    const unitBox = `
+                        <div class="card card-xl-stretch mb-xl-8" style="background-color: rgb(65,40,50) !important; color: white !important; flex: 1; min-width: 300px;">
+                            <div class="card-body d-flex flex-column">
+                                <div class="d-flex flex-column flex-grow-1" style="margin-bottom: 1.5rem;">
+                                    <span class="text-white fw-bolder fs-3">${eventCode} - Units Added In ${task}</span>
+                                </div>
+                                <div class="pt-5">
+                                    <span class="text-white fw-bolder fs-3x me-2 lh-0">${totalUnits}</span>
+                                    <span class="text-white fw-bolder fs-6 lh-0">${timePerUnit} mins/unit</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                `;
+                    `;
 
-                const timeBox = `
-                    <div class="card card-xl-stretch mb-xl-8" style="background-color: rgb(50,60,85) !important; color: white !important; flex: 1; min-width: 300px;">
-                        <div class="card-body d-flex flex-column">
-                            <div class="d-flex flex-column flex-grow-1">
-                                <span class="text-white fw-bolder fs-3">Time Spent In ${task}</span>
-                            </div>
-                            <div class="pt-5">
-                                <span class="text-white fw-bolder fs-3x me-2 lh-0">${totalTime} min</span>
-                                <span class="text-white fw-bolder fs-6 lh-0">${timeSpentHours} hours</span>
+                    const timeBox = `
+                        <div class="card card-xl-stretch mb-xl-8" style="background-color: rgb(50,60,85) !important; color: white !important; flex: 1; min-width: 300px;">
+                            <div class="card-body d-flex flex-column">
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <span class="text-white fw-bolder fs-3">${eventCode} - Time Spent In ${task}</span>
+                                </div>
+                                <div class="pt-5">
+                                    <span class="text-white fw-bolder fs-3x me-2 lh-0">${totalTime} min</span>
+                                    <span class="text-white fw-bolder fs-6 lh-0">${timeSpentHours} hours</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                `;
+                    `;
 
-                userSummaryWrapper.innerHTML += unitBox + timeBox;
+                    userSummaryWrapper.innerHTML += unitBox + timeBox;
+                });
             });
 
             userContainer.appendChild(userSummaryWrapper);
@@ -394,6 +406,7 @@ async function injectTeamReport() {
 
         content.appendChild(summaryWrapper);
 
+        // Create a wrapper div for scrollable table
         const tableWrapper = document.createElement('div');
         tableWrapper.style.overflowX = 'auto';
         tableWrapper.style.maxWidth = '100%';
