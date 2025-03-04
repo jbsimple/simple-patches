@@ -16,7 +16,6 @@ How to use (Firefox):
 Enhancements:
 - In conditions Queues; Export Table button to save each visible line item into a csv (In-system solution made, keeping it because its cool)
 - In Conditions Queues; Get Total button to ge the total quantity of all visible line items.
-
 - On product and item pages; CSS fix for layout of cards.
 - On product and item pages; CSS fix for image box being too small.
 - On product and item pages; CSS fix for images inside upload box not wrapping properly.
@@ -27,20 +26,15 @@ Enhancements:
 - On product and item pages; Fix to prevent navigation away while images are still uploading.
 - On product and item pages; Added button to open all images in new tabs (enable popups in browser for it to work).
 - On product and item pages; Added a popups check message next to the above button.
-
 - On product pages; On all ASIN inputs, a link is generated under the input field to go to the ASIN on Amazon.
-
 - On item pages; CSS change to increase the maximum height of the inventory table.
-
 - On listing page; A warning for when the GTIN is invalid and needs to be regenerated before going to the last step. (12 chars error)
 - On listing page; A warning for when the GTIN is changed to remind the user to replace the old label with a new one.
 - On listing page; when a GTIN is generated/replaced from the original, an option appears to replace the product's GTIN back to the originally listed GTIN and the generated GTIN as the secondary.
-
 - On New Inventory Page; When a result appears that's In Catalog, the text is replaced with a link to open the SID modal.
 - On New Inventory Page; Disabled entry of new inventory sent to listing without a GTIN.
 - On New Inventory Page; Disabled entry of new inventory sent to listing with a GTIN longer than 12 characters.
 - On New Inventory Page; Automatic response for invalid GTIN in input box.
-
 - On reports page, after submitting to generate a new report, the report displays under the original card.
   - If the file is larger than 1MB, the printing is disabled to save performance.
   - Links for products and items are automatically added into the report preview for convenience.
@@ -53,11 +47,8 @@ Enhancements:
   - Added a Product Items list of products over QTY 50 with ASIN column.
 - On reports page, added a css fix to correct the resize on narrow screens happening too late.
 - On reports page, added css rule to flip the order of recents and main reporting tool because recents aren't THAT important.
-
 - On Calendar; CSS fix to add a background color to the list of day's events.
-
 - On Integrations Error Page, replaced SKU references with links to the actual SKUs.
-
 - Replaced unfinished producivity pages.
   - Created Team productivity (just our department) and User productivity (hijacks a loose JS variable from the user profile page).
   - Removes duplicate entries from appearing in reports (its not really duplicates but it doesn't count)
@@ -65,7 +56,6 @@ Enhancements:
   - Displays it in a nice flex-grid thing.
   - Prints the full, original report generated when getting producivity under the counts and breakdowns.
   - Added a date selector to look at any producivity report within the last year.
-
 - On all pages; CSS fix to correct spacing issues in header.
 - On all pages; CSS fix to get rid of light mode logo.
 - On all pages; CSS fix (that I shouldn't have to do) to fix page height issues not filling the full background.
