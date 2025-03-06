@@ -137,7 +137,8 @@ async function getReport(type) {
                 if (data.success && data.results.results && Array.isArray(data.results.results)) {
                     resolve({
                         data: data.results.results,
-                        download: `/renderfile/download?folder=reports&path=${data.results.filename}`
+                        download: `/renderfile/download?folder=reports&path=${data.results.filename}`,
+                        filename: data.results.filename
                     });
                 } else {
                     resolve(null);
@@ -164,6 +165,12 @@ async function injectUserReport() {
 
     const report = await getReport('self');
     const userData = report.data;
+
+    const downloadButton = document.getElementById('patches-productivity-download');
+    if (downloadButton) {
+        downloadButton.href = report.download;
+        downloadButton.download = report.filename;
+    }
 
     console.debug('PATCHES - User Data (Before Deduplication)', userData);
 
@@ -310,8 +317,12 @@ async function injectTeamReport() {
 
     const report = await getReport('team');
     const teamData = report.data;
-    const downloadhref = report.download;
-    console.debug(downloadhref);
+
+    const downloadButton = document.getElementById('patches-productivity-download');
+    if (downloadButton) {
+        downloadButton.href = report.download;
+        downloadButton.download = report.filename;
+    }
     
     console.debug('PATCHES - Team Data (Before Deduplication)', teamData);
 
@@ -482,6 +493,14 @@ function injectDateSelect(funct, content) {
     wrapper.style.margin = '2rem 30px';
     wrapper.id = "patches-productivity-donotremove";
 
+    const downloadButton = document.createElement('button');
+    downloadButton.id = 'patches-productivity-download';
+    downloadButton.classList.add('btn', 'btn-large', 'btn-primary');
+    downloadButton.disabled = true;
+
+    const spacer = document.createElement('div');
+    spacer.setAttribute('style', 'flex: 1;');
+
     const label = document.createElement('label');
     label.for = "patches-productivity-dateInput";
     label.textContent = 'Select Date:';
@@ -506,9 +525,8 @@ function injectDateSelect(funct, content) {
             console.error(`Function ${funct} is not defined.`);
         }
     });
-
-    wrapper.innerHTML = `<span style="flex: 1;"></span>`;
-
+    wrapper.appendChild(downloadButton);
+    wrapper.appendChild(spacer);
     wrapper.appendChild(label);
     wrapper.appendChild(dateInput);
     wrapper.appendChild(submitButton);
