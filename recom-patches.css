@@ -24,7 +24,7 @@ body {
     display: inherit !important;
   }
 
-  .app-navbar-item a.btn.btn-outline span.mobilefix:not(span) {
+  .app-navbar-item a.btn.btn-outline span.mobilefix:not(.btn-outline-danger span) {
     display: none !important;
   }
 }
