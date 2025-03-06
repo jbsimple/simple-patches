@@ -322,6 +322,7 @@ async function injectTeamReport() {
     if (downloadButton) {
         downloadButton.href = report.download;
         downloadButton.download = report.filename;
+        downloadButton.disabled = false;
     }
     
     console.debug('PATCHES - Team Data (Before Deduplication)', teamData);
@@ -493,7 +494,7 @@ function injectDateSelect(funct, content) {
     wrapper.style.margin = '2rem 30px';
     wrapper.id = "patches-productivity-donotremove";
 
-    const downloadButton = document.createElement('button');
+    const downloadButton = document.createElement('a');
     downloadButton.textContent = 'Download Data';
     downloadButton.id = 'patches-productivity-download';
     downloadButton.classList.add('btn', 'btn-large', 'btn-primary');
