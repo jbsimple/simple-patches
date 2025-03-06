@@ -27,6 +27,10 @@ body {
   .app-navbar-item a.btn.btn-outline span.mobilefix:not(.btn-outline-danger span) {
     display: none !important;
   }
+
+  .app-navbar-item a.btn.btn-outline i.fs-2.mobilefix:not(.btn-outline-danger){
+    margin-right: 0 !important;
+  }
 }
 
 .ms-lg-4 {
