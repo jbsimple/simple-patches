@@ -135,7 +135,10 @@ async function getReport(type) {
                 data: request,
             }).done(function(data) {
                 if (data.success && data.results.results && Array.isArray(data.results.results)) {
-                    resolve(data.results.results);
+                    resolve({
+                        data: data.results.results,
+                        download: `/renderfile/download?folder=reports&path=${data.results.filename}`
+                    });
                 } else {
                     resolve(null);
                 }
@@ -159,7 +162,9 @@ async function injectUserReport() {
         });
     }
 
-    const userData = await getReport('self');
+    const report = await getReport('self');
+    const userData = report.data;
+
     console.debug('PATCHES - User Data (Before Deduplication)', userData);
 
     if (userData && userData.length > 0) {
@@ -303,7 +308,11 @@ async function injectTeamReport() {
         });
     }
 
-    const teamData = await getReport('team');
+    const report = await getReport('team');
+    const teamData = report.data;
+    const downloadhref = report.download;
+    console.debug(downloadhref);
+    
     console.debug('PATCHES - Team Data (Before Deduplication)', teamData);
 
     if (teamData && teamData.length > 0) {
