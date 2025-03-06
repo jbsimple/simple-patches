@@ -170,6 +170,9 @@ async function injectUserReport() {
     if (downloadButton) {
         downloadButton.href = report.download;
         downloadButton.download = report.filename;
+        downloadButton.disabled = false;
+    } else {
+        console.error('Patches - No Download Button', downloadButton);
     }
 
     console.debug('PATCHES - User Data (Before Deduplication)', userData);
@@ -323,6 +326,8 @@ async function injectTeamReport() {
         downloadButton.href = report.download;
         downloadButton.download = report.filename;
         downloadButton.disabled = false;
+    } else {
+        console.error('Patches - No Download Button', downloadButton);
     }
     
     console.debug('PATCHES - Team Data (Before Deduplication)', teamData);
