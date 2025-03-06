@@ -29,7 +29,8 @@ body {
   }
 
   .app-navbar-item a.btn.btn-outline i.fs-2.mobilefix:not(.btn-outline-danger){
-    margin-right: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 }
 
