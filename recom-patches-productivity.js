@@ -494,6 +494,7 @@ function injectDateSelect(funct, content) {
     wrapper.id = "patches-productivity-donotremove";
 
     const downloadButton = document.createElement('button');
+    downloadButton.textContent = 'Download Data';
     downloadButton.id = 'patches-productivity-download';
     downloadButton.classList.add('btn', 'btn-large', 'btn-primary');
     downloadButton.disabled = true;
@@ -557,8 +558,9 @@ window.onload = async () => {
 
 
     if (content && window.location.href.includes('/productivity/employee')) {
-        injectUserReport();
         injectDateSelect('injectUserReport', content);
+        injectUserReport();
+
         document.title = document.title.replace('Employee Productivity', 'My Productivity');
         
         if (heading) {
@@ -576,8 +578,9 @@ window.onload = async () => {
         }
         
     } else if (content && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board')) {
-        injectTeamReport();
         injectDateSelect('injectTeamReport', content);
+        injectTeamReport();
+
         document.title = document.title.replace('Productivity', 'Team Productivity');
 
         if (heading) {
