@@ -1,4 +1,4 @@
-const version = '02-27-2025__3';
+const version = '03-06-2025__1';
 
 const nav_sidebar = document.getElementById('kt_app_sidebar_navs_wrappers');
 if (nav_sidebar) {
@@ -70,6 +70,15 @@ if (nav_footer) {
                 copyright.parentElement.appendChild(newCopyright);
             }
         })
+    }
+}
+
+// fix top button, why is it green???
+const nav_header = document.getElementById('kt_app_header');
+if (nav_header) {
+    const greenButton = nav_header.querySelector('.btn-color-primary');
+    if (greenButton) {
+        greenButton.setAttribute('class', 'btn btn-icon btn-custom btn-color-gray-600 btn-active-light btn-active-color-primary w-35px h-35px w-md-40px h-md-40px');
     }
 }
 
