@@ -333,8 +333,14 @@ function initCopyPasteButton() {
                 }
                 card_toolbar.setAttribute('style', 'display: flex; flex-wrap: wrap; align-items: center; justify-content: center;');
                 card_toolbar.insertBefore(copyButton, card_toolbar.firstChild);
+            } else {
+                console.error('Patches - Unknown Title', main_title);
             }
+        } else {
+            console.error('Patches - Unknown Card', main_card);
         }
+    } else {
+        console.error('Patches - Unknown Content', main_content);
     }
 }
 
