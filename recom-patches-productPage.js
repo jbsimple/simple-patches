@@ -152,7 +152,9 @@ function initCopyPasteButton() {
             const main_title = main_card.querySelector('.card-title');
             if (main_title) {
                 let text = main_title.textContent.trim();
+                let startIndex = 0;
                 if (text.startsWith('SC-')) {
+                    startIndex = 3;
                     text = text.substring(3).trim();
                 }
 
@@ -162,7 +164,11 @@ function initCopyPasteButton() {
 
                 copyButton.addEventListener('click', () => {
                     const range = document.createRange();
-                    range.selectNodeContents(main_title);
+                    const textNode = main_title.firstChild;
+                    if (textNode) {
+                        range.setStart(textNode, startIndex);
+                        range.setEnd(textNode, textNode.length);
+                    }
                     const selection = window.getSelection();
                     selection.removeAllRanges();
                     selection.addRange(range);
