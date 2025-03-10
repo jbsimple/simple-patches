@@ -154,7 +154,7 @@ function initCopyPasteButton() {
                 let text = main_title.textContent.trim();
                 let startIndex = 0;
                 if (text.startsWith('SC-')) {
-                    startIndex = 3;
+                    startIndex = text.indexOf('-') + 1;
                     text = text.substring(3).trim();
                 }
 
@@ -165,10 +165,15 @@ function initCopyPasteButton() {
                 copyButton.addEventListener('click', () => {
                     const range = document.createRange();
                     const textNode = main_title.firstChild;
+
                     if (textNode) {
-                        range.setStart(textNode, startIndex);
+                        const originalText = textNode.textContent.trim();
+                        const adjustedStartIndex = originalText.indexOf(text);
+                        
+                        range.setStart(textNode, adjustedStartIndex);
                         range.setEnd(textNode, textNode.length);
                     }
+
                     const selection = window.getSelection();
                     selection.removeAllRanges();
                     selection.addRange(range);
