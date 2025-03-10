@@ -149,7 +149,6 @@ function initCopyPasteButton() {
     if (main_content) {
         const main_card = main_content.querySelector('.w-lg-300px > .card > .card-header');
         if (main_card) {
-            main_card.setAttribute('style', 'padding: 1.15rem 2.15rem; padding-bottom: 0;');
             const main_title = main_card.querySelector('.card-title');
             if (main_title) {
                 let text = main_title.textContent.trim();
@@ -180,6 +179,8 @@ function initCopyPasteButton() {
                     card_toolbar = document.createElement('div');
                     card_toolbar.classList.add('card-toolbar');
                     main_card.insertBefore(card_toolbar, main_title.nextSibling);
+                } else {
+                    main_card.setAttribute('style', 'padding: 1.15rem 2.15rem; padding-bottom: 0;');
                 }
                 card_toolbar.setAttribute('style', 'display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1rem;');
                 card_toolbar.insertBefore(copyButton, card_toolbar.firstChild);
