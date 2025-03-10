@@ -161,7 +161,7 @@ function initCopyPasteButton() {
 
                 const copyButton = document.createElement('button');
                 copyButton.classList.add('btn', 'btn-icon', 'btn-sm', 'btn-light', 'btn-sm', 'my-sm-1', 'ms-1');
-                copyButton.innerHTML = '<i class="fas fa-clipboard fs-2"></i>';
+                copyButton.innerHTML = '<i class="fas fa-copy fs-2"></i>';
 
                 copyButton.addEventListener('click', () => {
                     const range = document.createRange();
@@ -181,11 +181,11 @@ function initCopyPasteButton() {
                     selection.addRange(range);
                     
                     navigator.clipboard.writeText(text).then(() => {
-                        copyButton.innerHTML = '<i class="fas fa-copy fs-2"></i>';
+                        copyButton.innerHTML = '<i class="fas fa-clipboard fs-2"></i>';
                         copyButton.title = 'Copied!';
                         copyButton.classList.add('btn-primary');
                         setTimeout(() => {
-                            copyButton.innerHTML = '<i class="fas fa-clipboard fs-2"></i>';
+                            copyButton.innerHTML = '<i class="fas fa-copy fs-2"></i>';
                             copyButton.classList.remove('btn-primary');
                             copyButton.removeAttribute('title');
                         }, 2000);
