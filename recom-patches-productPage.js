@@ -37,6 +37,15 @@ setTimeout(function() {
     });
 }, 500);
 
+// epic wait
+function waitForElement(selector, callback) {
+    const element = document.querySelector(selector);
+    if (element) {
+        callback();
+    } else {
+        setTimeout(() => waitForElement(selector, callback), 100);
+    }
+}
 
 /* pretty print links for asins */
 function prettyLinkAsins() {
@@ -132,7 +141,55 @@ function prettyLinkAsins() {
     }
 }
 
-setTimeout(function () { prettyLinkAsins(); }, 500);
+waitForElement('#kt_app_content_container', prettyLinkAsins);
+
+// Copy and paste button
+function initCopyPasteButton() {
+    const main_content = document.getElementById('kt_app_content_container');
+    if (main_content) {
+        const main_card = main_content.querySelector('.w-lg-300px > .card > .card-header');
+        if (main_card) {
+            main_card.setAttribute('style', 'flex-direction: column; padding: 1rem 2rem;');
+            const main_title = main_card.querySelector('.card-title');
+            if (main_title) {
+                const text = main_title.textContent.trim();
+
+                const copyButton = document.createElement('button');
+                copyButton.classList.add('btn', 'btn-sm', 'btn-light');
+                copyButton.innerHTML = '<i class="fas fa-copy fs-2"></i>';
+
+                copyButton.addEventListener('click', () => {
+                    navigator.clipboard.writeText(text).then(() => {
+                        copyButton.textContent = 'Copied!';
+                        copyButton.classList.add('btn-primary');
+                        setTimeout(() => {
+                            copyButton.innerHTML = '<i class="fas fa-copy fs-2"></i>';
+                            copyButton.classList.remove('btn-primary');
+                        }, 2000);
+                    }).catch(err => console.error('Failed to copy:', err));
+                });
+
+                let card_toolbar = main_card.querySelector('.card-toolbar');
+
+                if (!card_toolbar) {
+                    card_toolbar = document.createElement('div');
+                    card_toolbar.classList.add('card-toolbar');
+                    main_card.insertBefore(card_toolbar, main_title.nextSibling);
+                }
+                card_toolbar.setAttribute('style', 'display: flex; flex-wrap: wrap; align-items: center; justify-content: center;');
+                card_toolbar.insertBefore(copyButton, card_toolbar.firstChild);
+            } else {
+                console.error('Patches - Unknown Title', main_title);
+            }
+        } else {
+            console.error('Patches - Unknown Card', main_card);
+        }
+    } else {
+        console.error('Patches - Unknown Content', main_content);
+    }
+}
+
+waitForElement('#kt_app_content_container', initCopyPasteButton);
 
 /* photo stuff */
 // Getting rid of bad gallery viewer
@@ -297,60 +354,3 @@ function checkPopup() {
         return null;
     }
 }
-
-function waitForElement(selector, callback) {
-    const element = document.querySelector(selector);
-    if (element) {
-        callback();
-    } else {
-        setTimeout(() => waitForElement(selector, callback), 100);
-    }
-}
-
-// Copy and paste button
-function initCopyPasteButton() {
-    const main_content = document.getElementById('kt_app_content_container');
-    if (main_content) {
-        const main_card = main_content.querySelector('.w-lg-300 > .card > .card-header');
-        if (main_card) {
-            main_card.setAttribute('style', 'flex-direction: column; padding: 1rem 2rem;');
-            const main_title = main_card.querySelector('.card-title');
-            if (main_title) {
-                const text = main_title.textContent.trim();
-
-                const copyButton = document.createElement('button');
-                copyButton.classList.add('btn', 'btn-sm', 'btn-light');
-                copyButton.innerHTML = '<i class="fas fa-copy fs-2"></i>';
-
-                copyButton.addEventListener('click', () => {
-                    navigator.clipboard.writeText(text).then(() => {
-                        copyButton.textContent = 'Copied!';
-                        copyButton.classList.add('btn-primary');
-                        setTimeout(() => {
-                            copyButton.innerHTML = '<i class="fas fa-copy fs-2"></i>';
-                            copyButton.classList.remove('btn-primary');
-                        }, 2000);
-                    }).catch(err => console.error('Failed to copy:', err));
-                });
-
-                let card_toolbar = main_card.querySelector('.card-toolbar');
-
-                if (!card_toolbar) {
-                    card_toolbar = document.createElement('div');
-                    card_toolbar.classList.add('card-toolbar');
-                    main_card.insertBefore(card_toolbar, main_title.nextSibling);
-                }
-                card_toolbar.setAttribute('style', 'display: flex; flex-wrap: wrap; align-items: center; justify-content: center;');
-                card_toolbar.insertBefore(copyButton, card_toolbar.firstChild);
-            } else {
-                console.error('Patches - Unknown Title', main_title);
-            }
-        } else {
-            console.error('Patches - Unknown Card', main_card);
-        }
-    } else {
-        console.error('Patches - Unknown Content', main_content);
-    }
-}
-
-waitForElement('#kt_app_content_container', initCopyPasteButton);
