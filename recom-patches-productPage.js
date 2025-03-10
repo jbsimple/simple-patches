@@ -143,7 +143,6 @@ function prettyLinkAsins() {
 
 waitForElement('#kt_app_content_container', prettyLinkAsins);
 
-// Copy and paste button
 function initCopyPasteButton() {
     const main_content = document.getElementById('kt_app_content_container');
     if (main_content) {
@@ -151,10 +150,12 @@ function initCopyPasteButton() {
         if (main_card) {
             const main_title = main_card.querySelector('.card-title');
             if (main_title) {
-                let text = main_title.textContent.trim();
+                let fullText = main_title.textContent;
+                let text = fullText.trim();
                 let startIndex = 0;
+
                 if (text.startsWith('SC-')) {
-                    startIndex = 3
+                    startIndex = 3;
                     text = text.substring(startIndex).trim();
                 }
 
@@ -167,29 +168,32 @@ function initCopyPasteButton() {
                     const textNode = main_title.firstChild;
 
                     if (textNode) {
-                        if (startIndex !== -1) {
-                            range.setStart(textNode, startIndex);
-                            range.setEnd(textNode, textNode.length);
+                        const rawText = textNode.textContent;
+                        const adjustedStartIndex = rawText.indexOf(text);
+
+                        if (adjustedStartIndex !== -1) {
+                            range.setStart(textNode, adjustedStartIndex);
+                            range.setEnd(textNode, rawText.length);
+
+                            const selection = window.getSelection();
+                            selection.removeAllRanges();
+                            selection.addRange(range);
+
+                            navigator.clipboard.writeText(text).then(() => {
+                                copyButton.innerHTML = '<i class="fas fa-copy fs-2"></i>';
+                                copyButton.title = 'Copied!';
+                                copyButton.classList.add('btn-primary');
+
+                                setTimeout(() => {
+                                    copyButton.innerHTML = '<i class="fas fa-clipboard fs-2"></i>';
+                                    copyButton.classList.remove('btn-primary');
+                                    copyButton.removeAttribute('title');
+                                }, 2000);
+                            }).catch(err => console.error('Failed to copy:', err));
                         } else {
                             console.error("Text selection failed: Unable to locate trimmed text within the original text.");
-                            return;
                         }
                     }
-
-                    const selection = window.getSelection();
-                    selection.removeAllRanges();
-                    selection.addRange(range);
-                    
-                    navigator.clipboard.writeText(text).then(() => {
-                        copyButton.innerHTML = '<i class="fas fa-copy fs-2"></i>';
-                        copyButton.title = 'Copied!';
-                        copyButton.classList.add('btn-primary');
-                        setTimeout(() => {
-                            copyButton.innerHTML = '<i class="fas fa-clipboard fs-2"></i>';
-                            copyButton.classList.remove('btn-primary');
-                            copyButton.removeAttribute('title');
-                        }, 2000);
-                    }).catch(err => console.error('Failed to copy:', err));
                 });
 
                 let card_toolbar = main_card.querySelector('.card-toolbar');
