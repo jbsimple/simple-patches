@@ -176,7 +176,7 @@ function initCopyPasteButton() {
                     card_toolbar.classList.add('card-toolbar');
                     main_card.insertBefore(card_toolbar, main_title.nextSibling);
                 }
-                card_toolbar.setAttribute('style', 'display: flex; flex-wrap: wrap; align-items: center; justify-content: center;');
+                card_toolbar.setAttribute('style', 'display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1rem;');
                 card_toolbar.insertBefore(copyButton, card_toolbar.firstChild);
             } else {
                 console.error('Patches - Unknown Title', main_title);
