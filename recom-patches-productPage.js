@@ -160,11 +160,13 @@ function initCopyPasteButton() {
 
                 copyButton.addEventListener('click', () => {
                     navigator.clipboard.writeText(text).then(() => {
-                        copyButton.textContent = 'Copied!';
+                        copyButton.textContent = '<i class="fas fa-copy fs-2"></i>';
+                        copyButton.title = 'Copied!';
                         copyButton.classList.add('btn-primary');
                         setTimeout(() => {
-                            copyButton.innerHTML = '<i class="fas fa-copy fs-2"></i>';
+                            copyButton.innerHTML = '<i class="fas fa-clipboard fs-2"></i>';
                             copyButton.classList.remove('btn-primary');
+                            copyButton.removeAttribute('title');
                         }, 2000);
                     }).catch(err => console.error('Failed to copy:', err));
                 });
