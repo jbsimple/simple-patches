@@ -169,9 +169,14 @@ function initCopyPasteButton() {
                     if (textNode) {
                         const originalText = textNode.textContent.trim();
                         const adjustedStartIndex = originalText.indexOf(text);
-                        
-                        range.setStart(textNode, adjustedStartIndex);
-                        range.setEnd(textNode, textNode.length);
+
+                        if (adjustedStartIndex !== -1) {
+                            range.setStart(textNode, adjustedStartIndex);
+                            range.setEnd(textNode, textNode.length);
+                        } else {
+                            console.error("Text selection failed: Unable to locate trimmed text within the original text.");
+                            return;
+                        }
                     }
 
                     const selection = window.getSelection();
