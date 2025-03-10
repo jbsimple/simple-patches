@@ -152,7 +152,10 @@ function initCopyPasteButton() {
             main_card.setAttribute('style', 'flex-direction: column; padding: 1.15rem 2.15rem; padding-bottom: 0;');
             const main_title = main_card.querySelector('.card-title');
             if (main_title) {
-                const text = main_title.textContent.trim();
+                let text = main_title.textContent.trim();
+                if (text.startsWith('SC-')) {
+                    text.substring(3).trim;
+                }
 
                 const copyButton = document.createElement('button');
                 copyButton.classList.add('btn', 'btn-icon', 'btn-sm', 'btn-light', 'btn-sm', 'my-sm-1', 'ms-1');
