@@ -143,6 +143,79 @@ function prettyLinkAsins() {
 
 waitForElement('#kt_app_content_container', prettyLinkAsins);
 
+// Copy button
+function initCopyPasteButton() {
+    const main_content = document.getElementById('kt_app_content_container');
+    if (main_content) {
+        const main_card = main_content.querySelector('.w-lg-300px > .card > .card-header');
+        if (main_card) {
+            const main_title = main_card.querySelector('.card-title');
+            if (main_title) {
+                let text = main_title.textContent.trim();
+                if (text.startsWith('SC-')) {
+                    text = text.substring(3).trim();
+                    main_title.innerHTML = `<h2 style="display: inline;">SC-</h2><h2 data-clipboard="true" style="display: inline;">${text}</h2>`; // this is annoying but works
+                } else {
+                    main_title.innerHTML = `<h2 style="display: inline;">${text}</h2>`; // not needed but consistency
+                }
+
+                const copyButton = document.createElement('button');
+                copyButton.classList.add('btn', 'btn-icon', 'btn-sm', 'btn-light', 'btn-sm', 'my-sm-1', 'ms-1');
+                copyButton.innerHTML = '<i class="fas fa-clipboard fs-2"></i>';
+
+                copyButton.addEventListener('click', () => {
+                    const range = document.createRange();
+                    const selection = window.getSelection();
+                    selection.removeAllRanges();
+
+                    const clipboardText = main_title.querySelector('h2[data-clipboard="true"]');
+                    
+                    if (clipboardText) {
+                        range.selectNodeContents(clipboardText);
+                        navigator.clipboard.writeText(clipboardText.textContent.trim());
+                    } else {
+                        range.selectNodeContents(main_title);
+                        navigator.clipboard.writeText(main_title.textContent.trim());
+                    }
+
+                    selection.addRange(range);
+                    
+                    navigator.clipboard.writeText(text).then(() => {
+                        copyButton.innerHTML = '<i class="fas fa-copy fs-2"></i>';
+                        copyButton.title = 'Copied!';
+                        copyButton.classList.add('btn-primary');
+                        setTimeout(() => {
+                            copyButton.innerHTML = '<i class="fas fa-clipboard fs-2"></i>';
+                            copyButton.classList.remove('btn-primary');
+                            copyButton.removeAttribute('title');
+                        }, 2000);
+                    }).catch(err => console.error('Failed to copy:', err));
+                });
+
+                let card_toolbar = main_card.querySelector('.card-toolbar');
+
+                if (!card_toolbar) {
+                    card_toolbar = document.createElement('div');
+                    card_toolbar.classList.add('card-toolbar');
+                    main_card.insertBefore(card_toolbar, main_title.nextSibling);
+                } else {
+                    main_card.setAttribute('style', 'padding: 1.25rem 2.15rem; padding-bottom: 0;');
+                }
+                card_toolbar.setAttribute('style', 'display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1rem;');
+                card_toolbar.insertBefore(copyButton, card_toolbar.firstChild);
+            } else {
+                console.error('Patches - Unknown Title', main_title);
+            }
+        } else {
+            console.error('Patches - Unknown Card', main_card);
+        }
+    } else {
+        console.error('Patches - Unknown Content', main_content);
+    }
+}
+
+waitForElement('#kt_app_content_container', initCopyPasteButton);
+
 /* photo stuff */
 // Getting rid of bad gallery viewer
 var media_tab = document.getElementById('rc_product_media_tab');
