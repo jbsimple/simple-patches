@@ -143,7 +143,6 @@ function prettyLinkAsins() {
 
 waitForElement('#kt_app_content_container', prettyLinkAsins);
 
-// Copy and paste button
 function initCopyPasteButton() {
     const main_content = document.getElementById('kt_app_content_container');
     if (main_content) {
@@ -152,30 +151,39 @@ function initCopyPasteButton() {
             const main_title = main_card.querySelector('.card-title');
             if (main_title) {
                 let text = main_title.textContent.trim();
+                let startIndex = 0;
+
                 if (text.startsWith('SC-')) {
-                    text = text.substring(3).trim();
+                    startIndex = 3;
+                    while (text[startIndex] === ' ') startIndex++;
+                    text = text.substring(startIndex);
                 }
 
                 const copyButton = document.createElement('button');
-                copyButton.classList.add('btn', 'btn-icon', 'btn-sm', 'btn-light', 'btn-sm', 'my-sm-1', 'ms-1');
+                copyButton.classList.add('btn', 'btn-icon', 'btn-sm', 'btn-light', 'my-sm-1', 'ms-1');
                 copyButton.innerHTML = '<i class="fas fa-clipboard fs-2"></i>';
 
                 copyButton.addEventListener('click', () => {
                     const range = document.createRange();
-                    range.selectNodeContents(main_title);
+                    const textNode = main_title.firstChild;
+
+                    if (textNode) {
+                        if (startIndex > 0) {
+                            range.setStart(textNode, startIndex);
+                        } else {
+                            range.selectNodeContents(main_title);
+                        }
+                        range.setEnd(textNode, textNode.length);
+                    }
+
                     const selection = window.getSelection();
                     selection.removeAllRanges();
                     selection.addRange(range);
-                    
+
                     navigator.clipboard.writeText(text).then(() => {
                         copyButton.innerHTML = '<i class="fas fa-copy fs-2"></i>';
                         copyButton.title = 'Copied!';
                         copyButton.classList.add('btn-primary');
-                        setTimeout(() => {
-                            copyButton.innerHTML = '<i class="fas fa-clipboard fs-2"></i>';
-                            copyButton.classList.remove('btn-primary');
-                            copyButton.removeAttribute('title');
-                        }, 2000);
                     }).catch(err => console.error('Failed to copy:', err));
                 });
 
