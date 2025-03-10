@@ -1,4 +1,4 @@
-const version = '03-06-2025__1';
+const version = '03-10-2025__1';
 
 const nav_sidebar = document.getElementById('kt_app_sidebar_navs_wrappers');
 if (nav_sidebar) {

@@ -26,6 +26,7 @@ Enhancements:
 - On product and item pages; Fix to prevent navigation away while images are still uploading.
 - On product and item pages; Added button to open all images in new tabs (enable popups in browser for it to work).
 - On product and item pages; Added a popups check message next to the above button.
+- On product and item pages; Added a 'copy to clipboard' button to copy unique identifier code for photo filenames.
 - On product pages; On all ASIN inputs, a link is generated under the input field to go to the ASIN on Amazon.
 - On item pages; CSS change to increase the maximum height of the inventory table.
 - On listing page; A warning for when the GTIN is invalid and needs to be regenerated before going to the last step. (12 chars error)
