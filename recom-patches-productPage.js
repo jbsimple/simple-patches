@@ -180,7 +180,7 @@ function initCopyPasteButton() {
                     card_toolbar.classList.add('card-toolbar');
                     main_card.insertBefore(card_toolbar, main_title.nextSibling);
                 } else {
-                    main_card.setAttribute('style', 'padding: 1.15rem 2.15rem; padding-bottom: 0;');
+                    main_card.setAttribute('style', 'padding: 1.25rem 2.15rem; padding-bottom: 0;');
                 }
                 card_toolbar.setAttribute('style', 'display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1rem;');
                 card_toolbar.insertBefore(copyButton, card_toolbar.firstChild);
