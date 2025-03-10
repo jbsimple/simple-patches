@@ -161,6 +161,12 @@ function initCopyPasteButton() {
                 copyButton.innerHTML = '<i class="fas fa-clipboard fs-2"></i>';
 
                 copyButton.addEventListener('click', () => {
+                    const range = document.createRange();
+                    range.selectNodeContents(main_title);
+                    const selection = window.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                    
                     navigator.clipboard.writeText(text).then(() => {
                         copyButton.innerHTML = '<i class="fas fa-copy fs-2"></i>';
                         copyButton.title = 'Copied!';
