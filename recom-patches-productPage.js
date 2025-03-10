@@ -167,11 +167,8 @@ function initCopyPasteButton() {
                     const textNode = main_title.firstChild;
 
                     if (textNode) {
-                        const originalText = textNode.textContent.trim();
-                        const adjustedStartIndex = originalText.indexOf(text);
-
-                        if (adjustedStartIndex !== -1) {
-                            range.setStart(textNode, adjustedStartIndex);
+                        if (startIndex !== -1) {
+                            range.setStart(textNode, startIndex);
                             range.setEnd(textNode, textNode.length);
                         } else {
                             console.error("Text selection failed: Unable to locate trimmed text within the original text.");
