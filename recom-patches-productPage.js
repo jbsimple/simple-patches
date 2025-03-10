@@ -297,3 +297,45 @@ function checkPopup() {
         return null;
     }
 }
+
+// Copy and paste button
+function initCopyPasteButton() {
+    const main_content = document.getElementById('kt_app_content_container');
+    if (main_content) {
+        const main_card = main_content.querySelector('.w-lg-300 > .card > .card-header');
+        if (main_card) {
+            main_card.setAttribute('style', 'flex-direction: column; padding: 1rem 2rem;');
+            const main_title = main_card.querySelector('.card-title');
+            if (main_title) {
+                const text = main_title.textContent.trim();
+
+                const copyButton = document.createElement('button');
+                copyButton.classList.add('btn', 'btn-sm', 'btn-light');
+                copyButton.innerHTML = '<i class="fas fa-copy fs-2"></i>';
+
+                copyButton.addEventListener('click', () => {
+                    navigator.clipboard.writeText(text).then(() => {
+                        copyButton.textContent = 'Copied!';
+                        copyButton.classList.add('btn-primary');
+                        setTimeout(() => {
+                            copyButton.innerHTML = '<i class="fas fa-copy fs-2"></i>';
+                            copyButton.classList.remove('btn-primary');
+                        }, 2000);
+                    }).catch(err => console.error('Failed to copy:', err));
+                });
+
+                let card_toolbar = main_card.querySelector('.card-toolbar');
+
+                if (!card_toolbar) {
+                    card_toolbar = document.createElement('div');
+                    card_toolbar.classList.add('card-toolbar');
+                    main_card.insertBefore(card_toolbar, main_title.nextSibling);
+                }
+                card_toolbar.setAttribute('style', 'display: flex; flex-wrap: wrap; align-items: center; justify-content: center;');
+                card_toolbar.insertBefore(copyButton, card_toolbar.firstChild);
+            }
+        }
+    }
+}
+
+setTimeout(function () { initCopyPasteButton(); }, 500);
