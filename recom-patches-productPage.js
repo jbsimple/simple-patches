@@ -155,7 +155,7 @@ function initCopyPasteButton() {
                 const text = main_title.textContent.trim();
 
                 const copyButton = document.createElement('button');
-                copyButton.classList.add('btn', 'btn-sm', 'btn-light');
+                copyButton.classList.add('btn', 'btn-icon', 'btn-sm', 'btn-light', 'btn-sm', 'my-sm-1', 'ms-1');
                 copyButton.innerHTML = '<i class="fas fa-copy fs-2"></i>';
 
                 copyButton.addEventListener('click', () => {
