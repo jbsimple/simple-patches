@@ -153,7 +153,7 @@ function initCopyPasteButton() {
             if (main_title) {
                 let text = main_title.textContent.trim();
                 if (text.startsWith('SC-')) {
-                    text = text.substring(3).trim;
+                    text = text.substring(3).trim();
                 }
 
                 const copyButton = document.createElement('button');
