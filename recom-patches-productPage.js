@@ -298,6 +298,15 @@ function checkPopup() {
     }
 }
 
+function waitForElement(selector, callback) {
+    const element = document.querySelector(selector);
+    if (element) {
+        callback();
+    } else {
+        setTimeout(() => waitForElement(selector, callback), 100);
+    }
+}
+
 // Copy and paste button
 function initCopyPasteButton() {
     const main_content = document.getElementById('kt_app_content_container');
@@ -344,4 +353,4 @@ function initCopyPasteButton() {
     }
 }
 
-setTimeout(function () { initCopyPasteButton(); }, 500);
+waitForElement('#kt_app_content_container', initCopyPasteButton);
