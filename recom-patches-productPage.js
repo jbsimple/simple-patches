@@ -149,7 +149,7 @@ function initCopyPasteButton() {
     if (main_content) {
         const main_card = main_content.querySelector('.w-lg-300px > .card > .card-header');
         if (main_card) {
-            main_card.setAttribute('style', 'flex-direction: column; padding: 1rem 2rem;');
+            main_card.setAttribute('style', 'flex-direction: column; padding: 1.15rem 2.15rem; padding-bottom: 0;');
             const main_title = main_card.querySelector('.card-title');
             if (main_title) {
                 const text = main_title.textContent.trim();
