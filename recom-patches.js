@@ -716,10 +716,10 @@ function clockTaskVisualRefresh() {
             const newButton = newNavbar.querySelector(`a[href*="${checkButton}"]`);
             if (!newButton) return;
 
-            if (currentButton.textContent.trim() !== newButton.textContent.trim()) {
+            if (currentButton.textContent.trim().toLowerCase !== currentButton.textContent.trim().toLowerCase) {
                 console.debug('Patches - CLOCK IN TASK CHANGED');
-                console.debug('Patches - Current', currentButton.textContent.trim());
-                console.debug('Patches - New', newButton.textContent.trim());
+                console.debug('Patches - Current', currentButton.textContent.trim().toLowerCase);
+                console.debug('Patches - New', newButton.textContent.trim().toLowerCase);
                 // Replace the entire parent div of the button
                 const parentDiv = currentButton.closest('div');
                 const newParentDiv = newButton.closest('div');
