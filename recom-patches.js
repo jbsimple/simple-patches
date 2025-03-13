@@ -717,6 +717,9 @@ function clockTaskVisualRefresh() {
             if (!newButton) return;
 
             if (currentButton.textContent.trim() !== newButton.textContent.trim()) {
+                console.debug('Patches - CLOCK IN TASK CHANGED');
+                console.debug('Patches - Current', currentButton.textContent.trim());
+                console.debug('Patches - New', newButton.textContent.trim());
                 // Replace the entire parent div of the button
                 const parentDiv = currentButton.closest('div');
                 const newParentDiv = newButton.closest('div');
