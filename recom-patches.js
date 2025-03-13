@@ -726,13 +726,15 @@ function clockTaskVisualRefresh() {
                 if (parentDiv && newParentDiv) {
                     parentDiv.replaceWith(newParentDiv);
                 }
+            } else {
+                console.debug('PATCHES - Clock In Task the same.');
             }
         } catch (error) {
             console.error('Error updating clock task:', error);
         }
     }
 
-    setInterval(checkAndUpdate, 3000);
+    setInterval(checkAndUpdate, 60000);
 }
 
 function adjustToolbar() {
