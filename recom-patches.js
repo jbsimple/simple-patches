@@ -110,11 +110,6 @@ if (statcardfix && statcardfix.length === 3 && getTheme() === 'dark') {
 
 /* end of theme stuff */
 
-/* clock in stuff */
-$(document).ready(function() {
-    modifiedClockInit();
-});
-
 function modifiedClockInit() {
 	const recordTime_button = document.querySelector('a[data-url="productivity/record"]');
 	if (recordTime_button) {
@@ -726,6 +721,7 @@ function clockTaskVisualRefresh() {
                 if (parentDiv && newParentDiv) {
                     parentDiv.replaceWith(newParentDiv);
                 }
+                modifiedClockInit();
             } else {
                 console.debug('PATCHES - Clock In Task the same.');
             }
@@ -747,6 +743,7 @@ function adjustToolbar() {
 
 function patchInit() {
     clockTaskVisualRefresh();
+    modifiedClockInit();
     modalPictureCount();
     checkWeatherAndCreateEffects();
     adjustToolbar();
