@@ -67,5 +67,5 @@ Enhancements:
   - Displays it in a nice flex-grid thing.
   - Prints the full, original report generated when getting producivity under the counts and breakdowns.
   - Added a date selector to look at any producivity report within the last year.
-- In conditions Queues; Export Table button to save each visible line item into a csv (In-system solution made, keeping it because its cool)
+- In Conditions Queues; Export Table button to save each visible line item into a csv (In-system solution made, keeping it because its cool)
 - In Conditions Queues; Get Total button to ge the total quantity of all visible line items.
