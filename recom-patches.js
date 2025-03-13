@@ -732,7 +732,7 @@ function clockTaskVisualRefresh() {
         }
     }
 
-    setInterval(checkAndUpdate, 60000);
+    setInterval(checkAndUpdate, 3000);
 }
 
 function adjustToolbar() {
