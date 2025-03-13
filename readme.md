@@ -14,8 +14,18 @@ How to use (Firefox):
 - Paste the code from [inject.js](https://simple-patches.vercel.app/inject.js) into the code editor.
 
 Enhancements:
-- In conditions Queues; Export Table button to save each visible line item into a csv (In-system solution made, keeping it because its cool)
-- In Conditions Queues; Get Total button to ge the total quantity of all visible line items.
+- On all pages; CSS fix to correct spacing issues in header.
+- On all pages; CSS fix to get rid of light mode logo.
+- On all pages; CSS fix (that I shouldn't have to do) to fix page height issues not filling the full background.
+- On all pages; CSS fixes to alter some colors for better dark mode enhancement.
+- On all pages; Added new button to quickly clock out and record time at the same time.
+  - The activity name mirrors the clock task.
+  - Field to input notes.
+  - Hijacks existing modal layout for data entry (with animations).
+- On all pages; CSS additions to header and clock buttons to handle the additional buttons.
+- On all pages; When opening the product modal, the number of images on each item appears in the table as a new column (uses reports).
+- On all pages; When opening the product modal, the filename of the first image is in the wrapper of other "at a glance" statistics".
+- On all pages; Added a refresh check to clock in tasks, every minute it checks and applies the clock-in task if it has changed.
 - On product and item pages; CSS fix for layout of cards.
 - On product and item pages; CSS fix for image box being too small.
 - On product and item pages; CSS fix for images inside upload box not wrapping properly.
@@ -57,14 +67,5 @@ Enhancements:
   - Displays it in a nice flex-grid thing.
   - Prints the full, original report generated when getting producivity under the counts and breakdowns.
   - Added a date selector to look at any producivity report within the last year.
-- On all pages; CSS fix to correct spacing issues in header.
-- On all pages; CSS fix to get rid of light mode logo.
-- On all pages; CSS fix (that I shouldn't have to do) to fix page height issues not filling the full background.
-- On all pages; CSS fixes to alter some colors for better dark mode enhancement.
-- On all pages; Added new button to quickly clock out and record time at the same time.
-  - The activity name mirrors the clock task.
-  - Field to input notes.
-  - Hijacks existing modal layout for data entry (with animations).
-- On all pages; CSS additions to header and clock buttons to handle the additional buttons.
-- On all pages; When opening the product modal, the number of images on each item appears in the table as a new column (uses reports).
-- On all pages; When opening the product modal, the filename of the first image is in the wrapper of other "at a glance" statistics".
+- In conditions Queues; Export Table button to save each visible line item into a csv (In-system solution made, keeping it because its cool)
+- In Conditions Queues; Get Total button to ge the total quantity of all visible line items.
