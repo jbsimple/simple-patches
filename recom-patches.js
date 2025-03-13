@@ -690,6 +690,48 @@ function modalPictureCount() {
     });
 }
 
+function clockTaskVisualRefresh() {
+    const href = '/user/me';
+    const headingID = 'kt_app_header_navbar';
+    const checkButton = 'javascript:clockInOut';
+
+    async function checkAndUpdate() {
+        try {
+            const response = await fetch(href);
+            if (!response.ok) throw new Error('Failed to fetch page content');
+
+            const text = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(text, 'text/html');
+
+            const currentNavbar = document.getElementById(headingID);
+            if (!currentNavbar) return;
+
+            const currentButton = currentNavbar.querySelector(`a[href*="${checkButton}"]`);
+            if (!currentButton) return;
+
+            const newNavbar = doc.getElementById(headingID);
+            if (!newNavbar) return;
+
+            const newButton = newNavbar.querySelector(`a[href*="${checkButton}"]`);
+            if (!newButton) return;
+
+            if (currentButton.textContent.trim() !== newButton.textContent.trim()) {
+                // Replace the entire parent div of the button
+                const parentDiv = currentButton.closest('div');
+                const newParentDiv = newButton.closest('div');
+                if (parentDiv && newParentDiv) {
+                    parentDiv.replaceWith(newParentDiv);
+                }
+            }
+        } catch (error) {
+            console.error('Error updating clock task:', error);
+        }
+    }
+
+    setInterval(checkAndUpdate, 60000);
+}
+
 function adjustToolbar() {
     const toolbar = document.getElementById('kt_app_toolbar');
     const text = toolbar.querySelector('h1.page-heading').textContent;
@@ -699,6 +741,7 @@ function adjustToolbar() {
 }
 
 function patchInit() {
+    clockTaskVisualRefresh();
     modalPictureCount();
     checkWeatherAndCreateEffects();
     adjustToolbar();
