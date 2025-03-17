@@ -128,4 +128,4 @@ function initSearchClear() {
 
     observer.observe(searchResults, { childList: true, subtree: true });
 }
-initSearchClear();
+// initSearchClear();
