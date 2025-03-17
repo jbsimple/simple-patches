@@ -101,11 +101,8 @@ function initSearchClear() {
     const searchFormRow = searchForm.querySelector('.row.g-5');
     if (searchFormRow) {
         const categoryInput = searchFormRow.querySelector('.col-md-2');
-        categoryInput.removeAttribute('class');
         categoryInput.setAttribute('style', 'width: unset; flex-shrink: 0;');
-
-        searchInput.removeAttribute('class');
-        categoryInput.setAttribute('style', 'width: unset; flex: 1;');
+        searchInput.setAttribute('style', 'width: unset; flex: 1;');
 
         searchFormRow.innerHTML += `<div style="width: unset; flex-shrink: 0;">
             <label for="patch-autoClearSearch" title="After a search is completed, the field clears and is selected. For scanners.">Auto Clear</label>
