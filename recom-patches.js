@@ -745,7 +745,7 @@ function patchInit() {
     checkWeatherAndCreateEffects();
     adjustToolbar();
 
-    //awaiting to see if this fixes product and item button
+    //setting timeout to fix product and item pages button :/
     setTimeout(modalPictureCount, 500);
 }
 window.onload = patchInit;
