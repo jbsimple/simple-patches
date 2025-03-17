@@ -105,18 +105,22 @@ function initSearchClear() {
         categoryInputCont.setAttribute('style', 'width: unset; flex-shrink: 0; min-width: 250px;');
 
         const sarchInputCont = searchFormRow.querySelector('.col-md-10');
-        sarchInputCont.setAttribute('style', 'width: unset; padding: 0 !important; flex: 1; flex-shrin: 0');
+        sarchInputCont.setAttribute('style', 'width: unset; padding: 0 !important; flex: 1; flex-shrink: 0');
 
-        searchFormRow.innerHTML += `<div class="h-60px" style="width: unset; flex-shrink: 0; display: flex; flex-direction: column; gap: 0.5rem; align-items: center; justify-content: center;">
-            <label style="font-size: 1.35rem; color: var(--bs-gray-700);" for="patch-autoClearSearch" title="After a search is completed, the field clears and is selected. For scanners.">Auto Clear</label>
-            <input style="width: 1.5rem; height: 1.5rem;" type="checkbox" id="patch-autoClearSearch">
-        </div>`;
+        if (!document.getElementById('patch-autoClearSearch')) {
+            searchFormRow.innerHTML += `
+                <div class="h-60px" style="width: unset; flex-shrink: 0; display: flex; flex-direction: column; gap: 0.5rem; align-items: center; justify-content: center;">
+                    <label style="font-size: 1.35rem; color: var(--bs-gray-700);" for="patch-autoClearSearch" title="After a search is completed, the field clears and is selected. For scanners.">Auto Clear</label>
+                    <input style="width: 1.5rem; height: 1.5rem;" type="checkbox" id="patch-autoClearSearch">
+                </div>`;
+        }
     }
 
     if (!searchInput || !searchResults) return;
 
     const observer = new MutationObserver(() => {
-        if (searchInput.value.trim() !== '') {
+        const toggle = document.getElementById('patch-autoClearSearch');
+        if (searchInput.value.trim() !== '' && toggle && toggle?.checked) {
             searchInput.value = '';
             searchInput.focus();
         }
