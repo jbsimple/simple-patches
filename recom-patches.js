@@ -496,11 +496,7 @@ function modalPictureCount() {
             if (lastEvent) {
                 const { target } = lastEvent;
 
-                if (
-                    target.tagName === 'A' &&
-                    target.hasAttribute('data-url') &&
-                    target.getAttribute('data-url').includes('ajax/modals/productitems/')
-                ) {
+                if (target.tagName === 'A' && target.hasAttribute('data-url') && target.getAttribute('data-url').includes('ajax/modals/productitems/') && target.classList.contains('ajax-modal')) {
                     const descriptionDiv = modal.querySelector('div.d-flex.flex-wrap.fw-bold.mb-4.fs-5.text-gray-400');
                     if (descriptionDiv) {
                         const descriptionText = descriptionDiv.textContent.trim();
@@ -587,16 +583,18 @@ function modalPictureCount() {
                                     console.debug('Patches - No images found.');
                                 }
                             } catch (error) {
-                                console.error('API call failed for:', descriptionText, error);
+                                console.error('Patches - API call failed for:', descriptionText, error);
                             } finally {
                                 inProgressContent.delete(descriptionText);
                             }
                         } else {
-                            console.debug('Patch: API call already in progress or completed for:', descriptionText);
+                            console.debug('Patches - API call already in progress or completed for:', descriptionText);
                         }
                     } else {
-                        console.debug('Patch: Description div not found in the modal content.');
+                        console.debug('Patches - Description div not found in the modal content.');
                     }
+                } else {
+                    console.debug('Patches - AJAX modal not product details modal:', target);
                 }
             }
         });
