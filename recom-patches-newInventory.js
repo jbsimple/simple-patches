@@ -102,14 +102,14 @@ function initSearchClear() {
     if (searchFormRow) {
         searchFormRow.setAttribute('style', 'gap: calc(var(--bs-gutter-x)* .5);');
         const categoryInputCont = searchFormRow.querySelector('.col-md-2');
-        categoryInputCont.setAttribute('style', 'width: unset; flex-shrink: 0; min-width: 200px;');
+        categoryInputCont.setAttribute('style', 'width: unset; flex-shrink: 0; min-width: 250px;');
 
         const sarchInputCont = searchFormRow.querySelector('.col-md-10');
         sarchInputCont.setAttribute('style', 'width: unset; padding: 0 !important; flex: 1; flex-shrin: 0');
 
-        searchFormRow.innerHTML += `<div class="h-60px" style="width: unset; flex-shrink: 0; display: flex; flex-direction: column; gap: 0.5rem;">
+        searchFormRow.innerHTML += `<div class="h-60px" style="width: unset; flex-shrink: 0; display: flex; flex-direction: column; gap: 0.5rem; align-items: center; justify-content: center;">
             <label class="fs-2" for="patch-autoClearSearch" title="After a search is completed, the field clears and is selected. For scanners.">Auto Clear</label>
-            <input type="checkbox" id="patch-autoClearSearch">
+            <input style="width: 1.5rem; height: 1.5rem;" type="checkbox" id="patch-autoClearSearch">
         </div>`;
     }
 
