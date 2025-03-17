@@ -506,8 +506,8 @@ function modalPictureCount() {
                 const { target } = lastEvent;
 
                 if (target.matches('i.fas.fa-eye')) {
-                    let parentElement = target.parentElement;
-                    console.log('Patches - Parent Element:', parentElement);
+                    console.log('Patches - Getting Parent:', target);
+                    target = target.parentElement;
                 }                
 
                 if ((target.id === "rc_ajax_modal" && target.querySelector('.fw-bold.fs-6.text-gray-400')?.textContent.trim() === 'GTIN' && target.querySelector('table').classList.contains('table-row-bordered')) 
