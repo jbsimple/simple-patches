@@ -742,9 +742,11 @@ function adjustToolbar() {
 function patchInit() {
     clockTaskVisualRefresh();
     modifiedClockInit();
-    modalPictureCount();
     checkWeatherAndCreateEffects();
     adjustToolbar();
+
+    //awaiting to see if this fixes product and item button
+    setTimeout(modalPictureCount, 500);
 }
 window.onload = patchInit;
 
