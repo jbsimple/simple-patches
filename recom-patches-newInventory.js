@@ -108,7 +108,7 @@ function initSearchClear() {
         sarchInputCont.setAttribute('style', 'width: unset; padding: 0 !important; flex: 1; flex-shrin: 0');
 
         searchFormRow.innerHTML += `<div class="h-60px" style="width: unset; flex-shrink: 0; display: flex; flex-direction: column; gap: 0.5rem; align-items: center; justify-content: center;">
-            <label style="font-size: 1.15rem; color: var(--bs-gray-700);" for="patch-autoClearSearch" title="After a search is completed, the field clears and is selected. For scanners.">Auto Clear</label>
+            <label style="font-size: 1.35rem; color: var(--bs-gray-700);" for="patch-autoClearSearch" title="After a search is completed, the field clears and is selected. For scanners.">Auto Clear</label>
             <input style="width: 1.5rem; height: 1.5rem;" type="checkbox" id="patch-autoClearSearch">
         </div>`;
     }
