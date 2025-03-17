@@ -94,7 +94,7 @@ if (inventory_results) {
 }
 
 /* clear field for quick searches */
-function initSearchClear() {
+function initSearchSelect() {
     const searchInput = document.getElementById('pSearchProduct');
     const searchResults = document.getElementById('inventory_results');
     if (!searchInput || !searchResults) return;
@@ -109,20 +109,20 @@ function initSearchClear() {
         const sarchInputCont = searchFormRow.querySelector('.col-md-10');
         sarchInputCont.setAttribute('style', 'width: unset; padding: 0 !important; flex: 1; flex-shrink: 0');
 
-        if (!document.getElementById('patch-autoClearSearch')) {
+        if (!document.getElementById('patch-autoSelect')) {
             const wrapper = document.createElement('div');
             wrapper.classList.add('h-60px');
             wrapper.style.cssText = 'width: unset; flex-shrink: 0; display: flex; flex-direction: column; gap: 0.5rem; align-items: center; justify-content: center;';
             
             const label = document.createElement('label');
-            label.htmlFor = 'patch-autoClearSearch';
-            label.textContent = 'Auto Clear';
+            label.htmlFor = 'patch-autoSelect';
+            label.textContent = 'Auto Select';
             label.style.cssText = 'font-size: 1.35rem; color: var(--bs-gray-700);';
-            label.title = 'After a search is completed, the field clears and is selected. For scanners.';
+            label.title = 'After a search is completed, the field is selected, for scanners.';
 
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
-            checkbox.id = 'patch-autoClearSearch';
+            checkbox.id = 'patch-autoSelect';
             checkbox.style.cssText = 'width: 1.5rem; height: 1.5rem;';
 
             wrapper.appendChild(label);
@@ -132,13 +132,13 @@ function initSearchClear() {
     }
 
     const observer = new MutationObserver(() => {
-        const toggle = document.getElementById('patch-autoClearSearch');
+        const toggle = document.getElementById('patch-autoSelect');
         if (searchInput.value.trim() !== '' && toggle && toggle?.checked) {
-            searchInput.value = '';
             searchInput.focus();
+            searchInput.select();
         }
     });
 
     observer.observe(searchResults, { childList: true, subtree: true });
 }
-initSearchClear();
+initSearchSelect();
