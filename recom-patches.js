@@ -501,7 +501,8 @@ function modalPictureCount() {
     });
 
     const observer = new MutationObserver((mutationsList) => {
-        mutationsList.forEach(async (mutation) => {
+        const mutation = mutationsList[0];
+        if (mutation) {
             console.debug('Patches - Mutation Fired:', mutation);
             if (lastEvent) {
                 let { target } = lastEvent;
@@ -613,7 +614,7 @@ function modalPictureCount() {
                     console.debug('Patches - AJAX modal not product details modal:', target);
                 }
             }
-        });
+        }
     });
 
 
