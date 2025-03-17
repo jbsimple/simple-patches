@@ -502,6 +502,7 @@ function modalPictureCount() {
 
     const observer = new MutationObserver((mutationsList) => {
         mutationsList.forEach(async (mutation) => {
+            console.debug('Patches - Mutation Fired:', mutation);
             if (lastEvent) {
                 let { target } = lastEvent;
 
