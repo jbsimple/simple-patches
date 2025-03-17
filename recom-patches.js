@@ -500,8 +500,9 @@ function modalPictureCount() {
         console.debug('Patch: Modal closed. Resetting processed and in-progress content.');
     });
 
-    const observer = new MutationObserver((mutationsList) => {
-        mutationsList.forEach(async (mutation) => {
+    const observer = new MutationObserver(async (mutationsList) => {
+        const mutation = mutationsList[0];
+        if (mutation) {
             console.debug('Patches - Mutation Fired:', mutation);
             if (lastEvent) {
                 let { target } = lastEvent;
@@ -613,7 +614,7 @@ function modalPictureCount() {
                     console.debug('Patches - AJAX modal not product details modal:', target);
                 }
             }
-        });
+        }
     });
 
 
