@@ -100,9 +100,10 @@ function initSearchClear() {
     const searchForm = document.getElementById('searchProductForm');
     const searchFormRow = searchForm.querySelector('.row.g-5');
     if (searchFormRow) {
+        searchFormRow.setAttribute('style', 'gap: calc(var(--bs-gutter-x)* .5);');
         const categoryInput = searchFormRow.querySelector('.col-md-2');
         categoryInput.setAttribute('style', 'width: unset; flex-shrink: 0;');
-        searchInput.setAttribute('style', 'width: unset; flex: 1;');
+        searchInput.setAttribute('style', 'width: unset; flex: 1; flex-shrin: 0');
 
         searchFormRow.innerHTML += `<div style="width: unset; flex-shrink: 0;">
             <label for="patch-autoClearSearch" title="After a search is completed, the field clears and is selected. For scanners.">Auto Clear</label>
