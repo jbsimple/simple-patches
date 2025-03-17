@@ -110,11 +110,24 @@ function initSearchClear() {
         sarchInputCont.setAttribute('style', 'width: unset; padding: 0 !important; flex: 1; flex-shrink: 0');
 
         if (!document.getElementById('patch-autoClearSearch')) {
-            searchFormRow.innerHTML += `
-                <div class="h-60px" style="width: unset; flex-shrink: 0; display: flex; flex-direction: column; gap: 0.5rem; align-items: center; justify-content: center;">
-                    <label style="font-size: 1.35rem; color: var(--bs-gray-700);" for="patch-autoClearSearch" title="After a search is completed, the field clears and is selected. For scanners.">Auto Clear</label>
-                    <input style="width: 1.5rem; height: 1.5rem;" type="checkbox" id="patch-autoClearSearch">
-                </div>`;
+            const wrapper = document.createElement('div');
+            wrapper.classList.add('h-60px');
+            wrapper.style.cssText = 'width: unset; flex-shrink: 0; display: flex; flex-direction: column; gap: 0.5rem; align-items: center; justify-content: center;';
+            
+            const label = document.createElement('label');
+            label.htmlFor = 'patch-autoClearSearch';
+            label.textContent = 'Auto Clear';
+            label.style.cssText = 'font-size: 1.35rem; color: var(--bs-gray-700);';
+            label.title = 'After a search is completed, the field clears and is selected. For scanners.';
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = 'patch-autoClearSearch';
+            checkbox.style.cssText = 'width: 1.5rem; height: 1.5rem;';
+
+            wrapper.appendChild(label);
+            wrapper.appendChild(checkbox);
+            searchFormRow.appendChild(wrapper);
         }
     }
 
