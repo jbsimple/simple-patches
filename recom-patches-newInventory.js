@@ -92,3 +92,29 @@ if (inventory_results) {
         });
     }
 }
+
+/* clear field for quick searches */
+function initSearchClear() {
+    const searchInput = document.getElementById('pSearchProduct');
+    const searchResults = document.getElementById('inventory_results');
+    const searchForm = document.getElementById('searchProductForm');
+    const searchFormRow = searchForm.querySelector('.row.g-5');
+    if (searchFormRow) {
+        searchFormRow.innerHTML += `<div class="col-md-2>
+            <label for="patch-autoClearSearch" title="After a search is completed, the field clears and is selected. For scanners.">Auto Clear</label>
+            <input type="checkbox" id="patch-autoClearSearch">
+        </div>`;
+    }
+
+    if (!searchInput || !searchResults) return;
+
+    const observer = new MutationObserver(() => {
+        if (searchInput.value.trim() !== '') {
+            searchInput.value = '';
+            searchInput.focus();
+        }
+    });
+
+    observer.observe(searchResults, { childList: true, subtree: true });
+}
+initSearchClear();
