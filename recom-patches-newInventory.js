@@ -97,6 +97,8 @@ if (inventory_results) {
 function initSearchClear() {
     const searchInput = document.getElementById('pSearchProduct');
     const searchResults = document.getElementById('inventory_results');
+    if (!searchInput || !searchResults) return;
+
     const searchForm = document.getElementById('searchProductForm');
     const searchFormRow = searchForm.querySelector('.row.g-5');
     if (searchFormRow) {
@@ -116,8 +118,6 @@ function initSearchClear() {
         }
     }
 
-    if (!searchInput || !searchResults) return;
-
     const observer = new MutationObserver(() => {
         const toggle = document.getElementById('patch-autoClearSearch');
         if (searchInput.value.trim() !== '' && toggle && toggle?.checked) {
@@ -128,4 +128,4 @@ function initSearchClear() {
 
     observer.observe(searchResults, { childList: true, subtree: true });
 }
-// initSearchClear();
+initSearchClear();
