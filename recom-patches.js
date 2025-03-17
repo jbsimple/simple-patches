@@ -488,15 +488,10 @@ function modalPictureCount() {
     const processedContent = new Set();
     const inProgressContent = new Set();
 
-    /*
-    ['click', 'input', 'keyup', 'change', 'mousedown', 'mouseup'].forEach((eventType) => {
+    ['click', 'mousedown', 'mouseup'].forEach((eventType) => {
         document.addEventListener(eventType, (event) => {
             lastEvent = event;
         }, true);
-    });*/
-
-    document.addEventListener('click', (event) => {
-        lastEvent = event;
     });
 
     modal.addEventListener('hidden.bs.modal', () => {
