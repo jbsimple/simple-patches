@@ -93,7 +93,7 @@ if (inventory_results) {
     }
 }
 
-/* clear field for quick searches */
+/* select field for quick searches */
 function initSearchSelect() {
     const searchInput = document.getElementById('pSearchProduct');
     const searchResults = document.getElementById('inventory_results');
