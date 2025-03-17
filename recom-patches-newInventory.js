@@ -104,7 +104,7 @@ function initSearchClear() {
         const categoryInputCont = searchFormRow.querySelector('.col-md-2');
         categoryInputCont.setAttribute('style', 'width: unset; flex-shrink: 0;');
 
-        const sarchInputCont = searchFormRow.querySelector('.col-md-2');
+        const sarchInputCont = searchFormRow.querySelector('.col-md-10');
         sarchInputCont.setAttribute('style', 'width: unset; padding: 0 !important; flex: 1; flex-shrin: 0');
 
         searchFormRow.innerHTML += `<div style="width: unset; flex-shrink: 0;">
