@@ -503,7 +503,7 @@ function modalPictureCount() {
     const observer = new MutationObserver((mutationsList) => {
         mutationsList.forEach(async (mutation) => {
             if (lastEvent) {
-                const { target } = lastEvent;
+                let { target } = lastEvent;
 
                 if (target.matches('i.fas.fa-eye')) {
                     console.log('Patches - Getting Parent:', target);
