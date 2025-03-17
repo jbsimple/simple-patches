@@ -254,6 +254,15 @@ function modifiedClock(task) {
             cancelButton.onclick = closeModal;
         }
 
+        document.addEventListener('keydown', (event) => {
+            const notesTextarea = document.getElementById('patch-clockout-textarea-notes');
+            
+            if (event.key === 'Escape' && notesTextarea && document.activeElement !== notesTextarea) {
+                closeModal();
+            }
+        });
+        
+
         function closeModal() {
             const fullModal = document.getElementById('patch_clockout_fullModal');
             if (fullModal) {
