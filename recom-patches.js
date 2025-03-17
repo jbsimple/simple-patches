@@ -505,6 +505,11 @@ function modalPictureCount() {
             if (lastEvent) {
                 const { target } = lastEvent;
 
+                if (target.matches('i.fas.fa-eye')) {
+                    let parentElement = target.parentElement;
+                    console.log('Patches - Parent Element:', parentElement);
+                }                
+
                 if ((target.id === "rc_ajax_modal" && target.querySelector('.fw-bold.fs-6.text-gray-400')?.textContent.trim() === 'GTIN' && target.querySelector('table').classList.contains('table-row-bordered')) 
                         || (target.tagName === 'A' && target.hasAttribute('data-url') && target.getAttribute('data-url').includes('ajax/modals/productitems/') && target.classList.contains('ajax-modal'))) {
                     const descriptionDiv = modal.querySelector('div.d-flex.flex-wrap.fw-bold.mb-4.fs-5.text-gray-400');
