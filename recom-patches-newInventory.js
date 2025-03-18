@@ -147,9 +147,20 @@ initSearchSelect();
 /* auto add GET parameters, auto search when loaded with GET parameters */
 function initGetKeyword() {
     const searchInput = document.getElementById('pSearchProduct');
+    const urlParams = new URLSearchParams(window.location.search);
+    const keywordParam = urlParams.get('keyword');
 
-    if (searchInput.value !== '') {
-        // simulate enter press after 500ms
+    if (keywordParam) {
+        searchInput.value = decodeURIComponent(keywordParam);
+
+        setTimeout(() => {
+            const event = new KeyboardEvent('keydown', {
+                key: 'Enter',
+                bubbles: true,
+                cancelable: true
+            });
+            searchInput.dispatchEvent(event);
+        }, 500);
     }
 
     searchInput.addEventListener('keydown', function(event) {
