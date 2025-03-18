@@ -152,13 +152,16 @@ function initGetKeyword() {
 
     if (keywordParam) {
         searchInput.value = decodeURIComponent(keywordParam);
-
         setTimeout(() => {
+            searchInput.focus();
+            
             const event = new KeyboardEvent('keydown', {
                 key: 'Enter',
+                code: 'Enter',
                 bubbles: true,
                 cancelable: true
             });
+
             searchInput.dispatchEvent(event);
         }, 500);
     }
