@@ -144,7 +144,6 @@ function initSearchSelect() {
 initSearchSelect();
 
 
-/* auto add GET parameters, auto search when loaded with GET parameters */
 function initGetKeyword() {
     const searchInput = document.getElementById('pSearchProduct');
     const urlParams = new URLSearchParams(window.location.search);
@@ -153,15 +152,31 @@ function initGetKeyword() {
     if (keywordParam) {
         searchInput.value = decodeURIComponent(keywordParam);
         searchInput.focus();
+
         setTimeout(() => {
-            const event = new KeyboardEvent('keydown', {
+            // beginning to not like this
+            searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+
+            const keydownEvent = new KeyboardEvent('keydown', {
                 key: 'Enter',
                 code: 'Enter',
+                keyCode: 13,
+                which: 13,
                 bubbles: true,
                 cancelable: true
             });
 
-            searchInput.dispatchEvent(event);
+            const keyupEvent = new KeyboardEvent('keyup', {
+                key: 'Enter',
+                code: 'Enter',
+                keyCode: 13,
+                which: 13,
+                bubbles: true,
+                cancelable: true
+            });
+
+            searchInput.dispatchEvent(keydownEvent);
+            searchInput.dispatchEvent(keyupEvent);
         }, 500);
     }
 
@@ -176,4 +191,4 @@ function initGetKeyword() {
     });
 }
 
-initGetKeyword();
+setTimeout(initGetKeyword, 500);
