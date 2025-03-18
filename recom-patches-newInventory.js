@@ -142,3 +142,25 @@ function initSearchSelect() {
     observer.observe(searchResults, { childList: true, subtree: true });
 }
 initSearchSelect();
+
+
+/* auto add GET parameters, auto search when loaded with GET parameters */
+function initGetKeyword() {
+    const searchInput = document.getElementById('pSearchProduct');
+
+    if (searchInput.value !== '') {
+        // simulate enter press after 500ms
+    }
+
+    searchInput.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' && searchInput.value.trim() !== '') {
+            const keyword = encodeURIComponent(searchInput.value.trim());
+            const url = new URL(window.location);
+            url.searchParams.set('keyword', keyword);
+
+            history.pushState(null, '', url.toString());
+        }
+    });
+}
+
+initGetKeyword();
