@@ -155,28 +155,34 @@ function initGetKeyword() {
 
         setTimeout(() => {
             // beginning to not like this
-            searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+            const modalShow = document.querySelectorAll('.modal.show');
+            const swalModal = document.querySelectorAll('.swal2-container');
+            if (modalShow.length === 0 && swalModal.length === 0) {
 
-            const keydownEvent = new KeyboardEvent('keydown', {
-                key: 'Enter',
-                code: 'Enter',
-                keyCode: 13,
-                which: 13,
-                bubbles: true,
-                cancelable: true
-            });
+                searchInput.dispatchEvent(new Event('input', { bubbles: true }));
 
-            const keyupEvent = new KeyboardEvent('keyup', {
-                key: 'Enter',
-                code: 'Enter',
-                keyCode: 13,
-                which: 13,
-                bubbles: true,
-                cancelable: true
-            });
+                const keydownEvent = new KeyboardEvent('keydown', {
+                    key: 'Enter',
+                    code: 'Enter',
+                    keyCode: 13,
+                    which: 13,
+                    bubbles: true,
+                    cancelable: true
+                });
 
-            searchInput.dispatchEvent(keydownEvent);
-            searchInput.dispatchEvent(keyupEvent);
+                const keyupEvent = new KeyboardEvent('keyup', {
+                    key: 'Enter',
+                    code: 'Enter',
+                    keyCode: 13,
+                    which: 13,
+                    bubbles: true,
+                    cancelable: true
+                });
+
+                searchInput.dispatchEvent(keydownEvent);
+                searchInput.dispatchEvent(keyupEvent);
+                
+            }
         }, 500);
     }
 
