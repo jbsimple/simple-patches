@@ -711,7 +711,6 @@ function hijackAjaxModal() {
     }
 
     async function modalClockIn() {
-        console.debug('Patches - Starting Clock In Inject');
         modal = document.getElementById('rc_ajax_modal');
         const selects = modal.querySelectorAll('select.swal2-select');
         if (selects) {
@@ -721,6 +720,7 @@ function hijackAjaxModal() {
                 );
 
                 if (hasDisabledOption) {
+                    console.debug('Patches - Found Select, Attempting to add.');
                     const quickTasks = [
                         { value: "22", text: "Listing" },
                         { value: "28", text: "Listing Side Work (Off System) (No PO Tracking)" },
