@@ -486,7 +486,7 @@ async function checkWeatherAndCreateEffects() {
 }
 
 function hijackAjaxModal() {
-    const modal = document.getElementById('rc_ajax_modal');
+    let modal = document.getElementById('rc_ajax_modal');
     let lastEvent = null;
     const processedContent = new Set();
     const inProgressContent = new Set();
@@ -711,6 +711,7 @@ function hijackAjaxModal() {
     }
 
     async function quickClockIn() {
+        modal = document.getElementById('rc_ajax_modal');
         const selects = modal.querySelectorAll('select.swal2-select');
         if (selects) {
             selects.forEach(select => {
