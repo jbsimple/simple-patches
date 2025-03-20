@@ -711,8 +711,8 @@ function hijackAjaxModal() {
     }
 
     async function modalClockIn() {
-        modal = document.getElementById('rc_ajax_modal');
-        const selects = modal.querySelectorAll('select');
+        modal = document.querySelector('.swal2-container');
+        const selects = document.querySelectorAll('select');
         if (selects) {
             console.debug(selects);
             selects.forEach(select => {
