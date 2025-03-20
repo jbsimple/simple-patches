@@ -517,9 +517,11 @@ function hijackAjaxModal() {
 
                 if ((target.id === "rc_ajax_modal" && target.querySelector('.fw-bold.fs-6.text-gray-400')?.textContent.trim() === 'GTIN' && target.querySelector('table').classList.contains('table-row-bordered')) 
                         || (target.tagName === 'A' && target.hasAttribute('data-url') && target.getAttribute('data-url').includes('ajax/modals/productitems/') && target.classList.contains('ajax-modal'))) {
+                    console.debug('Patches - AJAX modal is product glace:', target);
                     modalPictureCount();
                 } else if (target.getAttribute('href') === "javascript:clockInOut('in');") {
                     console.debug('Patches - AJAX modal is clock in:', target);
+                    quickClockIn();
                 } else {
                     console.debug('Patches - AJAX modal not defined modal:', target);
                 }
@@ -709,7 +711,52 @@ function hijackAjaxModal() {
     }
 
     async function quickClockIn() {
-
+        const selects = modal.querySelectorAll('select.swal2-select');
+        if (selects) {
+            selects.forEach(select => {
+                const hasDisabledOption = Array.from(select.options).some(option => 
+                    option.disabled && option.value === "" && option.text.trim() === "Select a task"
+                );
+                if (hasDisabledOption) {
+                    const quickTasks = [
+                        { value: "22", text: "Listing" },
+                        { value: "28", text: "Listing Side Work (Off System) (No PO Tracking)" },
+                        { value: "29", text: "Pictures (Off System)" },
+                        { value: "31", text: "Pictures Side Work (Off System) (No PO Tracking)" },
+                        { value: "5", text: "ADHOC - Meeting (Off System) (No PO Tracking)" },
+                        { value: "7", text: "BREAK (Off System) (No PO Tracking)" },
+                        { value: "8", text: "LUNCH (Off System) (No PO Tracking)" }
+                    ];
+        
+                    const buttonContainer = document.createElement("div");
+                    buttonContainer.style.display = "flex";
+                    buttonContainer.style.flexWrap = "wrap";
+                    buttonContainer.style.gap = "0.5rem";
+                    buttonContainer.style.marginBottom = "1rem";
+        
+                    quickTasks.forEach(task => {
+                        const button = document.createElement("button");
+                        button.textContent = task.text;
+                        button.setAttribute("data-value", task.value);
+                        button.classList.add('btn', 'btn-color-gray-700', 'btn-active-color-white', 'btn-outline', 'btn-outline-info');
+        
+                        button.addEventListener("click", () => {
+                            select.value = task.value;
+                            console.log(`Selected task: ${task.text}`);
+        
+                            const submitButton = modal.querySelector(".swal2-confirm");
+                            if (submitButton) {
+                                submitButton.click();
+                            }
+                        });
+        
+                        buttonContainer.appendChild(button);
+                    });
+        
+                    select.parentNode.insertBefore(buttonContainer, select);
+                }
+            });
+        }
     }
 }
 
