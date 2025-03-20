@@ -760,6 +760,8 @@ function hijackAjaxModal() {
                     console.error('Patches - Unable to get clock in select option.');
                 }
             });
+        } else {
+            console.error('Patches - Unable to find select.');
         }
     }
 }
