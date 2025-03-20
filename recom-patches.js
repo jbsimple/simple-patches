@@ -521,7 +521,7 @@ function hijackAjaxModal() {
                     modalPictureCount();
                 } else if (target.getAttribute('href') === "javascript:clockInOut('in');") {
                     console.debug('Patches - AJAX modal is clock in:', target);
-                    quickClockIn();
+                    modalClockIn();
                 } else {
                     console.debug('Patches - AJAX modal not defined modal:', target);
                 }
@@ -710,7 +710,8 @@ function hijackAjaxModal() {
         });
     }
 
-    async function quickClockIn() {
+    async function modalClockIn() {
+        console.debug('Patches - Starting Clock In Inject');
         modal = document.getElementById('rc_ajax_modal');
         const selects = modal.querySelectorAll('select.swal2-select');
         if (selects) {
