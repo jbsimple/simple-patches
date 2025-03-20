@@ -712,7 +712,7 @@ function hijackAjaxModal() {
 
     async function modalClockIn() {
         modal = document.getElementById('rc_ajax_modal');
-        const selects = modal.querySelectorAll('select.swal2-select');
+        const selects = modal.querySelectorAll('select');
         if (selects) {
             selects.forEach(select => {
                 const hasDisabledOption = Array.from(select.options).some(option => 
