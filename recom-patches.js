@@ -485,7 +485,7 @@ async function checkWeatherAndCreateEffects() {
     }
 }
 
-function modalPictureCount() {
+function hijackAjaxModal() {
     const modal = document.getElementById('rc_ajax_modal');
     let lastEvent = null;
     const processedContent = new Set();
@@ -517,102 +517,7 @@ function modalPictureCount() {
 
                 if ((target.id === "rc_ajax_modal" && target.querySelector('.fw-bold.fs-6.text-gray-400')?.textContent.trim() === 'GTIN' && target.querySelector('table').classList.contains('table-row-bordered')) 
                         || (target.tagName === 'A' && target.hasAttribute('data-url') && target.getAttribute('data-url').includes('ajax/modals/productitems/') && target.classList.contains('ajax-modal'))) {
-                    const descriptionDiv = modal.querySelector('div.d-flex.flex-wrap.fw-bold.mb-4.fs-5.text-gray-400');
-                    if (descriptionDiv) {
-                        const descriptionText = descriptionDiv.textContent.trim();
-
-                        if (!processedContent.has(descriptionText) && !inProgressContent.has(descriptionText)) {
-                            inProgressContent.add(descriptionText);
-
-                            try {
-                                const item_images = await getItemPictureCount(descriptionText);
-                                processedContent.add(descriptionText);
-                                const image_counts = countUrlsBySku(item_images);
-
-                                console.debug('Patch: SKU img counts:', image_counts);
-                                const table = modal.querySelector('table.table-row-bordered');
-                                if (table) {
-                                    const thead = table.querySelector('thead');
-                                    if (thead) {
-                                        const headerRow = thead.querySelector('tr');
-                                        if (headerRow) {
-                                            const newHeader = document.createElement('th');
-                                            newHeader.textContent = 'Pictures';
-                                            headerRow.appendChild(newHeader);
-                                        }
-                                    }
-
-                                    const rows = table.querySelectorAll('tbody tr');
-                                    rows.forEach((row) => {
-                                        const newCell = document.createElement('td');
-                                        const sku = row.querySelector('td:nth-child(1)')?.textContent?.trim();
-                                        const countObj = image_counts.find((item) => item.sku === sku);
-
-                                        newCell.textContent = countObj ? countObj.count : '0';
-                                        row.appendChild(newCell);
-                                    });
-                                    
-                                } else {
-                                    console.debug('Patch: Table not found in the modal content.');
-                                }
-
-                                const images = modal.querySelectorAll('img');
-
-                                if (images.length > 0) {
-                                    const img = images[0];
-                                    const filename = img.src.split('/').pop();
-
-                                    if (filename !== 'no-image.png') {
-                                        const parentContainer = modal.querySelector(
-                                            '.d-flex.flex-wrap.justify-content-start'
-                                        );
-
-                                        if (parentContainer) {
-                                            const targetContainer = parentContainer.querySelector('.d-flex.flex-wrap');
-
-                                            if (targetContainer) {
-                                                const newElement = document.createElement('div');
-                                                newElement.className = 'border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3';
-
-                                                const numberContainer = document.createElement('div');
-                                                numberContainer.className = 'd-flex align-items-center';
-                                                const filenameDiv = document.createElement('div');
-                                                filenameDiv.className = 'fs-4 fw-bolder';
-                                                filenameDiv.textContent = filename;
-
-                                                numberContainer.appendChild(filenameDiv);
-
-                                                const labelDiv = document.createElement('div');
-                                                labelDiv.className = 'fw-bold fs-6 text-gray-400';
-                                                labelDiv.textContent = 'SID Image Filename';
-
-                                                newElement.appendChild(numberContainer);
-                                                newElement.appendChild(labelDiv);
-
-                                                targetContainer.appendChild(newElement);
-                                            } else {
-                                                console.error('Patches - Target container with class "d-flex flex-wrap" not found.');
-                                            }
-                                        } else {
-                                            console.error('Patches - Parent container with class "d-flex flex-wrap justify-content-start" not found.');
-                                        }
-                                    } else {
-                                        console.debug('Patches - Skipping "no-image.png".');
-                                    }
-                                } else {
-                                    console.debug('Patches - No images found.');
-                                }
-                            } catch (error) {
-                                console.error('Patches - API call failed for:', descriptionText, error);
-                            } finally {
-                                inProgressContent.delete(descriptionText);
-                            }
-                        } else {
-                            console.debug('Patches - API call already in progress or completed for:', descriptionText);
-                        }
-                    } else {
-                        console.debug('Patches - Description div not found in the modal content.');
-                    }
+                    modalPictureCount();
                 } else {
                     console.debug('Patches - AJAX modal not product details modal:', target);
                 }
@@ -631,76 +536,175 @@ function modalPictureCount() {
 
     console.debug('Patch: MutationObserver is now monitoring the modal content.');
 
-    async function getItemPictureCount(SID) {
-        const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]')
-        if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
-            const csrfToken = csrfMeta.getAttribute('content');
-            const request = {
-                report: {
-                    type: "item_images",
-                    columns: [
-                        "product_items.sku",
-                        "item_images.url",
-                    ],
-                    filters: [{
-                            column: "products.sid",
-                            opr: "{0} = '{1}'",
-                            value: `${SID}`
-                        },
-                        {
-                            column: "product_items.status",
-                            opr: "{0} = '{1}'",
-                            value: "1"
+    async function modalPictureCount() {
+        const descriptionDiv = modal.querySelector('div.d-flex.flex-wrap.fw-bold.mb-4.fs-5.text-gray-400');
+        if (descriptionDiv) {
+            const descriptionText = descriptionDiv.textContent.trim();
+    
+            if (!processedContent.has(descriptionText) && !inProgressContent.has(descriptionText)) {
+                inProgressContent.add(descriptionText);
+    
+                try {
+                    const item_images = await getItemPictureCount(descriptionText);
+                    processedContent.add(descriptionText);
+                    const image_counts = countUrlsBySku(item_images);
+    
+                    console.debug('Patch: SKU img counts:', image_counts);
+                    const table = modal.querySelector('table.table-row-bordered');
+                    if (table) {
+                        const thead = table.querySelector('thead');
+                        if (thead) {
+                            const headerRow = thead.querySelector('tr');
+                            if (headerRow) {
+                                const newHeader = document.createElement('th');
+                                newHeader.textContent = 'Pictures';
+                                headerRow.appendChild(newHeader);
+                            }
                         }
-                    ]
-                },
-                csrf_recom: csrfToken
-            };
-
-            return new Promise((resolve, reject) => {
-                $.ajax({
-                    type: "POST",
-                    dataType: "json",
-                    url: "/reports/create",
-                    data: request,
-                }).done(function(data) {
-                    if (data.success && data.results.results && Array.isArray(data.results.results)) {
-                        resolve(data.results.results);
+    
+                        const rows = table.querySelectorAll('tbody tr');
+                        rows.forEach((row) => {
+                            const newCell = document.createElement('td');
+                            const sku = row.querySelector('td:nth-child(1)')?.textContent?.trim();
+                            const countObj = image_counts.find((item) => item.sku === sku);
+    
+                            newCell.textContent = countObj ? countObj.count : '0';
+                            row.appendChild(newCell);
+                        });
+                        
                     } else {
-                        resolve(null);
+                        console.debug('Patch: Table not found in the modal content.');
                     }
-                }).fail(function(jqXHR, textStatus, errorThrown) {
-                    console.error("Request failed: " + textStatus + ", " + errorThrown);
-                    reject(new Error("Request failed: " + textStatus + ", " + errorThrown));
-                });
-            });
+    
+                    const images = modal.querySelectorAll('img');
+    
+                    if (images.length > 0) {
+                        const img = images[0];
+                        const filename = img.src.split('/').pop();
+    
+                        if (filename !== 'no-image.png') {
+                            const parentContainer = modal.querySelector(
+                                '.d-flex.flex-wrap.justify-content-start'
+                            );
+    
+                            if (parentContainer) {
+                                const targetContainer = parentContainer.querySelector('.d-flex.flex-wrap');
+    
+                                if (targetContainer) {
+                                    const newElement = document.createElement('div');
+                                    newElement.className = 'border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3';
+    
+                                    const numberContainer = document.createElement('div');
+                                    numberContainer.className = 'd-flex align-items-center';
+                                    const filenameDiv = document.createElement('div');
+                                    filenameDiv.className = 'fs-4 fw-bolder';
+                                    filenameDiv.textContent = filename;
+    
+                                    numberContainer.appendChild(filenameDiv);
+    
+                                    const labelDiv = document.createElement('div');
+                                    labelDiv.className = 'fw-bold fs-6 text-gray-400';
+                                    labelDiv.textContent = 'SID Image Filename';
+    
+                                    newElement.appendChild(numberContainer);
+                                    newElement.appendChild(labelDiv);
+    
+                                    targetContainer.appendChild(newElement);
+                                } else {
+                                    console.error('Patches - Target container with class "d-flex flex-wrap" not found.');
+                                }
+                            } else {
+                                console.error('Patches - Parent container with class "d-flex flex-wrap justify-content-start" not found.');
+                            }
+                        } else {
+                            console.debug('Patches - Skipping "no-image.png".');
+                        }
+                    } else {
+                        console.debug('Patches - No images found.');
+                    }
+                } catch (error) {
+                    console.error('Patches - API call failed for:', descriptionText, error);
+                } finally {
+                    inProgressContent.delete(descriptionText);
+                }
+            } else {
+                console.debug('Patches - API call already in progress or completed for:', descriptionText);
+            }
         } else {
-            return null;
+            console.debug('Patches - Description div not found in the modal content.');
         }
-    }
-
-    function countUrlsBySku(data) {
-        const skuCounts = {};
-
-        data.forEach((item) => {
-            const { SKU, URL } = item;
-            if (!skuCounts[SKU]) {
-                skuCounts[SKU] = 0;
+    
+        async function getItemPictureCount(SID) {
+            const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]')
+            if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
+                const csrfToken = csrfMeta.getAttribute('content');
+                const request = {
+                    report: {
+                        type: "item_images",
+                        columns: [
+                            "product_items.sku",
+                            "item_images.url",
+                        ],
+                        filters: [{
+                                column: "products.sid",
+                                opr: "{0} = '{1}'",
+                                value: `${SID}`
+                            },
+                            {
+                                column: "product_items.status",
+                                opr: "{0} = '{1}'",
+                                value: "1"
+                            }
+                        ]
+                    },
+                    csrf_recom: csrfToken
+                };
+    
+                return new Promise((resolve, reject) => {
+                    $.ajax({
+                        type: "POST",
+                        dataType: "json",
+                        url: "/reports/create",
+                        data: request,
+                    }).done(function(data) {
+                        if (data.success && data.results.results && Array.isArray(data.results.results)) {
+                            resolve(data.results.results);
+                        } else {
+                            resolve(null);
+                        }
+                    }).fail(function(jqXHR, textStatus, errorThrown) {
+                        console.error("Request failed: " + textStatus + ", " + errorThrown);
+                        reject(new Error("Request failed: " + textStatus + ", " + errorThrown));
+                    });
+                });
+            } else {
+                return null;
             }
-            if (URL !== null) {
-                skuCounts[SKU]++;
-            }
+        }
+    
+        function countUrlsBySku(data) {
+            const skuCounts = {};
+    
+            data.forEach((item) => {
+                const { SKU, URL } = item;
+                if (!skuCounts[SKU]) {
+                    skuCounts[SKU] = 0;
+                }
+                if (URL !== null) {
+                    skuCounts[SKU]++;
+                }
+            });
+    
+            return Object.entries(skuCounts).map(([sku, count]) => ({
+                sku,
+                count,
+            }));
+        }
+    
+        modal.addEventListener('hidden.bs.modal', () => {
+            console.debug('Patch: Modal has been hidden.');
         });
-
-        return Object.entries(skuCounts).map(([sku, count]) => ({
-            sku,
-            count,
-        }));
     }
-
-    modal.addEventListener('hidden.bs.modal', () => {
-        console.debug('Patch: Modal has been hidden.');
-    });
 }
 
 function clockTaskVisualRefresh() {
@@ -765,8 +769,7 @@ function patchInit() {
     checkWeatherAndCreateEffects();
     adjustToolbar();
 
-    //setting timeout to fix product and item pages button :/
-    setTimeout(modalPictureCount, 500);
+    setTimeout(hijackAjaxModal, 500);
 }
 window.onload = patchInit;
 
