@@ -714,6 +714,7 @@ function hijackAjaxModal() {
         modal = document.getElementById('rc_ajax_modal');
         const selects = modal.querySelectorAll('select');
         if (selects) {
+            console.debug(selects);
             selects.forEach(select => {
                 const hasDisabledOption = Array.from(select.options).some(option => 
                     option.disabled && option.value === "" && option.text.trim() === "Select a task"
