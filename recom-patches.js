@@ -723,13 +723,13 @@ function hijackAjaxModal() {
                 if (hasDisabledOption) {
                     console.debug('Patches - Found Select, Attempting to add.');
                     const quickTasks = [
-                        { value: "7", text: "BREAK (Off System) (No PO Tracking)" },
-                        { value: "8", text: "LUNCH (Off System) (No PO Tracking)" },
+                        { value: "7", text: "BREAK" },
+                        { value: "8", text: "LUNCH)" },
                         { value: "22", text: "Listing" },
-                        { value: "28", text: "Listing Side Work (Off System) (No PO Tracking)" },
-                        { value: "29", text: "Pictures (Off System)" },
-                        { value: "31", text: "Pictures Side Work (Off System) (No PO Tracking)" },
-                        { value: "5", text: "ADHOC - Meeting (Off System) (No PO Tracking)" }
+                        { value: "28", text: "Listing Side Work" },
+                        { value: "29", text: "Pictures" },
+                        { value: "31", text: "Pictures Side Work" },
+                        { value: "5", text: "ADHOC - Meeting" }
                     ];
         
                     const buttonContainer = document.createElement("div");
@@ -759,8 +759,6 @@ function hijackAjaxModal() {
                     });
         
                     select.parentNode.insertBefore(buttonContainer, select);
-                } else {
-                    console.error('Patches - Unable to get clock in select option.');
                 }
             });
         } else {

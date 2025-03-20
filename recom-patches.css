@@ -178,6 +178,10 @@ div.dataTables_wrapper div.dataTables_processing {
 	padding: 0 !important;
 }
 
+.swal2-popup {
+  width: 40em !important;
+}
+
 #kt_app_main .snow,
 #kt_app_main .rain {
   position: absolute;
