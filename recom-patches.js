@@ -1,5 +1,7 @@
 const version = '03-17-2025__1';
 
+
+let currentuser = null;
 const nav_sidebar = document.getElementById('kt_app_sidebar_navs_wrappers');
 if (nav_sidebar) {
     nav_sidebar.style.display = 'flex';
@@ -31,6 +33,7 @@ if (nav_sidebar) {
     nav_sidebar.appendChild(version_container);
 
     const name = nav_sidebar_links.querySelectorAll('.menu-heading')[0];
+    currentuser = name.textContent.replace(/^Hi,\s*/, '').toLocaleLowerCase();
     if (name && name.textContent.includes('Hi, Luke')) {
         name.textContent = 'Hi, Psychopath';
     } else if (name && name.textContent.includes('Hi, Nate')) {

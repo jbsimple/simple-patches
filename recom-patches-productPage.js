@@ -152,11 +152,11 @@ function initCopyPasteButton() {
             const main_title = main_card.querySelector('.card-title');
             if (main_title) {
                 let text = main_title.textContent.trim();
-                if (text.startsWith('SC-')) {
+                if (text.startsWith('SC-') && currentuser && currentuser !== 'luke' && currentuser !== 'kurtis') {
                     text = text.substring(3).trim();
                     main_title.innerHTML = `<h2 style="display: inline;">SC-</h2><h2 data-clipboard="true" style="display: inline;">${text}</h2>`; // this is annoying but works
                 } else {
-                    main_title.innerHTML = `<h2 style="display: inline;">${text}</h2>`; // not needed but consistency
+                    main_title.innerHTML = `<h2 data-clipboard="true" style="display: inline;">${text}</h2>`; // not needed but consistency
                 }
 
                 const copyButton = document.createElement('button');
