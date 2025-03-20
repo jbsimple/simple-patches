@@ -717,6 +717,7 @@ function hijackAjaxModal() {
                 const hasDisabledOption = Array.from(select.options).some(option => 
                     option.disabled && option.value === "" && option.text.trim() === "Select a task"
                 );
+
                 if (hasDisabledOption) {
                     const quickTasks = [
                         { value: "22", text: "Listing" },
@@ -754,6 +755,8 @@ function hijackAjaxModal() {
                     });
         
                     select.parentNode.insertBefore(buttonContainer, select);
+                } else {
+                    console.error('Patches - Unable to get clock in select option.');
                 }
             });
         }
