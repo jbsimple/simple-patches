@@ -508,6 +508,8 @@ async function injectUserLog(userID) {
             return;
         }
 
+        allLogs = data.data.filter(log => log.date.split(" ")[0] === today);
+
     } catch (error) {
         console.error("Error fetching logs:", error);
         return;
