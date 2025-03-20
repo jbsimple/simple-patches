@@ -493,32 +493,28 @@ async function injectTeamReport() {
 async function injectUserLog(userID) {
     const baseUrl = `/ajax/actions/LogEntriesByUser/${userID}`;
     const today = new Date().toISOString().split("T")[0];
-    let page = 1;
     let allLogs = [];
 
-    while (true) {
-        try {
-            const response = await fetch(`${baseUrl}?page=${page}`);
-            if (!response.ok) throw new Error("Network response was not ok");
-
-            const data = await response.json();
-            if (!data.success || !data.data) break;
-
-            const todaysLogs = data.data.filter(log => log.date.startsWith(today));
-            allLogs.push(...todaysLogs);
-
-            if (!data.pagination.more) break;
-            page++;
-
-        } catch (error) {
-            console.error("Error fetching logs:", error);
-            break;
+    try {
+        const response = await fetch(`${baseUrl}?page=1`);
+        if (!response.ok) {
+            console.error(`Fetch failed:`, response.status, response.statusText);
+            return;
         }
+
+        const data = await response.json();
+        if (!data.success || !Array.isArray(data.data)) {
+            console.error(`Invalid response format:`, data);
+            return;
+        }
+
+    } catch (error) {
+        console.error("Error fetching logs:", error);
+        return;
     }
 
-    console.debug(`Patches - All today's logs for user ${userID}:`, allLogs);
+    console.debug(`Patches - Today's logs for user ${userID} (Page 1 only):`, allLogs);
 }
-
 
 function injectDateSelect(funct, content) {
     const wrapper = document.createElement("div");
