@@ -116,9 +116,9 @@ function initSearchSelect() {
             
             const label = document.createElement('label');
             label.htmlFor = 'patch-autoSelect';
-            label.textContent = 'Auto Select';
+            label.textContent = 'Quick Scan';
             label.style.cssText = 'font-size: 1.35rem; color: var(--bs-gray-700);';
-            label.title = 'After a search is completed, the field is selected, for scanners.';
+            label.title = 'The search field is automatically selected for quick scanner use.';
 
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
