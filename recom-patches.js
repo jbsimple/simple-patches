@@ -510,7 +510,7 @@ function hijackAjaxModal() {
             if (lastEvent) {
                 let { target } = lastEvent;
 
-                if (target.matches('i.fas.fa-eye')) {
+                if (target.matches('.fas')) {
                     console.log('Patches - Getting Parent:', target);
                     target = target.parentElement;
                 }                
