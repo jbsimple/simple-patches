@@ -723,16 +723,17 @@ function hijackAjaxModal() {
                 if (hasDisabledOption) {
                     console.debug('Patches - Found Select, Attempting to add.');
                     const quickTasks = [
+                        { value: "7", text: "BREAK (Off System) (No PO Tracking)" },
+                        { value: "8", text: "LUNCH (Off System) (No PO Tracking)" },
                         { value: "22", text: "Listing" },
                         { value: "28", text: "Listing Side Work (Off System) (No PO Tracking)" },
                         { value: "29", text: "Pictures (Off System)" },
                         { value: "31", text: "Pictures Side Work (Off System) (No PO Tracking)" },
-                        { value: "5", text: "ADHOC - Meeting (Off System) (No PO Tracking)" },
-                        { value: "7", text: "BREAK (Off System) (No PO Tracking)" },
-                        { value: "8", text: "LUNCH (Off System) (No PO Tracking)" }
+                        { value: "5", text: "ADHOC - Meeting (Off System) (No PO Tracking)" }
                     ];
         
                     const buttonContainer = document.createElement("div");
+                    buttonContainer.setAttribute('style', 'display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; align-items: center; justify-content: center;')
                     buttonContainer.style.display = "flex";
                     buttonContainer.style.flexWrap = "wrap";
                     buttonContainer.style.gap = "0.5rem";
