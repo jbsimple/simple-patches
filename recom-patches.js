@@ -724,7 +724,7 @@ function hijackAjaxModal() {
                     console.debug('Patches - Found Select, Attempting to add.');
                     const quickTasks = [
                         { value: "7", text: "BREAK" },
-                        { value: "8", text: "LUNCH)" },
+                        { value: "8", text: "LUNCH" },
                         { value: "22", text: "Listing" },
                         { value: "28", text: "Listing Side Work" },
                         { value: "29", text: "Pictures" },
@@ -743,7 +743,7 @@ function hijackAjaxModal() {
                         const button = document.createElement("button");
                         button.textContent = task.text;
                         button.setAttribute("data-value", task.value);
-                        button.classList.add('btn', 'btn-color-gray-700', 'btn-active-color-white', 'btn-outline', 'btn-outline-info');
+                        button.classList.add('btn', 'btn-color-gray-700', 'btn-active-color-white', 'btn-outline', 'btn-outline-success');
         
                         button.addEventListener("click", () => {
                             select.value = task.value;
