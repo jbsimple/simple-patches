@@ -493,29 +493,42 @@ async function injectTeamReport() {
 async function injectUserLog(userID) {
     const baseUrl = `/ajax/actions/LogEntriesByUser/${userID}`;
     const today = new Date().toISOString().split("T")[0];
+    let page = 1;
     let allLogs = [];
+    let hasMore = true;
 
-    try {
-        const response = await fetch(`${baseUrl}?page=1`);
-        if (!response.ok) {
-            console.error(`Fetch failed:`, response.status, response.statusText);
-            return;
+    while (hasMore) {
+        try {
+            const response = await fetch(`${baseUrl}?page=${page}`);
+            if (!response.ok) {
+                console.error(`Fetch failed:`, response.status, response.statusText);
+                break;
+            }
+
+            const data = await response.json();
+            if (!data.success || !Array.isArray(data.data)) {
+                console.error(`Invalid response format:`, data);
+                break;
+            }
+
+            for (const log of data.data) {
+                if (log.date.split(" ")[0] !== today) {
+                    hasMore = false;
+                    break;
+                }
+                allLogs.push(log);
+            }
+
+            if (!hasMore || !data.pagination.more) break;
+            page++;
+
+        } catch (error) {
+            console.error("Error fetching logs:", error);
+            break;
         }
-
-        const data = await response.json();
-        if (!data.success || !Array.isArray(data.data)) {
-            console.error(`Invalid response format:`, data);
-            return;
-        }
-
-        allLogs = data.data.filter(log => log.date.split(" ")[0] === today);
-
-    } catch (error) {
-        console.error("Error fetching logs:", error);
-        return;
     }
 
-    console.debug(`Patches - Today's logs for user ${userID} (Page 1 only):`, allLogs);
+    console.debug(`Patches - All today's logs for user ${userID}:`, allLogs);
 }
 
 function injectDateSelect(funct, content) {
