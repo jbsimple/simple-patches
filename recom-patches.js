@@ -518,8 +518,10 @@ function hijackAjaxModal() {
                 if ((target.id === "rc_ajax_modal" && target.querySelector('.fw-bold.fs-6.text-gray-400')?.textContent.trim() === 'GTIN' && target.querySelector('table').classList.contains('table-row-bordered')) 
                         || (target.tagName === 'A' && target.hasAttribute('data-url') && target.getAttribute('data-url').includes('ajax/modals/productitems/') && target.classList.contains('ajax-modal'))) {
                     modalPictureCount();
+                } else if (target.getAttribute('href') === "javascript:clockInOut('in');") {
+                    console.debug('Patches - AJAX modal is clock in:', target);
                 } else {
-                    console.debug('Patches - AJAX modal not product details modal:', target);
+                    console.debug('Patches - AJAX modal not defined modal:', target);
                 }
             }
         }
@@ -704,6 +706,10 @@ function hijackAjaxModal() {
         modal.addEventListener('hidden.bs.modal', () => {
             console.debug('Patch: Modal has been hidden.');
         });
+    }
+
+    async function quickClockIn() {
+
     }
 }
 
