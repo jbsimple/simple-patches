@@ -834,7 +834,7 @@ function adjustToolbar() {
 function patchInit() {
     clockTaskVisualRefresh();
     modifiedClockInit();
-    //checkWeatherAndCreateEffects();
+    checkWeatherAndCreateEffects();
     adjustToolbar();
 
     setTimeout(hijackAjaxModal, 500);
