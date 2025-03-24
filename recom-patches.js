@@ -449,8 +449,8 @@ async function checkWeatherAndCreateEffects() {
 
     try {
         const response = await fetch(
-            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&daily=weathercode&timezone=auto`
-        );
+            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&daily=weathercode&timezone=auto&forecast_days=3`
+        );        
 
         if (!response.ok) {
             throw new Error('Failed to fetch weather data');
@@ -462,15 +462,23 @@ async function checkWeatherAndCreateEffects() {
         const isSnowingNow = [71, 73, 75, 77, 85, 86].includes(currentWeatherCode);
         const isRainingNow = [61, 63, 65, 80, 81, 82].includes(currentWeatherCode);
 
+        console.debug(`Patch - Current Weather:`, currentWeatherCode);
+        console.debug(`Patch - isSnowingNow: ${isSnowingNow}`);
+        console.debug(`Patch - isRainingNow: ${isRainingNow}`);
+
         const dailyForecast = weatherData.daily.weathercode || [];
         const isSnowInForecast = dailyForecast.some(code => [71, 73, 75, 77, 85, 86].includes(code));
         const isRainInForecast = dailyForecast.some(code => [61, 63, 65, 80, 81, 82].includes(code));
 
+        console.debug(`Patch - Forecast:`, dailyForecast);
+        console.debug(`Patch - isSnowInForecast: ${isSnowInForecast}`);
+        console.debug(`Patch - isRainInForecast: ${isRainInForecast}`);
+
         const shouldShowSnow = isSnowingNow || isSnowInForecast;
         const shouldShowRain = isRainingNow || isRainInForecast;
 
-        console.debug(`Patch - Snow detected: ${shouldShowSnow}`);
-        console.debug(`Patch - Rain detected: ${shouldShowRain}`);
+        console.debug(`Patch - Enable Snow: ${shouldShowSnow}`);
+        console.debug(`Patch - Enable Rain: ${shouldShowRain}`);
 
         setCookie('patch_snowStatus', shouldShowSnow, 30);
         setCookie('patch_rainStatus', shouldShowRain, 30);
@@ -826,7 +834,7 @@ function adjustToolbar() {
 function patchInit() {
     clockTaskVisualRefresh();
     modifiedClockInit();
-    checkWeatherAndCreateEffects();
+    //checkWeatherAndCreateEffects();
     adjustToolbar();
 
     setTimeout(hijackAjaxModal, 500);
