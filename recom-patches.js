@@ -731,13 +731,13 @@ function hijackAjaxModal() {
                 if (hasDisabledOption) {
                     console.debug('Patches - Found Select, Attempting to add.');
                     const quickTasks = [
-                        { value: "7", text: "BREAK" },
-                        { value: "8", text: "LUNCH" },
-                        { value: "5", text: "Meeting" },
-                        { value: "22", text: "Listing" },
-                        { value: "28", text: "Listing Side Work" },
-                        { value: "29", text: "Pictures" },
-                        { value: "31", text: "Pictures Side Work" }
+                        { value: "7", text: "BREAK", title: "BREAK (Off System)" },
+                        { value: "8", text: "LUNCH", title: "LUNCH (Off System)" },
+                        { value: "5", text: "Meeting", title: "ADHOC - Meeting (Off System)" },
+                        { value: "22", text: "Listing", title: "Listing (On System)" },
+                        { value: "28", text: "Listing Side Work", title: "Listing Side Work (Off System)" },
+                        { value: "29", text: "Pictures", title: "Pictures (Off System)" },
+                        { value: "31", text: "Pictures Side Work", title: "Pictures Side Work (Off System)" }
                     ];
         
                     const buttonContainer = document.createElement("div");
@@ -751,6 +751,7 @@ function hijackAjaxModal() {
                         const button = document.createElement("button");
                         button.textContent = task.text;
                         button.setAttribute("data-value", task.value);
+                        button.title = task.title;
                         button.classList.add('btn', 'btn-color-gray-700', 'btn-active-color-white', 'btn-outline', 'btn-outline-success');
         
                         button.addEventListener("click", () => {
