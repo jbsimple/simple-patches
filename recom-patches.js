@@ -733,11 +733,11 @@ function hijackAjaxModal() {
                     const quickTasks = [
                         { value: "7", text: "BREAK" },
                         { value: "8", text: "LUNCH" },
+                        { value: "5", text: "Meeting" },
                         { value: "22", text: "Listing" },
                         { value: "28", text: "Listing Side Work" },
                         { value: "29", text: "Pictures" },
-                        { value: "31", text: "Pictures Side Work" },
-                        { value: "5", text: "ADHOC - Meeting" }
+                        { value: "31", text: "Pictures Side Work" }
                     ];
         
                     const buttonContainer = document.createElement("div");
