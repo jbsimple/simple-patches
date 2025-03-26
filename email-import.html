@@ -5,10 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Email Extractor</title>
     <style>
+        :root {
+            color-scheme: light dark;
+            --light-bg: rgb(235, 235, 235);
+            --light-color: rgb(48, 48, 50);
+            --dark-bg: rgb(48, 48, 50);;
+            --dark-color: rgb(235, 235, 235);;
+        }
+
         html {
-            background-color: #f6f8fa;
+            background-color: light-dark(var(--light-bg), var(--dark-bg));
+            color: light-dark(var(--light-color), var(--dark-color));
             font-family: Arial, sans-serif;
             font-size: 14px;
+            color-scheme: light dark;
         }
         body {
             padding: 0;
@@ -41,7 +51,7 @@
 
         table th, table td { padding: 1rem 1.25rem; }
         table tbody tr { border-bottom: 1px solid #dddddd; }
-        table tbody tr:nth-of-type(even) { background-color: #f3f3f3; }
+        table tbody tr:nth-of-type(even) { background-color: color-mix(in srgb, black 5%, transparent 95%); }
         table tbody tr:last-of-type { border-bottom: 2px solid #009879; }
 
         .header {
