@@ -23,7 +23,11 @@ function toolinit() {
                     <div class="d-flex flex-column text-gray-600">
                         <div class="d-flex align-items-center py-2">
                             <span class="bullet bg-primary me-3"></span>
-                            <span>From Simple Patches</span>
+                            <span>For Mailchimp, takes a list of emails and then converts it into a csv for importing.</span>
+                        </div>
+                        <div class="d-flex align-items-center py-2">
+                            <span class="bullet bg-primary me-3"></span>
+                            <span>Simple Patches Tool</span>
                         </div>
                     </div>
                     <!--end::Permissions-->
