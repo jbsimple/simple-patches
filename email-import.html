@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Extractor</title>
+    <style>
+        html {
+            background-color: #f6f8fa;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            width: 85%;
+            height: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 12px;
+            margin-bottom: 12px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+			border: none !important;
+        }
+
+        table thead tr {
+            background-color: #009879;
+            color: #ffffff;
+            text-align: left;
+        }
+
+        table th, table td {
+            padding: 12px 15px;
+        }
+
+        table tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+
+        table tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }
+
+        table tbody tr:last-of-type {
+            border-bottom: 2px solid #009879;
+        }
+
+        .header {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            color: #555;
+
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+
+        input {
+            margin: 12px;
+        }
+
+        button {
+            margin: 12px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="header">
+        <input type="file" id="fileInput" />
+        <button onclick="downloadTableAsCSV()">Download CSV</button>
+    </div>
+    <table id="emailTable" border="1">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        function extractEmailData(text) {
+            const regex = /(?:([\w\s]+)?\s([\w\s]+)?)?\s*<([^>]+)>/g;
+            let match;
+            const emailData = [];
+
+            while ((match = regex.exec(text)) !== null) {
+                const firstName = match[1] ? match[1].trim() : null;
+                const lastName = match[2] ? match[2].trim() : null;
+                const email = match[3];
+
+                emailData.push({
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email
+                });
+            }
+
+            return emailData;
+        }
+
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const content = e.target.result;
+                    const emailDataArray = extractEmailData(content);
+                    
+                    const tbody = document.querySelector('#emailTable tbody');
+                    tbody.innerHTML = '';
+
+                    for (let data of emailDataArray) {
+                        const tr = document.createElement('tr');
+
+                        const tdEmail = document.createElement('td');
+                        tdEmail.textContent = data.email;
+                        tr.appendChild(tdEmail);
+
+                        const tdFirstName = document.createElement('td');
+                        tdFirstName.textContent = data.firstName || '';
+                        tr.appendChild(tdFirstName);
+
+                        const tdLastName = document.createElement('td');
+                        tdLastName.textContent = data.lastName || '';
+                        tr.appendChild(tdLastName);
+
+                        tbody.appendChild(tr);
+                    }
+                };
+
+                reader.readAsText(file);
+            }
+        });
+
+        function downloadTableAsCSV() {
+            const table = document.getElementById('emailTable');
+            let csv = [];
+
+            for (let row of table.rows) {
+                let cells = row.cells;
+                let rowData = [];
+
+                for (let cell of cells) { rowData.push(cell.textContent.replace(/"/g, '""')); }
+
+                csv.push(rowData.join(','));
+            }
+
+            let csvData = new Blob([csv.join('\n')], { type: 'text/csv' });
+            let csvURL = window.URL.createObjectURL(csvData);
+
+            let downloadLink = document.createElement('a');
+            downloadLink.href = csvURL;
+            downloadLink.download = '' + Date.now() + '_emailBulk.csv';
+
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        }
+    </script>
+</body>
+</html>
