@@ -60,6 +60,8 @@ Quality of life changes to the work system that my work colleagues and myself wa
 - On reports page, added css rule to flip the order of recents and main reporting tool because recents aren't THAT important.
 - On Calendar; CSS fix to add a background color to the list of day's events.
 - On Integrations Error Page, replaced SKU references with links to the actual SKUs.
+- On Tools Page, restructured the tool cards so it makes more sense in css.
+- On Tools Page, added tool link to email-import so it can be used as a tool.
 - Replaced unfinished producivity pages.
   - Created Team productivity (just our department) and User productivity (hijacks a loose JS variable from the user profile page).
   - Removes duplicate entries from appearing in reports (its not really duplicates but it doesn't count)
