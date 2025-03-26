@@ -86,14 +86,21 @@
         .button {
             margin: 12px;
             padding: 0.5rem 0.75rem;
-            background-color: var(--green);
             border-radius: 0.5rem;
             color: white;
             border: 0;
             transition: all 0.1s ease;
+            text-decoration: none !important;
+            cursor: not-allowed;
+            background-color: gray;
         }
 
-        .button:hover {
+        .button.active {
+            cursor: pointer;
+            background-color: var(--green);
+        }
+
+        .button.active:hover {
             background-color: color-mix(in srgb, var(--green) 85%, white 15%);
         }
 
@@ -103,7 +110,7 @@
     <div class="header">
         <input type="file" id="fileInput" />
         <a class="button" id="download" onclick="downloadTableAsCSV()">Download CSV</a>
-        <a class="button" href="">Reset</a>
+        <a class="button active" href="">Reset</a>
     </div>
     <table id="emailTable" border="0">
         <thead>
@@ -176,7 +183,7 @@
 
                 reader.readAsText(file);
             }
-            document.getElementById('download').setAttribute('style', 'cursor: pointer;');
+            document.getElementById('download').classList.add('active');
         });
 
         function downloadTableAsCSV() {
