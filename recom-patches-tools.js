@@ -43,7 +43,7 @@ function toolinit() {
 
     // fix the card sizing omg
     const replacedTools = toolContainer.querySelectorAll('.card.card-flush');
-    replacedTools.forEach(tool => { tool.setAttribute('style', 'width: calc(33% - 2rem);'); })
+    replacedTools.forEach(tool => { tool.setAttribute('style', 'width: calc(33% - 2rem); height: unset !important;'); })
 
     toolContainer.setAttribute('style', 'display: flex; flex-wrap: wrap; gap: 2rem;');
 }
