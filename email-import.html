@@ -14,10 +14,10 @@
             width: 85%;
             max-width: 1200px;
             height: 100%;
+            min-height: 100vh;
             margin-left: auto;
             margin-right: auto;
-            margin-top: 3rem;
-            margin-bottom: 3rem;
+            padding-top: 3rem;
         }
 
         table {
@@ -28,6 +28,7 @@
             overflow: hidden;
             box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.15);
 			border: none !important;
+            margin-bottom: 3rem;
         }
 
         table thead tr {
@@ -54,6 +55,12 @@
             align-items: center;
         }
 
+        .footer {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+        }
+
         input { margin: 12px; }
         button { margin: 12px; }
 
@@ -74,6 +81,10 @@
         </thead>
         <tbody></tbody>
     </table>
+    <div class="footer">
+        <span>Simple Patches | Written in 2023</span>
+        <span style="flex: 1;"></span>
+    </div>
 
     <script>
         function extractEmailData(text) {
