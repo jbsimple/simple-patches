@@ -102,7 +102,7 @@
 <body>
     <div class="header">
         <input type="file" id="fileInput" />
-        <button onclick="downloadTableAsCSV()">Download CSV</button>
+        <button id="download" onclick="downloadTableAsCSV()">Download CSV</button>
     </div>
     <table id="emailTable" border="0">
         <thead>
@@ -175,6 +175,7 @@
 
                 reader.readAsText(file);
             }
+            document.getElementById('download').setAttribute('style', 'cursor: pointer;');
         });
 
         function downloadTableAsCSV() {
