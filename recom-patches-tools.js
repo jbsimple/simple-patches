@@ -22,7 +22,8 @@ function toolinit() {
                     <!--begin::Permissions-->
                     <div class="d-flex flex-column text-gray-600">
                         <div class="d-flex align-items-center py-2">
-                            <span class="bullet bg-primary me-3">From Simple Patches</span>
+                            <span class="bullet bg-primary me-3"></span>
+                            <span>From Simple Patches</span>
                         </div>
                     </div>
                     <!--end::Permissions-->
@@ -35,6 +36,10 @@ function toolinit() {
                 <!--end::Card footer-->
             </div>`;
     toolContainer.innerHTML += emailCard;
+
+    // fix the card sizing omg
+    const replacedTools = toolContainer.querySelectorAll('.card.card-flush');
+    replacedTools.forEach(tool => { tool.setAttribute('style', 'min-width: 200px; max-width: 300px; width: 100%'); })
 
     toolContainer.setAttribute('style', 'display: flex; flex-wrap: wrap; gap: 1rem;');
 }
