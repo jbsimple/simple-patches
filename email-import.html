@@ -9,8 +9,10 @@
             color-scheme: light dark;
             --light-bg: rgb(235, 235, 235);
             --light-color: rgb(48, 48, 50);
-            --dark-bg: rgb(48, 48, 50);;
-            --dark-color: rgb(235, 235, 235);;
+            --dark-bg: rgb(48, 48, 50);
+            --dark-color: rgb(235, 235, 235);
+
+            --green: var(--green);
         }
 
         html {
@@ -44,7 +46,7 @@
         }
 
         table thead tr {
-            background-color: #009879;
+            background-color: var(--green);
             color: #ffffff;
             text-align: left;
         }
@@ -52,7 +54,7 @@
         table th, table td { padding: 1rem 1.25rem; }
         table tbody tr { border-bottom: 1px solid lightgray; }
         table tbody tr:nth-of-type(even) { background-color: color-mix(in srgb, black 5%, transparent 95%); }
-        table tbody tr:last-of-type { border-bottom: 2px solid #009879; }
+        table tbody tr:last-of-type { border-bottom: 2px solid var(--green); }
 
         .header {
             padding: 10px;
@@ -84,7 +86,7 @@
         button {
             margin: 12px;
             padding: 0.35rem 0.5rem;
-            background-color: #009879;
+            background-color: var(--green);
             border-radius: 0.5rem;
             color: white;
             border: 0;
@@ -92,7 +94,7 @@
         }
 
         button:hover {
-            background-color: color-mix(in srgb, #009879 85%, white 15%);
+            background-color: color-mix(in srgb, var(--green) 85%, white 15%);
         }
 
     </style>
