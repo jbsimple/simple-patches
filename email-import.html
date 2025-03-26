@@ -13,11 +13,13 @@
         body {
             width: 85%;
             max-width: 1200px;
-            height: 100%;
+            height: calc(100% - 3rem);
             min-height: 100vh;
             margin-left: auto;
             margin-right: auto;
             padding-top: 3rem;
+            display: flex;
+            flex-direction: column;
         }
 
         table {
@@ -81,6 +83,7 @@
         </thead>
         <tbody></tbody>
     </table>
+    <span style="flex: 1;"></span>
     <div class="footer">
         <span>Simple Patches | Written in 2023</span>
         <span style="flex: 1;"></span>
