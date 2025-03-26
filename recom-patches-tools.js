@@ -39,9 +39,9 @@ function toolinit() {
 
     // fix the card sizing omg
     const replacedTools = toolContainer.querySelectorAll('.card.card-flush');
-    replacedTools.forEach(tool => { tool.setAttribute('style', 'width: 30%;'); })
+    replacedTools.forEach(tool => { tool.setAttribute('style', 'width: 400px; height: 300px;'); })
 
-    toolContainer.setAttribute('style', 'display: flex; flex-wrap: wrap; justify-content: space-between;');
+    toolContainer.setAttribute('style', 'display: flex; flex-wrap: wrap; gap: 2rem;');
 }
 
 toolinit();
