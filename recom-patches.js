@@ -360,6 +360,13 @@ if (window.location.href.includes('/productivity') && !window.location.href.incl
 
 }
 
+if (window.location.href.includes('/tools') && !window.location.href.includes('/tools/import')) {
+    
+    script_patch.src = "https://simple-patches.vercel.app/recom-patches-tools.js?v=" + Date.now();
+    script_patch.name = 'recom-patches-tools.js';
+
+}
+
 document.body.appendChild(script_patch);
 
 const today = new Date();
