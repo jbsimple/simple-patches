@@ -8,12 +8,12 @@ function initQuickLinks() {
         {
             "label":"Your Productivity",
             "href":"/productivity/employee/0",
-            "desc":"Your Productivity, with date selector."
+            "desc":["Your Productivity","With Date Selector"]
         },
         {
             "label":"Team Productivity",
             "href":"/productivity",
-            "desc":"Listing Team Productivity, with date selector."
+            "desc":["Listing Tem Productivity","With Date Selector"]
         },
         {
             "label":"Items Catalog",
@@ -48,6 +48,11 @@ function initQuickLinks() {
     ]
 
     quicklinks.forEach(link => {
+        let desc = link.desc;
+        if (Array.isArray(link.desc)) {
+            desc = link.desc.join('<br>');
+        }
+
         const quickLink = document.createElement('a');
         quickLink.setAttribute('class', 'card card-flush h-md-50 mb-xl-10 blockui');
         quickLink.setAttribute('href', link.href);
@@ -55,7 +60,7 @@ function initQuickLinks() {
             <h3 class="card-title text-gray-800">${link.label}</h3>
         </div>
         <div class="card-body pt-5">
-            <div class="text-gray-700 fw-bold fs-6 me-2">${link.desc}</div>
+            <div class="text-gray-700 fw-bold fs-6 me-2">${desc}</div>
         </div>`;
         quickLinks.appendChild(quickLink);
     });
