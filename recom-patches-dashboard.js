@@ -8,12 +8,12 @@ function initQuickLinks() {
         {
             "label":"Your Productivity",
             "href":"/productivity/employee/0",
-            "desc":["Your Productivity","With Date Selector"]
+            "desc":"Your own productivity statistics."
         },
         {
             "label":"Team Productivity",
             "href":"/productivity",
-            "desc":["Listing Tem Productivity","With Date Selector"]
+            "desc":"Listing team productivity statistics."
         },
         {
             "label":"Items Catalog",
