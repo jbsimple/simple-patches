@@ -16,8 +16,12 @@
 }
 
 @media (max-width: 1600px) {
+    #patches-dashboard-quicklinks {
+        gap: 1.5rem;
+    }
+
     #patches-dashboard-quicklinks .item {
-        width: calc(50% - 2rem) !important;
+        width: calc(50% - 1.5rem) !important;
     }
 }
 
