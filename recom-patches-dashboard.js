@@ -1,5 +1,5 @@
 function initQuickLinks() {
-    const content_container = document.getElementById('kt_app_content');
+    const content_container = document.getElementById('kt_app_content_container');
 
     const quickLinks = document.createElement('div');
     quickLinks.id = 'patches-dashboard-quicklinks';
@@ -15,7 +15,7 @@ function initQuickLinks() {
         {"label":"Pending Inventory", "href":"/receiving/queues/inventory"}
     ]
 
-    quicklinks.forEach(link => function() {
+    quicklinks.forEach(link => {
         const quickLink = document.createElement('a');
         quickLink.setAttribute('class', 'card card-flush h-md-50 mb-xl-10 blockui');
         quickLink.setAttribute('href', link.href);
