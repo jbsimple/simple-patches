@@ -367,7 +367,7 @@ if (window.location.href.includes('/tools') && !window.location.href.includes('/
 
 }
 
-if (!window.location.href.includes('/') && document.title.includes('Dashboard')) {
+if (document.title.includes('Dashboard - ')) {
 
     document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches-dashboard.css?v=' + Date.now() + '" type="text/css"/>';
     script_patch.src = "https://simple-patches.vercel.app/recom-patches-dashboard.js?v=" + Date.now();
