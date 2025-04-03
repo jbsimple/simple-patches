@@ -1,5 +1,5 @@
 function initQuickLinks() {
-    const content_container = document.getElementById('kt_app_content_container');
+    const content_container = document.getElementById('kt_app_content');
 
     const quickLinks = document.createElement('div');
     quickLinks.id = 'patches-dashboard-quicklinks';
