@@ -12,4 +12,10 @@
     margin-top: 0 !important;
     margin-bottom: 0 !important;
     text-decoration: unset !important;
+    background-color: rgba(0,255,0,0.1);
+    transition: all 0.1s ease;
+}
+
+#patches-dashboard-quicklinks .item:hover {
+    background-color: rgba(0,255,0,0.25);
 }

@@ -3,7 +3,8 @@ function initQuickLinks() {
 
     // add separator
     const separator = document.createElement('div');
-    separator.setAttribute('class', 'separator separator-dashed my-3');
+    separator.setAttribute('class', 'separator separator-dashed');
+    separator.setAttribute('style', 'margin-bottom: 2.25rem;')
     content_container.prepend(separator);
 
     const quickLinks = document.createElement('div');
