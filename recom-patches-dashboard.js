@@ -5,14 +5,46 @@ function initQuickLinks() {
     quickLinks.id = 'patches-dashboard-quicklinks';
 
     const quicklinks = [
-        {"label":"Your Productivity", "href":"/productivity/employee/0"},
-        {"label":"Team Productivity", "href":"/productivity"},
-        {"label":"Items Catalog", "href":"/product/items"},
-        {"label":"Products Catalog", "href":"/products"},
-        {"label":"New Inventory", "href":"/receiving"},
-        {"label":"Pending Listing", "href":"/receiving/queues/listing"},
-        {"label":"FBA Check", "href":"/receiving/queues/fba-check"},
-        {"label":"Pending Inventory", "href":"/receiving/queues/inventory"}
+        {
+            "label":"Your Productivity",
+            "href":"/productivity/employee/0",
+            "desc":"Your Productivity, with date selector."
+        },
+        {
+            "label":"Team Productivity",
+            "href":"/productivity",
+            "desc":"Listing Team Productivity, with date selector."
+        },
+        {
+            "label":"Items Catalog",
+            "href":"/product/items",
+            "desc":"SKU catalog and search."
+        },
+        {
+            "label":"Products Catalog",
+            "href":"/products",
+            "desc":"SID catalog and search."
+        },
+        {
+            "label":"New Inventory",
+            "href":"/receiving",
+            "desc":"New inventory search."
+        },
+        {
+            "label":"Pending Listing",
+            "href":"/receiving/queues/listing",
+            "desc":"Pending Listing queue."
+        },
+        {
+            "label":"FBA Check",
+            "href":"/receiving/queues/fba-check",
+            "desc":"Queue before pending inventory."
+        },
+        {
+            "label":"Pending Inventory",
+            "href":"/receiving/queues/inventory",
+            "desc":"IC queue."
+        }
     ]
 
     quicklinks.forEach(link => {
@@ -20,7 +52,10 @@ function initQuickLinks() {
         quickLink.setAttribute('class', 'card card-flush h-md-50 mb-xl-10 blockui');
         quickLink.setAttribute('href', link.href);
         quickLink.innerHTML = `<div class="card-header pt-5">
-            <h3 class="card-title text-gray-800">${link.label}</h3>
+            <h3 class="card-title text-gray-800">${item.label}</h3>
+        </div>
+        <div class="card-body pt-5">
+            <div class="text-gray-700 fw-bold fs-6 me-2">${item.desc}</div>
         </div>`;
         quickLinks.appendChild(quickLink);
     });
