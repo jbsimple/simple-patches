@@ -2,11 +2,13 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
-    gap: 1.5rem;
+    gap: 2.25rem;
 }
 
 #patches-dashboard-quicklinks .item {
-    width: unset !important;
-    margin: unset !important;
+    width: calc(25% - 2.25rem) !important;
+    margin: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
     text-decoration: unset !important;
 }
