@@ -52,10 +52,10 @@ function initQuickLinks() {
         quickLink.setAttribute('class', 'card card-flush h-md-50 mb-xl-10 blockui');
         quickLink.setAttribute('href', link.href);
         quickLink.innerHTML = `<div class="card-header pt-5">
-            <h3 class="card-title text-gray-800">${item.label}</h3>
+            <h3 class="card-title text-gray-800">${link.label}</h3>
         </div>
         <div class="card-body pt-5">
-            <div class="text-gray-700 fw-bold fs-6 me-2">${item.desc}</div>
+            <div class="text-gray-700 fw-bold fs-6 me-2">${link.desc}</div>
         </div>`;
         quickLinks.appendChild(quickLink);
     });
