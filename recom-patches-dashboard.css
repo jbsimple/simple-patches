@@ -15,7 +15,7 @@
     transition: all 0.1s ease;
 }
 
-@media (min-width: 1400px) {
+@media (max-width: 1600px) {
     #patches-dashboard-quicklinks .item {
         width: calc(50% - 2rem) !important;
     }
