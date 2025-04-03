@@ -2,7 +2,7 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
-    gap: 3rem;
+    gap: 1.5rem;
 }
 
 #patches-dashboard-quicklinks .item {
