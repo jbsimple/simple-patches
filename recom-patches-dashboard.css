@@ -1,0 +1,11 @@
+#patches-dashboard-quicklinks {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+#patches-dashboard-quicklinks .item {
+    width: unset !important;
+    margin: unset !important;
+    text-decoration: unset !important;
+}

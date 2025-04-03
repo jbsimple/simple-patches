@@ -1,4 +1,4 @@
-const version = '03-26-2025__1';
+const version = '04-03-2025__1';
 
 
 let currentuser = null;
@@ -364,6 +364,14 @@ if (window.location.href.includes('/tools') && !window.location.href.includes('/
     
     script_patch.src = "https://simple-patches.vercel.app/recom-patches-tools.js?v=" + Date.now();
     script_patch.name = 'recom-patches-tools.js';
+
+}
+
+if (!window.location.href.includes('/') && document.title.includes('Dashboard')) {
+
+    document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches-dashboard.css?v=' + Date.now() + '" type="text/css"/>';
+    script_patch.src = "https://simple-patches.vercel.app/recom-patches-dashboard.js?v=" + Date.now();
+    script_patch.name = "recom-patches-dashboard.js";
 
 }
 
