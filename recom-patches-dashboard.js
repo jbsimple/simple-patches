@@ -83,7 +83,7 @@ function initQuickLinks() {
 
     const quickLinksLabel = document.createElement('span');
     quickLinksLabel.setAttribute('class', 'text-dark fw-bolder fs-3');
-    quickLinksLabel.textContent('Quick Links:');
+    quickLinksLabel.textContent = "Quick Links";
     content_container.prepend(quickLinksLabel);
 }
 
