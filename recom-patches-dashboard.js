@@ -14,42 +14,50 @@ function initQuickLinks() {
         {
             "label":"Your Productivity",
             "href":"/productivity/employee/0",
-            "desc":"Your own productivity statistics."
+            "desc":"Your own productivity statistics.",
+            "class":"green"
         },
         {
             "label":"Team Productivity",
             "href":"/productivity",
-            "desc":"Listing team productivity statistics."
+            "desc":"Listing team productivity statistics.",
+            "class":"green"
         },
         {
             "label":"Items Catalog",
             "href":"/product/items",
-            "desc":"SKU catalog and search."
+            "desc":"SKU catalog and search.",
+            "class":"blue"
         },
         {
             "label":"Products Catalog",
             "href":"/products",
-            "desc":"SID catalog and search."
+            "desc":"SID catalog and search.",
+            "class":"blue"
         },
         {
             "label":"New Inventory",
             "href":"/receiving",
-            "desc":"New inventory search."
+            "desc":"New inventory search.",
+            "class":"red"
         },
         {
             "label":"Pending Listing",
             "href":"/receiving/queues/listing",
-            "desc":"Pending Listing queue."
+            "desc":"Pending Listing queue.",
+            "class":"red"
         },
         {
             "label":"FBA Check",
             "href":"/receiving/queues/fba-check",
-            "desc":"Queue before pending inventory."
+            "desc":"Queue before pending inventory.",
+            "class":"red"
         },
         {
             "label":"Pending Inventory",
             "href":"/receiving/queues/inventory",
-            "desc":"IC queue."
+            "desc":"IC queue.",
+            "class":"red"
         }
     ]
 
@@ -60,7 +68,7 @@ function initQuickLinks() {
         }
 
         const quickLink = document.createElement('a');
-        quickLink.setAttribute('class', 'card card-flush h-md-50 mb-xl-10 blockui item');
+        quickLink.setAttribute('class', `card card-flush h-md-50 mb-xl-10 blockui item ${link.class}`);
         quickLink.setAttribute('href', link.href);
         quickLink.innerHTML = `<div class="card-header pt-5">
             <h3 class="card-title text-gray-800">${link.label}</h3>
