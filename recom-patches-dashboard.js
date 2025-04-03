@@ -80,6 +80,11 @@ function initQuickLinks() {
     });
 
     content_container.prepend(quickLinks);
+
+    const quickLinksLabel = document.createElement('span');
+    quickLinks.setAttribute('class', 'text-dark fw-bolder fs-3');
+    quickLinks.textContent('Quick Links:');
+    content_container.prepend(quickLinksLabel);
 }
 
 setTimeout(function () { initQuickLinks(); }, 200);
