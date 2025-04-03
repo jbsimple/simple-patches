@@ -58,6 +58,7 @@ Quality of life changes to the work system that my work colleagues and myself wa
   - Added a Product Items list of products over QTY 50 with ASIN column.
 - On reports page, added a css fix to correct the resize on narrow screens happening too late.
 - On reports page, added css rule to flip the order of recents and main reporting tool because recents aren't THAT important.
+- On Dashboard; Added quick link buttons to commonly used functions in the system (that are usually hidden behind a cascade menu).
 - On Calendar; CSS fix to add a background color to the list of day's events.
 - On Integrations Error Page, replaced SKU references with links to the actual SKUs.
 - On Tools Page, restructured the tool cards so it makes more sense in css.
