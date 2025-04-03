@@ -54,7 +54,7 @@ function initQuickLinks() {
         }
 
         const quickLink = document.createElement('a');
-        quickLink.setAttribute('class', 'card card-flush h-md-50 mb-xl-10 blockui');
+        quickLink.setAttribute('class', 'card card-flush h-md-50 mb-xl-10 blockui item');
         quickLink.setAttribute('href', link.href);
         quickLink.innerHTML = `<div class="card-header pt-5">
             <h3 class="card-title text-gray-800">${link.label}</h3>
