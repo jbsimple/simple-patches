@@ -2,12 +2,12 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
-    gap: 2.25rem;
-    margin-bottom: 2.25rem;
+    gap: 2rem;
+    margin-bottom: 2rem;
 }
 
 #patches-dashboard-quicklinks .item {
-    width: calc(25% - 2.25rem) !important;
+    width: calc(25% - 2rem) !important;
     margin: 0 !important;
     margin-top: 0 !important;
     margin-bottom: 0 !important;
