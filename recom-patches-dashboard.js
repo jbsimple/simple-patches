@@ -1,6 +1,11 @@
 function initQuickLinks() {
     const content_container = document.getElementById('kt_app_content_container');
 
+    // add separator
+    const separator = document.createElement('div');
+    separator.setAttribute('class', 'separator separator-dashed my-3');
+    content_container.prepend(separator);
+
     const quickLinks = document.createElement('div');
     quickLinks.id = 'patches-dashboard-quicklinks';
 
