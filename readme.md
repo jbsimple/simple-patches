@@ -1,8 +1,18 @@
 ### Hello!
 Quality of life changes to the work system that my work colleagues and myself wanted to make the work day go by that much faster.
 
+#### How it works:
+This is a layer of javascript that is loaded on top of the system page load. It introduces various extra functions and pages, css style sheets and fixes bugs that were "denied because it's not worth fixing". It uses a free vercel host that mirrors this repository so it can be directly added into a browser extension to load external js.
+
+#### Key features of note:
+Revamped reports; including various reporting presets and a visual display of report data before download.
+Actual user and team producivity pages with statistics directly pulled from reports.
+Modifications to the stylesheet to make the site look and run better.
+There are other smaller modifications made, look below at the patches list to see all the specific changes.
+
 #### How to use (Chromium):
 - Get [User JavaScript and CSS extension.](https://chromewebstore.google.com/detail/user-javascript-and-css/nbhcbdghjpllgmfilhnhkllmkecfmpld?hl=en)
+- The extension requires exension developer mode; go to [manage extensions](chrome://extensions) and click the switch to enable developer mode.
 - Go to system homepage (dashboard).
 - Click on the extention and add a new rule.
 - Add a '/*' to the end of the url to ensure it works on all pages.
@@ -12,7 +22,7 @@ Quality of life changes to the work system that my work colleagues and myself wa
 - I don't have a good recommendation for an extension, just find something that allows JS injects.
 - Paste the code from [inject.js](https://simple-patches.vercel.app/inject.js) into the code editor.
 
-#### Enhancements:
+#### Patches:
 - On all pages; CSS fix to correct spacing issues in header.
 - On all pages; CSS fix to get rid of light mode logo.
 - On all pages; CSS fix (that I shouldn't have to do) to fix page height issues not filling the full background.
@@ -70,12 +80,12 @@ Quality of life changes to the work system that my work colleagues and myself wa
   - Displays it in a nice flex-grid thing.
   - Prints the full, original report generated when getting producivity under the counts and breakdowns.
   - Added a date selector to look at any producivity report within the last year.
-- In Conditions Queues; Export Table button to save each visible line item into a csv (In-system solution made, keeping it because its cool)
+- In Conditions Queues; Export Table button to save each visible line item into a csv. (In-system solution made, keeping it because its cool)
 - In Conditions Queues; Get Total button to ge the total quantity of all visible line items.
 
 #### Future:
 - Create a proper set of CSS rules for dark mode.
 - Overhaul of CSS sizing, everything is so large that the page requires it to be zoomed out in order to be used.
-- On products or items media tab; button to clear all pictures.
-- On products or items media tab; label indicator that counts the number of pictures.
-- On products or items media tab; change the grid layout to a details list layout with smaller thumbnails.
+- On products/items media tab; button to clear all pictures.
+- On products/items media tab; label indicator that counts the number of pictures (the image # doesn't work because the upload JS doesn't set each image with a unique position like it's supposed to, and that's behavior I do not want to change without adding an automatic order images by filename button)
+- On products/items media tab; change the grid layout to a details list layout with smaller thumbnails.
