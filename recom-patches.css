@@ -74,10 +74,13 @@ body {
 }
 
 .blockui-overlay {
-  display: block !important;
-  padding: 30px;
-  border-radius: 0.625rem;
-  background-color: rgba(0,0,0,0.15);
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.625rem !important;
+  justify-content: center !important;
+  padding: 30px !important;
+  border-radius: 0.625rem !important;
+  background-color: rgba(0,0,0,0.15) !important;
 }
 
 .blockui .blockui-overlay .spinner-border {
