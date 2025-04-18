@@ -73,8 +73,16 @@ body {
   overflow-y: auto !important;
 }
 
-.blockui-overlay > :first-child {
+.blockui-overlay {
+  display: block !important;
+  padding: 30px;
+  border-radius: 0.625rem;
+  background-color: rgba(0,0,0,0.15);
+}
 
+.blockui .blockui-overlay .spinner-border {
+  height: 4.35rem !important;
+  width: 4.35rem !important
 }
 
 div.dataTables_processing {
