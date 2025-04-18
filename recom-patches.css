@@ -81,8 +81,7 @@ body {
   justify-content: start !important;
   align-items: center !important;
   padding: 30px !important;
-  border-radius: 0.625rem !important;
-  background-color: rgba(0,0,0,0.05) !important;
+  background-color: transparent !important;
 }
 
 .blockui .blockui-overlay .spinner-border {
