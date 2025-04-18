@@ -74,8 +74,7 @@ body {
 }
 
 .blockui-overlay > :first-child {
-  transform: scale(4);
-  top: 30px;
+
 }
 
 div.dataTables_processing {
