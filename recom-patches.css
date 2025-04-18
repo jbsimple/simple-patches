@@ -73,6 +73,10 @@ body {
   overflow-y: auto !important;
 }
 
+.blockui-overlay {
+  background-color: rgba(0,0,0,0.75);
+}
+
 div.dataTables_processing {
   top: 4.5rem !important;
 }
