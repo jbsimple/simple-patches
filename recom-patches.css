@@ -74,8 +74,8 @@ body {
 }
 
 .blockui-overlay > :first-child {
-  transform: scale(1.2); /* Adjust the scale factor as needed */
-  transition: transform 0.3s ease; /* Optional: smooth animation */
+  transform: scale(4);
+  transition: transform 0.3s ease;
   top: 30px;
 }
 
