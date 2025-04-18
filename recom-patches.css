@@ -78,6 +78,7 @@ body {
   flex-direction: column !important;
   gap: 0.625rem !important;
   justify-content: center !important;
+  align-items: start !important;
   padding: 30px !important;
   border-radius: 0.625rem !important;
   background-color: rgba(0,0,0,0.15) !important;
