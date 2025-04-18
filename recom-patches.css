@@ -73,6 +73,7 @@ body {
   overflow-y: auto !important;
 }
 
+/* mainly for new inventory */
 .blockui-overlay {
   display: flex !important;
   flex-direction: column !important;
@@ -81,7 +82,7 @@ body {
   align-items: center !important;
   padding: 30px !important;
   border-radius: 0.625rem !important;
-  background-color: rgba(0,0,0,0.15) !important;
+  background-color: rgba(0,0,0,0.05) !important;
 }
 
 .blockui .blockui-overlay .spinner-border {
