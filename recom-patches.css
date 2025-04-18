@@ -75,7 +75,6 @@ body {
 
 .blockui-overlay > :first-child {
   transform: scale(4);
-  transition: transform 0.3s ease;
   top: 30px;
 }
 
