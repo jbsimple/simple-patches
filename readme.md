@@ -56,6 +56,7 @@ There are other smaller modifications made, look below at the patches list to se
 - On New Inventory Page; Disabled entry of new inventory sent to listing with a GTIN longer than 12 characters.
 - On New Inventory Page; Automatic response for invalid GTIN in input box.
 - On New Inventory Page; Checkbox toggle to auto select searched text after making search for hands-free scanning.
+- On New Inventory Page (and others but mainly for here); Change to UI-block loading wheel so it appears at the top of the div instead of the middle, and made it larger, so you can see that it is actually loading and not just sitting there.
 - On reports page, after submitting to generate a new report, the report displays under the original card.
   - If the file is larger than 1MB, the printing is disabled to save performance.
   - Links for products and items are automatically added into the report preview for convenience.
