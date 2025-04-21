@@ -151,14 +151,6 @@ function initCopyPasteButton() {
         if (main_card) {
             const main_title = main_card.querySelector('.card-title');
             if (main_title) {
-                let text = main_title.textContent.trim();
-                if (text.startsWith('SC-') && currentuser && currentuser !== 'luke' && currentuser !== 'kurtis') {
-                    text = text.substring(3).trim();
-                    main_title.innerHTML = `<h2 style="display: inline;">SC-</h2><h2 data-clipboard="true" style="display: inline;">${text}</h2>`; // this is annoying but works
-                } else {
-                    main_title.innerHTML = `<h2 data-clipboard="true" style="display: inline;">${text}</h2>`; // not needed but consistency
-                }
-
                 const copyButton = document.createElement('button');
                 copyButton.classList.add('btn', 'btn-icon', 'btn-sm', 'btn-light', 'btn-sm', 'my-sm-1', 'ms-1');
                 copyButton.innerHTML = '<i class="fas fa-copy fs-2"></i>';
@@ -167,6 +159,14 @@ function initCopyPasteButton() {
                     const range = document.createRange();
                     const selection = window.getSelection();
                     selection.removeAllRanges();
+
+                    let text = main_title.textContent.trim();
+                    if (text.startsWith('SC-') && currentuser && currentuser !== 'luke' && currentuser !== 'kurtis') {
+                        text = text.substring(3).trim();
+                        main_title.innerHTML = `<h2 style="display: inline;">SC-</h2><h2 data-clipboard="true" style="display: inline;">${text}</h2>`; // this is annoying but works
+                    } else {
+                        main_title.innerHTML = `<h2 data-clipboard="true" style="display: inline;">${text}</h2>`; // not needed but consistency
+                    }
 
                     const clipboardText = main_title.querySelector('h2[data-clipboard="true"]');
                     
