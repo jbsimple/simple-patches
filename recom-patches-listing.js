@@ -339,7 +339,7 @@ async function initListingPatch() {
                         const getCreatedSKU = listingResults.querySelectorAll('h2');
                         if (getCreatedSKU && getCreatedSKU[0]) {
                             const timespent = await getTimeSpentInMinutes(getCreatedSKU[0].textContent); // await here
-                            listingResults.innerHTML += `<br><p><b>Time Spent in Minutes:</b><br>${timespent} minutes.</p>`;
+                            listingResults.innerHTML += `<br><p><b>Time Spent in Minutes:</b>&nbsp;${timespent} minutes.</p>`;
                         }
                     }                    
     
