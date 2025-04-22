@@ -124,6 +124,7 @@ async function getTimeSpentInMinutes() {
             });
         });
     } else {
+        console.error('Unable to get CSRF');
         return null;
     }
 }
