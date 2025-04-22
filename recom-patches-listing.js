@@ -111,9 +111,11 @@ async function getTimeSpentInMinutes(sku) {
                 url: "/reports/create",
                 data: request,
             }).done(function(data) {
-                if (data.success && data.results.results && Array.isArray(data.results.results)) {
+                if (data.success && data.results.results && Array.isArray(data.results.results) && data.results.results[0].hasOwnProperty("Time_Spent_in_mintues")) {
                     console.debug("Request response: ", data.results.results);
-                    resolve({ data: data.results.results });
+                    const firstResult = data.results.results[0];
+                    const timeSpent = parseFloat(firstResult?.Time_Spent_in_mintues);
+                    resolve(timeSpent);
                 } else {
                     console.error("Request Data Not Expected: ", data);
                     resolve(null);
@@ -329,8 +331,9 @@ async function initListingPatch() {
                     if (listingResults) {
                         const getCreatedSKU = await listingResults.querySelectorAll('h2');
                         if (getCreatedSKU && getCreatedSKU[0]) {
-                            const timespentinminutes = getTimeSpentInMinutes(getCreatedSKU[0].textContent);
-                            listingResults.innerHTML += `<br><p><b>Time Spent in Minutes:</b><br>${timespentinminutes} minutes.</p>`;
+                            const timespent = getTimeSpentInMinutes(getCreatedSKU[0].textContent);
+
+                            listingResults.innerHTML += `<br><p><b>Time Spent in Minutes:</b><br>${timespent} minutes.</p>`;
                         }
                     }
     
