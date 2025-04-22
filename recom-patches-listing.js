@@ -116,6 +116,7 @@ async function getTimeSpentInMinutes() {
                     console.debug("Request response: ", data.results.results);
                     resolve({ data: data.results.results });
                 } else {
+                    console.error("Request Data Not Expected: ", data);
                     resolve(null);
                 }
             }).fail(function(jqXHR, textStatus, errorThrown) {
