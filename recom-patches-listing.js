@@ -343,7 +343,7 @@ async function initListingPatch() {
                         }
                     }                    
     
-                    if (initGTIN !== curGTIN) {
+                    if (listingResults && initGTIN !== curGTIN) {
                         var code = `<br><br>
                         <strong class="patches-warning">
                             <i class="fa fa-triangle-exclamation fs-2"></i>
