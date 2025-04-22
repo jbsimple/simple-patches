@@ -82,6 +82,7 @@ async function getTimeSpentInMinutes(sku) {
             report: {
                 type: "user_clock",
                 columns: [
+                    "user_clock_activity.activity_code",
                     "user_clock_activity.time_spent"
                 ],
                 filters: [{
@@ -111,15 +112,21 @@ async function getTimeSpentInMinutes(sku) {
                 url: "/reports/create",
                 data: request,
             }).done(function(data) {
-                if (data.success && data.results.results && Array.isArray(data.results.results) && data.results.results[0].hasOwnProperty("Time_Spent_in_mintues")) {
-                    console.debug("Request response: ", data.results.results);
-                    const firstResult = data.results.results[0];
-                    const timeSpent = parseFloat(firstResult?.Time_Spent_in_mintues);
-                    resolve(timeSpent);
-                } else {
-                    console.error("Request Data Not Expected: ", data);
-                    resolve(null);
+                if (data.success && Array.isArray(data.results?.results)) {
+                    const matchingEntries = data.results.results.filter(
+                        entry => entry.Event_Code === "Inventory Listing" && entry.hasOwnProperty("Time_Spent_in_mintues")
+                    );
+
+                    if (matchingEntries.length > 0) {
+                        const lastMatch = matchingEntries[matchingEntries.length - 1];
+                        const timeSpent = parseFloat(lastMatch.Time_Spent_in_mintues);
+                        resolve(timeSpent);
+                        return;
+                    }
                 }
+
+                console.error("Request Data Not Expected or No Matching Entry: ", data);
+                resolve(null);
             }).fail(function(jqXHR, textStatus, errorThrown) {
                 console.error("Request failed: " + textStatus + ", " + errorThrown);
                 reject(new Error("Request failed: " + textStatus + ", " + errorThrown));
