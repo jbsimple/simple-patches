@@ -113,6 +113,7 @@ async function getTimeSpentInMinutes() {
                 data: request,
             }).done(function(data) {
                 if (data.success && data.results.results && Array.isArray(data.results.results)) {
+                    console.debug("Request response: ", data.results.results);
                     resolve({ data: data.results.results });
                 } else {
                     resolve(null);
