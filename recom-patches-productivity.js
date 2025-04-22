@@ -149,6 +149,7 @@ async function getReport(type) {
             });
         });
     } else {
+        console.error('Unable to get CSRF');
         return null;
     }
 }
