@@ -339,12 +339,12 @@ async function initListingPatch() {
                         const getCreatedSKU = listingResults.querySelectorAll('h2');
                         if (getCreatedSKU && getCreatedSKU[0]) {
                             const timespent = await getTimeSpentInMinutes(getCreatedSKU[0].textContent); // await here
-                            listingResults.innerHTML += `<br><p><b>Time Spent in Minutes:</b>&nbsp;${timespent} minutes.</p>`;
+                            listingResults.innerHTML += `<br><br><p style="color: var(--bs-info);"><b>Time Spent in Minutes:</b>&nbsp;${timespent} minutes.</p>`;
                         }
                     }                    
     
                     if (initGTIN !== curGTIN) {
-                        var code = `<br>
+                        var code = `<br><br>
                         <strong class="patches-warning">
                             <i class="fa fa-triangle-exclamation fs-2"></i>
                             <span>GTIN Change Detected!</span>
