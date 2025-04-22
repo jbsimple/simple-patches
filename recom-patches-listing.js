@@ -41,6 +41,84 @@ function fixSimilarProduct() {
     });
 }
 
+async function getTimeSpentInMinutes() {
+    async function getUserID() {
+        try {
+            const response = await fetch('/user/me');
+            const html = await response.text();
+    
+            const scriptMatch = html.match(/<script[^>]*>([\s\S]*?)<\/script>/gi);
+            if (scriptMatch) {
+                for (const script of scriptMatch) {
+                    const userIdMatch = script.match(/userID\s*=\s*(\d+);/);
+                    if (userIdMatch) {
+                        console.debug('PATCHES - Extracted userID:', userIdMatch[1]);
+                        return parseInt(userIdMatch[1], 10);
+                    }
+                }
+            }
+            console.log('userID not found');
+            return null;
+        } catch (error) {
+            console.error('Error fetching the page:', error);
+            return null;
+        }
+    }
+    const userId = await getUserID();
+
+    const today = new Date();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const yyyy = today.getFullYear();
+    const date = `${mm}/${dd}/${yyyy}`;
+
+    const sku = 'A93842-1'; //test
+
+    let request = {
+        report: {
+            type: "user_clock",
+            columns: [
+                "user_clock_activity.time_spent"
+            ],
+            filters: [{
+                    column: "user_profile.user_id",
+                    opr: "{0} = '{1}'",
+                    value: `${userId}`
+                },
+                {
+                    column: "user_clocks.clock_date",
+                    opr: "between",
+                    value: `${date} - ${date}`
+                },
+                {
+                    column: "product_items.sku",
+                    opr: "{0} LIKE '%{1}%'",
+                    value: `${sku}`
+                }
+            ]
+        },
+        csrf_recom: csrfToken
+    };
+
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "/reports/create",
+            data: request,
+        }).done(function(data) {
+            if (data.success && data.results.results && Array.isArray(data.results.results)) {
+                resolve({ data: data.results.results });
+            } else {
+                resolve(null);
+            }
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error("Request failed: " + textStatus + ", " + errorThrown);
+            reject(new Error("Request failed: " + textStatus + ", " + errorThrown));
+        });
+    });
+}
+
 // https://stackoverflow.com/questions/13605340/how-to-validate-a-ean-gtin-barcode-in-javascript
 // There are more checks in place for valid gtins I guess.
 function isValidBarcode(value) {
@@ -254,7 +332,6 @@ function productGTIN() {
         }
     }
 }
-
 
 // fix for the duplicated error messages
 const observer = new MutationObserver(() => {
