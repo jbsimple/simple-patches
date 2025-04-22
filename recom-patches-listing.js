@@ -72,7 +72,7 @@ async function getTimeSpentInMinutes() {
     const yyyy = today.getFullYear();
     const date = `${mm}/${dd}/${yyyy}`;
 
-    const sku = 'A93842-1'; //test
+    const sku = 'wwwN52619-51'; //test
 
     let request = {
         report: {
