@@ -64,59 +64,67 @@ async function getTimeSpentInMinutes() {
             return null;
         }
     }
-    const userId = await getUserID();
 
-    const today = new Date();
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    const dd = String(today.getDate()).padStart(2, '0');
-    const yyyy = today.getFullYear();
-    const date = `${mm}/${dd}/${yyyy}`;
+    const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
+    if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
+        const csrfToken = csrfMeta.getAttribute('content');
 
-    const sku = 'wwwN52619-51'; //test
+        const today = new Date();
+        const today_mm = String(today.getMonth() + 1).padStart(2, '0');
+        const today_dd = String(today.getDate()).padStart(2, '0');
+        const today_yyyy = today.getFullYear();
+        const todayFormatted = `${today_mm}/${today_dd}/${today_yyyy}`;
 
-    let request = {
-        report: {
-            type: "user_clock",
-            columns: [
-                "user_clock_activity.time_spent"
-            ],
-            filters: [{
-                    column: "user_profile.user_id",
-                    opr: "{0} = '{1}'",
-                    value: `${userId}`
-                },
-                {
-                    column: "user_clocks.clock_date",
-                    opr: "between",
-                    value: `${date} - ${date}`
-                },
-                {
-                    column: "product_items.sku",
-                    opr: "{0} LIKE '%{1}%'",
-                    value: `${sku}`
+        let date = todayFormatted;
+        const userId = await getUserID();
+        const sku = 'wwwN52619-51'; //test
+
+        let request = {
+            report: {
+                type: "user_clock",
+                columns: [
+                    "user_clock_activity.time_spent"
+                ],
+                filters: [{
+                        column: "user_profile.user_id",
+                        opr: "{0} = '{1}'",
+                        value: `${userId}`
+                    },
+                    {
+                        column: "user_clocks.clock_date",
+                        opr: "between",
+                        value: `${date} - ${date}`
+                    },
+                    {
+                        column: "product_items.sku",
+                        opr: "{0} LIKE '%{1}%'",
+                        value: `${sku}`
+                    }
+                ]
+            },
+            csrf_recom: csrfToken
+        };
+
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: "/reports/create",
+                data: request,
+            }).done(function(data) {
+                if (data.success && data.results.results && Array.isArray(data.results.results)) {
+                    resolve({ data: data.results.results });
+                } else {
+                    resolve(null);
                 }
-            ]
-        },
-        csrf_recom: csrfToken
-    };
-
-    return new Promise((resolve, reject) => {
-        $.ajax({
-            type: "POST",
-            dataType: "json",
-            url: "/reports/create",
-            data: request,
-        }).done(function(data) {
-            if (data.success && data.results.results && Array.isArray(data.results.results)) {
-                resolve({ data: data.results.results });
-            } else {
-                resolve(null);
-            }
-        }).fail(function(jqXHR, textStatus, errorThrown) {
-            console.error("Request failed: " + textStatus + ", " + errorThrown);
-            reject(new Error("Request failed: " + textStatus + ", " + errorThrown));
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error("Request failed: " + textStatus + ", " + errorThrown);
+                reject(new Error("Request failed: " + textStatus + ", " + errorThrown));
+            });
         });
-    });
+    } else {
+        return null;
+    }
 }
 
 // https://stackoverflow.com/questions/13605340/how-to-validate-a-ean-gtin-barcode-in-javascript
