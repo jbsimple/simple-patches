@@ -336,13 +336,12 @@ async function initListingPatch() {
             listingSubmit.addEventListener('click', function() {
                 setTimeout(async function() {
                     if (listingResults) {
-                        const getCreatedSKU = await listingResults.querySelectorAll('h2');
+                        const getCreatedSKU = listingResults.querySelectorAll('h2');
                         if (getCreatedSKU && getCreatedSKU[0]) {
-                            const timespent = getTimeSpentInMinutes(getCreatedSKU[0].textContent);
-
+                            const timespent = await getTimeSpentInMinutes(getCreatedSKU[0].textContent); // await here
                             listingResults.innerHTML += `<br><p><b>Time Spent in Minutes:</b><br>${timespent} minutes.</p>`;
                         }
-                    }
+                    }                    
     
                     if (initGTIN !== curGTIN) {
                         var code = `<br>
@@ -393,7 +392,9 @@ async function initListingPatch() {
     }
 }
 
-initListingPatch();
+(async () => {
+    initListingPatch();
+})();
 
 observer.observe(document.body, {
     childList: true,
