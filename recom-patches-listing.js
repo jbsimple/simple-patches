@@ -242,8 +242,7 @@ function inWrongTaskCheck() {
             .lebox {
                     background-color: var(--bs-body-bg) !important;
                     padding: 1.25rem 0 !important;
-                    margin: 2rem 30px !important;
-                    margin-bottom: 0 !important;
+                    margin-bottom: 30px !important;
                     border: var(--bs-border-width) solid var(--bs-border-color) !important;
                     border-radius: 0.625rem !important;
             }
