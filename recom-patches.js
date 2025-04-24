@@ -1,5 +1,4 @@
 const version = '04-24-2025__2';
-let currentTask = '';
 let currentuser = null;
 
 const nav_sidebar = document.getElementById('kt_app_sidebar_navs_wrappers');
@@ -314,7 +313,6 @@ function clockTaskVisualRefresh() {
 
             const currentText = currentButton.textContent.trim().toLowerCase();
             const newText = newButton.textContent.trim().toLowerCase();
-            currentTask = newText;
 
             console.debug('Current Clock Button Text:', currentText);
             console.debug('Fetched Clock Button Text:', newText);

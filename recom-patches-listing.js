@@ -139,7 +139,10 @@ async function getTimeSpentInMinutes(sku) {
 }
 
 function inWrongTaskCheck() {
+    const link = document.querySelector('a[href="javascript:clockInOut(\'out\');"]');
+    const currentTask = link?.textContent.trim().toLowerCase() ?? 'na';
     console.debug('PATCHES - Task Check:', currentTask);
+    
     const modal = `<style>
         #patch_wrongTask_fullModal .modal-content {
             transform: translateY(-15vh) !important;
