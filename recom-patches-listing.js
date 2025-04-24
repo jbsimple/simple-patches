@@ -157,7 +157,7 @@ function inWrongTaskCheck() {
             <div class="modal-content rounded">
                 <div class="modal-header">
                     <h2 class="fw-bolder">UH OH!</h2>
-                    <div class="btn btn-icon btn-sm btn-active-icon-primary" id="patches_clockout_close">
+                    <div class="btn btn-icon btn-sm btn-active-icon-primary" id="patches_wrongtask_close">
                         <span class="svg-icon svg-icon-1">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                                 <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
@@ -174,7 +174,7 @@ function inWrongTaskCheck() {
                     </div>
                     <div class="separator my-10"></div>
                     <div class="text-center">
-                        <button type="reset" data-bs-dismiss="modal" class="btn btn-warning btn-light me-3">Dismiss Warning</button>
+                        <button type="reset" id="patches_wrongtask_dismiss" data-bs-dismiss="modal" class="btn btn-warning btn-light me-3">Dismiss Warning</button>
                     </div>
                 </div>
             </div>
@@ -192,12 +192,12 @@ function inWrongTaskCheck() {
                 modalContainer.innerHTML = modal;
                 rcAjaxModal.parentNode.insertBefore(modalContainer, rcAjaxModal);
 
-                const closeButton = document.getElementById('patches_clockout_close');
+                const closeButton = document.getElementById('patches_wrongtask_close');
                 if (closeButton) {
                     closeButton.onclick = closeModal;
                 }
 
-                const cancelButton = document.getElementById('patches_clockout_cancel');
+                const cancelButton = document.getElementById('patches_wrongtask_dismiss');
                 if (cancelButton) {
                     cancelButton.onclick = closeModal;
                 }
