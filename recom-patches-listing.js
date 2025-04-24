@@ -139,6 +139,7 @@ async function getTimeSpentInMinutes(sku) {
 }
 
 function inWrongTaskCheck() {
+    console.debug('PATCHES - Task Check:', currentTask);
     const modal = `<style>
         #patch_wrongTask_fullModal .modal-content {
             transform: translateY(-15vh) !important;
@@ -355,6 +356,7 @@ function productGTIN() {
 }
 
 async function initListingPatch() {
+    console.debug('PATCHES - initListingPatch for wizard');
     const observer = new MutationObserver(() => {
         const elements = document.querySelectorAll('.fv-plugins-message-container.invalid-feedback');
       
