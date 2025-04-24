@@ -354,40 +354,39 @@ function productGTIN() {
     }
 }
 
-// fix for the duplicated error messages
-const observer = new MutationObserver(() => {
-    const elements = document.querySelectorAll('.fv-plugins-message-container.invalid-feedback');
-  
-    let previousText = null;
-    elements.forEach((element, index) => {
-        const currentText = element.textContent.trim();
-  
-        if (currentText === previousText) {
-            element.remove();
-        } else {
-            previousText = currentText;
-            const block = element.querySelector('div');
-            if (block) {
-                const field = block.getAttribute('data-field');
-                const validation = block.getAttribute('data-validator');
-                if (field) {
-                    const input = document.querySelector(`input[name="${field}"]`);
-                    if (input) {
-                        input.addEventListener('input', function handleError() {
-                            if (validation === "notEmpty" && input.value.length > 0) {
-                                element.style.display = 'none';
-                            } else {
-                                element.style.display = 'inherit';
-                            }
-                        });
+async function initListingPatch() {
+    const observer = new MutationObserver(() => {
+        const elements = document.querySelectorAll('.fv-plugins-message-container.invalid-feedback');
+      
+        let previousText = null;
+        elements.forEach((element, index) => {
+            const currentText = element.textContent.trim();
+      
+            if (currentText === previousText) {
+                element.remove();
+            } else {
+                previousText = currentText;
+                const block = element.querySelector('div');
+                if (block) {
+                    const field = block.getAttribute('data-field');
+                    const validation = block.getAttribute('data-validator');
+                    if (field) {
+                        const input = document.querySelector(`input[name="${field}"]`);
+                        if (input) {
+                            input.addEventListener('input', function handleError() {
+                                if (validation === "notEmpty" && input.value.length > 0) {
+                                    element.style.display = 'none';
+                                } else {
+                                    element.style.display = 'inherit';
+                                }
+                            });
+                        }
                     }
                 }
             }
-        }
+        });
     });
-});
-
-async function initListingPatch() {
+    
     if (gtin_input) {
         initGTIN = gtin_input.value;
         curGTIN = gtin_input.value;
@@ -503,7 +502,8 @@ async function initListingPatch() {
 }
 
 (async () => {
-    initListingPatch();
+    if (window.location.href.includes('/receiving/queues/listing/') || window.location.href.includes('/products/new')) { initListingPatch(); }
+    inWrongTaskCheck();
 })();
 
 observer.observe(document.body, {

@@ -349,11 +349,18 @@ script_patch.onload = function() {
     console.debug('Patch Loaded:', script_patch.name);
 };
 
-if (window.location.href.includes('/receiving/queues/listing/') || window.location.href.includes('/products/new')) {
+if (window.location.href.includes('/receiving/queues/listing') || window.location.href.includes('/products/new')) {
 
     document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches-listing.css?v=' + Date.now() + '" type="text/css"/>';
     script_patch.src = "https://simple-patches.vercel.app/recom-patches-listing.js?v=" + Date.now();
     script_patch.name = 'recom-patches-listing.js';
+
+}
+
+if (window.location.href.includes('/receiving/queues/listing') || window.location.href.includes('/products/new')) {
+
+    script_patch.src = "https://simple-patches.vercel.app/recom-patches-listingGlobal.js?v=" + Date.now();
+    script_patch.name = 'recom-patches-listingGlobal.js';
 
 }
 
