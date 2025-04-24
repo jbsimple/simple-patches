@@ -336,7 +336,7 @@ function clockTaskVisualRefresh() {
             console.error('Error updating clock task:', error);
         }
     }
-
+    checkAndUpdate();
     setInterval(checkAndUpdate, 60000);
 }
 
