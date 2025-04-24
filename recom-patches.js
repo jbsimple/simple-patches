@@ -357,13 +357,6 @@ if (window.location.href.includes('/receiving/queues/listing') || window.locatio
 
 }
 
-if (window.location.href.includes('/receiving/queues/listing') || window.location.href.includes('/products/new')) {
-
-    script_patch.src = "https://simple-patches.vercel.app/recom-patches-listingGlobal.js?v=" + Date.now();
-    script_patch.name = 'recom-patches-listingGlobal.js';
-
-}
-
 if (window.location.href.includes('/queues/conditions/')) {
     
     script_patch.src = "https://simple-patches.vercel.app/recom-patches-condqueue.js?v=" + Date.now();
