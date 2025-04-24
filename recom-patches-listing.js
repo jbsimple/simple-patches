@@ -237,7 +237,18 @@ function inWrongTaskCheck() {
         }
     } else if (currentTask !== 'clock out - listing') {
         const thecontent = document.getElementById('kt_app_content_container');
-        const codeToAdd = `<div class="app-toolbar pt-7 pt-lg-10">
+        const codeToAdd = `
+        <style>
+            .lebox {
+                    background-color: var(--bs-body-bg) !important;
+                    padding: 1.25rem 0 !important;
+                    margin: 2rem 30px !important;
+                    margin-bottom: 0 !important;
+                    border: var(--bs-border-width) solid var(--bs-border-color) !important;
+                    border-radius: 0.625rem !important;
+            }
+        </style>
+        <div class="lebox app-toolbar pt-7 pt-lg-10">
             <div class="app-container container-fluid d-flex align-items-stretch">
                 <div class="app-toolbar-wrapper d-flex flex-stack flex-wrap gap-4 w-100">
                     <div class="page-title d-flex flex-column justify-content-center gap-1 me-3">
