@@ -138,6 +138,116 @@ async function getTimeSpentInMinutes(sku) {
     }
 }
 
+function inWrongTaskCheck() {
+    const modal = `<style>
+        #patch_wrongTask_fullModal .modal-content {
+            transform: translateY(-15vh) !important;
+            opacity: 0.25 !important;
+            transition: all 0.1s ease !important;
+        }
+
+        #patch_wrongTask_fullModal.show .modal-content {
+            transform: unset !important;
+            opacity: 1.0 !important;
+        }
+    </style>
+
+    <div class="modal fade" id="patch_wrongTask_fullModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true" role="dialog" style="display: none; background: rgba(0, 0, 0, .4) !important;">
+        <div class="modal-dialog modal-dialog-centered mw-650px">
+            <div class="modal-content rounded">
+                <div class="modal-header">
+                    <h2 class="fw-bolder">UH OH!</h2>
+                    <div class="btn btn-icon btn-sm btn-active-icon-primary" id="patches_clockout_close">
+                        <span class="svg-icon svg-icon-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
+                                <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="currentColor"></rect>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+                <div class="modal-body scroll-y px-10 px-lg-15 pt-0 pb-15" style="padding-top: 1.5rem !important;">
+                    <div class="d-flex flex-column mb-8">
+                        <label class="fs-6 fw-bold mb-2">You're about to list without being in the listing task.</label>
+                        <label class="fs-6 fw-semibold form-label">Are you sure you want to continue?</label>
+                        <label class="fs-6 fw-semibold form-label">* Dismiss the message to proceed.</label>
+                    </div>
+                    <div class="separator my-10"></div>
+                    <div class="text-center">
+                        <button type="reset" data-bs-dismiss="modal" class="btn btn-warning btn-light me-3">Dismiss Warning</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>`;
+
+    // this modal is just for the full page wizard wizard
+    if (window.location.href.includes('/receiving/queues/listing/')) {
+        const afterListing = window.location.href.split('/receiving/queues/listing/')[1];
+        if (afterListing && afterListing.trim() !== '' && currentTask !== 'clock out - listing') {
+            const rcAjaxModal = document.getElementById("rc_ajax_modal");
+
+            if (rcAjaxModal) {
+                const modalContainer = document.createElement("div");
+                modalContainer.innerHTML = modal;
+                rcAjaxModal.parentNode.insertBefore(modalContainer, rcAjaxModal);
+
+                const closeButton = document.getElementById('patches_clockout_close');
+                if (closeButton) {
+                    closeButton.onclick = closeModal;
+                }
+
+                const cancelButton = document.getElementById('patches_clockout_cancel');
+                if (cancelButton) {
+                    cancelButton.onclick = closeModal;
+                }
+
+                document.addEventListener('keydown', (event) => {
+                    if (event.key === 'Escape') {
+                        closeModal();
+                    }
+                });
+
+                function closeModal() {
+                    const fullModal = document.getElementById('patch_wrongTask_fullModal');
+                    if (fullModal) {
+                        newModal.classList.remove('show');
+                        setTimeout(() => {
+                            fullModal.remove();
+                        }, 200);
+                    }
+                }
+
+                const newModal = document.getElementById('patch_wrongTask_fullModal');
+                if (newModal) {
+                    newModal.style.display = 'block';
+                    newModal.removeAttribute('aria-hidden');
+                    newModal.setAttribute('aria-modal', 'true');
+
+                    setTimeout(() => {
+                        newModal.classList.add('show');
+                    }, 200);
+                }
+
+            }
+        } else if (currentTask !== 'clock out - listing') {
+            const thecontent = document.getElementById('kt_app_content_container');
+            const codeToAdd = `<div class="app-toolbar pt-7 pt-lg-10">
+                <div class="app-container container-fluid d-flex align-items-stretch">
+                    <div class="app-toolbar-wrapper d-flex flex-stack flex-wrap gap-4 w-100">
+                        <div class="page-title d-flex flex-column justify-content-center gap-1 me-3">
+                            <h1 class="page-heading d-flex flex-column justify-content-center fw-bold fs-3 m-0" style="color: var(--bs-danger-text);">Warning!</h1>
+                            <h3 class="page-heading d-flex flex-column justify-content-center text-dark fw-bold fs-3 m-0">You are not clocked into Listing!</h3>
+                        </div>
+                        <div class="d-flex align-items-center gap-2 gap-lg-3"></div>
+                    </div>
+                </div>
+            </div>`;
+            thecontent.insertAdjacentHTML('afterbegin', codeToAdd);
+        }
+    }
+}
+
 // https://stackoverflow.com/questions/13605340/how-to-validate-a-ean-gtin-barcode-in-javascript
 // There are more checks in place for valid gtins I guess.
 function isValidBarcode(value) {

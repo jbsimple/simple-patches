@@ -1,7 +1,7 @@
-const version = '04-03-2025__2';
-
-
+const version = '04-24-2025__2';
+let currentTask = '';
 let currentuser = null;
+
 const nav_sidebar = document.getElementById('kt_app_sidebar_navs_wrappers');
 if (nav_sidebar) {
     nav_sidebar.style.display = 'flex';
@@ -264,7 +264,6 @@ function modifiedClock(task) {
                 closeModal();
             }
         });
-        
 
         function closeModal() {
             const fullModal = document.getElementById('patch_clockout_fullModal');
@@ -315,6 +314,7 @@ function clockTaskVisualRefresh() {
 
             const currentText = currentButton.textContent.trim().toLowerCase();
             const newText = newButton.textContent.trim().toLowerCase();
+            currentTask = newText;
 
             console.debug('Current Clock Button Text:', currentText);
             console.debug('Fetched Clock Button Text:', newText);
