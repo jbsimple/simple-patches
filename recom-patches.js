@@ -292,6 +292,54 @@ function modifiedClock(task) {
     }
 }
 
+function clockTaskVisualRefresh() {
+    const href = '/user/me';
+    const checkButtonSelector = 'a[href^="javascript:clockInOut"]';
+
+    async function checkAndUpdate() {
+        try {
+            const response = await fetch(href);
+            if (!response.ok) throw new Error('Failed to fetch page content');
+
+            const text = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(text, 'text/html');
+
+            const currentButton = document.querySelector(checkButtonSelector);
+            const newButton = doc.querySelector(checkButtonSelector);
+
+            if (!currentButton || !newButton) {
+                console.debug('No clock button found in one or both DOMs.');
+                return;
+            }
+
+            const currentText = currentButton.textContent.trim().toLowerCase();
+            const newText = newButton.textContent.trim().toLowerCase();
+
+            console.debug('Current Clock Button Text:', currentText);
+            console.debug('Fetched Clock Button Text:', newText);
+
+            if (currentText !== newText) {
+                console.debug('Patches - CLOCK IN TASK CHANGED');
+                const currentParentDiv = currentButton.closest('div');
+                const newParentDiv = newButton.closest('div');
+                if (currentParentDiv && newParentDiv) {
+                    currentParentDiv.replaceWith(newParentDiv);
+                    modifiedClockInit();
+                } else {
+                    console.warn('Could not find parent <div> to replace.');
+                }
+            } else {
+                console.debug('Patches - Clock In Task the same.');
+            }
+        } catch (error) {
+            console.error('Error updating clock task:', error);
+        }
+    }
+
+    setInterval(checkAndUpdate, 60000);
+}
+
 /* end of clock in stuff */
 
 document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches.css?v=' + Date.now() + '" type="text/css"/>';
@@ -789,54 +837,6 @@ function hijackAjaxModal() {
             console.error('Patches - Unable to find select.');
         }
     }
-}
-
-function clockTaskVisualRefresh() {
-    const href = '/user/me';
-    const headingID = 'kt_app_header_navbar';
-    const checkButton = 'javascript:clockInOut';
-
-    async function checkAndUpdate() {
-        try {
-            const response = await fetch(href);
-            if (!response.ok) throw new Error('Failed to fetch page content');
-
-            const text = await response.text();
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(text, 'text/html');
-
-            const currentNavbar = document.getElementById(headingID);
-            if (!currentNavbar) return;
-
-            const currentButton = currentNavbar.querySelector(`a[href*="${checkButton}"]`);
-            if (!currentButton) return;
-
-            const newNavbar = doc.getElementById(headingID);
-            if (!newNavbar) return;
-
-            const newButton = newNavbar.querySelector(`a[href*="${checkButton}"]`);
-            if (!newButton) return;
-
-            if (currentButton.textContent.trim().toLowerCase !== currentButton.textContent.trim().toLowerCase) {
-                console.debug('Patches - CLOCK IN TASK CHANGED');
-                console.debug('Patches - Current', currentButton.textContent.trim().toLowerCase);
-                console.debug('Patches - New', newButton.textContent.trim().toLowerCase);
-                // Replace the entire parent div of the button
-                const parentDiv = currentButton.closest('div');
-                const newParentDiv = newButton.closest('div');
-                if (parentDiv && newParentDiv) {
-                    parentDiv.replaceWith(newParentDiv);
-                }
-                modifiedClockInit();
-            } else {
-                console.debug('PATCHES - Clock In Task the same.');
-            }
-        } catch (error) {
-            console.error('Error updating clock task:', error);
-        }
-    }
-
-    setInterval(checkAndUpdate, 60000);
 }
 
 function adjustToolbar() {
