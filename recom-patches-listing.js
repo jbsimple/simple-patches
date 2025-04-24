@@ -386,7 +386,12 @@ async function initListingPatch() {
             }
         });
     });
-    
+
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+    });
+
     if (gtin_input) {
         initGTIN = gtin_input.value;
         curGTIN = gtin_input.value;
@@ -505,9 +510,4 @@ async function initListingPatch() {
     if (window.location.href.includes('/receiving/queues/listing/') || window.location.href.includes('/products/new')) { initListingPatch(); }
     inWrongTaskCheck();
 })();
-
-observer.observe(document.body, {
-    childList: true,
-    subtree: true,
-});
   
