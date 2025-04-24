@@ -142,7 +142,7 @@ function inWrongTaskCheck() {
     const link = document.querySelector('a[href="javascript:clockInOut(\'out\');"]');
     const currentTask = link?.textContent.trim().toLowerCase() ?? 'na';
     console.debug('PATCHES - Task Check:', currentTask);
-    
+
     const modal = `<style>
         #patch_wrongTask_fullModal .modal-content {
             transform: translateY(-15vh) !important;
@@ -234,21 +234,21 @@ function inWrongTaskCheck() {
                 }
 
             }
-        } else if (currentTask !== 'clock out - listing') {
-            const thecontent = document.getElementById('kt_app_content_container');
-            const codeToAdd = `<div class="app-toolbar pt-7 pt-lg-10">
-                <div class="app-container container-fluid d-flex align-items-stretch">
-                    <div class="app-toolbar-wrapper d-flex flex-stack flex-wrap gap-4 w-100">
-                        <div class="page-title d-flex flex-column justify-content-center gap-1 me-3">
-                            <h1 class="page-heading d-flex flex-column justify-content-center fw-bold fs-3 m-0" style="color: var(--bs-danger-text);">Warning!</h1>
-                            <h3 class="page-heading d-flex flex-column justify-content-center text-dark fw-bold fs-3 m-0">You are not clocked into Listing!</h3>
-                        </div>
-                        <div class="d-flex align-items-center gap-2 gap-lg-3"></div>
-                    </div>
-                </div>
-            </div>`;
-            thecontent.insertAdjacentHTML('afterbegin', codeToAdd);
         }
+    } else if (currentTask !== 'clock out - listing') {
+        const thecontent = document.getElementById('kt_app_content_container');
+        const codeToAdd = `<div class="app-toolbar pt-7 pt-lg-10">
+            <div class="app-container container-fluid d-flex align-items-stretch">
+                <div class="app-toolbar-wrapper d-flex flex-stack flex-wrap gap-4 w-100">
+                    <div class="page-title d-flex flex-column justify-content-center gap-1 me-3">
+                        <h1 class="page-heading d-flex flex-column justify-content-center fw-bold fs-3 m-0" style="color: var(--bs-danger-text);">Warning!</h1>
+                        <h3 class="page-heading d-flex flex-column justify-content-center text-dark fw-bold fs-3 m-0">You are not clocked into Listing!</h3>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 gap-lg-3"></div>
+                </div>
+            </div>
+        </div>`;
+        thecontent.insertAdjacentHTML('afterbegin', codeToAdd);
     }
 }
 
