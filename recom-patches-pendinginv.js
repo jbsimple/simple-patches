@@ -44,7 +44,7 @@ function piInit() {
     checkImgButton.id = 'patch_openAllImages';
     checkImgButton.textContent = 'Check Images';
     checkImgButton.disabled = true;
-    checkImgButton.title = "Loads thumbnail images in queue";
+    checkImgButton.title = "Loads image icons in queue.";
     checkImgButton.style.cssText = `
         color: white;
         border: none;
