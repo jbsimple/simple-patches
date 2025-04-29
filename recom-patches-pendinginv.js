@@ -20,7 +20,10 @@ async function checkPics() {
 			const img = doc.querySelector('img');
 			if (img) {
 				let parent = product.parentElement;
-				parent.innerHTML = `<img src="${img.src}" style="width:42px; height:42px; display:inline-block; margin-right:1rem;"><div style="display: flex; flex-direction: column;">${parent.innerHTML}</div>`;
+				parent.innerHTML = `<a href="javascript:void(0);" data-url="${url}" class="ajax-modal">
+                    <img src="${img.src}" style="width:42px; height:42px; display:inline-block; margin-right:1rem;">
+                </a>
+                <div style="display: flex; flex-direction: column;">${parent.innerHTML}</div>`;
 				parent.setAttribute('style', 'display: inline-flex; flex-direction: row; align-items: center');
 			} else {
 				console.log('No image found in response for URL:', url);
@@ -40,6 +43,7 @@ function piInit() {
     checkImgButton.id = 'patch_openAllImages';
     checkImgButton.textContent = 'Check Images';
     checkImgButton.disabled = true;
+    checkImgButton.title = "Loads thumbnail images in queue";
     checkImgButton.style.cssText = `
         color: white;
         border: none;
