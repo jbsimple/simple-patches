@@ -44,7 +44,7 @@ function piInit() {
         const toolbar = picontainer.querySelector('.card-toolbar.flex-row-fluid.justify-content-end');
         if (toolbar && toolbar.classList.contains('justify-content-end')) {
             toolbar.classList.remove('flex-row-fluid', 'justify-content-end');
-            toolbar.setAttribute('style', 'flex-direction: row;');
+            toolbar.setAttribute('style', 'flex-direction: row; width: 100%;');
 
             const spacer = document.createElement('div');
             spacer.setAttribute('style', 'flex: 1;');
