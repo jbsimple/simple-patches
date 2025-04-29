@@ -583,6 +583,7 @@ function injectDateSelect(funct, content) {
 }
 
 async () => {
+    console.debug('PATCHES - Start');
     const content = document.getElementById('kt_app_content');
     const toolbar = document.getElementById('kt_app_toolbar');
     let heading = null;
