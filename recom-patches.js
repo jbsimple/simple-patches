@@ -1,20 +1,5 @@
 let version = '...';
-let currentuser = null;
-
-async function getBuildId() {
-    try {
-        const response = await fetch('https://simple-patches.vercel.app//buildInfo.json');
-        if (!response.ok) throw new Error('Failed to fetch build info');
-
-        const info = await response.json();
-        console.log('Build Info:', info);
-
-        return info.buildId || null;
-    } catch (error) {
-        console.error('Error loading build ID:', error);
-        return null;
-    }
-}
+let currentuser = '';
 
 function injectGoods() {
     document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches.css?v=' + Date.now() + '" type="text/css"/>';
@@ -881,8 +866,27 @@ function adjustToolbar() {
     }
 }
 
+async function loadBuildInfo() {
+    return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://simple-patches.vercel.app/buildInfo.js';
+        script.onload = () => {
+            if (window.BUILD_INFO && window.BUILD_INFO.buildId) {
+                resolve(window.BUILD_INFO.buildId);
+            } else {
+                resolve('unknown');
+            }
+        };
+        script.onerror = () => {
+            console.error('Failed to load buildInfo.js from external source.');
+            resolve('unknown');
+        };
+        document.head.appendChild(script);
+    });
+}
+
 async function patchInit() {
-    version = await getBuildId();
+    version = await loadBuildInfo();
     injectGoods();
     injectExtraTheme();
     clockTaskVisualRefresh();
