@@ -1,6 +1,234 @@
 const version = '04-29-2025__2';
 let currentuser = null;
 
+function injectGoods() {
+    document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches.css?v=' + Date.now() + '" type="text/css"/>';
+    let script_patch = document.createElement('script');
+    script_patch.name = 'n/a';
+    script_patch.onload = function() {
+        console.debug('Patch Loaded:', script_patch.name);
+    };
+
+    if (window.location.href.includes('/receiving/queues/listing') || window.location.href.includes('/products/new')) {
+
+        document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches-listing.css?v=' + Date.now() + '" type="text/css"/>';
+        script_patch.src = "https://simple-patches.vercel.app/recom-patches-listing.js?v=" + Date.now();
+        script_patch.name = 'recom-patches-listing.js';
+
+    }
+
+    if (window.location.href.includes('/queues/conditions/')) {
+        
+        script_patch.src = "https://simple-patches.vercel.app/recom-patches-condqueue.js?v=" + Date.now();
+        script_patch.name = 'recom-patches-condqueue.js';
+
+    }
+
+    if ((window.location.href.includes('/products/') || window.location.href.includes('/product/items/')) && !window.location.href.includes('/products/new')) {
+        // ending slash is needed to ensure that the code only applies the patch for the sku and sid pages
+
+        document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches-product.css?v=' + Date.now() + '" type="text/css"/>';
+        script_patch.src = "https://simple-patches.vercel.app/recom-patches-productPage.js?v=" + Date.now();
+        script_patch.name = 'recom-patches-productPage.js';
+
+    }
+
+    if (window.location.href.includes('/receiving') && document.getElementById('searchProductForm')) {
+        
+        script_patch.src = "https://simple-patches.vercel.app/recom-patches-newInventory.js?v=" + Date.now();
+        script_patch.name = 'recom-patches-newInventory.js';
+
+    }
+
+    if (window.location.href.includes('/reports')) {
+
+        document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches-reports.css?v=' + Date.now() + '" type="text/css"/>';
+        script_patch.src = "https://simple-patches.vercel.app/recom-patches-reports.js?v=" + Date.now();
+        script_patch.name = "recom-patches-reports.js";
+
+    }
+
+    if (window.location.href.includes('/users/show')) {
+
+        document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches-userShow.css?v=' + Date.now() + '" type="text/css"/>';
+
+    }
+
+    if (window.location.href.includes('/integrations/store/logs')) {
+        
+        script_patch.src = "https://simple-patches.vercel.app/recom-patches-errors.js?v=" + Date.now();
+        script_patch.name = 'recom-patches-errors.js';
+
+    }
+
+    if (window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board')) {
+        
+        script_patch.src = "https://simple-patches.vercel.app/recom-patches-productivity.js?v=" + Date.now();
+        script_patch.name = 'recom-patches-productivity.js';
+
+    }
+
+    if (window.location.href.includes('/tools') && !window.location.href.includes('/tools/import')) {
+        
+        script_patch.src = "https://simple-patches.vercel.app/recom-patches-tools.js?v=" + Date.now();
+        script_patch.name = 'recom-patches-tools.js';
+
+    }
+
+    if (window.location.href.includes('/receiving/queues/inventory')) {
+        
+        script_patch.src = "https://simple-patches.vercel.app/recom-patches-pendinginv.js?v=" + Date.now();
+        script_patch.name = 'recom-patches-pendinginv.js';
+
+    }
+
+    if (document.title.includes('Dashboard - ')) {
+
+        document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches-dashboard.css?v=' + Date.now() + '" type="text/css"/>';
+        script_patch.src = "https://simple-patches.vercel.app/recom-patches-dashboard.js?v=" + Date.now();
+        script_patch.name = "recom-patches-dashboard.js";
+
+    }
+
+    document.body.appendChild(script_patch);
+
+    const today = new Date();
+    if (today.getDate() === 30 && today.getMonth() === 9) {
+        rainbowMessage('Happy Birthday Luke!');
+    }
+
+    if (today.getDate() === 29 && today.getMonth() === 9) {
+        rainbowMessage('Happy Early Birthday Luke!');
+    }
+
+    if (today.getDate() === 28 && today.getMonth() === 11) {
+        rainbowMessage('Happy Birthday Nate!');
+    }
+
+    if (today.getDate() === 27 && today.getMonth() === 11) {
+        rainbowMessage('Happy Early Birthday Nate!');
+    }
+}
+
+function injectExtraTheme() {
+    const nav_sidebar = document.getElementById('kt_app_sidebar_navs_wrappers');
+    if (nav_sidebar) {
+        nav_sidebar.style.display = 'flex';
+        nav_sidebar.style.flexDirection = 'column';
+        
+        //the sidebar sets the height with a js resize listener and also on init.
+        //regular init function doesn't set the value properly so this is to fix it.
+        nav_sidebar.style.height = (parseInt(nav_sidebar.style.height) + 40) + 'px';
+
+        const nav_sidebar_links = document.getElementById('#kt_app_sidebar_menu');
+        nav_sidebar_links.style.flex = '1';
+
+        const version_container = document.createElement('div');
+        version_container.setAttribute('style', 'padding: 0 25px; margin-top: 0.5rem; display: flex; flex-direction: column;');
+
+        const separator = document.createElement('div');
+        separator.setAttribute('class', 'app-sidebar-separator separator');
+        version_container.appendChild(separator);
+        
+        const loaded_message = document.createElement('a');
+        loaded_message.href = "https://simple-patches.vercel.app/";
+        loaded_message.setAttribute('style', 'text-align: center;');
+        loaded_message.textContent = 'Patches Loaded: ' + version;
+        loaded_message.classList = 'patches-loaded';
+        loaded_message.setAttribute('target', '_blank');
+        loaded_message.setAttribute('rel', 'noreferrer');
+        version_container.appendChild(loaded_message);
+
+        nav_sidebar.appendChild(version_container);
+
+        const name = nav_sidebar_links.querySelectorAll('.menu-heading')[0];
+        currentuser = name.textContent.replace(/^Hi,\s*/, '').toLocaleLowerCase();
+        let icon = "https://media.tenor.com/1MG3j4q4W5AAAAAj/cat-jam.gif";
+
+        if (name && name.textContent.includes('Hi, Luke')) {
+            icon = "https://i.redd.it/kfrhf84rmw3b1.jpg"; // abe
+            name.textContent = 'Hi, Psychopath';
+        } else if (name && name.textContent.includes('Hi, Nate')) {
+            name.textContent = 'Hi, Nasty Nate';
+        }
+
+        const avatars = document.querySelectorAll('img[src*="assets/media/svg/avatars/"]');
+        avatars.forEach(avatar => {
+            avatar.src = icon;
+        });
+
+        const links = nav_sidebar_links.querySelectorAll('.menu-link');
+        if (links.length > 0) {
+            links.forEach(link => {
+                const href = link.getAttribute('href'); 
+                const title = link.querySelector('.menu-title');
+                if (href && href.includes('productivity/employee')) {
+                    title.textContent = 'My Productivity';
+                } else if (href && href.includes('productivity') && !href.includes('productivity/board')) {
+                    title.textContent = 'Team Productivity';
+                }
+            });
+        } else {
+            console.error('PATCHES - Unable to parse button links');
+        }
+
+    } else {
+        console.error('Sidebar could not be found.');
+    }
+
+    const nav_footer = document.getElementById('kt_app_footer');
+    if (nav_footer) {
+        const copyrights = nav_footer.querySelectorAll('.text-muted.fw-semibold.me-1');
+        if (copyrights) {
+            copyrights.forEach(copyright => {
+                if (copyright.textContent = '2023©') {
+                    copyright.textContent = '(C)2025';
+
+                    const newCopyright = document.createElement('span');
+                    newCopyright.classList.add('text-muted', 'fw-semibold', 'me-1');
+                    newCopyright.textContent = ' | Simple Patches';
+                    copyright.parentElement.appendChild(newCopyright);
+                }
+            })
+        }
+    }
+
+    // fix top button, why is it green???
+    const nav_header = document.getElementById('kt_app_header');
+    if (nav_header) {
+        const greenButton = nav_header.querySelector('.btn-color-primary');
+        if (greenButton) {
+            greenButton.setAttribute('class', 'btn btn-icon btn-custom btn-color-gray-600 btn-active-light btn-active-color-primary w-35px h-35px w-md-40px h-md-40px');
+        }
+    }
+
+    /* theme stuff */
+    function getTheme() {
+        var theme = 'light';
+        if (document.documentElement.getAttribute('data-bs-theme')) {
+            theme = document.documentElement.getAttribute('data-bs-theme');
+        }
+        return theme;
+    }
+
+    function rainbowMessage(message) {
+        const mainelem = document.getElementById('rc_header_search').parentElement;
+        if (mainelem) {
+            const newMessage = document.createElement('div');
+            newMessage.innerHTML = `<strong style="font-size: 1.25rem;" class="rainbow_text_animated">${message}</strong>`;
+            newMessage.setAttribute('style', 'flex: 1; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; margin-left: 1rem; margin-right: 1rem;');
+            mainelem.appendChild(newMessage);
+        }
+    }
+
+    const statcardfix = document.querySelectorAll('.card.card-xl-stretch.mb-xl-8');
+    if (statcardfix && statcardfix.length === 3 && getTheme() === 'dark') {
+        statcardfix[0].setAttribute('style', `background-color: rgb(65,40,50) !important; color: white !important;`);
+        statcardfix[1].setAttribute('style', `background-color: rgb(15,50,50) !important; color: white !important;`);
+        statcardfix[2].setAttribute('style', `background-color: rgb(50,60,85) !important; color: white !important;`);
+    }
+}
+
 function modifiedClockInit() {
 	const recordTime_button = document.querySelector('a[data-url="productivity/record"]');
 	if (recordTime_button) {
@@ -225,115 +453,6 @@ function clockTaskVisualRefresh() {
     }
     checkAndUpdate();
     setInterval(checkAndUpdate, 60000);
-}
-
-/* end of clock in stuff */
-
-document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches.css?v=' + Date.now() + '" type="text/css"/>';
-let script_patch = document.createElement('script');
-script_patch.name = 'n/a';
-script_patch.onload = function() {
-    console.debug('Patch Loaded:', script_patch.name);
-};
-
-if (window.location.href.includes('/receiving/queues/listing') || window.location.href.includes('/products/new')) {
-
-    document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches-listing.css?v=' + Date.now() + '" type="text/css"/>';
-    script_patch.src = "https://simple-patches.vercel.app/recom-patches-listing.js?v=" + Date.now();
-    script_patch.name = 'recom-patches-listing.js';
-
-}
-
-if (window.location.href.includes('/queues/conditions/')) {
-    
-    script_patch.src = "https://simple-patches.vercel.app/recom-patches-condqueue.js?v=" + Date.now();
-    script_patch.name = 'recom-patches-condqueue.js';
-
-}
-
-if ((window.location.href.includes('/products/') || window.location.href.includes('/product/items/')) && !window.location.href.includes('/products/new')) {
-    // ending slash is needed to ensure that the code only applies the patch for the sku and sid pages
-
-    document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches-product.css?v=' + Date.now() + '" type="text/css"/>';
-    script_patch.src = "https://simple-patches.vercel.app/recom-patches-productPage.js?v=" + Date.now();
-    script_patch.name = 'recom-patches-productPage.js';
-
-}
-
-if (window.location.href.includes('/receiving') && document.getElementById('searchProductForm')) {
-    
-    script_patch.src = "https://simple-patches.vercel.app/recom-patches-newInventory.js?v=" + Date.now();
-    script_patch.name = 'recom-patches-newInventory.js';
-
-}
-
-if (window.location.href.includes('/reports')) {
-
-    document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches-reports.css?v=' + Date.now() + '" type="text/css"/>';
-    script_patch.src = "https://simple-patches.vercel.app/recom-patches-reports.js?v=" + Date.now();
-    script_patch.name = "recom-patches-reports.js";
-
-}
-
-if (window.location.href.includes('/users/show')) {
-
-    document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches-userShow.css?v=' + Date.now() + '" type="text/css"/>';
-
-}
-
-if (window.location.href.includes('/integrations/store/logs')) {
-    
-    script_patch.src = "https://simple-patches.vercel.app/recom-patches-errors.js?v=" + Date.now();
-    script_patch.name = 'recom-patches-errors.js';
-
-}
-
-if (window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board')) {
-    
-    script_patch.src = "https://simple-patches.vercel.app/recom-patches-productivity.js?v=" + Date.now();
-    script_patch.name = 'recom-patches-productivity.js';
-
-}
-
-if (window.location.href.includes('/tools') && !window.location.href.includes('/tools/import')) {
-    
-    script_patch.src = "https://simple-patches.vercel.app/recom-patches-tools.js?v=" + Date.now();
-    script_patch.name = 'recom-patches-tools.js';
-
-}
-
-if (window.location.href.includes('/receiving/queues/inventory')) {
-    
-    script_patch.src = "https://simple-patches.vercel.app/recom-patches-pendinginv.js?v=" + Date.now();
-    script_patch.name = 'recom-patches-pendinginv.js';
-
-}
-
-if (document.title.includes('Dashboard - ')) {
-
-    document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches-dashboard.css?v=' + Date.now() + '" type="text/css"/>';
-    script_patch.src = "https://simple-patches.vercel.app/recom-patches-dashboard.js?v=" + Date.now();
-    script_patch.name = "recom-patches-dashboard.js";
-
-}
-
-document.body.appendChild(script_patch);
-
-const today = new Date();
-if (today.getDate() === 30 && today.getMonth() === 9) {
-    rainbowMessage('Happy Birthday Luke!');
-}
-
-if (today.getDate() === 29 && today.getMonth() === 9) {
-    rainbowMessage('Happy Early Birthday Luke!');
-}
-
-if (today.getDate() === 28 && today.getMonth() === 11) {
-    rainbowMessage('Happy Birthday Nate!');
-}
-
-if (today.getDate() === 27 && today.getMonth() === 11) {
-    rainbowMessage('Happy Early Birthday Nate!');
 }
 
 async function checkWeatherAndCreateEffects() {
@@ -742,130 +861,14 @@ function adjustToolbar() {
 }
 
 function patchInit() {
-    const nav_sidebar = document.getElementById('kt_app_sidebar_navs_wrappers');
-    if (nav_sidebar) {
-        nav_sidebar.style.display = 'flex';
-        nav_sidebar.style.flexDirection = 'column';
-        
-        //the sidebar sets the height with a js resize listener and also on init.
-        //regular init function doesn't set the value properly so this is to fix it.
-        nav_sidebar.style.height = (parseInt(nav_sidebar.style.height) + 40) + 'px';
-
-        const nav_sidebar_links = document.getElementById('#kt_app_sidebar_menu');
-        nav_sidebar_links.style.flex = '1';
-
-        const version_container = document.createElement('div');
-        version_container.setAttribute('style', 'padding: 0 25px; margin-top: 0.5rem; display: flex; flex-direction: column;');
-
-        const separator = document.createElement('div');
-        separator.setAttribute('class', 'app-sidebar-separator separator');
-        version_container.appendChild(separator);
-        
-        const loaded_message = document.createElement('a');
-        loaded_message.href = "https://simple-patches.vercel.app/";
-        loaded_message.setAttribute('style', 'text-align: center;');
-        loaded_message.textContent = 'Patches Loaded: ' + version;
-        loaded_message.classList = 'patches-loaded';
-        loaded_message.setAttribute('target', '_blank');
-        loaded_message.setAttribute('rel', 'noreferrer');
-        version_container.appendChild(loaded_message);
-
-        nav_sidebar.appendChild(version_container);
-
-        const name = nav_sidebar_links.querySelectorAll('.menu-heading')[0];
-        currentuser = name.textContent.replace(/^Hi,\s*/, '').toLocaleLowerCase();
-        let icon = "https://media.tenor.com/1MG3j4q4W5AAAAAj/cat-jam.gif";
-
-        if (name && name.textContent.includes('Hi, Luke')) {
-            icon = "https://i.redd.it/kfrhf84rmw3b1.jpg"; // abe
-            name.textContent = 'Hi, Psychopath';
-        } else if (name && name.textContent.includes('Hi, Nate')) {
-            name.textContent = 'Hi, Nasty Nate';
-        }
-
-        const avatars = document.querySelectorAll('img[src*="assets/media/svg/avatars/"]');
-        avatars.forEach(avatar => {
-            avatar.src = icon;
-        });
-
-        const links = nav_sidebar_links.querySelectorAll('.menu-link');
-        if (links.length > 0) {
-            links.forEach(link => {
-                const href = link.getAttribute('href'); 
-                const title = link.querySelector('.menu-title');
-                if (href && href.includes('productivity/employee')) {
-                    title.textContent = 'My Productivity';
-                } else if (href && href.includes('productivity') && !href.includes('productivity/board')) {
-                    title.textContent = 'Team Productivity';
-                }
-            });
-        } else {
-            console.error('PATCHES - Unable to parse button links');
-        }
-
-    } else {
-        console.error('Sidebar could not be found.');
-    }
-
-    const nav_footer = document.getElementById('kt_app_footer');
-    if (nav_footer) {
-        const copyrights = nav_footer.querySelectorAll('.text-muted.fw-semibold.me-1');
-        if (copyrights) {
-            copyrights.forEach(copyright => {
-                if (copyright.textContent = '2023©') {
-                    copyright.textContent = '(C)2025';
-
-                    const newCopyright = document.createElement('span');
-                    newCopyright.classList.add('text-muted', 'fw-semibold', 'me-1');
-                    newCopyright.textContent = ' | Simple Patches';
-                    copyright.parentElement.appendChild(newCopyright);
-                }
-            })
-        }
-    }
-
-    // fix top button, why is it green???
-    const nav_header = document.getElementById('kt_app_header');
-    if (nav_header) {
-        const greenButton = nav_header.querySelector('.btn-color-primary');
-        if (greenButton) {
-            greenButton.setAttribute('class', 'btn btn-icon btn-custom btn-color-gray-600 btn-active-light btn-active-color-primary w-35px h-35px w-md-40px h-md-40px');
-        }
-    }
-
-    /* theme stuff */
-    function getTheme() {
-        var theme = 'light';
-        if (document.documentElement.getAttribute('data-bs-theme')) {
-            theme = document.documentElement.getAttribute('data-bs-theme');
-        }
-        return theme;
-    }
-
-    function rainbowMessage(message) {
-        const mainelem = document.getElementById('rc_header_search').parentElement;
-        if (mainelem) {
-            const newMessage = document.createElement('div');
-            newMessage.innerHTML = `<strong style="font-size: 1.25rem;" class="rainbow_text_animated">${message}</strong>`;
-            newMessage.setAttribute('style', 'flex: 1; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; margin-left: 1rem; margin-right: 1rem;');
-            mainelem.appendChild(newMessage);
-        }
-    }
-
-    const statcardfix = document.querySelectorAll('.card.card-xl-stretch.mb-xl-8');
-    if (statcardfix && statcardfix.length === 3 && getTheme() === 'dark') {
-        statcardfix[0].setAttribute('style', `background-color: rgb(65,40,50) !important; color: white !important;`);
-        statcardfix[1].setAttribute('style', `background-color: rgb(15,50,50) !important; color: white !important;`);
-        statcardfix[2].setAttribute('style', `background-color: rgb(50,60,85) !important; color: white !important;`);
-    }
-
+    injectGoods();
+    injectExtraTheme();
     clockTaskVisualRefresh();
     modifiedClockInit();
     checkWeatherAndCreateEffects();
     adjustToolbar();
 
     setTimeout(hijackAjaxModal, 500);
+    console.log('Patch Loading Complete');
 }
 window.onload = patchInit;
-
-console.log('Patch Loading Complete');
