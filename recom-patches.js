@@ -91,23 +91,6 @@ function injectGoods() {
     }
 
     document.body.appendChild(script_patch);
-
-    const today = new Date();
-    if (today.getDate() === 30 && today.getMonth() === 9) {
-        rainbowMessage('Happy Birthday Luke!');
-    }
-
-    if (today.getDate() === 29 && today.getMonth() === 9) {
-        rainbowMessage('Happy Early Birthday Luke!');
-    }
-
-    if (today.getDate() === 28 && today.getMonth() === 11) {
-        rainbowMessage('Happy Birthday Nate!');
-    }
-
-    if (today.getDate() === 27 && today.getMonth() === 11) {
-        rainbowMessage('Happy Early Birthday Nate!');
-    }
 }
 
 function injectExtraTheme() {
@@ -226,6 +209,23 @@ function injectExtraTheme() {
         statcardfix[0].setAttribute('style', `background-color: rgb(65,40,50) !important; color: white !important;`);
         statcardfix[1].setAttribute('style', `background-color: rgb(15,50,50) !important; color: white !important;`);
         statcardfix[2].setAttribute('style', `background-color: rgb(50,60,85) !important; color: white !important;`);
+    }
+
+    const today = new Date();
+    if (today.getDate() === 30 && today.getMonth() === 9) {
+        rainbowMessage('Happy Birthday Luke!');
+    }
+
+    if (today.getDate() === 29 && today.getMonth() === 9) {
+        rainbowMessage('Happy Early Birthday Luke!');
+    }
+
+    if (today.getDate() === 28 && today.getMonth() === 11) {
+        rainbowMessage('Happy Birthday Nate!');
+    }
+
+    if (today.getDate() === 27 && today.getMonth() === 11) {
+        rainbowMessage('Happy Early Birthday Nate!');
     }
 }
 
