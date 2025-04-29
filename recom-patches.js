@@ -514,7 +514,7 @@ async function checkWeatherAndCreateEffects() {
     const snowStatus = getCookie('patch_snowStatus');
     const rainStatus = getCookie('patch_rainStatus');
 
-    if (snowStatus !== null) {
+    if (snowStatus !== null && rainStatus !== null) {
         console.debug(`Patch - Using cached snow status: ${snowStatus}`);
         console.debug(`Patch - Using cached rain status: ${rainStatus}`);
         if (snowStatus === 'true') {
