@@ -544,9 +544,8 @@ async function checkWeatherAndCreateEffects() {
         const snowCodes = [71, 73, 75, 77, 85, 86];
         const rainCodes = [61, 63, 65, 80, 81, 82];
 
-        const isRainingNow = rainCodes.includes(currentWeatherCode);
-        let isSnowingNow = snowCodes.includes(currentWeatherCode);
-
+        let shouldShowRain = rainCodes.includes(currentWeatherCode);
+        let shouldShowSnow = snowCodes.includes(currentWeatherCode);
         if (!isSnowingNow) {
             const hourlyWeatherCodes = weatherData.hourly.weathercode;
             const hourlyTimestamps = weatherData.hourly.time;
@@ -558,22 +557,7 @@ async function checkWeatherAndCreateEffects() {
                 const time = new Date(timestamp);
                 return time > now && time <= cutoff && snowCodes.includes(hourlyWeatherCodes[i]);
             });
-        }        
-
-        console.debug(`Patch - Current Weather:`, currentWeatherCode);
-        console.debug(`Patch - isSnowingNow: ${isSnowingNow}`);
-        console.debug(`Patch - isRainingNow: ${isRainingNow}`);
-
-        const dailyForecast = weatherData.daily.weathercode || [];
-        const isSnowInForecast = dailyForecast.some(code => [71, 73, 75, 77, 85, 86].includes(code));
-        const isRainInForecast = dailyForecast.some(code => [61, 63, 65, 80, 81, 82].includes(code));
-
-        console.debug(`Patch - Forecast:`, dailyForecast);
-        console.debug(`Patch - isSnowInForecast: ${isSnowInForecast}`);
-        console.debug(`Patch - isRainInForecast: ${isRainInForecast}`);
-
-        const shouldShowSnow = isSnowingNow || isSnowInForecast;
-        const shouldShowRain = isRainingNow || isRainInForecast;
+        }
 
         console.debug(`Patch - Enable Snow: ${shouldShowSnow}`);
         console.debug(`Patch - Enable Rain: ${shouldShowRain}`);
