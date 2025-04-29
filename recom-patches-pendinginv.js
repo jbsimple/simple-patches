@@ -33,42 +33,63 @@ async function checkPics() {
 
 function piInit() {
     const picontainer = document.getElementById('kt_app_content_container');
-    if (picontainer) {
-        const checkImgButton = document.createElement('button');
-        checkImgButton.classList.add('btn', 'btn-info');
-        checkImgButton.id = 'patch_openAllImages';
-        checkImgButton.textContent = 'Check Images';
-        checkImgButton.disabled = true;
-        checkImgButton.style.color = 'white';
-        checkImgButton.style.border = 'none';
-        checkImgButton.style.padding = '10px 20px';
-        checkImgButton.style.cursor = 'pointer';
-        checkImgButton.style.borderRadius = '5px';
-        checkImgButton.onclick = checkPics;
+    if (!picontainer) return;
 
-        const toolbar = picontainer.querySelector('.card-toolbar.flex-row-fluid.justify-content-end');
-        if (toolbar && toolbar.classList.contains('justify-content-end')) {
-            toolbar.classList.remove('flex-row-fluid', 'justify-content-end');
-            toolbar.setAttribute('style', 'flex-direction: row; width: 100%;');
+    const checkImgButton = document.createElement('button');
+    checkImgButton.classList.add('btn', 'btn-info');
+    checkImgButton.id = 'patch_openAllImages';
+    checkImgButton.textContent = 'Check Images';
+    checkImgButton.disabled = true;
+    checkImgButton.style.cssText = `
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 5px;
+    `;
+    checkImgButton.onclick = checkPics;
 
-            const spacer = document.createElement('div');
-            spacer.setAttribute('style', 'flex: 1;');
-            toolbar.prepend(spacer);
-            toolbar.prepend(checkImgButton);
-        }
+    const toolbar = picontainer.querySelector('.card-toolbar.flex-row-fluid.justify-content-end');
+    if (toolbar && toolbar.classList.contains('justify-content-end')) {
+        toolbar.classList.remove('flex-row-fluid', 'justify-content-end');
+        toolbar.setAttribute('style', 'flex-direction: row; width: 100%;');
 
-        const observer = new MutationObserver(() => {
-            if (document.getElementById('dtTable_wrapper')) {
-                checkImgButton.disabled = false;
-                observer.disconnect();
-            }
-        });
-
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
+        const spacer = document.createElement('div');
+        spacer.style.flex = '1';
+        toolbar.prepend(spacer);
+        toolbar.prepend(checkImgButton);
     }
+
+    let styleObserver = null;
+
+    function updateButtonState() {
+        const wrapper = document.getElementById('dtTable_wrapper');
+        const processing = document.getElementById('dtTable_processing');
+        const isReady = wrapper && (!processing || processing.style.display === 'none');
+        checkImgButton.disabled = !isReady;
+    }
+
+    function observeProcessing() {
+        const processing = document.getElementById('dtTable_processing');
+        if (processing) {
+            if (styleObserver) styleObserver.disconnect();
+            styleObserver = new MutationObserver(updateButtonState);
+            styleObserver.observe(processing, {
+                attributes: true,
+                attributeFilter: ['style']
+            });
+        }
+    }
+
+    const globalObserver = new MutationObserver(() => {
+        updateButtonState();
+        observeProcessing();
+    });
+
+    globalObserver.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
 }
 
 piInit();
