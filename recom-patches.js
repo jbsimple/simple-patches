@@ -1,125 +1,6 @@
 const version = '04-29-2025__2';
 let currentuser = null;
 
-const nav_sidebar = document.getElementById('kt_app_sidebar_navs_wrappers');
-if (nav_sidebar) {
-    nav_sidebar.style.display = 'flex';
-    nav_sidebar.style.flexDirection = 'column';
-    
-    //the sidebar sets the height with a js resize listener and also on init.
-    //regular init function doesn't set the value properly so this is to fix it.
-    nav_sidebar.style.height = (parseInt(nav_sidebar.style.height) + 40) + 'px';
-
-    const nav_sidebar_links = document.getElementById('#kt_app_sidebar_menu');
-    nav_sidebar_links.style.flex = '1';
-
-    const version_container = document.createElement('div');
-    version_container.setAttribute('style', 'padding: 0 25px; margin-top: 0.5rem; display: flex; flex-direction: column;');
-
-    const separator = document.createElement('div');
-    separator.setAttribute('class', 'app-sidebar-separator separator');
-    version_container.appendChild(separator);
-    
-    const loaded_message = document.createElement('a');
-    loaded_message.href = "https://simple-patches.vercel.app/";
-    loaded_message.setAttribute('style', 'text-align: center;');
-    loaded_message.textContent = 'Patches Loaded: ' + version;
-    loaded_message.classList = 'patches-loaded';
-    loaded_message.setAttribute('target', '_blank');
-    loaded_message.setAttribute('rel', 'noreferrer');
-    version_container.appendChild(loaded_message);
-
-    nav_sidebar.appendChild(version_container);
-
-    const name = nav_sidebar_links.querySelectorAll('.menu-heading')[0];
-    currentuser = name.textContent.replace(/^Hi,\s*/, '').toLocaleLowerCase();
-    let icon = "https://media.tenor.com/1MG3j4q4W5AAAAAj/cat-jam.gif";
-
-    if (name && name.textContent.includes('Hi, Luke')) {
-        icon = "https://i.redd.it/kfrhf84rmw3b1.jpg"; // abe
-        name.textContent = 'Hi, Psychopath';
-    } else if (name && name.textContent.includes('Hi, Nate')) {
-        name.textContent = 'Hi, Nasty Nate';
-    }
-
-    const avatars = document.querySelectorAll('img[src*="assets/media/svg/avatars/"]');
-    avatars.forEach(avatar => {
-        avatar.src = icon;
-    });
-
-    const links = nav_sidebar_links.querySelectorAll('.menu-link');
-    if (links.length > 0) {
-        links.forEach(link => {
-            const href = link.getAttribute('href'); 
-            const title = link.querySelector('.menu-title');
-            if (href && href.includes('productivity/employee')) {
-                title.textContent = 'My Productivity';
-            } else if (href && href.includes('productivity') && !href.includes('productivity/board')) {
-                title.textContent = 'Team Productivity';
-            }
-        });
-    } else {
-        console.error('PATCHES - Unable to parse button links');
-    }
-
-} else {
-    console.error('Sidebar could not be found.');
-}
-
-const nav_footer = document.getElementById('kt_app_footer');
-if (nav_footer) {
-    const copyrights = nav_footer.querySelectorAll('.text-muted.fw-semibold.me-1');
-    if (copyrights) {
-        copyrights.forEach(copyright => {
-            if (copyright.textContent = '2023©') {
-                copyright.textContent = '(C)2025';
-
-                const newCopyright = document.createElement('span');
-                newCopyright.classList.add('text-muted', 'fw-semibold', 'me-1');
-                newCopyright.textContent = ' | Simple Patches';
-                copyright.parentElement.appendChild(newCopyright);
-            }
-        })
-    }
-}
-
-// fix top button, why is it green???
-const nav_header = document.getElementById('kt_app_header');
-if (nav_header) {
-    const greenButton = nav_header.querySelector('.btn-color-primary');
-    if (greenButton) {
-        greenButton.setAttribute('class', 'btn btn-icon btn-custom btn-color-gray-600 btn-active-light btn-active-color-primary w-35px h-35px w-md-40px h-md-40px');
-    }
-}
-
-/* theme stuff */
-function getTheme() {
-    var theme = 'light';
-    if (document.documentElement.getAttribute('data-bs-theme')) {
-        theme = document.documentElement.getAttribute('data-bs-theme');
-    }
-    return theme;
-}
-
-function rainbowMessage(message) {
-    const mainelem = document.getElementById('rc_header_search').parentElement;
-    if (mainelem) {
-        const newMessage = document.createElement('div');
-        newMessage.innerHTML = `<strong style="font-size: 1.25rem;" class="rainbow_text_animated">${message}</strong>`;
-        newMessage.setAttribute('style', 'flex: 1; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; margin-left: 1rem; margin-right: 1rem;');
-        mainelem.appendChild(newMessage);
-    }
-}
-
-const statcardfix = document.querySelectorAll('.card.card-xl-stretch.mb-xl-8');
-if (statcardfix && statcardfix.length === 3 && getTheme() === 'dark') {
-    statcardfix[0].setAttribute('style', `background-color: rgb(65,40,50) !important; color: white !important;`);
-    statcardfix[1].setAttribute('style', `background-color: rgb(15,50,50) !important; color: white !important;`);
-    statcardfix[2].setAttribute('style', `background-color: rgb(50,60,85) !important; color: white !important;`);
-}
-
-/* end of theme stuff */
-
 function modifiedClockInit() {
 	const recordTime_button = document.querySelector('a[data-url="productivity/record"]');
 	if (recordTime_button) {
@@ -861,6 +742,123 @@ function adjustToolbar() {
 }
 
 function patchInit() {
+    const nav_sidebar = document.getElementById('kt_app_sidebar_navs_wrappers');
+    if (nav_sidebar) {
+        nav_sidebar.style.display = 'flex';
+        nav_sidebar.style.flexDirection = 'column';
+        
+        //the sidebar sets the height with a js resize listener and also on init.
+        //regular init function doesn't set the value properly so this is to fix it.
+        nav_sidebar.style.height = (parseInt(nav_sidebar.style.height) + 40) + 'px';
+
+        const nav_sidebar_links = document.getElementById('#kt_app_sidebar_menu');
+        nav_sidebar_links.style.flex = '1';
+
+        const version_container = document.createElement('div');
+        version_container.setAttribute('style', 'padding: 0 25px; margin-top: 0.5rem; display: flex; flex-direction: column;');
+
+        const separator = document.createElement('div');
+        separator.setAttribute('class', 'app-sidebar-separator separator');
+        version_container.appendChild(separator);
+        
+        const loaded_message = document.createElement('a');
+        loaded_message.href = "https://simple-patches.vercel.app/";
+        loaded_message.setAttribute('style', 'text-align: center;');
+        loaded_message.textContent = 'Patches Loaded: ' + version;
+        loaded_message.classList = 'patches-loaded';
+        loaded_message.setAttribute('target', '_blank');
+        loaded_message.setAttribute('rel', 'noreferrer');
+        version_container.appendChild(loaded_message);
+
+        nav_sidebar.appendChild(version_container);
+
+        const name = nav_sidebar_links.querySelectorAll('.menu-heading')[0];
+        currentuser = name.textContent.replace(/^Hi,\s*/, '').toLocaleLowerCase();
+        let icon = "https://media.tenor.com/1MG3j4q4W5AAAAAj/cat-jam.gif";
+
+        if (name && name.textContent.includes('Hi, Luke')) {
+            icon = "https://i.redd.it/kfrhf84rmw3b1.jpg"; // abe
+            name.textContent = 'Hi, Psychopath';
+        } else if (name && name.textContent.includes('Hi, Nate')) {
+            name.textContent = 'Hi, Nasty Nate';
+        }
+
+        const avatars = document.querySelectorAll('img[src*="assets/media/svg/avatars/"]');
+        avatars.forEach(avatar => {
+            avatar.src = icon;
+        });
+
+        const links = nav_sidebar_links.querySelectorAll('.menu-link');
+        if (links.length > 0) {
+            links.forEach(link => {
+                const href = link.getAttribute('href'); 
+                const title = link.querySelector('.menu-title');
+                if (href && href.includes('productivity/employee')) {
+                    title.textContent = 'My Productivity';
+                } else if (href && href.includes('productivity') && !href.includes('productivity/board')) {
+                    title.textContent = 'Team Productivity';
+                }
+            });
+        } else {
+            console.error('PATCHES - Unable to parse button links');
+        }
+
+    } else {
+        console.error('Sidebar could not be found.');
+    }
+
+    const nav_footer = document.getElementById('kt_app_footer');
+    if (nav_footer) {
+        const copyrights = nav_footer.querySelectorAll('.text-muted.fw-semibold.me-1');
+        if (copyrights) {
+            copyrights.forEach(copyright => {
+                if (copyright.textContent = '2023©') {
+                    copyright.textContent = '(C)2025';
+
+                    const newCopyright = document.createElement('span');
+                    newCopyright.classList.add('text-muted', 'fw-semibold', 'me-1');
+                    newCopyright.textContent = ' | Simple Patches';
+                    copyright.parentElement.appendChild(newCopyright);
+                }
+            })
+        }
+    }
+
+    // fix top button, why is it green???
+    const nav_header = document.getElementById('kt_app_header');
+    if (nav_header) {
+        const greenButton = nav_header.querySelector('.btn-color-primary');
+        if (greenButton) {
+            greenButton.setAttribute('class', 'btn btn-icon btn-custom btn-color-gray-600 btn-active-light btn-active-color-primary w-35px h-35px w-md-40px h-md-40px');
+        }
+    }
+
+    /* theme stuff */
+    function getTheme() {
+        var theme = 'light';
+        if (document.documentElement.getAttribute('data-bs-theme')) {
+            theme = document.documentElement.getAttribute('data-bs-theme');
+        }
+        return theme;
+    }
+
+    function rainbowMessage(message) {
+        const mainelem = document.getElementById('rc_header_search').parentElement;
+        if (mainelem) {
+            const newMessage = document.createElement('div');
+            newMessage.innerHTML = `<strong style="font-size: 1.25rem;" class="rainbow_text_animated">${message}</strong>`;
+            newMessage.setAttribute('style', 'flex: 1; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; margin-left: 1rem; margin-right: 1rem;');
+            mainelem.appendChild(newMessage);
+        }
+    }
+
+    const statcardfix = document.querySelectorAll('.card.card-xl-stretch.mb-xl-8');
+    if (statcardfix && statcardfix.length === 3 && getTheme() === 'dark') {
+        statcardfix[0].setAttribute('style', `background-color: rgb(65,40,50) !important; color: white !important;`);
+        statcardfix[1].setAttribute('style', `background-color: rgb(15,50,50) !important; color: white !important;`);
+        statcardfix[2].setAttribute('style', `background-color: rgb(50,60,85) !important; color: white !important;`);
+    }
+
     clockTaskVisualRefresh();
     modifiedClockInit();
     checkWeatherAndCreateEffects();
