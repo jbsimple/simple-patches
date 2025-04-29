@@ -54,4 +54,4 @@ function piInit() {
     }
 }
 
-window.onload = piInit;
+piInit();
