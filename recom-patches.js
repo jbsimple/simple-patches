@@ -135,11 +135,13 @@ function injectExtraTheme() {
             name.textContent = 'Hi, Nasty Nate';
         }
 
-        const avatars = document.querySelectorAll('img[src*="assets/media/svg/avatars/"]');
-        console.debug('PATCHES - Avatar Swap Check:', avatars);
-        avatars.forEach(avatar => {
-            avatar.src = icon;
-        });
+        setTimeout(() => {
+            const avatars = document.querySelectorAll('img[src*="assets/media/svg/avatars/"]');
+            console.debug('PATCHES - Avatar Swap Check:', avatars);
+            avatars.forEach(avatar => {
+                avatar.src = icon;
+            });
+        }, 500);        
 
         const links = nav_sidebar_links.querySelectorAll('.menu-link');
         if (links.length > 0) {
