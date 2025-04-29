@@ -582,7 +582,7 @@ function injectDateSelect(funct, content) {
     content.prepend(wrapper);
 }
 
-window.onload = async () => {
+async () => {
     const content = document.getElementById('kt_app_content');
     const toolbar = document.getElementById('kt_app_toolbar');
     let heading = null;
