@@ -39,7 +39,7 @@ There are other smaller modifications made, look below at the patches list to se
 - On product and item pages; CSS fix for image box being too small.
 - On product and item pages; CSS fix for images inside upload box not wrapping properly.
 - On product and item pages; CSS fix for activity log where the color of the name is dark even when the page is in dark mode.
-- On product and item pages; Fix to show metadata update name in activity log.
+- On product and item pages; Fix to show metadata update name in activity log using live data.
 - On product and item pages; Fix to the media tab by removing the existing, bad gallery viewer. Opens image in a new tab (as god intended).
 - On product and item pages; Fix to prevent newly uploaded images when clicked to default a-tag behavior. It also opens in a new tab.
 - On product and item pages; Fix to prevent navigation away while images are still uploading.
