@@ -516,6 +516,7 @@ async function checkWeatherAndCreateEffects() {
 
     if (snowStatus !== null) {
         console.debug(`Patch - Using cached snow status: ${snowStatus}`);
+        console.debug(`Patch - Using cached rain status: ${rainStatus}`);
         if (snowStatus === 'true') {
             createSnow();
         } else if (rainStatus === 'true') {
