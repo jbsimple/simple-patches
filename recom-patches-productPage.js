@@ -314,22 +314,77 @@ if (media_tab && media_tree) {
             newElement.appendChild(button_label);
         }
 
-        var button = document.createElement('button');
-        button.classList.add('btn');
-        button.classList.add('btn-info');
-        button.id = 'patch_openAllImages';
-        button.textContent = 'Open All Images';
-        button.style.color = 'white';
-        button.style.border = 'none';
-        button.style.padding = '10px 20px';
-        button.style.cursor = 'pointer';
-        button.style.borderRadius = '5px';
-        button.onclick = openAllImages;
-        newElement.appendChild(button);
+        var openAllButton = document.createElement('button');
+        openAllButton.classList.add('btn');
+        openAllButton.classList.add('btn-info');
+        openAllButton.id = 'patch_openAllImages';
+        openAllButton.textContent = 'Open All Images';
+        openAllButton.style.color = 'white';
+        openAllButton.style.border = 'none';
+        openAllButton.style.padding = '10px 20px';
+        openAllButton.style.cursor = 'pointer';
+        openAllButton.style.borderRadius = '5px';
+        openAllButton.onclick = openAllImages;
+        newElement.appendChild(openAllButton);
+
+        // delete all button
+        var deleteAllButton = document.createElement('button');
+        deleteAllButton.classList.add('btn');
+        deleteAllButton.classList.add('btn-info');
+        deleteAllButton.classList.add('btn-danger');
+        deleteAllButton.id = 'deleteAllImages';
+        deleteAllButton.textContent = 'Delete All Images';
+        deleteAllButton.style.color = 'white';
+        deleteAllButton.style.border = 'none';
+        deleteAllButton.style.padding = '10px 20px';
+        deleteAllButton.style.cursor = 'pointer';
+        deleteAllButton.style.borderRadius = '5px';
+        deleteAllButton.onclick = deleteAllImages;
+        newElement.appendChild(deleteAllButton);
 
     }
     
     media_tree_parent.insertBefore(newElement, media_tree);
+}
+
+// delete all function (wow)
+function deleteAllImages() {
+	const imgwrap = document.getElementById('product-images-container');
+	const imgs = imgwrap.querySelectorAll('.col.draggable[data-id]');
+
+	let type = '';
+	const url = window.location.href;
+	if (url.includes('/products/')) {
+		type = 'product';
+	} else if (url.includes('/items/')) {
+		type = 'item';
+	}
+
+	const csrfToken = $('meta[name="X-CSRF-TOKEN"]').attr("content");
+
+	imgs.forEach(img => {
+		const id = img.getAttribute('data-id');
+
+		$.post({
+			url: "ajax/actions/productimagedelete/" + id,
+			dataType: "json",
+			data: {
+				id: id,
+				type: type
+			},
+			headers: {
+				"X-CSRF-TOKEN": csrfToken,
+			},
+			success: function(data) {
+				apiResponseAlert(data);
+				$(img).closest(".col").remove();
+			},
+			error: function(error) {
+				console.log("FAIL", error);
+				ajaxFailAlert(error);
+			}
+		});
+	});
 }
 
 // get it to open all images
