@@ -1,5 +1,9 @@
 async function checkPics() {
 	const table = document.getElementById('dtTable_wrapper');
+    if (!table) {
+        return false;
+    }
+
 	const products = table.querySelectorAll('[data-url^="ajax/modals/productitems/"]');
 
 	for (const product of products) {
@@ -34,13 +38,14 @@ function piInit() {
         checkImgButton.classList.add('btn', 'btn-info');
         checkImgButton.id = 'patch_openAllImages';
         checkImgButton.textContent = 'Check Images';
+        checkImgButton.disabled = true;
         checkImgButton.style.color = 'white';
         checkImgButton.style.border = 'none';
         checkImgButton.style.padding = '10px 20px';
         checkImgButton.style.cursor = 'pointer';
         checkImgButton.style.borderRadius = '5px';
         checkImgButton.onclick = checkPics;
-        
+
         const toolbar = picontainer.querySelector('.card-toolbar.flex-row-fluid.justify-content-end');
         if (toolbar && toolbar.classList.contains('justify-content-end')) {
             toolbar.classList.remove('flex-row-fluid', 'justify-content-end');
@@ -51,6 +56,18 @@ function piInit() {
             toolbar.prepend(spacer);
             toolbar.prepend(checkImgButton);
         }
+
+        const observer = new MutationObserver(() => {
+            if (document.getElementById('dtTable_wrapper')) {
+                checkImgButton.disabled = false;
+                observer.disconnect();
+            }
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
     }
 }
 
