@@ -546,14 +546,14 @@ async function checkWeatherAndCreateEffects() {
 
         let shouldShowRain = rainCodes.includes(currentWeatherCode);
         let shouldShowSnow = snowCodes.includes(currentWeatherCode);
-        if (!isSnowingNow) {
+        if (!shouldShowSnow) {
             const hourlyWeatherCodes = weatherData.hourly.weathercode;
             const hourlyTimestamps = weatherData.hourly.time;
         
             const now = new Date();
             const cutoff = new Date(now.getTime() + 24 * 60 * 60 * 1000);
         
-            isSnowingNow = hourlyTimestamps.some((timestamp, i) => {
+            shouldShowSnow = hourlyTimestamps.some((timestamp, i) => {
                 const time = new Date(timestamp);
                 return time > now && time <= cutoff && snowCodes.includes(hourlyWeatherCodes[i]);
             });
