@@ -8,6 +8,7 @@ async function checkPics() {
 
 	for (const product of products) {
 		const url = product.getAttribute('data-url');
+        const id = url.split('/').pop();
 
 		try {
 			const response = await fetch(url);
@@ -20,7 +21,7 @@ async function checkPics() {
 			const img = doc.querySelector('img');
 			if (img) {
 				let parent = product.parentElement;
-				parent.innerHTML = `<a href="javascript:void(0);" data-url="${url}" class="ajax-modal">
+				parent.innerHTML = `<a href="/products/${id}" data-url="${url}" class="ajax-modal">
                     <img src="${img.src}" style="width:42px; height:42px; display:inline-block; margin-right:1rem;">
                 </a>
                 <div style="display: flex; flex-direction: column;">${parent.innerHTML}</div>`;
