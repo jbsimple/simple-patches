@@ -136,6 +136,7 @@ function injectExtraTheme() {
         }
 
         const avatars = document.querySelectorAll('img[src*="assets/media/svg/avatars/"]');
+        console.debug('PATCHES - Avatar Swap Check:', avatars);
         avatars.forEach(avatar => {
             avatar.src = icon;
         });
