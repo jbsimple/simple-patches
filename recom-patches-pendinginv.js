@@ -27,29 +27,31 @@ async function checkPics() {
 	}
 }
 
-const picontainer = document.getElementById('kt_app_content_container');
-if (picontainer) {
-    const checkImgButton = document.createElement('button');
-    checkImgButton.classList.add('btn');
-    checkImgButton.classList.add('btn-info');
-    checkImgButton.id = 'patch_openAllImages';
-    checkImgButton.textContent = 'Check Images';
-    checkImgButton.style.color = 'white';
-    checkImgButton.style.border = 'none';
-    checkImgButton.style.padding = '10px 20px';
-    checkImgButton.style.cursor = 'pointer';
-    checkImgButton.style.borderRadius = '5px';
-    checkImgButton.onclick = checkPics;
-    
-    const toolbar = picontainer.querySelector('.card-toolbar.flex-row-fluid.justify-content-end');
-    if (toolbar && toolbar.classList.includes('justify-content-end')) {
-        toolbar.classList.remove('flex-row-fluid');
-        toolbar.classList.remove('justify-content-end');
-        toolbar.setAttribute('style', 'flex-direction: row;');
+function piInit() {
+    const picontainer = document.getElementById('kt_app_content_container');
+    if (picontainer) {
+        const checkImgButton = document.createElement('button');
+        checkImgButton.classList.add('btn', 'btn-info');
+        checkImgButton.id = 'patch_openAllImages';
+        checkImgButton.textContent = 'Check Images';
+        checkImgButton.style.color = 'white';
+        checkImgButton.style.border = 'none';
+        checkImgButton.style.padding = '10px 20px';
+        checkImgButton.style.cursor = 'pointer';
+        checkImgButton.style.borderRadius = '5px';
+        checkImgButton.onclick = checkPics;
+        
+        const toolbar = picontainer.querySelector('.card-toolbar.flex-row-fluid.justify-content-end');
+        if (toolbar && toolbar.classList.contains('justify-content-end')) {
+            toolbar.classList.remove('flex-row-fluid', 'justify-content-end');
+            toolbar.setAttribute('style', 'flex-direction: row;');
 
-        const spacer = document.createElement('div');
-        spacer.setAttribute('style', 'flex: 1;');
-        toolbar.prepend(spacer);
-        toolbar.prepend(checkImgButton);
+            const spacer = document.createElement('div');
+            spacer.setAttribute('style', 'flex: 1;');
+            toolbar.prepend(spacer);
+            toolbar.prepend(checkImgButton);
+        }
     }
 }
+
+window.onload = piInit;
