@@ -129,7 +129,7 @@ function injectExtraTheme() {
         let icon = "https://media.tenor.com/1MG3j4q4W5AAAAAj/cat-jam.gif";
 
         if (name && name.textContent.includes('Hi, Luke')) {
-            icon = "https://i.redd.it/kfrhf84rmw3b1.jpg"; // abe
+            icon = "https://c.tenor.com/3E0ka5aQKmEAAAAC/tenor.gif"; // abe
             name.textContent = 'Hi, Psychopath';
         } else if (name && name.textContent.includes('Hi, Nate')) {
             name.textContent = 'Hi, Nasty Nate';
