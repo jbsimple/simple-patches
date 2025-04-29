@@ -3,7 +3,7 @@ let currentuser = null;
 
 async function getBuildId() {
     try {
-        const response = await fetch('/buildInfo.json');
+        const response = await fetch('https://simple-patches.vercel.app//buildInfo.json');
         if (!response.ok) throw new Error('Failed to fetch build info');
 
         const info = await response.json();
