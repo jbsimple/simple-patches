@@ -116,7 +116,7 @@ function injectExtraTheme() {
         const loaded_message = document.createElement('a');
         loaded_message.href = "https://simple-patches.vercel.app/";
         loaded_message.setAttribute('style', 'text-align: center;');
-        loaded_message.textContent = 'Patches Loaded: ' + version;
+        loaded_message.textContent = 'Patch: ' + version;
         loaded_message.classList = 'patches-loaded';
         loaded_message.setAttribute('target', '_blank');
         loaded_message.setAttribute('rel', 'noreferrer');
@@ -135,6 +135,7 @@ function injectExtraTheme() {
             name.textContent = 'Hi, Nasty Nate';
         }
 
+        /*
         const allImgs = document.querySelectorAll('img');
         allImgs.forEach(avatar => {
             const src = avatar.getAttribute('src') || '';
@@ -142,7 +143,8 @@ function injectExtraTheme() {
                 console.debug('PATCHES - Swapping Avatar:', src);
                 avatar.src = icon;
             }
-        });           
+        });
+        */        
 
         const links = nav_sidebar_links.querySelectorAll('.menu-link');
         if (links.length > 0) {
