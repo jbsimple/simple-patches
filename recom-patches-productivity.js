@@ -582,7 +582,7 @@ function injectDateSelect(funct, content) {
     content.prepend(wrapper);
 }
 
-async () => {
+(async () => {
     console.debug('PATCHES - Start');
     const content = document.getElementById('kt_app_content');
     const toolbar = document.getElementById('kt_app_toolbar');
@@ -636,4 +636,4 @@ async () => {
         }
     }
     
-};
+})();
