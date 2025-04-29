@@ -3,6 +3,7 @@
 echo "Generating buildInfo.js..."
 
 short_sha=$(echo "${VERCEL_GIT_COMMIT_SHA}" | cut -c1-7)
+build_time=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
 cat <<EOF > buildInfo.js
 window.BUILD_INFO = {
@@ -13,7 +14,8 @@ window.BUILD_INFO = {
     repoOwner: "${VERCEL_GIT_REPO_OWNER}",
     repoName: "${VERCEL_GIT_REPO_SLUG}",
     environment: "${VERCEL_ENV}",
-    deployUrl: "https://${VERCEL_URL}"
+    deployUrl: "https://${VERCEL_URL}",
+    buildTime: "${build_time}"
 };
 EOF
 
