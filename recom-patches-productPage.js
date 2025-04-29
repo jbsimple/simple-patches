@@ -301,19 +301,12 @@ if (media_tab && media_tree) {
     var newElement = document.createElement('div');
     newElement.classList.add('fv-row');
     newElement.classList.add('mb-2');
-    newElement.setAttribute('style', 'padding-bottom: 1.5rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center');
+    newElement.setAttribute('style', 'padding-bottom: 1.5rem; display: flex; flex-wrap: wrap; gap: 1rem; align-items: center');
     
     // Add button if there are image elements
     if (imageElements.length > 0) {
 
-        if (!checkPopup()) {
-            var button_label = document.createElement('label');
-            button_label.for = 'patch_openAllImages';
-            button_label.textContent = '(Enable Popups):';
-            button_label.setAttribute('style', 'color: var(--bs-danger); font-weight: 500; font-size: 1.1rem;');
-            newElement.appendChild(button_label);
-        }
-
+        // open all button
         var openAllButton = document.createElement('button');
         openAllButton.classList.add('btn');
         openAllButton.classList.add('btn-info');
@@ -325,6 +318,9 @@ if (media_tab && media_tree) {
         openAllButton.style.cursor = 'pointer';
         openAllButton.style.borderRadius = '5px';
         openAllButton.onclick = openAllImages;
+        if (!checkPopup()) {
+            openAllButton.title = "Popups are disabled, please enable for this to work.";
+        }
         newElement.appendChild(openAllButton);
 
         // delete all button
