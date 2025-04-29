@@ -413,6 +413,13 @@ if (window.location.href.includes('/tools') && !window.location.href.includes('/
 
 }
 
+if (window.location.href.includes('/receiving/queues/inventory')) {
+    
+    script_patch.src = "https://simple-patches.vercel.app/recom-patches-pendinginv.js?v=" + Date.now();
+    script_patch.name = 'recom-patches-pendinginv.js';
+
+}
+
 if (document.title.includes('Dashboard - ')) {
 
     document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches-dashboard.css?v=' + Date.now() + '" type="text/css"/>';
