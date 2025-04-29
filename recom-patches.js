@@ -529,18 +529,35 @@ async function checkWeatherAndCreateEffects() {
 
     try {
         const response = await fetch(
-            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&daily=weathercode&timezone=auto&forecast_days=3`
+            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=weathercode&timezone=auto`
         );        
-
+        
         if (!response.ok) {
             throw new Error('Failed to fetch weather data');
         }
-
+        
         const weatherData = await response.json();
-
+        
         const currentWeatherCode = weatherData.current_weather.weathercode;
-        const isSnowingNow = [71, 73, 75, 77, 85, 86].includes(currentWeatherCode);
-        const isRainingNow = [61, 63, 65, 80, 81, 82].includes(currentWeatherCode);
+
+        const snowCodes = [71, 73, 75, 77, 85, 86];
+        const rainCodes = [61, 63, 65, 80, 81, 82];
+
+        const isRainingNow = rainCodes.includes(currentWeatherCode);
+        let isSnowingNow = snowCodes.includes(currentWeatherCode);
+
+        if (!isSnowingNow) {
+            const hourlyWeatherCodes = weatherData.hourly.weathercode;
+            const hourlyTimestamps = weatherData.hourly.time;
+        
+            const now = new Date();
+            const cutoff = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+        
+            isSnowingNow = hourlyTimestamps.some((timestamp, i) => {
+                const time = new Date(timestamp);
+                return time > now && time <= cutoff && snowCodes.includes(hourlyWeatherCodes[i]);
+            });
+        }        
 
         console.debug(`Patch - Current Weather:`, currentWeatherCode);
         console.debug(`Patch - isSnowingNow: ${isSnowingNow}`);
