@@ -873,13 +873,11 @@ async function loadBuildInfo() {
         const script = document.createElement('script');
         script.src = 'https://simple-patches.vercel.app/buildInfo.js?v=' + Date.now();
         script.onload = () => {
-            setTimeout(() => {
-                if (window.BUILD_INFO && window.BUILD_INFO.build_version) {
-                    resolve(window.BUILD_INFO.build_version);
-                } else {
-                    resolve('unknown');
-                }
-            }, 0);
+            if (window.BUILD_INFO && window.BUILD_INFO.build_version) {
+                resolve(window.BUILD_INFO.build_version);
+            } else {
+                resolve('unknown');
+            }
         };
         script.onerror = () => {
             console.error('Failed to load buildInfo.js from external source.');
