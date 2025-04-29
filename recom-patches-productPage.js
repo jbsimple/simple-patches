@@ -31,7 +31,7 @@ async function fetchMeta() {
 
         const json = await response.json();
 
-        meta = json.data.map(row => {
+        metakeys = json.data.map(row => {
             const metaNameMatch = row[1].match(/<pre[^>]*>(.*?)<\/pre>/);
             const meta_name = metaNameMatch ? metaNameMatch[1] : null;
 
@@ -42,17 +42,18 @@ async function fetchMeta() {
         }).filter(item => item.meta_id && item.meta_name);
 
         // Fallback if somehow live data returns empty
-        if (meta.length === 0) {
+        if (metakeys.length === 0) {
             console.warn('Patches: Live meta returned empty, falling back to default meta');
-            meta = defaultMeta;
+            metakeys = defaultMeta;
         }
     } catch (error) {
         console.error('Patches: Failed to fetch live meta, using default meta instead:', error);
-        meta = defaultMeta;
+        metakeys = defaultMeta;
     }
 
     if (metakeys.length === 0) {
-        meta = defaultMeta;
+        console.warn('Patches: Live meta returned empty, falling back to default meta');
+        metakeys = defaultMeta;
     }
 }
 
