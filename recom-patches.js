@@ -869,7 +869,7 @@ function adjustToolbar() {
 async function loadBuildInfo() {
     return new Promise((resolve, reject) => {
         const script = document.createElement('script');
-        script.src = 'https://simple-patches.vercel.app/buildInfo.js';
+        script.src = 'https://simple-patches.vercel.app/buildInfo.js?v=' + Date.now();
         script.onload = () => {
             if (window.BUILD_INFO && window.BUILD_INFO.buildId) {
                 resolve(window.BUILD_INFO.buildId);
