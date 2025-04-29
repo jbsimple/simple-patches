@@ -135,16 +135,14 @@ function injectExtraTheme() {
             name.textContent = 'Hi, Nasty Nate';
         }
 
-        setTimeout(() => {
-            const allImgs = document.querySelectorAll('img');
-            allImgs.forEach(avatar => {
-                const src = avatar.getAttribute('src') || '';
-                if (src.includes('assets') && src.includes('avatars')) {
-                    console.debug('PATCHES - Swapping Avatar:', src);
-                    avatar.src = icon;
-                }
-            });
-        }, 500);             
+        const allImgs = document.querySelectorAll('img');
+        allImgs.forEach(avatar => {
+            const src = avatar.getAttribute('src') || '';
+            if (src.includes('assets') && src.includes('avatars')) {
+                console.debug('PATCHES - Swapping Avatar:', src);
+                avatar.src = icon;
+            }
+        });           
 
         const links = nav_sidebar_links.querySelectorAll('.menu-link');
         if (links.length > 0) {
