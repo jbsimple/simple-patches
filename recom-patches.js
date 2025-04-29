@@ -136,12 +136,15 @@ function injectExtraTheme() {
         }
 
         setTimeout(() => {
-            const avatars = document.querySelectorAll('img[src*="assets/media/svg/avatars/"]');
-            console.debug('PATCHES - Avatar Swap Check:', avatars);
-            avatars.forEach(avatar => {
-                avatar.src = icon;
+            const allImgs = document.querySelectorAll('img');
+            allImgs.forEach(avatar => {
+                const src = avatar.getAttribute('src') || '';
+                if (src.includes('assets') && src.includes('avatars')) {
+                    console.debug('PATCHES - Swapping Avatar:', src);
+                    avatar.src = icon;
+                }
             });
-        }, 500);        
+        }, 500);             
 
         const links = nav_sidebar_links.querySelectorAll('.menu-link');
         if (links.length > 0) {
