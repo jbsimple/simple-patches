@@ -1,5 +1,4 @@
 const version = '04-29-2025__3';
-const buildId = process.env.NEXT_PUBLIC_GIT_COMMIT_SHA || 'unknown';
 let currentuser = null;
 
 function injectGoods() {
