@@ -91,38 +91,17 @@ function injectGoods() {
     }
 
     document.body.appendChild(script_patch);
+
+    let script_version = document.createElement('script');
+    script_version.src = "https://simple-patches.vercel.app/buildInfo.js?v=" + Date.now();
+    script_version.onload = function() { console.debug('Patch Loaded: buildInfo.js'); };
+    document.body.appendChild(script_version);
 }
 
 function injectExtraTheme() {
     const nav_sidebar = document.getElementById('kt_app_sidebar_navs_wrappers');
     if (nav_sidebar) {
-        nav_sidebar.style.display = 'flex';
-        nav_sidebar.style.flexDirection = 'column';
-        
-        //the sidebar sets the height with a js resize listener and also on init.
-        //regular init function doesn't set the value properly so this is to fix it.
-        nav_sidebar.style.height = (parseInt(nav_sidebar.style.height) + 40) + 'px';
-
-        const nav_sidebar_links = document.getElementById('#kt_app_sidebar_menu');
-        nav_sidebar_links.style.flex = '1';
-
-        const version_container = document.createElement('div');
-        version_container.setAttribute('style', 'padding: 0 25px; margin-top: 0.5rem; display: flex; flex-direction: column;');
-
-        const separator = document.createElement('div');
-        separator.setAttribute('class', 'app-sidebar-separator separator');
-        version_container.appendChild(separator);
-        
-        const loaded_message = document.createElement('a');
-        loaded_message.href = "https://simple-patches.vercel.app/";
-        loaded_message.setAttribute('style', 'text-align: center;');
-        loaded_message.textContent = 'Patch: ' + version;
-        loaded_message.classList = 'patches-loaded';
-        loaded_message.setAttribute('target', '_blank');
-        loaded_message.setAttribute('rel', 'noreferrer');
-        version_container.appendChild(loaded_message);
-
-        nav_sidebar.appendChild(version_container);
+        // version tracker in build.sh
 
         const name = nav_sidebar_links.querySelectorAll('.menu-heading')[0];
         currentuser = name.textContent.replace(/^Hi,\s*/, '').toLocaleLowerCase();
@@ -868,7 +847,7 @@ function adjustToolbar() {
     }
 }
 
-async function patchInit() {
+function patchInit() {
     version = "4-30-2025__1";
     injectGoods();
     injectExtraTheme();
