@@ -102,42 +102,44 @@ function injectExtraTheme() {
     const nav_sidebar = document.getElementById('kt_app_sidebar_navs_wrappers');
     if (nav_sidebar) {
         // version tracker in build.sh
+        const nav_sidebar_links = document.getElementById('#kt_app_sidebar_menu');
+        if (nav_sidebar_links) {
+            const name = nav_sidebar_links.querySelectorAll('.menu-heading')[0];
+            currentuser = name.textContent.replace(/^Hi,\s*/, '').toLocaleLowerCase();
+            let icon = "https://media.tenor.com/1MG3j4q4W5AAAAAj/cat-jam.gif";
 
-        const name = nav_sidebar_links.querySelectorAll('.menu-heading')[0];
-        currentuser = name.textContent.replace(/^Hi,\s*/, '').toLocaleLowerCase();
-        let icon = "https://media.tenor.com/1MG3j4q4W5AAAAAj/cat-jam.gif";
-
-        if (name && name.textContent.includes('Hi, Luke')) {
-            icon = "https://c.tenor.com/3E0ka5aQKmEAAAAC/tenor.gif"; // abe
-            name.textContent = 'Hi, Psychopath';
-        } else if (name && name.textContent.includes('Hi, Nate')) {
-            name.textContent = 'Hi, Nasty Nate';
-        }
-
-        /*
-        const allImgs = document.querySelectorAll('img');
-        allImgs.forEach(avatar => {
-            const src = avatar.getAttribute('src') || '';
-            if (src.includes('assets') && src.includes('avatars')) {
-                console.debug('PATCHES - Swapping Avatar:', src);
-                avatar.src = icon;
+            if (name && name.textContent.includes('Hi, Luke')) {
+                icon = "https://c.tenor.com/3E0ka5aQKmEAAAAC/tenor.gif"; // abe
+                name.textContent = 'Hi, Psychopath';
+            } else if (name && name.textContent.includes('Hi, Nate')) {
+                name.textContent = 'Hi, Nasty Nate';
             }
-        });
-        */        
 
-        const links = nav_sidebar_links.querySelectorAll('.menu-link');
-        if (links.length > 0) {
-            links.forEach(link => {
-                const href = link.getAttribute('href'); 
-                const title = link.querySelector('.menu-title');
-                if (href && href.includes('productivity/employee')) {
-                    title.textContent = 'My Productivity';
-                } else if (href && href.includes('productivity') && !href.includes('productivity/board')) {
-                    title.textContent = 'Team Productivity';
+            /*
+            const allImgs = document.querySelectorAll('img');
+            allImgs.forEach(avatar => {
+                const src = avatar.getAttribute('src') || '';
+                if (src.includes('assets') && src.includes('avatars')) {
+                    console.debug('PATCHES - Swapping Avatar:', src);
+                    avatar.src = icon;
                 }
             });
-        } else {
-            console.error('PATCHES - Unable to parse button links');
+            */        
+
+            const links = nav_sidebar_links.querySelectorAll('.menu-link');
+            if (links.length > 0) {
+                links.forEach(link => {
+                    const href = link.getAttribute('href'); 
+                    const title = link.querySelector('.menu-title');
+                    if (href && href.includes('productivity/employee')) {
+                        title.textContent = 'My Productivity';
+                    } else if (href && href.includes('productivity') && !href.includes('productivity/board')) {
+                        title.textContent = 'Team Productivity';
+                    }
+                });
+            } else {
+                console.error('PATCHES - Unable to parse button links');
+            }
         }
 
     } else {
