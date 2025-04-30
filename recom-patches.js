@@ -868,27 +868,8 @@ function adjustToolbar() {
     }
 }
 
-async function loadBuildInfo() {
-    return new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = 'https://simple-patches.vercel.app/buildInfo.js?v=' + Date.now();
-        script.onload = () => {
-            if (window.BUILD_INFO && window.BUILD_INFO.build_version) {
-                resolve(window.BUILD_INFO.build_version);
-            } else {
-                resolve('unknown');
-            }
-        };
-        script.onerror = () => {
-            console.error('Failed to load buildInfo.js from external source.');
-            resolve('unknown');
-        };
-        document.head.appendChild(script);
-    });
-}
-
 async function patchInit() {
-    version = await loadBuildInfo();
+    version = "4-30-2025__1";
     injectGoods();
     injectExtraTheme();
     clockTaskVisualRefresh();
