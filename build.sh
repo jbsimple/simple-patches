@@ -4,7 +4,7 @@ echo "Generating buildInfo.js..."
 
 short_sha=$(echo "${VERCEL_GIT_COMMIT_SHA}" | cut -c1-7)
 clean_commit_message=$(echo "${VERCEL_GIT_COMMIT_MESSAGE}" | sed ':a;N;$!ba;s/\n/\\n/g')
-build_time=$(TZ="America/New_York" date +"%Y-%m-%d %H:%M:%S")
+build_time=$(TZ="America/New_York" date +"%Y-%m-%d %H:%M:%S %Z")
 build_version=$(TZ="America/New_York" date +"%Y-%m-%d")-${short_sha}
 
 cat <<EOF > buildInfo.js
