@@ -33,10 +33,7 @@ nav_sidebar.style.display = 'flex';
     //the sidebar sets the height with a js resize listener and also on init.
     //regular init function doesn't set the value properly so this is to fix it.
     nav_sidebar.style.height = (parseInt(nav_sidebar.style.height) + 40) + 'px';
-
-    const nav_sidebar_links = document.getElementById('#kt_app_sidebar_menu');
-    nav_sidebar_links.style.flex = '1';
-
+    
     const version_container = document.createElement('div');
     version_container.setAttribute('style', 'padding: 0 25px; margin-top: 0.5rem; display: flex; flex-direction: column;');
 
