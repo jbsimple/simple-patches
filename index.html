@@ -27,6 +27,22 @@
                 padding: 0 2rem;
             }
 
+            .wrap {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-evenly;
+            }
+
+            .wrap .item {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+                margin: 0.5rem;
+                padding: 1rem;
+                border-radius: 0.5rem;
+                border: 1px solid gray;
+            }
+
             #readme {
                 background-color: transparent;
                 flex: 1;
@@ -42,7 +58,21 @@
     <body>
         <h1>Simple Patches</h1>
         <a class="text-center" href="https://github.com/jbsimple/simple-patches" target="_blank">GitHub Repository</a>
+        <div class="wrap" id="version-info"></div>
         <div id="readme"></div>
+        <script src="/buildInfo.js"></script>
+        <script>
+            const container = document.getElementById('version-info');
+
+            if (window.BUILD_INFO && container) {
+                for (const [key, value] of Object.entries(window.BUILD_INFO)) {
+                    const item = document.createElement('div');
+                    item.className = 'item';
+                    item.innerHTML = `<strong>${key}</strong><span>${value}</span>`;
+                    container.appendChild(item);
+                }
+            }
+        </script>
         <script src="https://cdn.jsdelivr.net/npm/marked@4.0.10/marked.min.js"></script>
         <script>
             fetch('/readme.md')
