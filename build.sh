@@ -15,6 +15,7 @@ window.BUILD_INFO = {
     repoBranch: "${VERCEL_GIT_COMMIT_REF}",
     repoOwner: "${VERCEL_GIT_REPO_OWNER}",
     repoName: "${VERCEL_GIT_REPO_SLUG}",
+    repoID: "${VERCEL_GIT_REPO_ID}",
     environment: "${VERCEL_ENV}",
     deployUrl: "https://${VERCEL_URL}",
     buildTime: "${build_time}",
