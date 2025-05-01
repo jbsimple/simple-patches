@@ -47,6 +47,7 @@ There are other smaller modifications made, look below at the patches list to se
 - On product and item pages; Added a popups check message on above button hover.
 - On product and item pages; Added a 'copy to clipboard' button to copy unique identifier code for photo filenames.
 - On product and item pages; Added a delete all images button.
+- On product and item pages; Modified the image list to be an actual list instead of a grid.
 - On product pages; On all ASIN inputs, a link is generated under the input field to go to the ASIN on Amazon.
 - On item pages; CSS change to increase the maximum height of the inventory table.
 - On listing page; A warning for when the GTIN is invalid and needs to be regenerated before going to the last step. (12 chars error)
@@ -91,6 +92,3 @@ There are other smaller modifications made, look below at the patches list to se
 #### Future:
 - Create a proper set of CSS rules for dark mode.
 - Overhaul of CSS sizing, everything is so large that the page requires it to be zoomed out in order to be used.
-- On products/items media tab; button to clear all pictures.
-- On products/items media tab; label indicator that counts the number of pictures (the image # doesn't work because the upload JS doesn't set each image with a unique position like it's supposed to, and that's behavior I do not want to change without adding an automatic order images by filename button)
-- On products/items media tab; change the grid layout to a details list layout with smaller thumbnails.
