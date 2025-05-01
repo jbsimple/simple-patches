@@ -294,8 +294,12 @@ function modifyMediaTable() {
                 
                 if (card_title) {
                     card_title.setAttribute('style', 'flex: 1; padding-top: 0.315rem;');
-                    card_title.querySelector('.card-label').setAttribute('style', 'font-size: 1.5rem');
+                    card_title.querySelector('.card-label').setAttribute('style', 'font-size: 1.5rem;');
                     subContRow1.appendChild(card_title);
+                } else {
+                    const new_card_title = document.createElement('div');
+                    new_card_title.setAttribute('style', 'flex: 1; padding-top: 0.315rem;');
+                    new_card_title.innerHTML = `<strong class="card-label" style="font-size: 1.5rem;">New Image</strong>`;
                 }
                 
                 subContRow1.appendChild(card_toolbar);
