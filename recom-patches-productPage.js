@@ -280,9 +280,11 @@ function modifyMediaTable() {
                 const newCont = document.createElement('div');
                 newCont.setAttribute('style', 'display: flex; flex-direction: row; gap: 1.5rem; width: 100%; border: var(--bs-border-width) solid var(--bs-card-border-color); padding: 1.25rem; border-radius: 0.625rem; box-sizing: border-box;');
                 
+                let image_filename = '[ New ]';
                 if (image) {
                     image.setAttribute('style', 'width: 100px; height: 100px;');
                     image.querySelector('img').setAttribute('style', 'border-radius: 0.625rem;');
+                    image_filename = image.querySelector('img').getAttribute('src').split('/').pop().split(/[?#]/)[0];
                     newCont.appendChild(image);
                 }
                 
@@ -313,9 +315,11 @@ function modifyMediaTable() {
                 filename.classList.add('text-muted');
                 filename.setAttribute('style', 'flex: 1;');
                 if (card_footer) {
-                    filename.textContent = card_footer.textContent ?? '';
+                    filename.textContent = card_footer.textContent ?? image_filename;
                 } else {
-                    filename.textContent = '[ New ]';
+                    filename.textContent = image_filename;
+                    filename.setAttribute('style', 'flex: 1; color: var(--bs-primary);');
+                    filename.title = 'Just Uploaded';
                 }
                 subContRow2.appendChild(filename);
                 
