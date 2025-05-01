@@ -260,9 +260,11 @@ waitForElement('#kt_app_content_container', initCopyPasteButton);
 
 function modifyMediaTable() {
     const product_images_container = document.getElementById('product-images-container');
+    product_images_container.setAttribute('style', 'display: flex; flex-direction: column; gap: 0.25rem; flex-wrap: unset;');
     if (product_images_container) {
         const cards = product_images_container.querySelectorAll('.col.draggable');
         cards.forEach(card => {
+            card.setAttribute('style', 'width: 100% !important; display: flex;');
             const card_title = card.querySelector('.card-title');
             const card_toolbar = card.querySelector('.card-toolbar');
             const image = card.querySelector('a[data-type="image"]');
