@@ -260,59 +260,78 @@ waitForElement('#kt_app_content_container', initCopyPasteButton);
 
 function modifyMediaTable() {
     const product_images_container = document.getElementById('product-images-container');
-    product_images_container.setAttribute('style', 'display: flex; flex-direction: column; gap: 0.25rem; flex-wrap: unset;');
-    if (product_images_container) {
-        const cards = product_images_container.querySelectorAll('.col.draggable');
-        cards.forEach(card => {
-            card.setAttribute('style', 'width: 100% !important; display: flex;');
-            const card_title = card.querySelector('.card-title');
-            const card_toolbar = card.querySelector('.card-toolbar');
-            const image = card.querySelector('a[data-type="image"]');
-            const card_footer = card.querySelector('.card-footer');
-            
-            const newCont = document.createElement('div');
-            newCont.setAttribute('style', 'display: flex; flex-direction: row; gap: 1.5rem; width: 100%; border: var(--bs-border-width) solid var(--bs-card-border-color); padding: 1.25rem; border-radius: 0.625rem; box-sizing: border-box;');
-            
-            if (image) {
-                image.setAttribute('style', 'width: 100px; height: 100px;');
-                image.querySelector('img').setAttribute('style', 'border-radius: 0.625rem;');
-                newCont.appendChild(image);
-            }
-            
-            const subCont = document.createElement('div');
-            subCont.setAttribute('style', 'display: flex; flex-direction: column; flex: 1;');
-            
-            const subContRow1 = document.createElement('div');
-            subContRow1.setAttribute('style', 'display: flex; flex-direction: row; gap: 1rem; flex: 1;');
-            
-            if (card_title) {
-                card_title.setAttribute('style', 'flex: 1; padding-top: 0.315rem;');
-                card_title.querySelector('.card-label').setAttribute('style', 'font-size: 1.5rem');
-                subContRow1.appendChild(card_title);
-            }
-            
-            subContRow1.appendChild(card_toolbar);
-            
-            subCont.appendChild(subContRow1);
-            
-            const subContRow2 = document.createElement('div');
-            subContRow2.setAttribute('style', 'display: flex; flex-direction: row; gap: 1rem; padding-bottom: 0.315rem;');
-            
-            if (card_footer) {
-                const filename = document.createElement('span');
-                filename.classList.add('text-muted');
-                filename.setAttribute('style', 'flex: 1;');
-                filename.textContent = card_footer.textContent ?? '';
-                subContRow2.appendChild(filename);
-            }
-            
-            subCont.appendChild(subContRow2);
-            
-            newCont.appendChild(subCont)
-            
-            card.replaceChildren(newCont);
-        });
+
+    if (!product_images_container) return;
+    if (product_images_container.dataset.observerAttached === 'true') return;
+
+    function applyLayout() {
+        product_images_container.setAttribute('style', 'display: flex; flex-direction: column; gap: 0.25rem; flex-wrap: unset;');
+        if (product_images_container) {
+            const cards = product_images_container.querySelectorAll('.col.draggable');
+            cards.forEach(card => {
+                card.setAttribute('style', 'width: 100% !important; display: flex;');
+                const card_title = card.querySelector('.card-title');
+                const card_toolbar = card.querySelector('.card-toolbar');
+                const image = card.querySelector('a[data-type="image"]');
+                const card_footer = card.querySelector('.card-footer');
+                
+                const newCont = document.createElement('div');
+                newCont.setAttribute('style', 'display: flex; flex-direction: row; gap: 1.5rem; width: 100%; border: var(--bs-border-width) solid var(--bs-card-border-color); padding: 1.25rem; border-radius: 0.625rem; box-sizing: border-box;');
+                
+                if (image) {
+                    image.setAttribute('style', 'width: 100px; height: 100px;');
+                    image.querySelector('img').setAttribute('style', 'border-radius: 0.625rem;');
+                    newCont.appendChild(image);
+                }
+                
+                const subCont = document.createElement('div');
+                subCont.setAttribute('style', 'display: flex; flex-direction: column; flex: 1;');
+                
+                const subContRow1 = document.createElement('div');
+                subContRow1.setAttribute('style', 'display: flex; flex-direction: row; gap: 1rem; flex: 1;');
+                
+                if (card_title) {
+                    card_title.setAttribute('style', 'flex: 1; padding-top: 0.315rem;');
+                    card_title.querySelector('.card-label').setAttribute('style', 'font-size: 1.5rem');
+                    subContRow1.appendChild(card_title);
+                }
+                
+                subContRow1.appendChild(card_toolbar);
+                
+                subCont.appendChild(subContRow1);
+                
+                const subContRow2 = document.createElement('div');
+                subContRow2.setAttribute('style', 'display: flex; flex-direction: row; gap: 1rem; padding-bottom: 0.315rem;');
+                
+                if (card_footer) {
+                    const filename = document.createElement('span');
+                    filename.classList.add('text-muted');
+                    filename.setAttribute('style', 'flex: 1;');
+                    filename.textContent = card_footer.textContent ?? '';
+                    subContRow2.appendChild(filename);
+                }
+                
+                subCont.appendChild(subContRow2);
+                
+                newCont.appendChild(subCont)
+                
+                card.replaceChildren(newCont);
+            });
+        }
     }
+
+    applyLayout();
+
+    const observer = new MutationObserver(() => {
+        applyLayout();
+    });
+
+    observer.observe(product_images_container, {
+        childList: true,
+        subtree: true
+    });
+
+    product_images_container.dataset.observerAttached = 'true';
 }
 
 waitForElement('#product-images-container', modifyMediaTable);
