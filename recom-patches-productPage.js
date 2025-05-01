@@ -275,9 +275,11 @@ function modifyMediaTable() {
                 const newCont = document.createElement('div');
                 newCont.setAttribute('style', 'display: flex; flex-direction: row; gap: 1.5rem; width: 100%; border: var(--bs-border-width) solid var(--bs-card-border-color); padding: 1.25rem; border-radius: 0.625rem; box-sizing: border-box;');
                 
-                image.setAttribute('style', 'width: 100px; height: 100px;');
-                image.querySelector('img').setAttribute('style', 'border-radius: 0.625rem;');
-                newCont.appendChild(image);
+                if (image) {
+                    image.setAttribute('style', 'width: 100px; height: 100px;');
+                    image.querySelector('img').setAttribute('style', 'border-radius: 0.625rem;');
+                    newCont.appendChild(image);
+                }
                 
                 const subCont = document.createElement('div');
                 subCont.setAttribute('style', 'display: flex; flex-direction: column; flex: 1;');
@@ -285,9 +287,11 @@ function modifyMediaTable() {
                 const subContRow1 = document.createElement('div');
                 subContRow1.setAttribute('style', 'display: flex; flex-direction: row; gap: 1rem; flex: 1;');
                 
-                card_title.setAttribute('style', 'flex: 1; padding-top: 0.315rem;');
-                card_title.querySelector('.card-label').setAttribute('style', 'font-size: 1.5rem');
-                subContRow1.appendChild(card_title);
+                if (card_title) {
+                    card_title.setAttribute('style', 'flex: 1; padding-top: 0.315rem;');
+                    card_title.querySelector('.card-label').setAttribute('style', 'font-size: 1.5rem');
+                    subContRow1.appendChild(card_title);
+                }
                 
                 subContRow1.appendChild(card_toolbar);
                 
@@ -296,11 +300,13 @@ function modifyMediaTable() {
                 const subContRow2 = document.createElement('div');
                 subContRow2.setAttribute('style', 'display: flex; flex-direction: row; gap: 1rem; padding-bottom: 0.315rem;');
                 
-                const filename = document.createElement('span');
-                filename.classList.add('text-muted');
-                filename.setAttribute('style', 'flex: 1;');
-                filename.textContent = card_footer.textContent;
-                subContRow2.appendChild(filename);
+                if (card_footer) {
+                    const filename = document.createElement('span');
+                    filename.classList.add('text-muted');
+                    filename.setAttribute('style', 'flex: 1;');
+                    filename.textContent = card_footer.textContent ?? '';
+                    subContRow2.appendChild(filename);
+                }
                 
                 subCont.appendChild(subContRow2);
                 
