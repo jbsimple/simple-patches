@@ -318,7 +318,7 @@ function modifyMediaTable() {
                     filename.textContent = card_footer.textContent ?? image_filename;
                 } else {
                     filename.textContent = image_filename;
-                    filename.setAttribute('style', 'flex: 1; color: var(--bs-primary);');
+                    filename.classList.remove('text-muted');
                     filename.title = 'Just Uploaded';
                 }
                 subContRow2.appendChild(filename);
