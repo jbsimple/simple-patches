@@ -306,23 +306,23 @@ function modifyMediaTable() {
             
             card.replaceChildren(newCont);
         });
+
+        if (!product_images_container.hasAttribute('data-observer-attached')) {
+            const observer = new MutationObserver(() => {
+                modifyMediaTable();
+            });
+    
+            observer.observe(product_images_container, {
+                childList: true,
+                subtree: true
+            });
+    
+            product_images_container.setAttribute('data-observer-attached', 'true');
+        }
     }
 }
 
-function watchMediaTable() {
-    const container = document.getElementById('product-images-container');
-    if (!container) return;
-    const observer = new MutationObserver(() => {
-        modifyMediaTable();
-    });
-    observer.observe(container, {
-        childList: true,
-        subtree: true,
-    });
-    modifyMediaTable();
-}
-
-waitForElement('#product-images-container', watchMediaTable);
+waitForElement('#product-images-container', modifyMediaTable);
 
 /* photo stuff */
 // Getting rid of bad gallery viewer
