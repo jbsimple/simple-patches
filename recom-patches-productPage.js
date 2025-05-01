@@ -319,6 +319,7 @@ function modifyMediaTable() {
                 } else {
                     filename.textContent = image_filename;
                     filename.classList.remove('text-muted');
+                    filename.setAttribute('style', 'flex: 1; color: var(--bs-primary);');
                     filename.title = 'Just Uploaded';
                 }
                 subContRow2.appendChild(filename);
