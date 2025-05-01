@@ -270,7 +270,7 @@ function modifyMediaTable() {
             const cards = product_images_container.querySelectorAll('.col.draggable');
             cards.forEach(card => {
                 if (card.dataset.modified === 'true') return;
-                
+
                 card.setAttribute('style', 'width: 100% !important; display: flex;');
                 const card_title = card.querySelector('.card-title');
                 const card_toolbar = card.querySelector('.card-toolbar');
@@ -305,13 +305,15 @@ function modifyMediaTable() {
                 const subContRow2 = document.createElement('div');
                 subContRow2.setAttribute('style', 'display: flex; flex-direction: row; gap: 1rem; padding-bottom: 0.315rem;');
                 
+                const filename = document.createElement('span');
+                filename.classList.add('text-muted');
+                filename.setAttribute('style', 'flex: 1;');
                 if (card_footer) {
-                    const filename = document.createElement('span');
-                    filename.classList.add('text-muted');
-                    filename.setAttribute('style', 'flex: 1;');
                     filename.textContent = card_footer.textContent ?? '';
-                    subContRow2.appendChild(filename);
+                } else {
+                    filename.textContent = '[ New ]';
                 }
+                subContRow2.appendChild(filename);
                 
                 subCont.appendChild(subContRow2);
                 
