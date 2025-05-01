@@ -269,6 +269,8 @@ function modifyMediaTable() {
         if (product_images_container) {
             const cards = product_images_container.querySelectorAll('.col.draggable');
             cards.forEach(card => {
+                if (card.dataset.modified === 'true') return;
+                
                 card.setAttribute('style', 'width: 100% !important; display: flex;');
                 const card_title = card.querySelector('.card-title');
                 const card_toolbar = card.querySelector('.card-toolbar');
@@ -314,7 +316,8 @@ function modifyMediaTable() {
                 subCont.appendChild(subContRow2);
                 
                 newCont.appendChild(subCont)
-                
+
+                card.dataset.modified = 'true';
                 card.replaceChildren(newCont);
             });
         }
