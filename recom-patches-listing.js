@@ -178,7 +178,7 @@ function customModal(title, message, table = null, width = '650px') {
                     table_html += `<td style="min-width: 200px; padding: 0.75rem 2rem;">
                         <a title="View SID ${value}" href="/product/items/${value}" target="_blank">${value}</a>
                     </td>`;
-                } else if (key === 'ASIN') { 
+                } else if (key === 'ASIN' || key === 'ASIN_Renewed') { 
                     table_html += `<td style="min-width: 200px; padding: 0.75rem 2rem;">
                         <a title="View ASIN ${value}" href="https://www.amazon.com/dp/${value}" target="_blank">${value}</a>
                     </td>`;
@@ -546,7 +546,7 @@ async function fetchExistingRenewedAsins(asin) {
                     const modifiedResults = data.results.results.map(row => {
                         return {
                             ...row,
-                            "ASIN Renewed": asin
+                            "ASIN_Renewed": asin
                         };
                     });
                     resolve(modifiedResults);
