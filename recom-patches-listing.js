@@ -172,7 +172,11 @@ function customModal(title, message, table = null, width = '650px') {
                 const value = row[key];
                 if (key === 'SID') {
                     table_html += `<td style="min-width: 200px; padding: 0.75rem 2rem;">
-                        <a title="View SID ${value}" href="https://simplecell.recomapp.com/products/${value}" target="_blank">${value}</a>
+                        <a title="View SID ${value}" href="/products/${value}" target="_blank">${value}</a>
+                    </td>`;
+                } else if (key === 'ASIN') { 
+                    table_html += `<td style="min-width: 200px; padding: 0.75rem 2rem;">
+                        <a title="View ASIN ${value}" href="https://www.amazon.com/dp/${value}" target="_blank">${value}</a>
                     </td>`;
                 } else {
                     table_html += `<td style="min-width: 200px; padding: 0.75rem 2rem;">${value}</td>`;
