@@ -459,6 +459,9 @@ async function duplicateAsin() {
                 } catch (err) {
                     console.error("Error fetching ASIN data:", err);
                 }
+            } else {
+                asin_field.style.outline = "";
+                asin_field.style.backgroundColor = "";
             }
         }, 1500);
     });
