@@ -393,6 +393,7 @@ async function duplicateAsin() {
 async function fetchExistingAsins(asin) {
     const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
     if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
+        const csrfToken = csrfMeta.getAttribute('content');
         let request = {
             report: {
                 type: "catalog_report",
