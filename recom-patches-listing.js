@@ -369,6 +369,26 @@ function productGTIN() {
     }
 }
 
+async function duplicateAsin() {
+    const listing_form = document.getElementById('rc_create_listing_form');
+    if (!listing_form) return false;
+
+    const asin_field = listing_form.querySelector('input[name="product[asin]"]');
+    if (!asin_field) return false;
+
+    let timeout = null;
+    asin_field.addEventListener('input', () => {
+        clearTimeout(timeout);
+
+        timeout = setTimeout(() => {
+            const value = asin_field.value.trim();
+            if (value.length === 10) {
+                console.log('ASIN is valid:', value);
+            }
+        }, 3000);
+    });
+}
+
 async function initListingPatch() {
     console.debug('PATCHES - initListingPatch for wizard');
     const observer = new MutationObserver(() => {
@@ -519,6 +539,9 @@ async function initListingPatch() {
                 }, 500); // yikes
             });
         }
+
+        // i guess this goes here akkoShrug
+        (async () => { duplicateAsin(); })();
     }
 }
 
