@@ -449,8 +449,12 @@ async function duplicateAsin() {
                     }
                     console.debug(`PATCHES - Asin Check, Value: ${value}, Results:`, products);
                     if (products.length > 0) {
-                        //to-do asin_field
+                        asin_field.style.outline = "2px solid var(--bs-danger)";
+                        asin_field.style.backgroundColor = "color-mix(in srgb, var(--bs-danger) 15%, rgb(255,255,255,0))";
                         customModal('ASIN CHECK?', ["Duplicate ASIN Alert!", "This ASIN appears on the products below:"], products, '60vw');
+                    } else {
+                        asin_field.style.outline = "";
+                        asin_field.style.backgroundColor = "";
                     }
                 } catch (err) {
                     console.error("Error fetching ASIN data:", err);
