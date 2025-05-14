@@ -138,30 +138,40 @@ async function getTimeSpentInMinutes(sku) {
     }
 }
 
-function inWrongTaskCheck() {
-    const link = document.querySelector('a[href="javascript:clockInOut(\'out\');"]');
-    const currentTask = link?.textContent.trim().toLowerCase() ?? 'na';
-    console.debug('PATCHES - Task Check:', currentTask);
+function customModal(title, message, table = '') {
+    let modal_message = 'na';
+    if (Array.isArray(message)) {
+        modal_message = '';
+        message.forEach((line, index) => {
+            if (index === 0) {
+                modal_message += `<label class="fs-6 fw-bold mb-2">${line}</label>`;
+            } else {
+                modal_message += `<label class="fs-6 fw-semibold form-label">${line}</label>`;
+            }
+        });
+    } else {
+        modal_message = `<label class="fs-6 fw-bold mb-2">${message}</label>`;
+    }
 
     const modal = `<style>
-        #patch_wrongTask_fullModal .modal-content {
+        #patch_listingModal_fullModal .modal-content {
             transform: translateY(-15vh) !important;
             opacity: 0.25 !important;
             transition: all 0.1s ease !important;
         }
 
-        #patch_wrongTask_fullModal.show .modal-content {
+        #patch_listingModal_fullModal.show .modal-content {
             transform: unset !important;
             opacity: 1.0 !important;
         }
     </style>
 
-    <div class="modal fade" id="patch_wrongTask_fullModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true" role="dialog" style="display: none; background: rgba(0, 0, 0, .4) !important;">
+    <div class="modal fade" id="patch_listingModal_fullModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true" role="dialog" style="display: none; background: rgba(0, 0, 0, .4) !important;">
         <div class="modal-dialog modal-dialog-centered mw-650px">
             <div class="modal-content rounded">
                 <div class="modal-header">
-                    <h2 class="fw-bolder">UH OH!</h2>
-                    <div class="btn btn-icon btn-sm btn-active-icon-primary" id="patches_wrongtask_close">
+                    <h2 class="fw-bolder">${title}</h2>
+                    <div class="btn btn-icon btn-sm btn-active-icon-primary" id="patch_listingModal_close">
                         <span class="svg-icon svg-icon-1">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                                 <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
@@ -171,69 +181,75 @@ function inWrongTaskCheck() {
                     </div>
                 </div>
                 <div class="modal-body scroll-y px-10 px-lg-15 pt-0 pb-15" style="padding-top: 1.5rem !important;">
-                    <div class="d-flex flex-column mb-8">
-                        <label class="fs-6 fw-bold mb-2">You're about to list without being in the listing task.</label>
-                        <label class="fs-6 fw-semibold form-label">Are you sure you want to continue?</label>
-                        <label class="fs-6 fw-semibold form-label">* Dismiss the message to proceed.</label>
-                    </div>
+                    <div class="d-flex flex-column mb-8">${modal_message}${table}</div>
                     <div class="separator my-10"></div>
                     <div class="text-center">
-                        <button type="reset" id="patches_wrongtask_dismiss" data-bs-dismiss="modal" class="btn btn-warning btn-light me-3">Dismiss Warning</button>
+                        <button type="reset" id="patch_listingModal_dismiss" data-bs-dismiss="modal" class="btn btn-warning btn-light me-3">Close</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>`;
 
+    const rcAjaxModal = document.getElementById("rc_ajax_modal");
+
+    if (rcAjaxModal) {
+        const modalContainer = document.createElement("div");
+        modalContainer.innerHTML = modal;
+        rcAjaxModal.parentNode.insertBefore(modalContainer, rcAjaxModal);
+
+        const closeButton = document.getElementById('patch_listingModal_close');
+        if (closeButton) {
+            closeButton.onclick = closeModal;
+        }
+
+        const cancelButton = document.getElementById('patch_listingModal_dismiss');
+        if (cancelButton) {
+            cancelButton.onclick = closeModal;
+        }
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        function closeModal() {
+            const fullModal = document.getElementById('patch_listingModal_fullModal');
+            if (fullModal) {
+                newModal.classList.remove('show');
+                setTimeout(() => {
+                    fullModal.remove();
+                }, 200);
+            }
+        }
+
+        const newModal = document.getElementById('patch_listingModal_fullModal');
+        if (newModal) {
+            newModal.style.display = 'block';
+            newModal.removeAttribute('aria-hidden');
+            newModal.setAttribute('aria-modal', 'true');
+
+            setTimeout(() => {
+                newModal.classList.add('show');
+            }, 200);
+        }
+
+    }
+}
+
+function inWrongTaskCheck() {
+    const link = document.querySelector('a[href="javascript:clockInOut(\'out\');"]');
+    const currentTask = link?.textContent.trim().toLowerCase() ?? 'na';
+    console.debug('PATCHES - Task Check:', currentTask);
+
+    
+
     // this modal is just for the full page wizard wizard
     if (window.location.href.includes('/receiving/queues/listing/')) {
         const afterListing = window.location.href.split('/receiving/queues/listing/')[1];
         if (afterListing && afterListing.trim() !== '' && currentTask !== 'clock out - listing') {
-            const rcAjaxModal = document.getElementById("rc_ajax_modal");
-
-            if (rcAjaxModal) {
-                const modalContainer = document.createElement("div");
-                modalContainer.innerHTML = modal;
-                rcAjaxModal.parentNode.insertBefore(modalContainer, rcAjaxModal);
-
-                const closeButton = document.getElementById('patches_wrongtask_close');
-                if (closeButton) {
-                    closeButton.onclick = closeModal;
-                }
-
-                const cancelButton = document.getElementById('patches_wrongtask_dismiss');
-                if (cancelButton) {
-                    cancelButton.onclick = closeModal;
-                }
-
-                document.addEventListener('keydown', (event) => {
-                    if (event.key === 'Escape') {
-                        closeModal();
-                    }
-                });
-
-                function closeModal() {
-                    const fullModal = document.getElementById('patch_wrongTask_fullModal');
-                    if (fullModal) {
-                        newModal.classList.remove('show');
-                        setTimeout(() => {
-                            fullModal.remove();
-                        }, 200);
-                    }
-                }
-
-                const newModal = document.getElementById('patch_wrongTask_fullModal');
-                if (newModal) {
-                    newModal.style.display = 'block';
-                    newModal.removeAttribute('aria-hidden');
-                    newModal.setAttribute('aria-modal', 'true');
-
-                    setTimeout(() => {
-                        newModal.classList.add('show');
-                    }, 200);
-                }
-
-            }
+            customModal('TASK CHECK?', ["You're about to list without being in the listing task.", "Are you sure you want to continue?", "* Dismiss the message to proceed."]);
         }
     } else if (currentTask !== 'clock out - listing') {
         const thecontent = document.getElementById('kt_app_content_container');
@@ -385,6 +401,10 @@ async function duplicateAsin() {
                 try {
                     const products = await fetchExistingAsins(value);
                     console.debug(`PATCHES - Asin Check, Value: ${value}, Results:`, products);
+                    if (products !== null) {
+                        //to-do asin_field
+                        customModal('ASIN CHECK?', ["Duplicate ASIN Alert!", "This ASIN appears on the products below:"]);
+                    }
                 } catch (err) {
                     console.error("Error fetching ASIN data:", err);
                 }
