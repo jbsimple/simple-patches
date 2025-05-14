@@ -138,7 +138,7 @@ async function getTimeSpentInMinutes(sku) {
     }
 }
 
-function customModal(title, message, table = null, width = 650) {
+function customModal(title, message, table = null, width = '650px') {
     let modal_message = 'na';
     if (Array.isArray(message)) {
         modal_message = '';
@@ -197,7 +197,7 @@ function customModal(title, message, table = null, width = 650) {
     </style>
 
     <div class="modal fade" id="patch_listingModal_fullModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true" role="dialog" style="display: none; background: rgba(0, 0, 0, .4) !important;">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: ${width}px;">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: ${width};">
             <div class="modal-content rounded">
                 <div class="modal-header">
                     <h2 class="fw-bolder">${title}</h2>
