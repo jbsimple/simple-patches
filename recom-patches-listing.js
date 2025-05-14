@@ -138,7 +138,7 @@ async function getTimeSpentInMinutes(sku) {
     }
 }
 
-function customModal(title, message, table = null) {
+function customModal(title, message, table = null, width = 650) {
     let modal_message = 'na';
     if (Array.isArray(message)) {
         modal_message = '';
@@ -197,7 +197,7 @@ function customModal(title, message, table = null) {
     </style>
 
     <div class="modal fade" id="patch_listingModal_fullModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true" role="dialog" style="display: none; background: rgba(0, 0, 0, .4) !important;">
-        <div class="modal-dialog modal-dialog-centered mw-650px">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: ${width}px;">
             <div class="modal-content rounded">
                 <div class="modal-header">
                     <h2 class="fw-bolder">${title}</h2>
@@ -433,7 +433,7 @@ async function duplicateAsin() {
                     console.debug(`PATCHES - Asin Check, Value: ${value}, Results:`, products);
                     if (products !== null) {
                         //to-do asin_field
-                        customModal('ASIN CHECK?', ["Duplicate ASIN Alert!", "This ASIN appears on the products below:"], products);
+                        customModal('ASIN CHECK?', ["Duplicate ASIN Alert!", "This ASIN appears on the products below:"], products, '75vw');
                     }
                 } catch (err) {
                     console.error("Error fetching ASIN data:", err);
