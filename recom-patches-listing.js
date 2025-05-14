@@ -383,10 +383,60 @@ async function duplicateAsin() {
         timeout = setTimeout(() => {
             const value = asin_field.value.trim();
             if (value.length === 10) {
-                console.log('ASIN is valid:', value);
+                let products = fetchExistingAsins(value);
+                console.debug(`PATCHES - Asin Check, Value: ${value}, Results:`, products);
             }
         }, 3000);
     });
+}
+
+async function fetchExistingAsins(asin) {
+    const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
+    if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
+        let request = {
+            report: {
+                type: "catalog_report",
+                columns: [
+                    "products.sid",
+                    "products.name",
+                    "products.asin",
+                    "products.created_at"
+                ],
+                filters: [
+                    {
+                        column: "products.asin",
+                        opr: "{0} LIKE '%{1}%'",
+                        value: `${asin}`
+                    }
+                ]
+            },
+            csrf_recom: csrfToken
+        };
+
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: "/reports/create",
+                data: request
+            })
+            .done(function(data) {
+                if (data.success === true && Array.isArray(data.results?.results)) {
+                    resolve(data.results.results);
+                } else {
+                    console.warn("Unexpected response format or no results", data);
+                    resolve(null);
+                }
+            })
+            .fail(function(jqXHR, textStatus, errorThrown) {
+                console.error("AJAX request failed:", textStatus, errorThrown);
+                reject(new Error("AJAX request failed: " + textStatus + ", " + errorThrown));
+            });
+        });
+    } else {
+        console.error('Unable to get CSRF');
+        return null;
+    }
 }
 
 async function initListingPatch() {
