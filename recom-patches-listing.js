@@ -432,6 +432,9 @@ async function duplicateAsin() {
 
     let timeout = null;
     asin_field.addEventListener('input', () => {
+        asin_field.style.outline = "";
+        asin_field.style.backgroundColor = "";
+
         clearTimeout(timeout);
         timeout = setTimeout(async () => {
             const value = asin_field.value.trim();
@@ -452,16 +455,10 @@ async function duplicateAsin() {
                         asin_field.style.outline = "2px solid var(--bs-danger)";
                         asin_field.style.backgroundColor = "color-mix(in srgb, var(--bs-danger) 15%, rgb(255,255,255,0))";
                         customModal('ASIN CHECK?', ["Duplicate ASIN Alert!", "This ASIN appears on the products below:"], products, '60vw');
-                    } else {
-                        asin_field.style.outline = "";
-                        asin_field.style.backgroundColor = "";
                     }
                 } catch (err) {
                     console.error("Error fetching ASIN data:", err);
                 }
-            } else {
-                asin_field.style.outline = "";
-                asin_field.style.backgroundColor = "";
             }
         }, 1500);
     });
