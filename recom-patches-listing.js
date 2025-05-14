@@ -439,7 +439,7 @@ async function duplicateAsin() {
                     console.error("Error fetching ASIN data:", err);
                 }
             }
-        }, 3000);
+        }, 1500);
     });
 }
 
