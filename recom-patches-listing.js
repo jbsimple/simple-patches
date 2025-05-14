@@ -379,12 +379,15 @@ async function duplicateAsin() {
     let timeout = null;
     asin_field.addEventListener('input', () => {
         clearTimeout(timeout);
-
-        timeout = setTimeout(() => {
+        timeout = setTimeout(async () => {
             const value = asin_field.value.trim();
             if (value.length === 10) {
-                let products = fetchExistingAsins(value);
-                console.debug(`PATCHES - Asin Check, Value: ${value}, Results:`, products);
+                try {
+                    const products = await fetchExistingAsins(value);
+                    console.debug(`PATCHES - Asin Check, Value: ${value}, Results:`, products);
+                } catch (err) {
+                    console.error("Error fetching ASIN data:", err);
+                }
             }
         }, 3000);
     });
