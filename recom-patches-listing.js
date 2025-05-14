@@ -161,7 +161,7 @@ function customModal(title, message, table = null) {
 
         table_html += '<thead><tr>';
         keys.forEach(key => {
-            table_html += `<th style="min-width: 200px; padding: 2rem; font-weight: 700;">${key}</th>`;
+            table_html += `<th style="max-width: 200px; padding: 2rem; font-weight: 700;">${key}</th>`;
         });
         table_html += '</tr></thead>';
 
@@ -171,11 +171,11 @@ function customModal(title, message, table = null) {
             keys.forEach(key => {
                 const value = row[key];
                 if (key === 'SID') {
-                    table_html += `<td style="min-width: 200px; padding: 0.75rem 2rem;">
+                    table_html += `<td style="max-width: 200px; padding: 0.75rem 2rem;">
                         <a title="View SID ${value}" href="https://simplecell.recomapp.com/products/${value}" target="_blank">${value}</a>
                     </td>`;
                 } else {
-                    table_html += `<td style="min-width: 200px; padding: 0.75rem 2rem;">${value}</td>`;
+                    table_html += `<td style="max-width: 200px; padding: 0.75rem 2rem;">${value}</td>`;
                 }
             });
             table_html += '</tr><tr></tr>';
