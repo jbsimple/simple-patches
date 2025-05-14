@@ -174,6 +174,10 @@ function customModal(title, message, table = null, width = '650px') {
                     table_html += `<td style="min-width: 200px; padding: 0.75rem 2rem;">
                         <a title="View SID ${value}" href="/products/${value}" target="_blank">${value}</a>
                     </td>`;
+                } else if (key === 'SKU') {
+                    table_html += `<td style="min-width: 200px; padding: 0.75rem 2rem;">
+                        <a title="View SID ${value}" href="/product/items/${value}" target="_blank">${value}</a>
+                    </td>`;
                 } else if (key === 'ASIN') { 
                     table_html += `<td style="min-width: 200px; padding: 0.75rem 2rem;">
                         <a title="View ASIN ${value}" href="https://www.amazon.com/dp/${value}" target="_blank">${value}</a>
