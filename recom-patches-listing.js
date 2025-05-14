@@ -138,7 +138,7 @@ async function getTimeSpentInMinutes(sku) {
     }
 }
 
-function customModal(title, message, table = '') {
+function customModal(title, message, table = null) {
     let modal_message = 'na';
     if (Array.isArray(message)) {
         modal_message = '';
@@ -151,6 +151,36 @@ function customModal(title, message, table = '') {
         });
     } else {
         modal_message = `<label class="fs-6 fw-bold mb-2">${message}</label>`;
+    }
+
+    let table_html = '';
+    if (table && Array.isArray(table) && table.length > 0) {
+        const keys = Object.keys(table[0]);
+
+        table_html = '<table id="patch_listingModal_table" class="table table-striped" style="width: 100%; max-width: 100%; overflow: auto;">';
+
+        table_html += '<thead><tr>';
+        keys.forEach(key => {
+            table_html += `<th style="min-width: 200px; padding: 2rem; font-weight: 700;">${key}</th>`;
+        });
+        table_html += '</tr></thead>';
+
+        table_html += '<tbody>';
+        table.forEach(row => {
+            table_html += '<tr>';
+            keys.forEach(key => {
+                const value = row[key];
+                if (key === 'SID') {
+                    table_html += `<td style="min-width: 200px; padding: 0.75rem 2rem;">
+                        <a title="View SID ${value}" href="https://simplecell.recomapp.com/products/${value}" target="_blank">${value}</a>
+                    </td>`;
+                } else {
+                    table_html += `<td style="min-width: 200px; padding: 0.75rem 2rem;">${value}</td>`;
+                }
+            });
+            table_html += '</tr><tr></tr>';
+        });
+        table_html += '</tbody></table>';
     }
 
     const modal = `<style>
@@ -181,7 +211,7 @@ function customModal(title, message, table = '') {
                     </div>
                 </div>
                 <div class="modal-body scroll-y px-10 px-lg-15 pt-0 pb-15" style="padding-top: 1.5rem !important;">
-                    <div class="d-flex flex-column mb-8">${modal_message}${table}</div>
+                    <div class="d-flex flex-column mb-8">${modal_message}${table_html}</div>
                     <div class="separator my-10"></div>
                     <div class="text-center">
                         <button type="reset" id="patch_listingModal_dismiss" data-bs-dismiss="modal" class="btn btn-warning btn-light me-3">Close</button>
@@ -403,7 +433,7 @@ async function duplicateAsin() {
                     console.debug(`PATCHES - Asin Check, Value: ${value}, Results:`, products);
                     if (products !== null) {
                         //to-do asin_field
-                        customModal('ASIN CHECK?', ["Duplicate ASIN Alert!", "This ASIN appears on the products below:"]);
+                        customModal('ASIN CHECK?', ["Duplicate ASIN Alert!", "This ASIN appears on the products below:"], products);
                     }
                 } catch (err) {
                     console.error("Error fetching ASIN data:", err);
