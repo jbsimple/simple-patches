@@ -157,7 +157,7 @@ function customModal(title, message, table = null, width = '650px') {
     if (table && Array.isArray(table) && table.length > 0) {
         const keys = Object.keys(table[0]);
 
-        table_html = '<table id="patch_listingModal_table" class="table table-striped" style="width: 100%; max-width: 100%; overflow: auto;">';
+        table_html = '<table id="patch_modal_table" class="table table-striped" style="width: 100%; max-width: 100%; overflow: auto;">';
 
         table_html += '<thead><tr>';
         keys.forEach(key => {
@@ -192,24 +192,24 @@ function customModal(title, message, table = null, width = '650px') {
     }
 
     const modal = `<style>
-        #patch_listingModal_fullModal .modal-content {
+        #patch_modal_fullModal .modal-content {
             transform: translateY(-15vh) !important;
             opacity: 0.25 !important;
             transition: all 0.1s ease !important;
         }
 
-        #patch_listingModal_fullModal.show .modal-content {
+        #patch_modal_fullModal.show .modal-content {
             transform: unset !important;
             opacity: 1.0 !important;
         }
     </style>
 
-    <div class="modal fade" id="patch_listingModal_fullModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true" role="dialog" style="display: none; background: rgba(0, 0, 0, .4) !important;">
+    <div class="modal fade" id="patch_modal_fullModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true" role="dialog" style="display: none; background: rgba(0, 0, 0, .4) !important;">
         <div class="modal-dialog modal-dialog-centered" style="max-width: ${width}; min-width: 650px;">
             <div class="modal-content rounded">
                 <div class="modal-header">
                     <h2 class="fw-bolder">${title}</h2>
-                    <div class="btn btn-icon btn-sm btn-active-icon-primary" id="patch_listingModal_close">
+                    <div class="btn btn-icon btn-sm btn-active-icon-primary" id="patch_modal_close">
                         <span class="svg-icon svg-icon-1">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                                 <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
@@ -222,7 +222,7 @@ function customModal(title, message, table = null, width = '650px') {
                     <div class="d-flex flex-column mb-8">${modal_message}${table_html}</div>
                     <div class="separator my-10"></div>
                     <div class="text-center">
-                        <button type="reset" id="patch_listingModal_dismiss" data-bs-dismiss="modal" class="btn btn-warning btn-light me-3">Close</button>
+                        <button type="reset" id="patch_modal_dismiss" data-bs-dismiss="modal" class="btn btn-warning btn-light me-3">Close</button>
                     </div>
                 </div>
             </div>
@@ -236,12 +236,12 @@ function customModal(title, message, table = null, width = '650px') {
         modalContainer.innerHTML = modal;
         rcAjaxModal.parentNode.insertBefore(modalContainer, rcAjaxModal);
 
-        const closeButton = document.getElementById('patch_listingModal_close');
+        const closeButton = document.getElementById('patch_modal_close');
         if (closeButton) {
             closeButton.onclick = closeModal;
         }
 
-        const cancelButton = document.getElementById('patch_listingModal_dismiss');
+        const cancelButton = document.getElementById('patch_modal_dismiss');
         if (cancelButton) {
             cancelButton.onclick = closeModal;
         }
@@ -253,7 +253,7 @@ function customModal(title, message, table = null, width = '650px') {
         });
 
         function closeModal() {
-            const fullModal = document.getElementById('patch_listingModal_fullModal');
+            const fullModal = document.getElementById('patch_modal_fullModal');
             if (fullModal) {
                 newModal.classList.remove('show');
                 setTimeout(() => {
@@ -262,7 +262,7 @@ function customModal(title, message, table = null, width = '650px') {
             }
         }
 
-        const newModal = document.getElementById('patch_listingModal_fullModal');
+        const newModal = document.getElementById('patch_modal_fullModal');
         if (newModal) {
             newModal.style.display = 'block';
             newModal.removeAttribute('aria-hidden');
