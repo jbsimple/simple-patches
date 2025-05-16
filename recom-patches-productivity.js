@@ -265,45 +265,7 @@ async function injectUserReport() {
         });
 
         content.appendChild(summaryWrapper);
-
-        const tableWrapper = document.createElement('div');
-        tableWrapper.style.overflowX = 'auto';
-        tableWrapper.style.maxWidth = '100%';
-        tableWrapper.style.margin = '2rem 30px';
-
-        const table = document.createElement('table');
-        table.classList.add('table', 'table-striped');
-        table.style.width = '100%';
-        table.style.borderCollapse = 'collapse';
-
-        const thead = document.createElement('thead');
-        const headerRow = document.createElement('tr');
-        Object.keys(uniqueData[0]).forEach(key => {
-            const th = document.createElement('th');
-            th.textContent = key;
-            th.style.padding = '8px';
-            th.style.minWidth = '200px';
-            headerRow.appendChild(th);
-        });
-        thead.appendChild(headerRow);
-        table.appendChild(thead);
-
-        const tbody = document.createElement('tbody');
-        uniqueData.forEach(row => {
-            const tr = document.createElement('tr');
-            Object.values(row).forEach(value => {
-                const td = document.createElement('td');
-                td.textContent = value !== null ? value : '';
-                td.style.padding = '8px';
-                td.style.minWidth = '200px';
-                tr.appendChild(td);
-            });
-            tbody.appendChild(tr);
-        });
-        table.appendChild(tbody);
-
-        tableWrapper.appendChild(table);
-        content.appendChild(tableWrapper);
+        content.appendChild(await printTable(uniqueData));
     } else {
         content.innerHTML = '<p>No data available</p>';
     }
@@ -447,48 +409,51 @@ async function injectTeamReport() {
         });
 
         content.appendChild(summaryWrapper);
-
-        const tableWrapper = document.createElement('div');
-        tableWrapper.style.overflowX = 'auto';
-        tableWrapper.style.maxWidth = '100%';
-        tableWrapper.style.margin = '2rem 30px';
-
-        const table = document.createElement('table');
-        table.classList.add('table', 'table-striped');
-        table.style.width = '100%';
-        table.style.borderCollapse = 'collapse';
-
-        const thead = document.createElement('thead');
-        const headerRow = document.createElement('tr');
-        Object.keys(uniqueData[0]).forEach(key => {
-            const th = document.createElement('th');
-            th.textContent = key;
-            th.style.padding = '8px';
-            th.style.minWidth = '200px';
-            headerRow.appendChild(th);
-        });
-        thead.appendChild(headerRow);
-        table.appendChild(thead);
-
-        const tbody = document.createElement('tbody');
-        uniqueData.forEach(row => {
-            const tr = document.createElement('tr');
-            Object.values(row).forEach(value => {
-                const td = document.createElement('td');
-                td.textContent = value !== null ? value : '';
-                td.style.padding = '8px';
-                td.style.minWidth = '200px';
-                tr.appendChild(td);
-            });
-            tbody.appendChild(tr);
-        });
-        table.appendChild(tbody);
-
-        tableWrapper.appendChild(table);
-        content.appendChild(tableWrapper);
+        content.appendChild(await printTable(uniqueData));
     } else {
         content.innerHTML = '<p>No data available</p>';
     }
+}
+
+async function printTable(uniqueData) {
+    const tableWrapper = document.createElement('div');
+    tableWrapper.style.overflowX = 'auto';
+    tableWrapper.style.maxWidth = '100%';
+    tableWrapper.style.margin = '2rem 30px';
+
+    const table = document.createElement('table');
+    table.classList.add('table', 'table-striped');
+    table.style.width = '100%';
+    table.style.borderCollapse = 'collapse';
+
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+    Object.keys(uniqueData[0]).forEach(key => {
+        const th = document.createElement('th');
+        th.textContent = key;
+        th.style.padding = '8px';
+        th.style.minWidth = '200px';
+        headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+    uniqueData.forEach(row => {
+        const tr = document.createElement('tr');
+        Object.values(row).forEach(value => {
+            const td = document.createElement('td');
+            td.textContent = value !== null ? value : '';
+            td.style.padding = '8px';
+            td.style.minWidth = '200px';
+            tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+
+    tableWrapper.appendChild(table);
+    return tableWrapper;
 }
 
 async function injectUserLog(userID) {
