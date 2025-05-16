@@ -1,6 +1,8 @@
 const submitButton = document.getElementById('rc_new_inventory_modal_submit');
 const gtinInput = document.querySelector('input[name="inventory[meta][gtin]"]');
 
+const originalPageTitle = document.title;
+
 if (submitButton && gtinInput) {
     submitButton.addEventListener('click', function(e) {
         e.preventDefault();
@@ -193,6 +195,8 @@ function initGetKeyword() {
             url.searchParams.set('keyword', keyword);
 
             history.pushState(null, '', url.toString());
+
+            document.title = `${keyword} - ${originalPageTitle}`;
         }
     });
 }
