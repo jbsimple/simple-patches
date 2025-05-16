@@ -191,8 +191,8 @@ function initGetKeyword() {
     searchInput.addEventListener('keydown', function(event) {
         if (event.key === 'Enter' && searchInput.value.trim() !== '') {
             const keyword = encodeURIComponent(searchInput.value.trim());
-            
-            document.title = `${keyword} - ${originalPageTitle}`;
+
+            document.title = `"${keyword}" - ${originalPageTitle}`;
 
             const url = new URL(window.location);
             url.searchParams.set('keyword', keyword);
