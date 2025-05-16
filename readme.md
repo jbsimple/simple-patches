@@ -72,6 +72,7 @@ There are other smaller modifications made, look below at the patches list to se
   - Added Missing Picture report for Defective, Incomplete and Imaging Issues (Created last 30 days).
   - Added a Complete Missing Picture report for all items and products in the system.
   - Added a Product Items list of products over QTY 50 with ASIN column.
+  - Added a report to lookup the complete history of any event ID.
 - On reports page, added a css fix to correct the resize on narrow screens happening too late.
 - On reports page, added css rule to flip the order of recents and main reporting tool because recents aren't THAT important.
 - On Dashboard; Added quick link buttons to commonly used functions in the system (that are usually hidden behind a cascade menu).
