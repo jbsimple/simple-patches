@@ -215,6 +215,7 @@ function initPreset() {
     card_body.appendChild(report_preset('picture_missingFull'));
     card_body.appendChild(report_preset('picture_missingSpecial'));
     card_body.appendChild(report_preset('product_highQty'));
+    card_body.appendChild(report_preset('productivity_eventLogLookup'));
     
     const nextStepButton = document.getElementById('rc_reports_new_wizard').querySelectorAll('button[data-kt-stepper-action="next"]');
     const patchesPresentsDiv = document.getElementById('patches-presents');
@@ -294,6 +295,18 @@ function report_initHTML(det) {
                 const mm = String(today.getMonth() + 1).padStart(2, '0');
                 const dd = String(today.getDate()).padStart(2, '0');
                 userInput.value = `${yyyy}-${mm}-${dd}`;
+            }
+        } else if (det.input && det.input === 'int') {
+            userInput.setAttribute('name', 'patches-userInput-dateListing');
+            userInput.setAttribute('id', `${det.id}-input`);
+            userInput.setAttribute('type', 'number');
+            userInput.setAttribute('autocomplete', 'off');
+            userInput.setAttribute('style', 'color: var(--bs-text-gray-800); width: unset;');
+            userInput.classList.add('form-control', 'rounded-1');
+            userInput.style.width = 'unset';
+
+            if (det.val) {
+                userInput.value = det.val;
             }
         }
 
@@ -385,6 +398,15 @@ function report_preset(name) {
         details.val = "today";
         details.desc = "Generate a report of all created items from a specific date.<br>Includes ASIN, MPN, Category, Shipping Template and Has FBA";
         details.title = "Created Recent Check";
+        return report_initHTML(details);
+    } else if (name === 'productivity_eventLogLookup') {
+        var details = {};
+        details.id = `patches-reports-eventLogLookup`;
+        details.name = `patches-reports-eventIDLookup`;
+        details.func = `report_eventLogLookup_submit();`;
+        details.input = "int";
+        details.desc = "Generate a report of all employee producitivty associated with an event id.";
+        details.title = "Event ID Lookup";
         return report_initHTML(details);
     } else {
         return null;
@@ -614,6 +636,68 @@ function report_productHighQty() {
         csrf_recom: csrfToken
     };
     
+    getReport(request);
+}
+
+function report_eventIDLookup_submit() {
+    const eventIdInput = document.getElementById('patches-reports-eventIDLookup-input');
+    
+    const today = new Date();
+    const date = `${String(today.getMonth() + 1).padStart(2, '0')}/${String(today.getDate()).padStart(2, '0')}/${today.getFullYear()}`;
+
+    const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
+    
+    var request = {
+        report: {
+            type: "user_clock",
+            columns: [
+                "user_profile.user_id",
+                "user_profile.department_id",
+                "user_clocks.task_id",
+                "purchase_orders.id",
+                "purchase_orders.type",
+                "user_clock_activity.activity_id",
+                "user_clock_activity.activity_code",
+                "user_clock_activity.notes",
+                "user_clock_activity.units",
+                "user_clock_activity.created_at",
+                "user_clock_activity.time_spent",
+                "user_clocks.time_in",
+                "user_clocks.time_out",
+                "user_clocks.user_id",
+                "user_clocks.clock_date",
+                "products.sid",
+                "products.name",
+                "product_items.sku",
+                "product_items.condition_id",
+                "products.category_id",
+                "categories.type",
+                "products.brand_id",
+                "order_lines.line_sku",
+                "orders.number",
+                "order_lines.line_quantity",
+                "order_lines.line_price",
+                "product_items.bulk_price",
+                "products.mpn",
+                "products.gtin",
+                "products.asin"
+            ],
+            filters: [
+                {
+                    column: "user_clocks.clock_date",
+                    opr: "between",
+                    value: `08/01/2023 - ${date}`
+                },
+                {
+                    column: "user_clock_activity.activity_id",
+                    opr: "{0} = {1}",
+                    value: eventIdInput
+                }
+            ]
+        },
+        csrf_recom: csrfToken
+    };
+
     getReport(request);
 }
 
