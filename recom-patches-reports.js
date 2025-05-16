@@ -403,7 +403,7 @@ function report_preset(name) {
         var details = {};
         details.id = `patches-reports-eventLogLookup`;
         details.name = `patches-reports-eventIDLookup`;
-        details.func = `report_eventLogLookup_submit();`;
+        details.func = `report_eventIDLookup_submit();`;
         details.input = "int";
         details.desc = "Generate a report of all employee producitivty associated with an event id.";
         details.title = "Event ID Lookup";
