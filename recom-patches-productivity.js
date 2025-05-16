@@ -443,7 +443,7 @@ async function printTable(uniqueData) {
                 a.textContent = value;
                 a.target = '_blank';
                 td.appendChild(a);
-            } else if ((key === 'SID') && value) {
+            } else if ((key === 'SKU') && value) {
                 const a = document.createElement('a');
                 a.href = `/product/items/${encodeURIComponent(value)}`;
                 a.textContent = value;
