@@ -176,10 +176,7 @@ async function injectUserReport() {
         console.error('Patches - No Download Button', downloadButton);
     }
 
-    console.debug('PATCHES - User Data (Before Deduplication)', userData);
-
     if (userData && userData.length > 0) {
-        // Remove duplicates based on "Task", "SKU", and "Event_Date"
         const uniqueData = [];
         const seenKeys = new Set();
 
@@ -191,16 +188,15 @@ async function injectUserReport() {
             }
         });
 
-        console.debug('PATCHES - User Data (After Deduplication)', uniqueData);
+        console.debug('PATCHES - uniqueData', uniqueData);
 
-        // Group data by Task -> Event_Code
         const taskData = {};
         uniqueData.forEach(row => {
             const task = row.Task;
             const eventCode = row.Event_Code;
             const timeSpentInMinutes = parseFloat(row.Time_Spent_in_mintues) || 0;
 
-            if (task === "BREAK" || task === "LUNCH" || eventCode === "Clock In") return; // Skip unnecessary entries
+            if (task === "BREAK" || task === "LUNCH" || eventCode === "Clock In") return;
 
             if (!taskData[task]) {
                 taskData[task] = {};
@@ -209,7 +205,6 @@ async function injectUserReport() {
                 taskData[task][eventCode] = { totalUnits: 0, totalTime: 0 };
             }
 
-            // Sum time spent instead of filtering by "Clock In"
             taskData[task][eventCode].totalTime += timeSpentInMinutes;
             taskData[task][eventCode].totalUnits += parseFloat(row.Units) || 0;
         });
@@ -292,11 +287,8 @@ async function injectTeamReport() {
     } else {
         console.error('Patches - No Download Button', downloadButton);
     }
-    
-    console.debug('PATCHES - Team Data (Before Deduplication)', teamData);
 
     if (teamData && teamData.length > 0) {
-        // Remove duplicates based on "User", "Task", "SKU", and "Event_Date"
         const uniqueData = [];
         const seenKeys = new Set();
 
@@ -308,9 +300,8 @@ async function injectTeamReport() {
             }
         });
 
-        console.debug('PATCHES - Team Data (After Deduplication)', uniqueData);
+        console.debug('PATCHES - uniqueData', uniqueData);
 
-        // Group data by User -> Task -> Event_Code
         const userDataMap = {};
 
         uniqueData.forEach(row => {
@@ -318,10 +309,9 @@ async function injectTeamReport() {
             const task = row.Task;
             const eventCode = row.Event_Code;
 
-            // Use Time_Spent_in_mintues instead of filtering by "Clock In"
             const timeSpentInMinutes = parseFloat(row.Time_Spent_in_mintues) || 0;
 
-            if (task === "BREAK" || task === "LUNCH" || eventCode === 'Clock In') return; // Skip BREAK LUNCH and Clock In
+            if (task === "BREAK" || task === "LUNCH" || eventCode === 'Clock In') return;
 
             if (!userDataMap[user]) {
                 userDataMap[user] = {};
@@ -332,8 +322,6 @@ async function injectTeamReport() {
             if (!userDataMap[user][task][eventCode]) {
                 userDataMap[user][task][eventCode] = { totalUnits: 0, totalTime: 0 };
             }
-
-            // **NEW: Summing up all Time_Spent_in_mintues instead of checking "Clock In"**
             userDataMap[user][task][eventCode].totalTime += timeSpentInMinutes;
 
             userDataMap[user][task][eventCode].totalUnits += parseFloat(row.Units) || 0;
@@ -428,7 +416,9 @@ async function printTable(uniqueData) {
 
     const thead = document.createElement('thead');
     const headerRow = document.createElement('tr');
-    Object.keys(uniqueData[0]).forEach(key => {
+    const keys = Object.keys(uniqueData[0]);
+
+    keys.forEach(key => {
         const th = document.createElement('th');
         th.textContent = key;
         th.style.padding = '8px';
@@ -441,17 +431,34 @@ async function printTable(uniqueData) {
     const tbody = document.createElement('tbody');
     uniqueData.forEach(row => {
         const tr = document.createElement('tr');
-        Object.values(row).forEach(value => {
+        keys.forEach(key => {
             const td = document.createElement('td');
-            td.textContent = value !== null ? value : '';
+            const value = row[key];
             td.style.padding = '8px';
             td.style.minWidth = '200px';
+
+            if ((key === 'SID') && value) {
+                const a = document.createElement('a');
+                a.href = `/products/${encodeURIComponent(value)}`;
+                a.textContent = value;
+                a.target = '_blank';
+                td.appendChild(a);
+            } else if ((key === 'SID') && value) {
+                const a = document.createElement('a');
+                a.href = `/product/items/${encodeURIComponent(value)}`;
+                a.textContent = value;
+                a.target = '_blank';
+                td.appendChild(a);
+            } else {
+                td.textContent = value !== null ? value : '';
+            }
+
             tr.appendChild(td);
         });
         tbody.appendChild(tr);
     });
-    table.appendChild(tbody);
 
+    table.appendChild(tbody);
     tableWrapper.appendChild(table);
     return tableWrapper;
 }
