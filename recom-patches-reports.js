@@ -281,7 +281,6 @@ function report_initHTML(det) {
 
         const userInput = document.createElement('input');
         if (det.input && det.input === 'date') {
-            userInput.setAttribute('name', 'patches-userInput-dateListing');
             userInput.setAttribute('id', `${det.id}-input`);
             userInput.setAttribute('type', 'date');
             userInput.setAttribute('autocomplete', 'off');
@@ -297,7 +296,6 @@ function report_initHTML(det) {
                 userInput.value = `${yyyy}-${mm}-${dd}`;
             }
         } else if (det.input && det.input === 'int') {
-            userInput.setAttribute('name', 'patches-userInput-dateListing');
             userInput.setAttribute('id', `${det.id}-input`);
             userInput.setAttribute('type', 'number');
             userInput.setAttribute('autocomplete', 'off');
@@ -401,7 +399,7 @@ function report_preset(name) {
         return report_initHTML(details);
     } else if (name === 'productivity_eventLogLookup') {
         var details = {};
-        details.id = `patches-reports-eventLogLookup`;
+        details.id = `patches-reports-eventIDLookup`;
         details.name = `patches-reports-eventIDLookup`;
         details.func = `report_eventIDLookup_submit();`;
         details.input = "int";
