@@ -404,7 +404,7 @@ function report_preset(name) {
         details.name = `patches-reports-eventIDLookup`;
         details.func = `report_eventIDLookup_submit();`;
         details.input = "int";
-        details.desc = "Generate a report of all employee producitivty associated with an event id.";
+        details.desc = "Generate a report of all employee producitivty associated with an event id.<br>Includes all possible pieces of data from the employee productivity report.";
         details.title = "Event ID Lookup";
         return report_initHTML(details);
     } else {
