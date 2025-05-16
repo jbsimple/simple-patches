@@ -298,6 +298,7 @@ function report_initHTML(det) {
         } else if (det.input && det.input === 'int') {
             userInput.setAttribute('id', `${det.id}-input`);
             userInput.setAttribute('type', 'number');
+            userInput.setAttribute('min', '1');
             userInput.setAttribute('autocomplete', 'off');
             userInput.setAttribute('style', 'color: var(--bs-text-gray-800); width: unset;');
             userInput.classList.add('form-control', 'rounded-1');
