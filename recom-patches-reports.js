@@ -639,6 +639,7 @@ function report_productHighQty() {
 
 function report_eventIDLookup_submit() {
     const eventIdInput = document.getElementById('patches-reports-eventIDLookup-input');
+    const eventIdValue = eventIdInput?.value;
     
     const today = new Date();
     const date = `${String(today.getMonth() + 1).padStart(2, '0')}/${String(today.getDate()).padStart(2, '0')}/${today.getFullYear()}`;
@@ -689,7 +690,7 @@ function report_eventIDLookup_submit() {
                 {
                     column: "user_clock_activity.activity_id",
                     opr: "{0} = {1}",
-                    value: eventIdInput
+                    value: eventIdValue
                 }
             ]
         },
