@@ -817,28 +817,30 @@ function hijackAjaxModal() {
         }
     
         function countUrlsBySku(data) {
-            const skuCounts = {};
-    
+            const skuMap = {};
+
             data.forEach((item) => {
-                const { SKU, URL } = item;
-                if (!skuCounts[SKU]) {
-                    skuCounts[SKU] = 0;
+                const { SKU, URL, Created_Date } = item;
+                if (!skuMap[SKU]) {
+                    skuMap[SKU] = {
+                        sku: SKU,
+                        count: 0,
+                        Created_Date: Created_Date
+                    };
                 }
                 if (URL !== null) {
-                    skuCounts[SKU]++;
+                    skuMap[SKU].count++;
                 }
             });
-    
-            return Object.entries(skuCounts).map(([sku, count]) => ({
-                sku,
-                count,
-            }));
+
+            return Object.values(skuMap);
         }
     
         modal.addEventListener('hidden.bs.modal', () => {
             console.debug('Patch: Modal has been hidden.');
         });
     }
+    
 
     async function modalClockIn() {
         modal = document.querySelector('.swal2-container');
