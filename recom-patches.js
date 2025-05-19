@@ -783,7 +783,10 @@ function hijackAjaxModal() {
                                     const labelDiv = document.createElement('div');
                                     labelDiv.className = 'fw-bold fs-6 text-gray-400';
                                     labelDiv.textContent = bold;
-                                    if (color !== '') { labelDiv.setAttribute('style', `color: var(--bs-${color});`); }
+                                    if (color !== '') {
+                                        console.debug('PATCHES: There is a COLOR!', color);
+                                        labelDiv.setAttribute('style', `color: var(--bs-${color}) !important;`);
+                                    }
     
                                     newElement.appendChild(numberContainer);
                                     newElement.appendChild(labelDiv);
