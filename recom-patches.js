@@ -730,6 +730,8 @@ function hijackAjaxModal() {
                                         const year = dateObj.getFullYear();
                                         const time = dateObj.toTimeString().split(' ')[0];
                                         createDetailBox('Created At', `${month} ${day} ${year} ${time}`, 'SID Created Timestamp.');
+                                    } else {
+                                        console.error('PATCHES: Unable to get product details.', product_images);
                                     }
 
                                     // createDetailBox('Number of SID Pictures', product_images?.length ?? '0'); sketchy
