@@ -88,9 +88,9 @@ function initQuickLinks() {
     content_container.prepend(quickLinksLabel);
 }
 
-function replaceEngageWiget() {
+function replaceEngagewidget() {
     const kt_app_content_container = document.getElementById('kt_app_content_container');
-    const engageWiget = kt_app_content_container.querySelector('.card.bg-primary.card-flush.h-md-50.mb-xl-10');
+    const engagewidget = kt_app_content_container.querySelector('.card.bg-primary.card-flush.h-md-50.mb-xl-10');
     const randomImages = [
         {
             "url": "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExeGsycjU3bTd0dGFkNmE5Y3NzcGpodGY4YW1mdTVrc3FoZmFqb2t4OSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/JqmupuTVZYaQX5s094/giphy.gif",
@@ -109,9 +109,9 @@ function replaceEngageWiget() {
             "title": "average programming experience"
         }
     ];
-    if (engageWiget) {
+    if (engagewidget) {
         const selectedImage = randomImages[Math.floor(Math.random() * randomImages.length)];
-        engageWiget.innerHTML = `<div class="card-body d-flex flex-column">
+        engagewidget.innerHTML = `<div class="card-body d-flex flex-column">
             <div class="m-0">
                 <h1 class="fw-semibold text-white text-center lh-lg mb-9">
                     You have the Patches!<br>
@@ -123,12 +123,12 @@ function replaceEngageWiget() {
                 <a title="Opens External Page" class="btn btn-sm bg-white btn-color-gray-800 me-2" target="_blank" href="https://simple-patches.vercel.app/">Read More</a>
             </div>
         </div>`;
-        engageWiget.classList.remove('bg-primary');
-        engageWiget.setAttribute('style', "background-color: black !important;");
+        engagewidget.classList.remove('bg-primary');
+        engagewidget.setAttribute('style', "background-color: black !important;");
     }
 }
 
 setTimeout(function () { 
     initQuickLinks();
-    replaceEngageWiget();
+    replaceEngagewidget();
 }, 200);
