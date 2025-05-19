@@ -622,7 +622,12 @@ function hijackAjaxModal() {
                 inProgressContent.add(descriptionText);
     
                 try {
-                    const item_images = await getItemPictureCount(descriptionText);
+                    const item_images = await getItemDetails(descriptionText);
+                    console.debug('PATCHES: Item Details:', item_images);
+
+                    const product_images = await getProductDetails(descriptionText);
+                    console.debug('PATCHES: Product Details:', product_images);
+
                     processedContent.add(descriptionText);
                     const image_counts = countUrlsBySku(item_images);
     
@@ -711,7 +716,7 @@ function hijackAjaxModal() {
             console.debug('Patches - Description div not found in the modal content.');
         }
     
-        async function getItemPictureCount(SID) {
+        async function getItemDetails(SID) {
             const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]')
             if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
                 const csrfToken = csrfMeta.getAttribute('content');
@@ -721,14 +726,66 @@ function hijackAjaxModal() {
                         columns: [
                             "product_items.sku",
                             "item_images.url",
+                            "product_items.created_at"
                         ],
-                        filters: [{
+                        filters: [
+                            {
                                 column: "products.sid",
                                 opr: "{0} = '{1}'",
                                 value: `${SID}`
                             },
                             {
                                 column: "product_items.status",
+                                opr: "{0} = '{1}'",
+                                value: "1"
+                            }
+                        ]
+                    },
+                    csrf_recom: csrfToken
+                };
+    
+                return new Promise((resolve, reject) => {
+                    $.ajax({
+                        type: "POST",
+                        dataType: "json",
+                        url: "/reports/create",
+                        data: request,
+                    }).done(function(data) {
+                        if (data.success && data.results.results && Array.isArray(data.results.results)) {
+                            resolve(data.results.results);
+                        } else {
+                            resolve(null);
+                        }
+                    }).fail(function(jqXHR, textStatus, errorThrown) {
+                        console.error("Request failed: " + textStatus + ", " + errorThrown);
+                        reject(new Error("Request failed: " + textStatus + ", " + errorThrown));
+                    });
+                });
+            } else {
+                return null;
+            }
+        }
+
+        async function getProductDetails(SID) {
+            const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]')
+            if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
+                const csrfToken = csrfMeta.getAttribute('content');
+                const request = {
+                    report: {
+                        type: "product_images",
+                        columns: [
+                            "products.sid",
+                            "product_images.url",
+                            "products.created_at"
+                        ],
+                        filters: [
+                            {
+                                column: "products.sid",
+                                opr: "{0} = '{1}'",
+                                value: `${SID}`
+                            },
+                            {
+                                column: "products.status",
                                 opr: "{0} = '{1}'",
                                 value: "1"
                             }
