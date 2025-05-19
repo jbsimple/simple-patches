@@ -649,7 +649,7 @@ function hijackAjaxModal() {
                                 skuHeading.setAttribute('style', 'width: 12% !important;');
 
                                 const createdHeader = document.createElement('th');
-                                createdHeader.setAttribute('style', 'width: 10% !important;');
+                                createdHeader.setAttribute('style', 'width: 20% !important;');
                                 createdHeader.textContent = 'Creaated';
                                 headerRow.appendChild(createdHeader);
 
@@ -674,7 +674,7 @@ function hijackAjaxModal() {
                                 const year = dateObj.getFullYear();
                                 const time = dateObj.toTimeString().split(' ')[0];
 
-                                createdCell.innerHTML = `${month} ${day} ${year}<br>${time}`;
+                                createdCell.innerHTML = `${month} ${day} ${year} ${time}`;
                             } else {
                                 createdCell.textContent = '';
                             }
