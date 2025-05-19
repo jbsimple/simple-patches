@@ -678,7 +678,7 @@ function hijackAjaxModal() {
                         const rows = table.querySelectorAll('tbody tr');
                         rows.forEach((row) => {
                             const sku = row.querySelector('td:nth-child(1)')?.textContent?.trim();
-                            const skuObj = image_counts.find((item) => item.sku === sku);
+                            const skuObj = image_counts.find((item) => item.sku.trim() === sku);
 
                             const createdCell = document.createElement('td');
 
