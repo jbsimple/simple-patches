@@ -712,63 +712,61 @@ function hijackAjaxModal() {
                         const img = images[0];
                         const filename = img.src.split('/').pop();
     
-                        if (filename !== 'no-image.png') {
-                            const parentContainer = modal.querySelector(
-                                '.d-flex.flex-wrap.justify-content-start'
-                            );
-    
-                            if (parentContainer) {
-                                const targetContainer = parentContainer.querySelector('.d-flex.flex-wrap');
-    
-                                if (targetContainer) {
+                        const parentContainer = modal.querySelector(
+                            '.d-flex.flex-wrap.justify-content-start'
+                        );
 
-                                    if (product_images !== null && product_images.length > 0 && product_images[0].Created_Date) {
-                                        const dateObj = new Date(product_images[0].Created_Date);
-                                        const options = { month: 'short' };
-                                        const month = new Intl.DateTimeFormat('en-US', options).format(dateObj);
-                                        const day = String(dateObj.getDate()).padStart(2, '0');
-                                        const year = dateObj.getFullYear();
-                                        const time = dateObj.toTimeString().split(' ')[0];
-                                        createDetailBox('Created At', `${month} ${day} ${year} ${time}`, 'SID Created Timestamp.');
-                                    } else {
-                                        console.error('PATCHES: Unable to get product details.', product_images);
-                                    }
+                        if (parentContainer) {
+                            const targetContainer = parentContainer.querySelector('.d-flex.flex-wrap');
 
-                                    // createDetailBox('Number of SID Pictures', product_images?.length ?? '0'); sketchy
-                                    createDetailBox('Number of Pictures', String(product_images?.length ?? 0), 'Number of pictures on the SID.');
+                            if (targetContainer) {
 
-                                    createDetailBox('Image Filename', filename, 'Filename of the first image on the SID.');
-
-                                    function createDetailBox(bold, value, title = '') {
-                                        const newElement = document.createElement('div');
-                                        newElement.title = title;
-                                        newElement.className = 'border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3';
-        
-                                        const numberContainer = document.createElement('div');
-                                        numberContainer.className = 'd-flex align-items-center';
-                                        const filenameDiv = document.createElement('div');
-                                        filenameDiv.className = 'fs-4 fw-bolder';
-                                        filenameDiv.textContent = value;
-        
-                                        numberContainer.appendChild(filenameDiv);
-        
-                                        const labelDiv = document.createElement('div');
-                                        labelDiv.className = 'fw-bold fs-6 text-gray-400';
-                                        labelDiv.textContent = bold;
-        
-                                        newElement.appendChild(numberContainer);
-                                        newElement.appendChild(labelDiv);
-        
-                                        targetContainer.appendChild(newElement);
-                                    }
+                                if (product_images !== null && product_images.length > 0 && product_images[0].Created_Date) {
+                                    const dateObj = new Date(product_images[0].Created_Date);
+                                    const options = { month: 'short' };
+                                    const month = new Intl.DateTimeFormat('en-US', options).format(dateObj);
+                                    const day = String(dateObj.getDate()).padStart(2, '0');
+                                    const year = dateObj.getFullYear();
+                                    const time = dateObj.toTimeString().split(' ')[0];
+                                    createDetailBox('Created At', `${month} ${day} ${year} ${time}`, 'SID Created Timestamp.');
                                 } else {
-                                    console.error('Patches - Target container with class "d-flex flex-wrap" not found.');
+                                    console.error('PATCHES: Unable to get product details.', product_images);
+                                }
+
+                                if (filename !== 'no-image.png') {
+                                    createDetailBox('Number of Pictures', String(product_images?.length ?? 0), 'Number of pictures on the SID.');
+                                    createDetailBox('Image Filename', filename, 'Filename of the first image on the SID.');
+                                } else {
+                                    createDetailBox('Number of Pictures', '0', 'Number of pictures on the SID.');
+                                }
+
+                                function createDetailBox(bold, value, title = '') {
+                                    const newElement = document.createElement('div');
+                                    newElement.title = title;
+                                    newElement.className = 'border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3';
+    
+                                    const numberContainer = document.createElement('div');
+                                    numberContainer.className = 'd-flex align-items-center';
+                                    const filenameDiv = document.createElement('div');
+                                    filenameDiv.className = 'fs-4 fw-bolder';
+                                    filenameDiv.textContent = value;
+    
+                                    numberContainer.appendChild(filenameDiv);
+    
+                                    const labelDiv = document.createElement('div');
+                                    labelDiv.className = 'fw-bold fs-6 text-gray-400';
+                                    labelDiv.textContent = bold;
+    
+                                    newElement.appendChild(numberContainer);
+                                    newElement.appendChild(labelDiv);
+    
+                                    targetContainer.appendChild(newElement);
                                 }
                             } else {
-                                console.error('Patches - Parent container with class "d-flex flex-wrap justify-content-start" not found.');
+                                console.error('Patches - Target container with class "d-flex flex-wrap" not found.');
                             }
                         } else {
-                            console.debug('Patches - Skipping "no-image.png".');
+                            console.error('Patches - Parent container with class "d-flex flex-wrap justify-content-start" not found.');
                         }
                     } else {
                         console.debug('Patches - No images found.');
