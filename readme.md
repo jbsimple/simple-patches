@@ -32,8 +32,15 @@ There are other smaller modifications made, look below at the patches list to se
   - Field to input notes.
   - Hijacks existing modal layout for data entry (with animations).
 - On all pages; CSS additions to header and clock buttons to handle the additional buttons.
-- On all pages; When opening the product modal, the number of images on each item appears in the table as a new column (uses reports).
-- On all pages; When opening the product modal, the filename of the first image is in the wrapper of other "at a glance" statistics".
+- On all pages; Added details and CSS modifications to product modal:
+  - Added a label for the product to print the created date.
+  - Added a label for the product to print the status, color-coded.
+  - Added a label for the product displaying the number of pictures on the product.
+  - If the product has images, added a label for the product displaying the filename of the first picture of the product.
+  - Added a column to the items table for when that item was created.
+  - Added a column to the items table for the number of images specifically on the item.
+  - Adjusted the width of various columns to make it fit better; shrunk location width, expanded width of created, sku and condition name.
+  - Adjusted some of the heading labels to make them shorter, better for width (In Stock and Stock Available).
 - On all pages; Added a refresh check to clock in tasks, every minute it checks and applies the clock-in task if it has changed.
 - On product and item pages; CSS fix for layout of cards.
 - On product and item pages; CSS fix for image box being too small.
@@ -91,5 +98,6 @@ There are other smaller modifications made, look below at the patches list to se
 - In Conditions Queues; Get Total button to ge the total quantity of all visible line items.
 
 #### Future:
+- Better modal animations.
 - Create a proper set of CSS rules for dark mode.
 - Overhaul of CSS sizing, everything is so large that the page requires it to be zoomed out in order to be used.
