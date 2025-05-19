@@ -56,6 +56,7 @@ function verifyGTIN() {
 
 // fix the In Catalog button.
 const inventory_results = document.getElementById('inventory_results');
+inventory_results.innerHTML = ''; // i am tired of seeing that default image.
 if (inventory_results) {
     const observerCallback = (mutationsList, observer) => {
         for (const mutation of mutationsList) {
