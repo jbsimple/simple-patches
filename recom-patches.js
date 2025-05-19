@@ -654,16 +654,19 @@ function hijackAjaxModal() {
 
                                 const stockHeading = Array.from(headings).find(th => th.textContent.trim() === 'In Stock');
                                 stockHeading.textContent = 'Stock';
+                                stockHeading.title = 'In Stock';
 
                                 const availableHeading = Array.from(headings).find(th => th.textContent.trim() === 'Total Available');
                                 availableHeading.textContent = 'Avai..';
+                                availableHeading.title = "Total Available";
 
                                 const priceHeading = Array.from(headings).find(th => th.textContent.trim() === 'Base Price');
                                 priceHeading.textContent = 'Price';
+                                priceHeading.title = 'Base Price';
 
                                 const createdHeader = document.createElement('th');
                                 createdHeader.setAttribute('style', 'width: 16% !important;');
-                                createdHeader.textContent = 'Creaated';
+                                createdHeader.textContent = 'Creaated At';
                                 headerRow.appendChild(createdHeader);
 
                                 const pictureHeader = document.createElement('th');
