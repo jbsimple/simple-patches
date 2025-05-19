@@ -644,7 +644,7 @@ function hijackAjaxModal() {
                                     w50.setAttribute('style', 'width: 35% !important;');
                                 });
 
-                                const rows = document.querySelectorAll('tr');
+                                const rows = headerRow.querySelectorAll('tr');
                                 const skuRow = Array.from(rows).find(tr => tr.textContent.trim() === 'SKU');
                                 skuRow.setAttribute('style', 'width: 12% !important;');
 
