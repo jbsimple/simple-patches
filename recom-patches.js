@@ -638,14 +638,20 @@ function hijackAjaxModal() {
                         if (thead) {
                             const headerRow = thead.querySelector('tr');
                             if (headerRow) {
+                                const w50s = headerRow.querySelectorAll('.w-50');
+                                w50s.forEach(w50 => {
+                                    w50.classList.remove('w-50');
+                                    w50.setAttribute('style', 'width: 35% !important;');
+                                });
+
+                                const createdHeader = document.createElement('th');
+                                createdHeader.setAttribute('style', 'width: 20% !important;');
+                                createdHeader.textContent = 'Creaated';
+                                headerRow.appendChild(createdHeader);
+                                
                                 const pictureHeader = document.createElement('th');
                                 pictureHeader.textContent = 'Pictures';
                                 headerRow.appendChild(pictureHeader);
-
-                                const createdHeader = document.createElement('th');
-                                createdHeader.setAttribute('style', 'width: 25% !important;');
-                                createdHeader.textContent = 'Creaated';
-                                headerRow.appendChild(createdHeader);
                             }
                         }
     
