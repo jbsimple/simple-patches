@@ -91,14 +91,29 @@ function initQuickLinks() {
 function replaceEngageWiget() {
     const kt_app_content_container = document.getElementById('kt_app_content_container');
     const engageWiget = kt_app_content_container.querySelector('.card.bg-primary.card-flush.h-md-50.mb-xl-10');
+    const randomImages = [
+        {
+            "url": "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExeGsycjU3bTd0dGFkNmE5Y3NzcGpodGY4YW1mdTVrc3FoZmFqb2t4OSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/JqmupuTVZYaQX5s094/giphy.gif",
+            "title": "typing..."
+        },
+        {
+            "url": "https://media.tenor.com/GfSX-u7VGM4AAAAM/coding.gif",
+            "title": "typing more..."
+        },
+        {
+            "url": "https://media.tenor.com/PLIr_VkF6ywAAAAM/ghostedvpn-hacker-cat.gif",
+            "title": "hacker cat!!!"
+        }
+    ];
     if (engageWiget) {
+        const selectedImage = randomImages[Math.floor(Math.random() * randomImages.length)];
         engageWiget.innerHTML = `<div class="card-body d-flex flex-column">
             <div class="m-0">
                 <h1 class="fw-semibold text-white text-center lh-lg mb-9">
                     You have the Patches!<br>
                     <span class="fw-bolder">See all the changes made!</span>
                 </h1>
-                <div title="typing..." class="flex-grow-1 bgi-no-repeat bgi-size-contain bgi-position-x-center card-rounded-bottom h-100px mh-200px my-5" style="background-image:url('https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExeGsycjU3bTd0dGFkNmE5Y3NzcGpodGY4YW1mdTVrc3FoZmFqb2t4OSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/JqmupuTVZYaQX5s094/giphy.gif')"></div>
+                <div title="${selectedImage.title}" class="flex-grow-1 bgi-no-repeat bgi-size-contain bgi-position-x-center card-rounded-bottom h-100px mh-200px my-5" style="background-image:url('${selectedImage.url}')"></div>
             </div>
             <div class="text-center">
                 <a title="Opens External Page" class="btn btn-sm bg-white btn-color-gray-800 me-2" target="_blank" href="https://simple-patches.vercel.app/">Read More</a>
