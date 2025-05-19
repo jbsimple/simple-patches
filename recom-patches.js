@@ -722,6 +722,16 @@ function hijackAjaxModal() {
     
                                 if (targetContainer) {
 
+                                    if (product_images !== null && product_images.length > 0 && product_images[0].Created_Date) {
+                                        const dateObj = new Date(product_images[0].Created_Date);
+                                        const options = { month: 'short' };
+                                        const month = new Intl.DateTimeFormat('en-US', options).format(dateObj);
+                                        const day = String(dateObj.getDate()).padStart(2, '0');
+                                        const year = dateObj.getFullYear();
+                                        const time = dateObj.toTimeString().split(' ')[0];
+                                        createDetailBox('Created At', `${month} ${day} ${year} ${time}`);
+                                    }
+                                    
                                     createDetailBox('SID Image Filename', filename);
                                     // createDetailBox('Number of SID Pictures', product_images?.length ?? '0'); sketchy
                                     createDetailBox('Number of SID Pictures', String(product_images?.length ?? 0));
