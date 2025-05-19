@@ -690,7 +690,7 @@ function hijackAjaxModal() {
                                     }
 
                                     if (sku !== '') {
-                                        const existingBadges = link.querySelectorAll('badge');
+                                        const existingBadges = link.querySelectorAll('.badge');
                                         existingBadges.forEach(badge => {
                                             badge.classList = 'badge badge-warning';
                                         })
