@@ -591,11 +591,8 @@ function hijackAjaxModal() {
                 if ((target.id === "rc_ajax_modal" && target.querySelector('.fw-bold.fs-6.text-gray-400')?.textContent.trim() === 'GTIN' && target.querySelector('table').classList.contains('table-row-bordered')) 
                         || (target.tagName === 'A' && target.hasAttribute('data-url') && target.getAttribute('data-url').includes('ajax/modals/productitems/') && target.classList.contains('ajax-modal'))) {
                     console.debug('Patches - AJAX modal is product glace:', target);
-
-                    const modal_content = modal.querySelector('.modal-dialog.modal-dialog-centered.modal-xl');
-                    modal_content.setAttribute('style', 'display: none');
+                    
                     modalPictureCount();
-                    modal_content.removeAttribute('style');
 
                 } else if (target.getAttribute('href') === "javascript:clockInOut('in');") {
                     console.debug('Patches - AJAX modal is clock in:', target);
