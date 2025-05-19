@@ -98,10 +98,10 @@ function replaceEngageWiget() {
                     You have the Patches!<br>
                     <span class="fw-bolder">See all the changes made!</span>
                 </h1>
-                <div class="flex-grow-1 bgi-no-repeat bgi-size-contain bgi-position-x-center card-rounded-bottom h-100px mh-200px my-5" style="background-image:url('https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExeGsycjU3bTd0dGFkNmE5Y3NzcGpodGY4YW1mdTVrc3FoZmFqb2t4OSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/JqmupuTVZYaQX5s094/giphy.gif')"></div>
+                <div title="typing..." class="flex-grow-1 bgi-no-repeat bgi-size-contain bgi-position-x-center card-rounded-bottom h-100px mh-200px my-5" style="background-image:url('https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExeGsycjU3bTd0dGFkNmE5Y3NzcGpodGY4YW1mdTVrc3FoZmFqb2t4OSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/JqmupuTVZYaQX5s094/giphy.gif')"></div>
             </div>
             <div class="text-center">
-                <a class="btn btn-sm bg-white btn-color-gray-800 me-2" target="_blank" href="https://simple-patches.vercel.app/">Read More</a>
+                <a title="Opens External Page" class="btn btn-sm bg-white btn-color-gray-800 me-2" target="_blank" href="https://simple-patches.vercel.app/">Read More</a>
             </div>
         </div>`;
         engageWiget.classList.remove('bg-primary');
