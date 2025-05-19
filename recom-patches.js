@@ -750,8 +750,10 @@ function hijackAjaxModal() {
                                         createDetailBox('Created At', `${month} ${day} ${year} ${time}`, 'SID Created Timestamp.');
                                     }
 
-                                    if (product_images[0].Product_Status) {
-                                        createDetailBox('Status', product_images[0].Product_Status, 'SID Status.');
+                                    if (product_images[0].Product_Status && product_images[0].Product_Status.trim() === 'Inactive') {
+                                        createDetailBox('Status', product_images[0].Product_Status, 'SID Status.', 'danger');
+                                    } else if (product_images[0].Product_Status) {
+                                        createDetailBox('Status', product_images[0].Product_Status, 'SID Status.', 'success');
                                     }
                                     
                                 } else {
@@ -765,7 +767,7 @@ function hijackAjaxModal() {
                                     createDetailBox('Number of Pictures', '0', 'Number of pictures on the SID.');
                                 }
 
-                                function createDetailBox(bold, value, title = '') {
+                                function createDetailBox(bold, value, title = '', color = '') {
                                     const newElement = document.createElement('div');
                                     newElement.title = title;
                                     newElement.className = 'border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3';
@@ -781,6 +783,7 @@ function hijackAjaxModal() {
                                     const labelDiv = document.createElement('div');
                                     labelDiv.className = 'fw-bold fs-6 text-gray-400';
                                     labelDiv.textContent = bold;
+                                    if (color !== '') { labelDiv.setAttribute('style', `color: var(--bs-${color});`); }
     
                                     newElement.appendChild(numberContainer);
                                     newElement.appendChild(labelDiv);
