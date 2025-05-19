@@ -693,6 +693,7 @@ function hijackAjaxModal() {
                                 createdCell.innerHTML = `${month} ${day} ${year} ${time}`;
                             } else {
                                 createdCell.textContent = '';
+                                console.error(`PATCHES: Unable to get created date for ${sku}:`, skuObj);
                             }
 
                             row.appendChild(createdCell);
