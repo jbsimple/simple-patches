@@ -592,7 +592,10 @@ function hijackAjaxModal() {
                         || (target.tagName === 'A' && target.hasAttribute('data-url') && target.getAttribute('data-url').includes('ajax/modals/productitems/') && target.classList.contains('ajax-modal'))) {
                     console.debug('Patches - AJAX modal is product glace:', target);
 
+                    const modal_content = modal.querySelector('modal-dialog.modal-dialog-centered.modal-xl');
+                    modal_content.setAttribute('style', 'display: none');
                     modalPictureCount();
+                    modal_content.removeAttribute('style');
 
                 } else if (target.getAttribute('href') === "javascript:clockInOut('in');") {
                     console.debug('Patches - AJAX modal is clock in:', target);
