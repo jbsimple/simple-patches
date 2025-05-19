@@ -691,10 +691,13 @@ function hijackAjaxModal() {
 
                                     if (sku !== '') {
                                         const existingBadges = link.querySelectorAll('.badge');
-                                        existingBadges.forEach(badge => {
-                                            badge.className = 'badge badge-warning ms-2';
-                                            badge.title = badge.textContent;
-                                        });
+                                        console.debug(`PATCHES: Badges for ${sku}`, existingBadges);
+                                        if (existingBadges) {
+                                            existingBadges.forEach(badge => {
+                                                badge.className = 'badge badge-warning ms-2';
+                                                badge.title = badge.textContent;
+                                            });
+                                        }
 
                                         const skuObj = image_counts.find((item) => item.sku.trim() === sku);
                                         if (skuObj.Item_Status === 'Inactive') {
