@@ -648,7 +648,7 @@ function hijackAjaxModal() {
                                 createdHeader.setAttribute('style', 'width: 20% !important;');
                                 createdHeader.textContent = 'Creaated';
                                 headerRow.appendChild(createdHeader);
-                                
+
                                 const pictureHeader = document.createElement('th');
                                 pictureHeader.textContent = 'Pictures';
                                 headerRow.appendChild(pictureHeader);
@@ -659,14 +659,14 @@ function hijackAjaxModal() {
                         rows.forEach((row) => {
                             const sku = row.querySelector('td:nth-child(1)')?.textContent?.trim();
                             const skuObj = image_counts.find((item) => item.sku === sku);
-    
-                            const pictureCell = document.createElement('td');
-                            pictureCell.textContent = skuObj ? skuObj.count : '0';
-                            row.appendChild(pictureCell);
 
                             const createdCell = document.createElement('td');
                             createdCell.textContent = skuObj ? skuObj.Created_Date: '';
                             row.appendChild(createdCell);
+    
+                            const pictureCell = document.createElement('td');
+                            pictureCell.textContent = skuObj ? skuObj.count : '0';
+                            row.appendChild(pictureCell);
                         });
                         
                     } else {
