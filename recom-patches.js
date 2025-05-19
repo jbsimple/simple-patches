@@ -751,9 +751,9 @@ function hijackAjaxModal() {
                                     }
 
                                     if (product_images[0].Product_Status && product_images[0].Product_Status === 'Inactive') {
-                                        createDetailBox('Status', product_images[0].Product_Status, 'SID Status.', 'danger');
+                                        createDetailBox('Status', product_images[0].Product_Status, 'SID Status.', 'text-dange');
                                     } else if (product_images[0].Product_Status) {
-                                        createDetailBox('Status', product_images[0].Product_Status, 'SID Status.', 'success');
+                                        createDetailBox('Status', product_images[0].Product_Status, 'SID Status.', 'text-success');
                                     }
                                     
                                 } else {
