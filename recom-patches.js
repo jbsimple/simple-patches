@@ -645,8 +645,21 @@ function hijackAjaxModal() {
                                 });
 
                                 const headings = headerRow.querySelectorAll('th');
+
                                 const skuHeading = Array.from(headings).find(th => th.textContent.trim() === 'SKU');
                                 skuHeading.setAttribute('style', 'width: 12% !important;');
+
+                                const conditionHeading = Array.from(headings).find(th => th.textContent.trim() === 'Condition');
+                                conditionHeading.setAttribute('style', 'width: 15% !important;');
+
+                                const stockHeading = Array.from(headings).find(th => th.textContent.trim() === 'In Stock');
+                                stockHeading.textContent = 'Stock';
+
+                                const availableHeading = Array.from(headings).find(th => th.textContent.trim() === 'Total Available');
+                                availableHeading.textContent = 'Avai..';
+
+                                const priceHeading = Array.from(headings).find(th => th.textContent.trim() === 'Base Price');
+                                priceHeading.textContent = 'Price';
 
                                 const createdHeader = document.createElement('th');
                                 createdHeader.setAttribute('style', 'width: 16% !important;');
