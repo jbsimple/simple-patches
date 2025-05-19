@@ -692,11 +692,13 @@ function hijackAjaxModal() {
                                     if (sku !== '') {
                                         const existingBadges = link.querySelectorAll('.badge');
                                         existingBadges.forEach(badge => {
-                                            badge.classList = 'badge badge-warning';
+                                            badge.classList = 'badge badge-warning ms-2';
+                                            badge.title = badge.textContent;
                                         })
                                         const skuObj = image_counts.find((item) => item.sku.trim() === sku);
                                         if (skuObj.Item_Status === 'Inactive') {
                                             link.innerHTML += `<span class="badge badge-danger ms-2">Inactive</span>`;
+                                            badge.title = 'Inactive';
                                         }
 
                                         const createdCell = document.createElement('td');
