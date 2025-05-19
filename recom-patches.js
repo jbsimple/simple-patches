@@ -751,7 +751,7 @@ function hijackAjaxModal() {
                                     }
 
                                     if (product_images[0].Product_Status && product_images[0].Product_Status === 'Inactive') {
-                                        createDetailBox('Status', product_images[0].Product_Status, 'SID Status.', 'text-dange');
+                                        createDetailBox('Status', product_images[0].Product_Status, 'SID Status.', 'text-danger');
                                     } else if (product_images[0].Product_Status) {
                                         createDetailBox('Status', product_images[0].Product_Status, 'SID Status.', 'text-success');
                                     }
@@ -777,7 +777,7 @@ function hijackAjaxModal() {
                                     const filenameDiv = document.createElement('div');
                                     filenameDiv.className = 'fs-4 fw-bolder';
                                     if (color !== '') {
-                                        console.debug('PATCHES: There is a COLOR!', color);
+                                        console.debug('PATCHES: There is a COLOR!', color); // this HAS to be here or the color wont be set, dont ask me why
                                         filenameDiv.setAttribute('style', `color: var(--bs-${color}) !important;`);
                                     }
                                     filenameDiv.textContent = value;
