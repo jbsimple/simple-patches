@@ -677,11 +677,22 @@ function hijackAjaxModal() {
     
                         const rows = table.querySelectorAll('tbody tr');
                         rows.forEach((row) => {
-                            const sku = row.querySelector('td:nth-child(1)')?.textContent?.trim();
+                            const td = row.querySelector('td:nth-child(1)');
+                            let sku = '';
+                            if (td) {
+                                const link = td.querySelector('a');
+                                if (link) {
+                                    for (const node of link.childNodes) {
+                                        if (node.nodeType === Node.TEXT_NODE) {
+                                            sku = node.textContent.trim();
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
                             const skuObj = image_counts.find((item) => item.sku.trim() === sku);
 
                             const createdCell = document.createElement('td');
-
                             if (skuObj && skuObj.Created_Date) {
                                 const dateObj = new Date(skuObj.Created_Date);
                                 const options = { month: 'short' };
@@ -695,7 +706,6 @@ function hijackAjaxModal() {
                                 createdCell.textContent = '';
                                 console.error(`PATCHES: Unable to get created date for ${sku}:`, skuObj);
                             }
-
                             row.appendChild(createdCell);
     
                             const pictureCell = document.createElement('td');
