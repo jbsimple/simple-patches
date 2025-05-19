@@ -106,7 +106,7 @@ function replaceEngageWiget() {
         </div>`;
         engageWiget.classList.remove('bg-primary');
         engageWiget.classList.add('bgi-no-repeat', 'bgi-size-cover', 'bgi-position-x-center');
-        engageWiget.setAttribute('style', "background-color: black !important; background-image:url('https://i.pinimg.com/originals/38/a0/cc/38a0cc030a73b8592057bd7d01bfd56d.gif')");
+        engageWiget.setAttribute('style', "background-color: black !important; background-image:url('https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExeGsycjU3bTd0dGFkNmE5Y3NzcGpodGY4YW1mdTVrc3FoZmFqb2t4OSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/JqmupuTVZYaQX5s094/giphy.gif')");
     }
 }
 
