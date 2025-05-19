@@ -645,7 +645,7 @@ function hijackAjaxModal() {
                                 });
 
                                 const createdHeader = document.createElement('th');
-                                createdHeader.setAttribute('style', 'width: 20% !important;');
+                                createdHeader.setAttribute('style', 'width: 15% !important;');
                                 createdHeader.textContent = 'Creaated';
                                 headerRow.appendChild(createdHeader);
 
@@ -661,7 +661,20 @@ function hijackAjaxModal() {
                             const skuObj = image_counts.find((item) => item.sku === sku);
 
                             const createdCell = document.createElement('td');
-                            createdCell.textContent = skuObj ? skuObj.Created_Date: '';
+
+                            if (skuObj && skuObj.Created_Date) {
+                                const dateObj = new Date(skuObj.Created_Date);
+                                const options = { month: 'short' };
+                                const month = new Intl.DateTimeFormat('en-US', options).format(dateObj);
+                                const day = String(dateObj.getDate()).padStart(2, '0');
+                                const year = dateObj.getFullYear();
+                                const time = dateObj.toTimeString().split(' ')[0];
+
+                                createdCell.innerHTML = `${month} ${day} ${year}<br>${time}`;
+                            } else {
+                                createdCell.textContent = '';
+                            }
+
                             row.appendChild(createdCell);
     
                             const pictureCell = document.createElement('td');
