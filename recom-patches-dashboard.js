@@ -98,15 +98,14 @@ function replaceEngageWiget() {
                     You have the Patches!<br>
                     <span class="fw-bolder">See all the changes made!</span>
                 </h1>
-                <div class="flex-grow-1 bgi-no-repeat bgi-size-contain bgi-position-x-center card-rounded-bottom h-100px mh-200px my-5" style="background-image:url('https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcHl5bWhoYWxzdzMzejNuNnF5bGFlcm00djNzOXc4OG54ZGNwenU3MyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/4B1BTOMTi8b3OdPrzy/giphy.gif')"></div>
+                <div class="flex-grow-1 bgi-no-repeat bgi-size-contain bgi-position-x-center card-rounded-bottom h-100px mh-200px my-5" style="background-image:url('https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExeGsycjU3bTd0dGFkNmE5Y3NzcGpodGY4YW1mdTVrc3FoZmFqb2t4OSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/JqmupuTVZYaQX5s094/giphy.gif')"></div>
             </div>
             <div class="text-center">
                 <a class="btn btn-sm bg-white btn-color-gray-800 me-2" target="_blank" href="https://simple-patches.vercel.app/">Read More</a>
             </div>
         </div>`;
         engageWiget.classList.remove('bg-primary');
-        engageWiget.classList.add('bgi-no-repeat', 'bgi-size-cover', 'bgi-position-x-center');
-        engageWiget.setAttribute('style', "background-color: black !important; background-image:url('https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExeGsycjU3bTd0dGFkNmE5Y3NzcGpodGY4YW1mdTVrc3FoZmFqb2t4OSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/JqmupuTVZYaQX5s094/giphy.gif')");
+        engageWiget.setAttribute('style', "background-color: black !important;");
     }
 }
 
