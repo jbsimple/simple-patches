@@ -105,7 +105,7 @@ function replaceEngageWiget() {
             </div>
         </div>`;
         engageWiget.classList.remove('bg-primary');
-        engageWiget.classList.add('bgi-no-repeat', 'bgi-size-contain', 'bgi-position-x-center');
+        engageWiget.classList.add('bgi-no-repeat', 'bgi-size-cover', 'bgi-position-x-center');
         engageWiget.setAttribute('style', "background-color: black !important; background-image:url('https://i.pinimg.com/originals/38/a0/cc/38a0cc030a73b8592057bd7d01bfd56d.gif')");
     }
 }
