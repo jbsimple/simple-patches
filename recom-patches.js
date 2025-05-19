@@ -750,7 +750,7 @@ function hijackAjaxModal() {
                                         createDetailBox('Created At', `${month} ${day} ${year} ${time}`, 'SID Created Timestamp.');
                                     }
 
-                                    if (product_images[0].Product_Status && product_images[0].Product_Status.trim() === 'Inactive') {
+                                    if (product_images[0].Product_Status && product_images[0].Product_Status === 'Inactive') {
                                         createDetailBox('Status', product_images[0].Product_Status, 'SID Status.', 'danger');
                                     } else if (product_images[0].Product_Status) {
                                         createDetailBox('Status', product_images[0].Product_Status, 'SID Status.', 'success');
