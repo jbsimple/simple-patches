@@ -638,20 +638,28 @@ function hijackAjaxModal() {
                         if (thead) {
                             const headerRow = thead.querySelector('tr');
                             if (headerRow) {
-                                const newHeader = document.createElement('th');
-                                newHeader.textContent = 'Pictures';
-                                headerRow.appendChild(newHeader);
+                                const pictureHeader = document.createElement('th');
+                                pictureHeader.textContent = 'Pictures';
+                                headerRow.appendChild(pictureHeader);
+
+                                const createdHeader = document.createElement('th');
+                                createdHeader.textContent = 'Creaated';
+                                headerRow.appendChild(createdHeader);
                             }
                         }
     
                         const rows = table.querySelectorAll('tbody tr');
                         rows.forEach((row) => {
-                            const newCell = document.createElement('td');
                             const sku = row.querySelector('td:nth-child(1)')?.textContent?.trim();
-                            const countObj = image_counts.find((item) => item.sku === sku);
+                            const skuObj = image_counts.find((item) => item.sku === sku);
     
-                            newCell.textContent = countObj ? countObj.count : '0';
-                            row.appendChild(newCell);
+                            const pictureCell = document.createElement('td');
+                            pictureCell.textContent = skuObj ? skuObj.count : '0';
+                            row.appendChild(pictureCell);
+
+                            const createdCell = document.createElement('td');
+                            createdCell.textContent = skuObj ? skuObj.Created_Date: '';
+                            row.appendChild(createdCell);
                         });
                         
                     } else {
