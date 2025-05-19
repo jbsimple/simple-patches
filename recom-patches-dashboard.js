@@ -103,6 +103,10 @@ function replaceEngageWiget() {
         {
             "url": "https://media.tenor.com/PLIr_VkF6ywAAAAM/ghostedvpn-hacker-cat.gif",
             "title": "hacker cat!!!"
+        },
+        {
+            "url": "https://i.gifer.com/6tXM.gif",
+            "title": "average programming experience"
         }
     ];
     if (engageWiget) {
