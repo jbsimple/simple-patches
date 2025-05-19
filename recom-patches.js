@@ -690,20 +690,8 @@ function hijackAjaxModal() {
                                     }
 
                                     if (sku !== '') {
-                                        const existingBadges = link.querySelectorAll('.badge');
-                                        console.debug(`PATCHES: Badges for ${sku}`, existingBadges);
-                                        if (existingBadges && existingBadges.length > 0) {
-                                            existingBadges.forEach(badge => {
-                                                badge.className = 'badge badge-warning ms-2';
-                                                badge.title = badge.textContent;
-                                            });
-                                        }
-
                                         const skuObj = image_counts.find((item) => item.sku.trim() === sku);
-                                        if (skuObj.Item_Status === 'Inactive') {
-                                            link.innerHTML += `<span class="badge badge-danger ms-2">Inactive</span>`;
-                                            badge.title = 'Inactive';
-                                        }
+                                        if (skuObj.Item_Status === 'Inactive') { link.innerHTML += `<span class="badge badge-danger ms-2">Inactive</span>`; }
 
                                         const createdCell = document.createElement('td');
                                         if (skuObj && skuObj.Created_Date) {
