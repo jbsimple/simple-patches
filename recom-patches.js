@@ -739,14 +739,21 @@ function hijackAjaxModal() {
 
                             if (targetContainer) {
 
-                                if (product_images !== null && product_images.length > 0 && product_images[0].Created_Date) {
-                                    const dateObj = new Date(product_images[0].Created_Date);
-                                    const options = { month: 'short' };
-                                    const month = new Intl.DateTimeFormat('en-US', options).format(dateObj);
-                                    const day = String(dateObj.getDate()).padStart(2, '0');
-                                    const year = dateObj.getFullYear();
-                                    const time = dateObj.toTimeString().split(' ')[0];
-                                    createDetailBox('Created At', `${month} ${day} ${year} ${time}`, 'SID Created Timestamp.');
+                                if (product_images !== null && product_images.length > 0) {
+                                    if (product_images[0].Created_Date) {
+                                        const dateObj = new Date(product_images[0].Created_Date);
+                                        const options = { month: 'short' };
+                                        const month = new Intl.DateTimeFormat('en-US', options).format(dateObj);
+                                        const day = String(dateObj.getDate()).padStart(2, '0');
+                                        const year = dateObj.getFullYear();
+                                        const time = dateObj.toTimeString().split(' ')[0];
+                                        createDetailBox('Created At', `${month} ${day} ${year} ${time}`, 'SID Created Timestamp.');
+                                    }
+
+                                    if (product_images[0].Product_Status) {
+                                        createDetailBox('Status', product_images[0].Product_Status, 'SID Status.');
+                                    }
+                                    
                                 } else {
                                     console.error('PATCHES: Unable to get product details.', product_images);
                                 }
@@ -877,8 +884,8 @@ function hijackAjaxModal() {
                     report: {
                         type: "product_images",
                         columns: [
-                            "products.sid",
                             "product_images.url",
+                            "products.status",
                             "products.created_at"
                         ],
                         filters: [
