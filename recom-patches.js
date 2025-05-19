@@ -932,12 +932,13 @@ function hijackAjaxModal() {
             const skuMap = {};
 
             data.forEach((item) => {
-                const { SKU, URL, Created_Date } = item;
+                const { SKU, URL, Item_Status, Created_Date} = item;
                 if (!skuMap[SKU]) {
                     skuMap[SKU] = {
                         sku: SKU,
                         count: 0,
-                        Created_Date: Created_Date
+                        Created_Date: Created_Date,
+                        Item_Status: Item_Status
                     };
                 }
                 if (URL !== null) {
