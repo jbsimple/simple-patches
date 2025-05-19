@@ -723,6 +723,8 @@ function hijackAjaxModal() {
                                 if (targetContainer) {
 
                                     createDetailBox('SID Image Filename', filename);
+                                    // createDetailBox('Number of SID Pictures', product_images?.length ?? '0'); sketchy
+                                    createDetailBox('Number of SID Pictures', String(product_images?.length ?? 0));
 
                                     function createDetailBox(title, value) {
                                         const newElement = document.createElement('div');
