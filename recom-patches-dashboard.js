@@ -88,4 +88,28 @@ function initQuickLinks() {
     content_container.prepend(quickLinksLabel);
 }
 
-setTimeout(function () { initQuickLinks(); }, 200);
+function replaceEngageWiget() {
+    const kt_app_content_container = document.getElementById('kt_app_content_container');
+    const engageWiget = kt_app_content_container.querySelector('.card.bg-primary.card-flush.h-md-50.mb-xl-10');
+    if (engageWiget) {
+        engageWiget.innerHTML = `<div class="card-body d-flex flex-column">
+            <div class="m-0">
+                <h1 class="fw-semibold text-white text-center lh-lg mb-9">
+                    You have the Patches!<br>
+                    <span class="fw-bolder">See all the changes made!</span>
+                </h1>
+                <div class="flex-grow-1 bgi-no-repeat bgi-size-contain bgi-position-x-center card-rounded-bottom h-100px mh-200px my-5" style="background-image:url('https://i.gifer.com/origin/ec/ec1d72344f7cf031510d01c5404592b5_w200.gif')"></div>
+            </div>
+            <div class="text-center">
+                <a class="btn btn-sm bg-white btn-color-gray-800 me-2" href="https://simple-patches.vercel.app/">Read More</a>
+            </div>
+        </div>`;
+        engageWiget.classList.remove('bg-primary');
+        engageWiget.setAttribute('style', 'background-color: black !important;');
+    }
+}
+
+setTimeout(function () { 
+    initQuickLinks();
+    replaceEngageWiget();
+}, 200);
