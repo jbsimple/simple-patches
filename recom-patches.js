@@ -643,6 +643,7 @@ function hijackAjaxModal() {
                                 headerRow.appendChild(pictureHeader);
 
                                 const createdHeader = document.createElement('th');
+                                createdHeader.setAttribute('style', 'width: 25% !important;');
                                 createdHeader.textContent = 'Creaated';
                                 headerRow.appendChild(createdHeader);
                             }
