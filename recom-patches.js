@@ -729,15 +729,17 @@ function hijackAjaxModal() {
                                         const day = String(dateObj.getDate()).padStart(2, '0');
                                         const year = dateObj.getFullYear();
                                         const time = dateObj.toTimeString().split(' ')[0];
-                                        createDetailBox('Created At', `${month} ${day} ${year} ${time}`);
+                                        createDetailBox('Created At', `${month} ${day} ${year} ${time}`, 'SID Created Timestamp.');
                                     }
-                                    
-                                    createDetailBox('SID Image Filename', filename);
-                                    // createDetailBox('Number of SID Pictures', product_images?.length ?? '0'); sketchy
-                                    createDetailBox('Number of SID Pictures', String(product_images?.length ?? 0));
 
-                                    function createDetailBox(title, value) {
+                                    // createDetailBox('Number of SID Pictures', product_images?.length ?? '0'); sketchy
+                                    createDetailBox('Number of Pictures', String(product_images?.length ?? 0), 'Number of pictures on the SID.');
+
+                                    createDetailBox('Image Filename', filename, 'Filename of the first image on the SID.');
+
+                                    function createDetailBox(bold, value, title = '') {
                                         const newElement = document.createElement('div');
+                                        newElement.title = title;
                                         newElement.className = 'border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3';
         
                                         const numberContainer = document.createElement('div');
@@ -750,7 +752,7 @@ function hijackAjaxModal() {
         
                                         const labelDiv = document.createElement('div');
                                         labelDiv.className = 'fw-bold fs-6 text-gray-400';
-                                        labelDiv.textContent = title;
+                                        labelDiv.textContent = bold;
         
                                         newElement.appendChild(numberContainer);
                                         newElement.appendChild(labelDiv);
@@ -844,9 +846,14 @@ function hijackAjaxModal() {
         }
 
         async function getProductDetails(SID) {
-            const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]')
-            if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
-                const csrfToken = csrfMeta.getAttribute('content');
+            const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
+            if (!csrfMeta || csrfMeta.getAttribute('content').length === 0) {
+                return null;
+            }
+
+            const csrfToken = csrfMeta.getAttribute('content');
+
+            function makeRequest(statusValue) {
                 const request = {
                     report: {
                         type: "product_images",
@@ -864,13 +871,13 @@ function hijackAjaxModal() {
                             {
                                 column: "products.status",
                                 opr: "{0} = '{1}'",
-                                value: "1"
+                                value: statusValue
                             }
                         ]
                     },
                     csrf_recom: csrfToken
                 };
-    
+
                 return new Promise((resolve, reject) => {
                     $.ajax({
                         type: "POST",
@@ -878,17 +885,26 @@ function hijackAjaxModal() {
                         url: "/reports/create",
                         data: request,
                     }).done(function(data) {
-                        if (data.success && data.results.results && Array.isArray(data.results.results)) {
+                        if (data.success && Array.isArray(data.results?.results)) {
                             resolve(data.results.results);
                         } else {
-                            resolve(null);
+                            resolve([]);
                         }
                     }).fail(function(jqXHR, textStatus, errorThrown) {
                         console.error("Request failed: " + textStatus + ", " + errorThrown);
                         reject(new Error("Request failed: " + textStatus + ", " + errorThrown));
                     });
                 });
-            } else {
+            }
+
+            try {
+                const [status1Results, status0Results] = await Promise.all([
+                    makeRequest("1"),
+                    makeRequest("0")
+                ]);
+                return [...status1Results, ...status0Results];
+            } catch (error) {
+                console.error("Error during combined product request:", error);
                 return null;
             }
         }
