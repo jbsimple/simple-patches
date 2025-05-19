@@ -688,29 +688,36 @@ function hijackAjaxModal() {
                                             break;
                                         }
                                     }
+
+                                    if (sku !== '') {
+                                        const skuObj = image_counts.find((item) => item.sku.trim() === sku);
+                                        if (skuObj.Item_Status === 'Inactive') {
+                                            link.innerHTML += `<span class="badge badge-danger ms-2">Inactive</span>`;
+                                        }
+
+
+                                        const createdCell = document.createElement('td');
+                                        if (skuObj && skuObj.Created_Date) {
+                                            const dateObj = new Date(skuObj.Created_Date);
+                                            const options = { month: 'short' };
+                                            const month = new Intl.DateTimeFormat('en-US', options).format(dateObj);
+                                            const day = String(dateObj.getDate()).padStart(2, '0');
+                                            const year = dateObj.getFullYear();
+                                            const time = dateObj.toTimeString().split(' ')[0];
+
+                                            createdCell.innerHTML = `${month} ${day} ${year} ${time}`;
+                                        } else {
+                                            createdCell.textContent = '';
+                                            console.error(`PATCHES: Unable to get created date for ${sku}:`, skuObj);
+                                        }
+                                        row.appendChild(createdCell);
+                
+                                        const pictureCell = document.createElement('td');
+                                        pictureCell.textContent = skuObj ? skuObj.count : '0';
+                                        row.appendChild(pictureCell);
+                                    }
                                 }
                             }
-                            const skuObj = image_counts.find((item) => item.sku.trim() === sku);
-
-                            const createdCell = document.createElement('td');
-                            if (skuObj && skuObj.Created_Date) {
-                                const dateObj = new Date(skuObj.Created_Date);
-                                const options = { month: 'short' };
-                                const month = new Intl.DateTimeFormat('en-US', options).format(dateObj);
-                                const day = String(dateObj.getDate()).padStart(2, '0');
-                                const year = dateObj.getFullYear();
-                                const time = dateObj.toTimeString().split(' ')[0];
-
-                                createdCell.innerHTML = `${month} ${day} ${year} ${time}`;
-                            } else {
-                                createdCell.textContent = '';
-                                console.error(`PATCHES: Unable to get created date for ${sku}:`, skuObj);
-                            }
-                            row.appendChild(createdCell);
-    
-                            const pictureCell = document.createElement('td');
-                            pictureCell.textContent = skuObj ? skuObj.count : '0';
-                            row.appendChild(pictureCell);
                         });
                         
                     } else {
@@ -809,6 +816,7 @@ function hijackAjaxModal() {
                         columns: [
                             "product_items.sku",
                             "item_images.url",
+                            "product_items.status",
                             "product_items.created_at"
                         ],
                         filters: [
