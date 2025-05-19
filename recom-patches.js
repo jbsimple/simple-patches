@@ -776,6 +776,10 @@ function hijackAjaxModal() {
                                     numberContainer.className = 'd-flex align-items-center';
                                     const filenameDiv = document.createElement('div');
                                     filenameDiv.className = 'fs-4 fw-bolder';
+                                    if (color !== '') {
+                                        console.debug('PATCHES: There is a COLOR!', color);
+                                        filenameDiv.setAttribute('style', `color: var(--bs-${color}) !important;`);
+                                    }
                                     filenameDiv.textContent = value;
     
                                     numberContainer.appendChild(filenameDiv);
@@ -783,10 +787,6 @@ function hijackAjaxModal() {
                                     const labelDiv = document.createElement('div');
                                     labelDiv.className = 'fw-bold fs-6 text-gray-400';
                                     labelDiv.textContent = bold;
-                                    if (color !== '') {
-                                        console.debug('PATCHES: There is a COLOR!', color);
-                                        labelDiv.setAttribute('style', `color: var(--bs-${color}) !important;`);
-                                    }
     
                                     newElement.appendChild(numberContainer);
                                     newElement.appendChild(labelDiv);
