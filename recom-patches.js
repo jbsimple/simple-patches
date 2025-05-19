@@ -649,7 +649,7 @@ function hijackAjaxModal() {
                                 skuHeading.setAttribute('style', 'width: 12% !important;');
 
                                 const createdHeader = document.createElement('th');
-                                createdHeader.setAttribute('style', 'width: 15% !important;');
+                                createdHeader.setAttribute('style', 'width: 16% !important;');
                                 createdHeader.textContent = 'Creaated';
                                 headerRow.appendChild(createdHeader);
 
