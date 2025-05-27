@@ -107,6 +107,18 @@ function replaceEngagewidget() {
         {
             "url": "https://i.gifer.com/6tXM.gif",
             "title": "average programming experience"
+        },
+        {
+            "url": "https://cdn.betterttv.net/emote/5b490e73cf46791f8491f6f4/3x.gif",
+            "title": "peepoHACKERMAN"
+        },
+        {
+            "url": "https://cdn.betterttv.net/emote/5f6d17abc2f3a70b1ae546b9/3x.gif",
+            "title": "peepoSPEEDERS"
+        },
+        {
+            "url": "https://cdn.betterttv.net/emote/5f1b0186cf6d2144653d2970/3x.gif",
+            "title": "catJAM"
         }
     ];
     if (engagewidget) {
