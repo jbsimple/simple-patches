@@ -1262,7 +1262,7 @@ async function report_attributesColorCheck() {
         "Multicolor", "Orange", "Pink", "Purple", "Red", "Silver", "White", "Yellow"
     ];
 
-    let color_check = [];
+    let list = [];
 
     product_items_report.forEach(item => {
         if (item.Product_Attributes) {
@@ -1272,13 +1272,79 @@ async function report_attributesColorCheck() {
             if (colorAttr) {
                 const colorValue = colorAttr.split(':')[1]?.trim();
                 if (!allowed_colors.includes(colorValue)) {
-                    color_check.push(item);
+                    const newItem = { ...item }; // shallow clone
+                    delete newItem.Product_Attributes;
+                    newItem.Attribute_Color = colorValue;
+                    list.push(newItem);
                 }
             }
         }
     });
 
-    console.log(color_check);
+    console.debug('PATCHES - Final Color List', list);
+
+    goToLastStep();
+
+    const button = document.getElementById('report_download');
+    button.removeAttribute('href');  
+    button.classList.remove('d-none');
+    button.setAttribute('onclick', 'event.preventDefault(); parseTableToCSV();');
+
+    const table = document.createElement('table');
+    table.style.width = '100%';
+    table.style.maxWidth = '100%';
+    table.style.overflow = 'auto';
+    table.id = 'recompatches-customreportTable';
+    table.classList.add('table', 'table-striped');
+
+    const thead = document.createElement('thead');
+    const tbody = document.createElement('tbody');
+
+    const headerRow = document.createElement('tr');
+
+    if (list.length > 0) {
+        Object.keys(list[0]).forEach(key => {
+            const th = document.createElement('th');
+            th.textContent = key;
+            headerRow.appendChild(th);
+        });
+    }
+
+    thead.appendChild(headerRow);
+
+    list.forEach(item => {
+        const row = document.createElement('tr');
+        Object.values(item).forEach(value => {
+            const td = document.createElement('td');
+            td.textContent = value;
+            row.appendChild(td);
+        });
+        tbody.appendChild(row);
+    });
+
+    table.appendChild(thead);
+    table.appendChild(tbody);
+
+    const card = document.createElement('div');
+    card.classList = "card";
+    card.style.display = "none";
+    card.id = 'patches-table';
+
+    const card_body = document.createElement('div');
+    card_body.setAttribute('style', 'padding: 0 !important; flex: 1; width: 100%; max-width: 100%; max-height: 60rem; overflow: scroll;');
+    card_body.classList = "card-body";
+
+    const content = document.createElement('div');
+    card_body.appendChild(content);
+
+    card.appendChild(card_body);
+    right.appendChild(card);
+
+    content.innerHTML = '';
+    content.appendChild(table);
+    content.removeAttribute('style');
+    card.setAttribute('style', 'display: flex;');
+
 }
 
 
