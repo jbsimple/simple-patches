@@ -1215,12 +1215,19 @@ async function report_pictureMissingFull_init() {
         
         const content = document.createElement('div');
         card_body.appendChild(content);
+
+        // show number of things
+        const lengthLabel = document.createElement('p');
+        lengthLabel.setAttribute('style', 'width: 100%; text-align: center; font-size: 0.9rem; color: var(--bs-gray-600);')
+        lengthLabel.textContent = `Total number of rows: ${list.length}`;
+        card.appendChild(lengthLabel);
         
         card.appendChild(card_body);
         right.appendChild(card);
 
         content.innerHTML = '';
         content.appendChild(table);
+        
         content.removeAttribute('style');
         card.setAttribute('style', 'display: flex;');
 
