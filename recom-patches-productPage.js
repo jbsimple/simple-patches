@@ -258,6 +258,37 @@ function initCopyPasteButton() {
 
 waitForElement('#kt_app_content_container', initCopyPasteButton);
 
+function modifyColorAttribute() {
+    const form_groups = document.querySelectorAll('.form-group');
+    const allowed_colors = [
+        "Beige", "Black", "Blue", "Brown", "Clear", "Gold", "Gray", "Green",
+        "Multicolor", "Orange", "Pink", "Purple", "Red", "Silver", "White", "Yellow"
+    ];
+
+    function randomID(length = 4) {
+        const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        return Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+    }
+
+    form_groups.forEach(row => {
+        const input_name = row.querySelector('input[name*="[name]"]');
+        if (input_name && input_name.value.trim().toLowerCase() === 'color') {
+            const values_input = row.querySelector('select.form-select.select2-hidden-accessible');
+            if (values_input) {
+                allowed_colors.forEach(color => {
+                    const option = document.createElement('option');
+                    option.value = color;
+                    option.dataset.select2Id = 'select2-data-' + Math.floor(Math.random() * 1000) + '-' + randomID();
+                    option.textContent = color;
+                    values_input.appendChild(option);
+                });
+            }
+        }
+    });
+}
+
+waitForElement('#el_product_form', modifyColorAttribute);
+
 function modifyMediaTable() {
     const product_images_container = document.getElementById('product-images-container');
 
