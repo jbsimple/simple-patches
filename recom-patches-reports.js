@@ -414,7 +414,7 @@ function report_preset(name) {
         details.name = `patches-reports-attributesColorCheck`;
         details.func = `report_attributesColorCheck();`;
         details.desc = "Invalid colors in attributes report.";
-        details.title = "Event ID Lookup";
+        details.title = "Color Attribute Check";
         return report_initHTML(details);
     } else {
         return null;
@@ -1243,21 +1243,10 @@ async function report_attributesColorCheck() {
             columns: [
                 "products.sid",
                 "products.name",
-                "product_items.sku",
-                "product_items.condition_id",
-                "product_items.available",
-                "product_items.in_stock",
-                "product_items.price",
                 "products.brand_id",
                 "products.category_id",
                 "products.asin",
                 "products.specs",
-                "product_items.is_scrap",
-                "product_items.has_fba",
-                "product_items.sold_at",
-                "product_items.priced_at",
-                "product_items.created_at",
-                "product_items.updated_at"
             ],
             filters: [
                 {
@@ -1277,6 +1266,7 @@ async function report_attributesColorCheck() {
         "Multicolor", "Orange", "Pink", "Purple", "Red", "Silver", "White", "Yellow"
     ];
 
+    const seenSIDs = new Set();
     let list = [];
 
     product_items_report.forEach(item => {
@@ -1287,10 +1277,15 @@ async function report_attributesColorCheck() {
             if (colorAttr) {
                 const colorValue = colorAttr.split(':')[1]?.trim();
                 if (!allowed_colors.includes(colorValue)) {
-                    const newItem = { ...item }; // shallow clone
-                    delete newItem.Product_Attributes;
-                    newItem.Attribute_Color = colorValue;
-                    list.push(newItem);
+                    const sid = item.SID;
+                    if (!seenSIDs.has(sid)) {
+                        seenSIDs.add(sid);
+
+                        const newItem = { ...item }; // shallow clone
+                        delete newItem.Product_Attributes;
+                        newItem.Attribute_Color = colorValue;
+                        list.push(newItem);
+                    }
                 }
             }
         }
