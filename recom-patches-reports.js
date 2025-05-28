@@ -760,7 +760,7 @@ async function report_getSpecial(request) {
     });
 }
 
-function parseTableToCSV() {
+function parseTableToCSV(name = 'patches-report') {
     const table = document.getElementById('recompatches-customreportTable');
     const rows = Array.from(table.querySelectorAll('tr'));
 
@@ -800,7 +800,7 @@ function parseTableToCSV() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `picture-missing-${Math.floor(Date.now() / 1000)}.csv`;
+    a.download = `${name}-${Math.floor(Date.now() / 1000)}.csv`;
     a.click();
     URL.revokeObjectURL(url);
 }
@@ -1069,7 +1069,7 @@ async function report_pictureMissingFull_init() {
         const button = document.getElementById('report_download');
         button.removeAttribute('href');  
         button.classList.remove('d-none');
-        button.setAttribute('onclick', 'event.preventDefault(); parseTableToCSV();');
+        button.setAttribute('onclick', 'event.preventDefault(); parseTableToCSV(\'missing-pictures\');');
 
         const table = document.createElement('table');
         table.style.width = '100%';
@@ -1288,7 +1288,7 @@ async function report_attributesColorCheck() {
     const button = document.getElementById('report_download');
     button.removeAttribute('href');  
     button.classList.remove('d-none');
-    button.setAttribute('onclick', 'event.preventDefault(); parseTableToCSV();');
+    button.setAttribute('onclick', 'event.preventDefault(); parseTableToCSV(\'product-attributes-colors\');');
 
     const table = document.createElement('table');
     table.style.width = '100%';
