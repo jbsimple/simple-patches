@@ -1257,7 +1257,29 @@ async function report_attributesColorCheck() {
     };
     
     product_items_report = await report_getSpecial(request);
-    console.log(product_items_report);
+
+    let allowed_colors = [
+        "Beige", "Black", "Blue", "Brown", "Clear", "Gold", "Gray", "Green",
+        "Multicolor", "Orange", "Pink", "Purple", "Red", "Silver", "White", "Yellow"
+    ];
+
+    let color_check = [];
+
+    product_items_report.forEach(item => {
+        if (item.Product_Attributes) {
+            const attributes = item.Product_Attributes.split('|');
+            const colorAttr = attributes.find(attr => attr.trim().startsWith('Color:'));
+
+            if (colorAttr) {
+                const colorValue = colorAttr.split(':')[1]?.trim();
+                if (!allowed_colors.includes(colorValue)) {
+                    color_check.push(item);
+                }
+            }
+        }
+    });
+
+    console.log(color_check);
 }
 
 
