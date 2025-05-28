@@ -56,6 +56,7 @@ There are other smaller modifications made, look below at the patches list to se
 - On product and item pages; Added a delete all images button.
 - On product and item pages; Modified the image list to be an actual list instead of a grid.
 - On product pages; On all ASIN inputs, a link is generated under the input field to go to the ASIN on Amazon.
+- On product pages; Added approved drop down options to existing color attribute field.
 - On item pages; CSS change to increase the maximum height of the inventory table.
 - On listing page; A warning for when the GTIN is invalid and needs to be regenerated before going to the last step. (12 chars error)
 - On listing page; A warning for when the GTIN is changed to remind the user to replace the old label with a new one.
@@ -79,7 +80,8 @@ There are other smaller modifications made, look below at the patches list to se
   - Added Missing Picture report for Defective, Incomplete and Imaging Issues (Created last 30 days).
   - Added a Complete Missing Picture report for all items and products in the system.
   - Added a Product Items list of products over QTY 50 with ASIN column.
-  - Added a report to lookup the complete history of any event ID.
+  - Added a tool to look up the history of an event id.
+  - Added a list of products that have incorrect color attributes.
 - On reports page, added a css fix to correct the resize on narrow screens happening too late.
 - On reports page, added css rule to flip the order of recents and main reporting tool because recents aren't THAT important.
 - On Dashboard; Added quick link buttons to commonly used functions in the system (that are usually hidden behind a cascade menu).
