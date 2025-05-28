@@ -1233,7 +1233,6 @@ async function report_attributesColorCheck() {
                 "product_items.available",
                 "product_items.in_stock",
                 "product_items.price",
-                "product_items.location",
                 "products.brand_id",
                 "products.category_id",
                 "products.asin",
