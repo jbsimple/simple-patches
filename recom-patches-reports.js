@@ -1279,19 +1279,31 @@ async function report_attributesColorCheck() {
     product_items_report.forEach(item => {
         if (item.Product_Attributes) {
             const attributes = item.Product_Attributes.split('|');
+
             const colorAttr = attributes.find(attr => attr.trim().startsWith('Color:'));
 
             if (colorAttr) {
-                const colorValue = colorAttr.split(':')[1]?.trim();
-                if (!allowed_colors.includes(colorValue)) {
-                    const sid = item.SID;
-                    if (!seenSIDs.has(sid)) {
-                        seenSIDs.add(sid);
+                const parts = colorAttr.split(':');
+                if (parts.length >= 2) {
+                    const rawKey = parts[0];
+                    const rawValue = parts.slice(1).join(':'); // join again in case value had ':'
 
-                        const newItem = { ...item }; // shallow clone
-                        delete newItem.Product_Attributes;
-                        newItem.Attribute_Color = colorValue;
-                        list.push(newItem);
+                    const keyTrimmed = rawKey.trim();
+                    const valueTrimmed = rawValue.trim();
+
+                    const hasExtraSpace = rawKey !== keyTrimmed || rawValue !== valueTrimmed;
+                    const isAllowed = allowed_colors.includes(valueTrimmed);
+
+                    if (hasExtraSpace || !isAllowed) {
+                        const sid = item.SID;
+                        if (!seenSIDs.has(sid)) {
+                            seenSIDs.add(sid);
+
+                            const newItem = { ...item };
+                            delete newItem.Product_Attributes;
+                            newItem.Attribute_Color = rawValue; // preserve the raw value
+                            list.push(newItem);
+                        }
                     }
                 }
             }
