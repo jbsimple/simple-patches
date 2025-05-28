@@ -1377,6 +1377,13 @@ async function report_attributesColorCheck() {
     card_body.appendChild(content);
 
     card.appendChild(card_body);
+
+    // show number of things
+    const lengthLabel = document.createElement('p');
+    lengthLabel.setAttribute('style', 'width: 100%; text-align: center; font-size: 0.9rem; color: var(--bs-gray-600);')
+    lengthLabel.textContent = `Total number of rows: ${list.length}`;
+    card.appendChild(lengthLabel);
+
     right.appendChild(card);
 
     content.innerHTML = '';
