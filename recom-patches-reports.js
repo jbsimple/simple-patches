@@ -1306,6 +1306,9 @@ async function report_attributesColorCheck() {
         Object.keys(list[0]).forEach(key => {
             const th = document.createElement('th');
             th.textContent = key;
+            th.style.minWidth = '200px';
+            th.style.padding = '2rem';
+            th.style.fontWeight = '700';
             headerRow.appendChild(th);
         });
     }
@@ -1317,6 +1320,8 @@ async function report_attributesColorCheck() {
         Object.values(item).forEach(value => {
             const td = document.createElement('td');
             td.textContent = value;
+            td.style.minWidth = '200px';
+            td.style.padding = '0.75rem 2rem';
             row.appendChild(td);
         });
         tbody.appendChild(row);
