@@ -216,6 +216,7 @@ function initPreset() {
     card_body.appendChild(report_preset('picture_missingSpecial'));
     card_body.appendChild(report_preset('product_highQty'));
     card_body.appendChild(report_preset('productivity_eventLogLookup'));
+    card_body.appendChild(report_preset('attributes_color'));
     
     const nextStepButton = document.getElementById('rc_reports_new_wizard').querySelectorAll('button[data-kt-stepper-action="next"]');
     const patchesPresentsDiv = document.getElementById('patches-presents');
@@ -405,6 +406,14 @@ function report_preset(name) {
         details.func = `report_eventIDLookup_submit();`;
         details.input = "int";
         details.desc = "Generate a report of all employee producitivty associated with an event id.<br>Includes all possible pieces of data from the employee productivity report.";
+        details.title = "Event ID Lookup";
+        return report_initHTML(details);
+    } else if (name === 'attributes_color') {
+        var details = {};
+        details.id = `patches-reports-attributesColorCheck`;
+        details.name = `patches-reports-attributesColorCheck`;
+        details.func = `report_attributesColorCheck();`;
+        details.desc = "Invalid colors in attributes report.";
         details.title = "Event ID Lookup";
         return report_initHTML(details);
     } else {
@@ -1219,6 +1228,12 @@ async function report_pictureMissingFull_init() {
 }
 
 async function report_attributesColorCheck() {
+    const createButton = document.querySelector(`button[data-id="patches-reports-attributesColorCheck"]`);
+    if (createButton) {
+        createButton.textContent = 'Loading...';
+        createButton.setAttribute('style', 'background-color: gray !important;');
+    }
+    
     const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
     
     let product_items_report = null;
