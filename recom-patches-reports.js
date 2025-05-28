@@ -1218,6 +1218,48 @@ async function report_pictureMissingFull_init() {
     }
 }
 
+async function report_attributesColorCheck() {
+    const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
+    
+    let product_items_report = null;
+    var request = {
+        report: {
+            type: "active_inventory",
+            columns: [
+                "products.sid",
+                "products.name",
+                "product_items.sku",
+                "product_items.condition_id",
+                "product_items.available",
+                "product_items.in_stock",
+                "product_items.price",
+                "product_items.location",
+                "products.brand_id",
+                "products.category_id",
+                "products.asin",
+                "products.specs",
+                "product_items.is_scrap",
+                "product_items.has_fba",
+                "product_items.sold_at",
+                "product_items.priced_at",
+                "product_items.created_at",
+                "product_items.updated_at"
+            ],
+            filters: [
+                {
+                    column: "product_items.in_stock",
+                    opr: "{0} >= {1}",
+                    value: 1
+                }
+            ]
+        },
+        csrf_recom: csrfToken
+    };
+    
+    product_items_report = await report_getSpecial(request);
+    console.log(product_items_report);
+}
+
 
 initPreset();
 initTable();
