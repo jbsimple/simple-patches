@@ -1317,13 +1317,37 @@ async function report_attributesColorCheck() {
 
     list.forEach(item => {
         const row = document.createElement('tr');
-        Object.values(item).forEach(value => {
+
+        Object.entries(item).forEach(([key, value]) => {
             const td = document.createElement('td');
-            td.textContent = value;
             td.style.minWidth = '200px';
             td.style.padding = '0.75rem 2rem';
+
+            if (key === 'SID') {
+                const a = document.createElement('a');
+                a.href = `/products/${encodeURIComponent(value)}`;
+                a.textContent = value;
+                a.target = '_blank';
+                td.appendChild(a);
+            } else if (key === 'SKU') {
+                const a = document.createElement('a');
+                a.href = `/product/items/${encodeURIComponent(value)}`;
+                a.textContent = value;
+                a.target = '_blank';
+                td.appendChild(a);
+            } else if (key === 'ASIN') {
+                const a = document.createElement('a');
+                a.href = `https://www.amazon.com/dp/${encodeURIComponent(value)}`;
+                a.textContent = value;
+                a.target = '_blank';
+                td.appendChild(a);
+            } else {
+                td.textContent = value;
+            }
+
             row.appendChild(td);
         });
+
         tbody.appendChild(row);
     });
 
