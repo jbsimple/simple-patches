@@ -292,7 +292,7 @@ function modifyColorAttribute() {
     });
 }
 
-waitForElement('#el_product_form', modifyColorAttribute);
+// waitForElement('#el_product_form', modifyColorAttribute);
 
 function modifyMediaTable() {
     const product_images_container = document.getElementById('product-images-container');
