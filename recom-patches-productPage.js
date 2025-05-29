@@ -272,21 +272,29 @@ function modifyColorAttribute() {
 
     form_groups.forEach(row => {
         const input_name = row.querySelector('input[name*="[name]"]');
-        if (input_name && input_name.value.trim().toLowerCase() === 'color') {
+        if (input_name && input_name.value.trim() === 'Color') {
             const values_input = row.querySelector('select.form-select.select2-hidden-accessible');
-            if (values_input && !values_input.dataset.colorsInjected) {
-                const existingValues = new Set(Array.from(values_input.options).map(opt => opt.value.trim().toLowerCase()));
+            if (values_input) {
+                const seen = new Set();
+                const options = Array.from(values_input.options);
 
-                allowed_colors.forEach(color => {
-                    if (!existingValues.has(color.toLowerCase())) {
-                        const option = document.createElement('option');
-                        option.value = color;
-                        option.dataset.select2Id = 'select2-data-' + Math.floor(Math.random() * 1000) + '-' + randomID();
-                        option.textContent = color;
-                        values_input.appendChild(option);
+                options.forEach(option => {
+                    const val = option.value.trim();
+                    if (seen.has(val)) {
+                        option.remove();
+                    } else {
+                        seen.add(val);
                     }
                 });
-                values_input.dataset.colorsInjected = "true";
+
+                allowed_colors.forEach(color => {
+                    if (!seen.has(color)) {
+                        const opt = document.createElement('option');
+                        opt.value = color;
+                        opt.textContent = color;
+                        values_input.appendChild(opt);
+                    }
+                });
             }
         }
     });
