@@ -275,37 +275,26 @@ function modifyColorAttribute() {
         if (input_name && input_name.value.trim() === 'Color') {
             const values_input = row.querySelector('select.form-select.select2-hidden-accessible');
             if (values_input) {
-                const seen = new Map();
+                const seen = new Set();
                 const options = Array.from(values_input.options);
-                const selectedValue = values_input.value;
 
                 options.forEach(option => {
                     const val = option.value.trim();
-                    if (!seen.has(val)) {
-                        seen.set(val, []);
-                    }
-                    seen.get(val).push(option);
-                });
-
-                seen.forEach((duplicates, val) => {
-                    if (duplicates.length > 1) {
-                        duplicates.forEach(opt => {
-                            if (opt.value !== selectedValue) {
-                                opt.remove();
-                            }
-                        });
+                    if (seen.has(val)) {
+                        option.remove();
+                    } else {
+                        seen.add(val);
                     }
                 });
-
-                const finalValues = new Set(Array.from(values_input.options).map(o => o.value.trim()));
 
                 allowed_colors.forEach(color => {
-                    if (!finalValues.has(color)) {
+                    if (!seen.has(color)) {
                         const opt = document.createElement('option');
                         opt.value = color;
                         opt.textContent = color;
                         opt.setAttribute('data-select2-id', `select2-data-${Math.floor(Math.random()*1000)}-${randomID()}`);
                         values_input.appendChild(opt);
+                        seen.add(color);
                     }
                 });
             }
@@ -314,6 +303,7 @@ function modifyColorAttribute() {
 }
 
 waitForElement('#el_product_form', modifyColorAttribute);
+
 
 function modifyMediaTable() {
     const product_images_container = document.getElementById('product-images-container');
