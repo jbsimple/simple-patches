@@ -297,6 +297,14 @@ function modifyColorAttribute() {
                         seen.add(color);
                     }
                 });
+
+                const selected_values = Array.from(values_input.selectedOptions).map(opt => opt.value.trim());
+                const has_invalid = selected_values.some(val => !allowed_colors.includes(val));
+
+                const visual = row.querySelector('.select2-selection.select2-selection--multiple.form-select');
+                if (visual) {
+                    visual.style.backgroundColor = has_invalid ? 'var(--bs-danger)' : '';
+                }
             }
         }
     });
