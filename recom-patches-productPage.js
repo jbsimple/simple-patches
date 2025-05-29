@@ -303,7 +303,7 @@ function modifyColorAttribute() {
 
                 const visual = row.querySelector('.select2-selection.select2-selection--multiple.form-select');
                 if (visual) {
-                    visual.style.backgroundColor = has_invalid ? 'var(--bs-danger)' : '';
+                    visual.style.backgroundColor = has_invalid ? 'color-mix(in srgb, var(--bs-danger) 35%, transparent 85%)' : '';
                 }
             }
         }
