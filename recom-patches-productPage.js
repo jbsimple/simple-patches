@@ -274,7 +274,7 @@ function modifyColorAttribute() {
         const input_name = row.querySelector('input[name*="[name]"]');
         if (input_name && input_name.value.trim().toLowerCase() === 'color') {
             const values_input = row.querySelector('select.form-select.select2-hidden-accessible');
-            if (values_input) {
+            if (values_input && !values_input.dataset.colorsInjected) {
                 const existingValues = new Set(Array.from(values_input.options).map(opt => opt.value.trim().toLowerCase()));
 
                 allowed_colors.forEach(color => {
@@ -286,6 +286,7 @@ function modifyColorAttribute() {
                         values_input.appendChild(option);
                     }
                 });
+                values_input.dataset.colorsInjected = "true";
             }
         }
     });
