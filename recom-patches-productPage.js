@@ -275,12 +275,16 @@ function modifyColorAttribute() {
         if (input_name && input_name.value.trim().toLowerCase() === 'color') {
             const values_input = row.querySelector('select.form-select.select2-hidden-accessible');
             if (values_input) {
+                const existingValues = new Set(Array.from(values_input.options).map(opt => opt.value.trim().toLowerCase()));
+
                 allowed_colors.forEach(color => {
-                    const option = document.createElement('option');
-                    option.value = color;
-                    option.dataset.select2Id = 'select2-data-' + Math.floor(Math.random() * 1000) + '-' + randomID();
-                    option.textContent = color;
-                    values_input.appendChild(option);
+                    if (!existingValues.has(color.toLowerCase())) {
+                        const option = document.createElement('option');
+                        option.value = color;
+                        option.dataset.select2Id = 'select2-data-' + Math.floor(Math.random() * 1000) + '-' + randomID();
+                        option.textContent = color;
+                        values_input.appendChild(option);
+                    }
                 });
             }
         }
