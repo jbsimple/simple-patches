@@ -275,20 +275,32 @@ function modifyColorAttribute() {
         if (input_name && input_name.value.trim() === 'Color') {
             const values_input = row.querySelector('select.form-select.select2-hidden-accessible');
             if (values_input) {
-                const seen = new Set();
+                const seen = new Map();
                 const options = Array.from(values_input.options);
+                const selectedValue = values_input.value;
 
-                for (let i = options.length - 1; i >= 0; i--) {
-                    const val = options[i].value.trim();
-                    if (seen.has(val)) {
-                        values_input.removeChild(options[i]);
-                    } else {
-                        seen.add(val);
+                options.forEach(option => {
+                    const val = option.value.trim();
+                    if (!seen.has(val)) {
+                        seen.set(val, []);
                     }
-                }
+                    seen.get(val).push(option);
+                });
+
+                seen.forEach((duplicates, val) => {
+                    if (duplicates.length > 1) {
+                        duplicates.forEach(opt => {
+                            if (opt.value !== selectedValue) {
+                                opt.remove();
+                            }
+                        });
+                    }
+                });
+
+                const finalValues = new Set(Array.from(values_input.options).map(o => o.value.trim()));
 
                 allowed_colors.forEach(color => {
-                    if (!seen.has(color)) {
+                    if (!finalValues.has(color)) {
                         const opt = document.createElement('option');
                         opt.value = color;
                         opt.textContent = color;
