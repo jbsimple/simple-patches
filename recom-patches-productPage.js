@@ -270,6 +270,17 @@ function modifyColorAttribute() {
         return Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
     }
 
+    function updateBackground(values_input, visual, allowed_colors) {
+        const selected_values = Array.from(values_input.selectedOptions).map(opt => opt.value.trim());
+        const has_invalid = selected_values.some(val => !allowed_colors.includes(val));
+
+        if (visual) {
+            visual.style.backgroundColor = has_invalid
+                ? 'color-mix(in srgb, var(--bs-danger) 35%, transparent 85%)'
+                : 'transparent';
+        }
+    }
+
     form_groups.forEach(row => {
         const input_name = row.querySelector('input[name*="[name]"]');
         if (input_name && input_name.value.trim() === 'Color') {
@@ -298,13 +309,12 @@ function modifyColorAttribute() {
                     }
                 });
 
-                const selected_values = Array.from(values_input.selectedOptions).map(opt => opt.value.trim());
-                const has_invalid = selected_values.some(val => !allowed_colors.includes(val));
-
                 const visual = row.querySelector('.select2-selection.select2-selection--multiple.form-select');
-                if (visual) {
-                    visual.style.backgroundColor = has_invalid ? 'color-mix(in srgb, var(--bs-danger) 35%, transparent 85%)' : '';
-                }
+                updateBackground(values_input, visual, allowed_colors);
+
+                values_input.addEventListener('change', () => {
+                    updateBackground(values_input, visual, allowed_colors);
+                });
             }
         }
     });
