@@ -1260,6 +1260,11 @@ async function report_attributesColorCheck() {
                     column: "product_items.in_stock",
                     opr: "{0} >= {1}",
                     value: 1
+                },
+                {
+                    column: "product_items.condition_id",
+                    opr: "{0} NOT IN {1}",
+                    value: [10,11,12,13,14,15,16,19,20,21,22,23,24,25,26,27,28,72,100,101,102,103,104]
                 }
             ]
         },
