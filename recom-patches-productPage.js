@@ -278,20 +278,21 @@ function modifyColorAttribute() {
                 const seen = new Set();
                 const options = Array.from(values_input.options);
 
-                options.forEach(option => {
-                    const val = option.value.trim();
+                for (let i = options.length - 1; i >= 0; i--) {
+                    const val = options[i].value.trim();
                     if (seen.has(val)) {
-                        option.remove();
+                        values_input.removeChild(options[i]);
                     } else {
                         seen.add(val);
                     }
-                });
+                }
 
                 allowed_colors.forEach(color => {
                     if (!seen.has(color)) {
                         const opt = document.createElement('option');
                         opt.value = color;
                         opt.textContent = color;
+                        opt.setAttribute('data-select2-id', `select2-data-${Math.floor(Math.random()*1000)}-${randomID()}`);
                         values_input.appendChild(opt);
                     }
                 });
@@ -300,7 +301,7 @@ function modifyColorAttribute() {
     });
 }
 
-// waitForElement('#el_product_form', modifyColorAttribute);
+waitForElement('#el_product_form', modifyColorAttribute);
 
 function modifyMediaTable() {
     const product_images_container = document.getElementById('product-images-container');
