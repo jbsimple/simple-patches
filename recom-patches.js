@@ -5,9 +5,7 @@ function injectGoods() {
     document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches.css?v=' + Date.now() + '" type="text/css"/>';
     let script_patch = document.createElement('script');
     script_patch.name = 'n/a';
-    script_patch.onload = function() {
-        console.debug('Patch Loaded:', script_patch.name);
-    };
+    script_patch.onload = function() { console.debug('Patch Loaded:', script_patch.name); };
 
     if (window.location.href.includes('/receiving/queues/listing') || window.location.href.includes('/products/new')) {
 
