@@ -48,7 +48,7 @@ nav_sidebar.style.display = 'flex';
     loaded_message.href = "https://simple-patches.vercel.app/";
     loaded_message.setAttribute('style', 'text-align: center;');
     loaded_message.textContent = 'Ver. ${build_version}';
-    loaded_message.title = '${clean_commit_message}';
+    loaded_message.title = `${clean_commit_message}`;
     loaded_message.classList = 'patches-loaded';
     loaded_message.setAttribute('target', '_blank');
     loaded_message.setAttribute('rel', 'noreferrer');
