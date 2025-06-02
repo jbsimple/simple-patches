@@ -1270,6 +1270,8 @@ async function report_attributesColorCheck() {
         },
         csrf_recom: csrfToken
     };
+
+    //
     
     product_items_report = await report_getSpecial(request);
 
