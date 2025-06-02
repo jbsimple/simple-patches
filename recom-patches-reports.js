@@ -413,7 +413,7 @@ function report_preset(name) {
         details.id = `patches-reports-attributesColorCheck`;
         details.name = `patches-reports-attributesColorCheck`;
         details.func = `report_attributesColorCheck();`;
-        details.desc = "Invalid colors in attributes report.";
+        details.desc = "Invalid color value in attributes special report.<br>Only includes in stock.";
         details.title = "Color Attribute Check";
         return report_initHTML(details);
     } else {
