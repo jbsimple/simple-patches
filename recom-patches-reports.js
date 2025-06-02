@@ -1259,7 +1259,7 @@ async function report_attributesColorCheck() {
                 {
                     column: "product_items.in_stock",
                     opr: "{0} >= {1}",
-                    value: 1
+                    value: -100
                 },
                 {
                     column: "product_items.condition_id",
