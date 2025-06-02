@@ -4,6 +4,7 @@ echo "Generating buildInfo.js..."
 
 short_sha=$(echo "${VERCEL_GIT_COMMIT_SHA}" | cut -c1-7)
 
+# epic test
 clean_commit_message=$(echo "${VERCEL_GIT_COMMIT_MESSAGE}" | \
     sed 's/\\/\\\\/g; s/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
 
