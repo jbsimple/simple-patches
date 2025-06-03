@@ -273,11 +273,10 @@ function modifiedClock(task) {
                 </div>
                 <div class="modal-body scroll-y px-10 px-lg-15 pt-0 pb-15" style="padding-top: 1.5rem !important;">
                     <div class="d-flex flex-column mb-8">
-                        <label class="fs-6 fw-bold mb-2">You are about to clock out!</label>
-                        <label class="fs-6 fw-semibold form-label">Quickly record time and clock out for off-system tasks.</label>
-                        <label class="fs-6 fw-semibold form-label">Actvitiy/Event: Use if needing to tack multiple things in same task.</label>
-                        <label class="fs-6 fw-semibold form-label">Notes: Provide extra notes if needed.</label>
-                        <label class="fs-6 fw-semibold form-label">* Please Note: Actvity defaults to task name, notes default to placeholder value when left blank.</label>
+                        <label class="fs-6 fw-bold mb-2">You are about to clock out! Quickly record time below.</label>
+                        <label class="fs-6 fw-semibold form-label"><b>Actvitiy/Event</b>: Use if needing to tack multiple things in same task.</label>
+                        <label class="fs-6 fw-semibold form-label"><b>Notes</b>: Provide extra notes if needed.</label>
+                        <label class="fs-6 fw-semibold form-label"><i>* Please Note: Actvity defaults to task name, notes default to placeholder value when left blank.</i></label>
                     </div>
                     <div class="d-flex flex-column mb-8">
                         <label class="fs-6 fw-bold mb-2" for="patch-clockout-text-task">Activity/Event:</label>
