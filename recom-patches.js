@@ -320,9 +320,13 @@ function modifiedClock(task) {
                 submit.querySelector('.indicator-label').style.display = 'none';
                 submit.querySelector('.indicator-progress').style.display = 'inherit';
 
-                var action = "OFF_SYSTEM";
-                if (task && task !== '') {
-                    action = task;
+                const actionInput = document.getElementById('patch-clockout-text-task');
+                let action = "OFF_SYSTEM";
+
+                if (actionInput && actionInput.value.trim() !== '') {
+                    action = actionInput.value.trim();
+                } else if (typeof task !== 'undefined' && task.trim() !== '') {
+                    action = task.trim();
                 }
 
                 console.debug('Patch: Notes for Clock Out:', notes);
