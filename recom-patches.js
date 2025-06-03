@@ -274,8 +274,10 @@ function modifiedClock(task) {
                 <div class="modal-body scroll-y px-10 px-lg-15 pt-0 pb-15" style="padding-top: 1.5rem !important;">
                     <div class="d-flex flex-column mb-8">
                         <label class="fs-6 fw-bold mb-2">You are about to clock out!</label>
-                        <label class="fs-6 fw-semibold form-label">Type notes below and clock out while recording time.</label>
-                        <label class="fs-6 fw-semibold form-label">* Please Note: Activity Code will be a mirror of the task name, units will be 0, and no PO will be attached.</label>
+                        <label class="fs-6 fw-semibold form-label">Enter in the activity/event if needing to separate different tasks while in one clock. Not required.</label>
+                        <label class="fs-6 fw-semibold form-label">* Please Note: The default value is prefilled to the clock-in task name. Leaving it blank will also prefill the clock-in task name.</label>
+                        <label class="fs-6 fw-semibold form-label">Type notes below and clock out while recording time. Not required.</label>
+                        <label class="fs-6 fw-semibold form-label">* Please Note: Units will be set to 0 and no PO will be attached.</label>
                     </div>
                     <div class="d-flex flex-column mb-8">
                         <label class="fs-6 fw-bold mb-2" for="patch-clockout-text-task">Activity/Event:</label>
