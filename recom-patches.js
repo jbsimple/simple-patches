@@ -278,6 +278,10 @@ function modifiedClock(task) {
                         <label class="fs-6 fw-semibold form-label">* Please Note: Activity Code will be a mirror of the task name, units will be 0, and no PO will be attached.</label>
                     </div>
                     <div class="d-flex flex-column mb-8">
+                        <label class="fs-6 fw-bold mb-2" for="patch-clockout-text-task">Activity/Event:</label>
+                        <textarea style="max-height: 50vh;" class="form-control form-control-solid" rows="1" name="task" id="patch-clockout-text-task" placeholder="Enter Activity/Event" value="${task ?? ''}" spellcheck="false"></textarea>
+                    </div>
+                    <div class="d-flex flex-column mb-8">
                         <label class="fs-6 fw-bold mb-2" for="patch-clockout-textarea-notes">Notes:</label>
                         <textarea style="max-height: 50vh;" class="form-control form-control-solid" rows="3" name="notes" id="patch-clockout-textarea-notes" placeholder="Provide some notes if any" spellcheck="false"></textarea>
                     </div>
