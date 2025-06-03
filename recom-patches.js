@@ -279,7 +279,7 @@ function modifiedClock(task) {
                     </div>
                     <div class="d-flex flex-column mb-8">
                         <label class="fs-6 fw-bold mb-2" for="patch-clockout-text-task">Activity/Event:</label>
-                        <textarea style="max-height: 50vh;" class="form-control form-control-solid" rows="1" name="task" id="patch-clockout-text-task" placeholder="Enter Activity/Event" value="${task ?? ''}" spellcheck="false"></textarea>
+                        <textarea style="max-height: 50vh;" class="form-control form-control-solid" rows="1" name="task" id="patch-clockout-text-task" placeholder="Enter Activity/Event" value="${task ?? ''}" spellcheck="false" resize="false"></textarea>
                     </div>
                     <div class="d-flex flex-column mb-8">
                         <label class="fs-6 fw-bold mb-2" for="patch-clockout-textarea-notes">Notes:</label>
