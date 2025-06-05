@@ -719,24 +719,28 @@ function getReport(request) {
         data: request,
     }).done(function(data) {
         console.debug(data);
-        
-        if (data.results && data.results.filename) {
-            $("#report_download")
-                .removeClass("d-none")
-            .attr(
-                "href",
-                "renderfile/download?folder=reports&path=" +
-                data.results.filename
-            );
+
+        if (data.results) {
+            if (data.results.filename) {
+                $("#report_download")
+                    .removeClass("d-none")
+                .attr(
+                    "href",
+                    "renderfile/download?folder=reports&path=" +
+                    data.results.filename
+                );
+            }
+            
+            if (data.results.message) {
+                $("#report_results")
+                    .removeClass("d-none")
+                    .html(data.results.message);
+            }
+            
+            goToLastStep();
+        } else {
+            modalError(`No Data in the report.`);
         }
-        
-        if (data.results.message) {
-        $("#report_results")
-            .removeClass("d-none")
-            .html(data.results.message);
-        }
-        
-        goToLastStep();
             
     }).fail(function(jqXHR, textStatus, errorThrown) {
         console.error("Request failed: " + textStatus + ", " + errorThrown);
