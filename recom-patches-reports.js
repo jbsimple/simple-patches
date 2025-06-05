@@ -738,9 +738,8 @@ function getReport(request) {
             }
             
             goToLastStep();
-        } else {
-            modalError(`No Data in the report.`);
-        }
+        } else if (data.errors) { modalError(`<strong>Error:</strong><br>${data.errors}`);
+        } else { modalError(`<strong>Error:</strong><br>Unable to get report data.`); }
             
     }).fail(function(jqXHR, textStatus, errorThrown) {
         console.error("Request failed: " + textStatus + ", " + errorThrown);
