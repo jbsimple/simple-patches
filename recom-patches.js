@@ -257,14 +257,13 @@ function modalError(message) {
                 <div class="swal2-loader"></div>
                 <button type="button" class="swal2-confirm btn btn-primary" aria-label="" style="display: inline-block;">Ok, got it!</button>
             </div>
-            <div class="swal2-footer" style="display: none;"></div>
-            <div class="swal2-timer-progress-bar-container">
-                <div class="swal2-timer-progress-bar" style="display: none;"></div>
-            </div>
         </div>
     </div>`;
 
     document.body.insertAdjacentHTML('beforeend', modal);
+    modal.querySelector('.swal2-confirm').addEventListener('click', () => {
+        modal.remove();
+    });
 }
 
 function modifiedClock(task) {
