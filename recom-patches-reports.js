@@ -720,7 +720,7 @@ function getReport(request) {
     }).done(function(data) {
         console.debug(data);
         
-        if (data.results.filename) {
+        if (data.results && data.results.filename) {
             $("#report_download")
                 .removeClass("d-none")
             .attr(
