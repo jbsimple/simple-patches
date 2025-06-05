@@ -244,8 +244,13 @@ function modifiedClockInit() {
 }
 
 function modalError(message) {
-    let modal = `<div class="swal2-container swal2-center swal2-backdrop-show" style="overflow-y: auto;">
-        <div aria-labelledby="swal2-title" aria-describedby="swal2-html-container" class="swal2-popup swal2-modal swal2-icon-error swal2-show" tabindex="-1" role="dialog" aria-live="assertive" aria-modal="true" style="display: grid;">
+    let modal = document.createElement('div');
+    modal.className = "swal2-container swal2-center swal2-backdrop-show";
+    modal.style.overflowY = "auto";
+    modal.innerHTML = `
+        <div aria-labelledby="swal2-title" aria-describedby="swal2-html-container"
+             class="swal2-popup swal2-modal swal2-icon-error swal2-show" tabindex="-1"
+             role="dialog" aria-live="assertive" aria-modal="true" style="display: grid;">
             <div class="swal2-icon swal2-error swal2-icon-show" style="display: flex;">
                 <span class="swal2-x-mark">
                     <span class="swal2-x-mark-line-left"></span>
@@ -258,9 +263,10 @@ function modalError(message) {
                 <button type="button" class="swal2-confirm btn btn-primary" aria-label="" style="display: inline-block;">Ok, got it!</button>
             </div>
         </div>
-    </div>`;
+    `;
 
-    document.body.insertAdjacentHTML('beforeend', modal);
+    document.body.appendChild(modal);
+
     modal.querySelector('.swal2-confirm').addEventListener('click', () => {
         modal.remove();
     });
