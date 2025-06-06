@@ -1312,7 +1312,7 @@ async function report_pictureURLSComplete_init() {
     }
 
     const categories = await getAllCategories();
-    const categoryChunks = chunkArray(categories.map(c => c.id), 15); // ensure no clipping
+    const categoryChunks = chunkArray(categories.map(c => c.id), 20); // ensure no clipping
 
     for (const chunk of categoryChunks) {
         const categoryList = chunk.map(id => `'${id}'`).join(',');
