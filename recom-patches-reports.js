@@ -1288,6 +1288,11 @@ async function report_pictureURLSComplete_init() {
             ],
             filters: [
                 {
+                    column: "product_images.url",
+                    opr: "({0} IS NOT NULL AND {0} <> '')",
+                    value: ""
+                },
+                {
                     column: "products.status",
                     opr: "{0} = '{1}'",
                     value: "1"
