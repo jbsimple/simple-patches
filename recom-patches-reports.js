@@ -1276,42 +1276,76 @@ async function report_pictureURLSComplete_init() {
         console.error("Error fetching report:", error);
     }
 
-    let product_images_report = null;
-    var product_images = {
-        report: {
-            type: "product_images",
-            columns: [
-                "products.sid",
-                "products.name",
-                "product_images.url",
-                "products.created_at"
-            ],
-            filters: [
-                {
-                    column: "product_images.url",
-                    opr: "({0} IS NOT NULL AND {0} <> '')",
-                    value: ""
-                },
-                {
-                    column: "products.status",
-                    opr: "{0} = '{1}'",
-                    value: "1"
-                },
-                {
-                    column: "products.sid",
-                    opr: "{0} IN {1}",
-                    value: ["SAM924872811", "GOO103530580"]
-                }
-            ]
-        },
-        csrf_recom: csrfToken
-    };
+    async function getAllCategories() {
+        let page = 1;
+        let allResults = [];
+        let more = false;
 
-    try {
-        product_images_report = await report_getSpecial(product_images);
-    } catch (error) {
-        console.error("Error fetching report:", error);
+        do {
+            const res = await fetch(`/ajax/datalist/categories?page=${page}&_type=query%3Aappend`);
+            if (!res.ok) {
+                console.error(`Failed to fetch page ${page}`);
+                break;
+            }
+
+            const data = await res.json();
+
+            if (Array.isArray(data.results)) {
+                allResults.push(...data.results);
+            }
+
+            more = data.pagination?.more === true;
+            page++;
+        } while (more);
+
+        return allResults;
     }
+
+    let product_images_report = [];
+    getAllCategories().then(async (categories) => {
+        for (const cat of categories) {
+            const category = cat.id;
+
+            const product_images = {
+                report: {
+                    type: "product_images",
+                    columns: [
+                        "products.sid",
+                        "product_images.url",
+                        "products.created_at"
+                    ],
+                    filters: [
+                        {
+                            column: "product_images.url",
+                            opr: "({0} IS NOT NULL AND {0} <> '')",
+                            value: ""
+                        },
+                        {
+                            column: "products.status",
+                            opr: "{0} = '{1}'",
+                            value: "1"
+                        },
+                        {
+                            column: "products.category_id",
+                            opr: "{0} = '{1}'",
+                            value: `${category}`
+                        }
+                    ]
+                },
+                csrf_recom: csrfToken
+            };
+
+            try {
+                const result = await report_getSpecial(product_images);
+                if (Array.isArray(result)) {
+                    product_images_report.push(...result);
+                }
+            } catch (error) {
+                console.error(`Error fetching report for category ${category}:`, error);
+            }
+        }
+    });
+
 
     if (items_images_report === null) {
         items_images_report = [];
