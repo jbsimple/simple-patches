@@ -1386,6 +1386,24 @@ async function report_pictureURLSComplete_init() {
     console.debug("items_images_corrected", items_images_corrected);
     console.debug("product_images_corrected", product_images_corrected);
 
+    let list = {};
+    items_images_report.forEach(item => {
+        if (!list[item.SKU]) {
+            let new_item = { ...item };
+            delete new_item.URL;
+
+            if (items_images_corrected[item.SKU]) {
+                new_item.URLS = items_images_corrected[item.SKU].URLS;
+                list[item.SKU] = new_item;
+            } else if (product_images_corrected[item.SID]) {
+                new_item.URLS = product_images_corrected[item.SID].URLS;
+                list[item.SKU] = new_item;
+            }
+        }
+    });
+
+    console.debug('final list', list);
+
 }
 
 async function report_attributesColorCheck() {
