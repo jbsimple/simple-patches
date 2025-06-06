@@ -1301,14 +1301,23 @@ async function report_pictureURLSComplete_init() {
         return allResults;
     }
 
-    console.debug(getAllCategories());
+    console.debug('categories', getAllCategories());
 
-    /*
+    function chunkArray(array, chunkSize) {
+        const chunks = [];
+        for (let i = 0; i < array.length; i += chunkSize) {
+            chunks.push(array.slice(i, i + chunkSize));
+        }
+        return chunks;
+    }
 
     let product_images_report = [];
+
     getAllCategories().then(async (categories) => {
-        for (const cat of categories) {
-            const category = cat.id;
+        const categoryChunks = chunkArray(categories.map(c => c.id), 20);
+
+        for (const chunk of categoryChunks) {
+            const categoryList = chunk.map(id => `'${id}'`).join(',');
 
             const product_images = {
                 report: {
@@ -1331,8 +1340,8 @@ async function report_pictureURLSComplete_init() {
                         },
                         {
                             column: "products.category_id",
-                            opr: "{0} = '{1}'",
-                            value: `${category}`
+                            opr: "{0} IN ({1})",
+                            value: categoryList
                         }
                     ]
                 },
@@ -1345,11 +1354,12 @@ async function report_pictureURLSComplete_init() {
                     product_images_report.push(...result);
                 }
             } catch (error) {
-                console.error(`Error fetching report for category ${category}:`, error);
+                console.error(`Error fetching report for category chunk [${chunk.join(',')}]:`, error);
             }
         }
+
+        console.log("Final product_images_report:", product_images_report);
     });
-    */
 
 
     if (items_images_report === null) {
