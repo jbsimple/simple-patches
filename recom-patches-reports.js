@@ -1237,6 +1237,84 @@ async function report_pictureMissingFull_init() {
     }
 }
 
+async function report_pictureURLSComplete_init() {
+    const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
+
+    let items_images_report = null;
+    var items_images = {
+        report: {
+            type: "item_images",
+            columns: [
+                "product_items.sku",
+                "products.sid",
+                "products.name",
+                "item_images.url",
+                "product_items.condition_id",
+                "product_items.in_stock",
+                "product_items.price",
+                "product_items.created_at"
+            ],
+            filters: [
+                {
+                    column: "product_items.in_stock",
+                    opr: "{0} > {1}",
+                    value: 0
+                },
+                {
+                    column: "product_items.status",
+                    opr: "{0} = '{1}'",
+                    value: "1"
+                }
+            ]
+        },
+        csrf_recom: csrfToken
+    };
+
+    try {
+        items_images_report = await report_getSpecial(items_images);
+    } catch (error) {
+        console.error("Error fetching report:", error);
+    }
+
+    let product_images_report = null;
+    var product_images = {
+        report: {
+            type: "product_images",
+            columns: [
+                "products.sid",
+                "products.name",
+                "product_images.url",
+                "products.created_at"
+            ],
+            filters: [
+                {
+                    column: "products.status",
+                    opr: "{0} = '{1}'",
+                    value: "1"
+                }
+            ]
+        },
+        csrf_recom: csrfToken
+    };
+
+    try {
+        product_images_report = await report_getSpecial(product_images);
+    } catch (error) {
+        console.error("Error fetching report:", error);
+    }
+
+    if (items_images_report === null) {
+        items_images_report = [];
+    }
+
+    if (product_images_report === null) {
+        product_images_report = [];
+    }
+
+    console.debug("items_images_report", items_images_report);
+    console.debug("product_images_report", product_images_report);
+}
+
 async function report_attributesColorCheck() {
     const createButton = document.querySelector(`button[data-id="patches-reports-attributesColorCheck"]`);
     if (createButton) {
