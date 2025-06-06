@@ -1237,7 +1237,7 @@ async function report_pictureMissingFull_init() {
     }
 }
 
-async function report_pictureURLSComplete_init() {
+async function report_pictureURLSComplete_init(checkResolution = false) {
     const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
 
     let items_images_report = null;
@@ -1406,10 +1406,14 @@ async function report_pictureURLSComplete_init() {
 
             if (!new_item.URLS || !Array.isArray(new_item.URLS)) return;
 
+            if (!checkResolution) {
+                listObj[sku] = new_item;
+                return;
+            }
+
             const resolutionPromise = Promise.all(
                 new_item.URLS.map(url => {
                     if (resolutionCache.has(url)) {
-                        // Use cached resolution
                         return Promise.resolve(resolutionCache.get(url));
                     }
 
@@ -1436,11 +1440,18 @@ async function report_pictureURLSComplete_init() {
         }
     });
 
-    Promise.all(resolutionPromises).then(() => {
-        let list = Object.values(listObj);
+    // Wait if resolutions are enabled, otherwise skip
+    if (checkResolution) {
+        Promise.all(resolutionPromises).then(() => {
+            const list = Object.values(listObj);
+            console.debug('final list', list);
+            generateReportTableFromList(list, 'items-images-completeList');
+        });
+    } else {
+        const list = Object.values(listObj);
         console.debug('final list', list);
         generateReportTableFromList(list, 'items-images-completeList');
-    });
+    }
 }
 
 async function report_attributesColorCheck() {
