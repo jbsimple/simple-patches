@@ -1241,7 +1241,9 @@ async function report_pictureURLSComplete_init() {
     const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
 
     let items_images_report = null;
-    var items_images = {
+    let product_images_report = [];
+
+    const items_images = {
         report: {
             type: "item_images",
             columns: [
@@ -1273,7 +1275,7 @@ async function report_pictureURLSComplete_init() {
     try {
         items_images_report = await report_getSpecial(items_images);
     } catch (error) {
-        console.error("Error fetching report:", error);
+        console.error("Error fetching item_images_report:", error);
     }
 
     async function getAllCategories() {
@@ -1301,8 +1303,6 @@ async function report_pictureURLSComplete_init() {
         return allResults;
     }
 
-    console.debug('categories', getAllCategories());
-
     function chunkArray(array, chunkSize) {
         const chunks = [];
         for (let i = 0; i < array.length; i += chunkSize) {
@@ -1311,63 +1311,49 @@ async function report_pictureURLSComplete_init() {
         return chunks;
     }
 
-    let product_images_report = [];
+    const categories = await getAllCategories();
+    const categoryChunks = chunkArray(categories.map(c => c.id), 15); // ensure no clipping
 
-    getAllCategories().then(async (categories) => {
-        const categoryChunks = chunkArray(categories.map(c => c.id), 20);
+    for (const chunk of categoryChunks) {
+        const categoryList = chunk.map(id => `'${id}'`).join(',');
 
-        for (const chunk of categoryChunks) {
-            const categoryList = chunk.map(id => `'${id}'`).join(',');
+        const product_images = {
+            report: {
+                type: "product_images",
+                columns: [
+                    "products.sid",
+                    "product_images.url",
+                    "products.created_at"
+                ],
+                filters: [
+                    {
+                        column: "product_images.url",
+                        opr: "({0} IS NOT NULL AND {0} <> '')",
+                        value: ""
+                    },
+                    {
+                        column: "products.status",
+                        opr: "{0} = '{1}'",
+                        value: "1"
+                    },
+                    {
+                        column: "products.category_id",
+                        opr: "{0} IN ({1})",
+                        value: categoryList
+                    }
+                ]
+            },
+            csrf_recom: csrfToken
+        };
 
-            const product_images = {
-                report: {
-                    type: "product_images",
-                    columns: [
-                        "products.sid",
-                        "product_images.url",
-                        "products.created_at"
-                    ],
-                    filters: [
-                        {
-                            column: "product_images.url",
-                            opr: "({0} IS NOT NULL AND {0} <> '')",
-                            value: ""
-                        },
-                        {
-                            column: "products.status",
-                            opr: "{0} = '{1}'",
-                            value: "1"
-                        },
-                        {
-                            column: "products.category_id",
-                            opr: "{0} IN ({1})",
-                            value: categoryList
-                        }
-                    ]
-                },
-                csrf_recom: csrfToken
-            };
-
-            try {
-                const result = await report_getSpecial(product_images);
-                if (Array.isArray(result)) {
-                    product_images_report.push(...result);
-                }
-            } catch (error) {
-                console.error(`Error fetching report for category chunk [${chunk.join(',')}]:`, error);
+        try {
+            const result = await report_getSpecial(product_images);
+            if (Array.isArray(result)) {
+                product_images_report.push(...result);
             }
+        } catch (error) {
+            console.error(`Error fetching report for category chunk [${chunk.join(',')}]:`, error);
         }
-
-        console.log("Final product_images_report:", product_images_report);
-    });
-
-
-    if (items_images_report === null) {
-        items_images_report = [];
-    }
-
-    if (product_images_report === null) {
-        product_images_report = [];
     }
 
     console.debug("items_images_report", items_images_report);
