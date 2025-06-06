@@ -1386,23 +1386,26 @@ async function report_pictureURLSComplete_init() {
     console.debug("items_images_corrected", items_images_corrected);
     console.debug("product_images_corrected", product_images_corrected);
 
-    let list = {};
+    let listObj = {};
     items_images_report.forEach(item => {
-        if (!list[item.SKU]) {
+        if (!listObj[item.SKU]) {
             let new_item = { ...item };
             delete new_item.URL;
 
             if (items_images_corrected[item.SKU]) {
                 new_item.URLS = items_images_corrected[item.SKU].URLS;
-                list[item.SKU] = new_item;
+                listObj[item.SKU] = new_item;
             } else if (product_images_corrected[item.SID]) {
                 new_item.URLS = product_images_corrected[item.SID].URLS;
-                list[item.SKU] = new_item;
+                listObj[item.SKU] = new_item;
             }
         }
     });
 
+    let list = Object.values(listObj);
     console.debug('final list', list);
+
+    generateReportTableFromList(list, 'items-images-completeList');
 
 }
 
@@ -1489,12 +1492,17 @@ async function report_attributesColorCheck() {
 
     console.debug('PATCHES - Final Color List', list);
 
+    generateReportTableFromList(list, 'product-attributes-colors');
+
+}
+
+function generateReportTableFromList(list, name) {
     goToLastStep();
 
     const button = document.getElementById('report_download');
     button.removeAttribute('href');  
     button.classList.remove('d-none');
-    button.setAttribute('onclick', 'event.preventDefault(); parseTableToCSV(\'product-attributes-colors\');');
+    button.setAttribute('onclick', `event.preventDefault(); parseTableToCSV(\'${name}\');`);
 
     const table = document.createElement('table');
     table.style.width = '100%';
@@ -1586,7 +1594,6 @@ async function report_attributesColorCheck() {
     content.appendChild(table);
     content.removeAttribute('style');
     card.setAttribute('style', 'display: flex;');
-
 }
 
 
