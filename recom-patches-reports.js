@@ -1296,6 +1296,11 @@ async function report_pictureURLSComplete_init() {
                     column: "products.status",
                     opr: "{0} = '{1}'",
                     value: "1"
+                },
+                {
+                    column: "products.sid",
+                    opr: "{0} IN {1}",
+                    value: ["SAM924872811", "GOO103530580"]
                 }
             ]
         },
