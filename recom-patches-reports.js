@@ -1358,6 +1358,34 @@ async function report_pictureURLSComplete_init() {
 
     console.debug("items_images_report", items_images_report);
     console.debug("product_images_report", product_images_report);
+
+    let items_images_corrected = {};
+    items_images_report.forEach(item => {
+        if (items_images_corrected[item.SKU]) {
+            items_images_corrected[item.SKU].URLS.push(item.URL);
+        } else {
+            let new_item = { ...item };
+            new_item.URLS = [item.URL];
+            delete new_item.URL;
+            items_images_corrected[item.SKU] = new_item;
+        }
+    });
+
+    let product_images_corrected = {};
+    product_images_report.forEach(product => {
+        if (product_images_corrected[product.SID]) {
+            product_images_corrected[product.SID].URLS.push(product.URL);
+        } else {
+            let new_product = { ...product };
+            new_product.URLS = [product.URL];
+            delete new_product.URL;
+            product_images_corrected[product.SID] = new_product;
+        }
+    });
+
+    console.debug("items_images_corrected", items_images_corrected);
+    console.debug("product_images_corrected", product_images_corrected);
+
 }
 
 async function report_attributesColorCheck() {
