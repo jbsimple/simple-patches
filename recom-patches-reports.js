@@ -1312,7 +1312,7 @@ async function report_pictureURLSComplete_init() {
     }
 
     const categories = await getAllCategories();
-    const categoryChunks = chunkArray(categories.map(c => c.id), 20); // ensure no clipping
+    const categoryChunks = chunkArray(categories.map(c => c.id), 20); // 20 ensures no clipping and marrying below happens
 
     for (const chunk of categoryChunks) {
         const categoryList = chunk.map(id => `'${id}'`).join(',');
@@ -1363,7 +1363,7 @@ async function report_pictureURLSComplete_init() {
     items_images_report.forEach(item => {
         if (items_images_corrected[item.SKU]) {
             items_images_corrected[item.SKU].URLS.push(item.URL);
-        } else {
+        } else if (item.URL !== null) {
             let new_item = { ...item };
             new_item.URLS = [item.URL];
             delete new_item.URL;
@@ -1375,7 +1375,7 @@ async function report_pictureURLSComplete_init() {
     product_images_report.forEach(product => {
         if (product_images_corrected[product.SID]) {
             product_images_corrected[product.SID].URLS.push(product.URL);
-        } else {
+        } else if (product.URL !== null) {
             let new_product = { ...product };
             new_product.URLS = [product.URL];
             delete new_product.URL;
