@@ -1387,26 +1387,48 @@ async function report_pictureURLSComplete_init() {
     console.debug("product_images_corrected", product_images_corrected);
 
     let listObj = {};
+    let resolutionPromises = [];
+
     items_images_report.forEach(item => {
-        if (!listObj[item.SKU]) {
+        const sku = item.SKU;
+        const sid = item.SID;
+
+        if (!listObj[sku]) {
             let new_item = { ...item };
             delete new_item.URL;
 
-            if (items_images_corrected[item.SKU]) {
-                new_item.URLS = items_images_corrected[item.SKU].URLS;
-                listObj[item.SKU] = new_item;
-            } else if (product_images_corrected[item.SID]) {
-                new_item.URLS = product_images_corrected[item.SID].URLS;
-                listObj[item.SKU] = new_item;
+            if (items_images_corrected[sku]) {
+                new_item.URLS = items_images_corrected[sku].URLS;
+            } else if (product_images_corrected[sid]) {
+                new_item.URLS = product_images_corrected[sid].URLS;
             }
+
+            if (!new_item.URLS || !Array.isArray(new_item.URLS)) return;
+
+            // Push a promise to fetch resolutions
+            const resolutionPromise = Promise.all(
+                new_item.URLS.map(url => {
+                    return new Promise(resolve => {
+                        const img = new Image();
+                        img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight });
+                        img.onerror = () => resolve(null);
+                        img.src = url;
+                    });
+                })
+            ).then(resolutions => {
+                new_item.Resolutions = resolutions;
+                listObj[sku] = new_item;
+            });
+
+            resolutionPromises.push(resolutionPromise);
         }
     });
 
-    let list = Object.values(listObj);
-    console.debug('final list', list);
-
-    generateReportTableFromList(list, 'items-images-completeList');
-
+    Promise.all(resolutionPromises).then(() => {
+        let list = Object.values(listObj);
+        console.debug('final list', list);
+        generateReportTableFromList(list, 'items-images-completeList');
+    });
 }
 
 async function report_attributesColorCheck() {
