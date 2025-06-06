@@ -1301,6 +1301,10 @@ async function report_pictureURLSComplete_init() {
         return allResults;
     }
 
+    console.debug(getAllCategories());
+
+    /*
+
     let product_images_report = [];
     getAllCategories().then(async (categories) => {
         for (const cat of categories) {
@@ -1345,6 +1349,7 @@ async function report_pictureURLSComplete_init() {
             }
         }
     });
+    */
 
 
     if (items_images_report === null) {
