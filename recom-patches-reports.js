@@ -1388,6 +1388,7 @@ async function report_pictureURLSComplete_init() {
 
     let listObj = {};
     let resolutionPromises = [];
+    let resolutionCache = new Map();
 
     items_images_report.forEach(item => {
         const sku = item.SKU;
@@ -1405,13 +1406,24 @@ async function report_pictureURLSComplete_init() {
 
             if (!new_item.URLS || !Array.isArray(new_item.URLS)) return;
 
-            // Push a promise to fetch resolutions
             const resolutionPromise = Promise.all(
                 new_item.URLS.map(url => {
+                    if (resolutionCache.has(url)) {
+                        // Use cached resolution
+                        return Promise.resolve(resolutionCache.get(url));
+                    }
+
                     return new Promise(resolve => {
                         const img = new Image();
-                        img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight });
-                        img.onerror = () => resolve(null);
+                        img.onload = () => {
+                            const res = `${img.naturalWidth}x${img.naturalHeight}`;
+                            resolutionCache.set(url, res);
+                            resolve(res);
+                        };
+                        img.onerror = () => {
+                            resolutionCache.set(url, "N/A");
+                            resolve("N/A");
+                        };
                         img.src = url;
                     });
                 })
