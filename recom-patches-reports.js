@@ -1251,6 +1251,8 @@ async function report_pictureURLSComplete_init(checkResolution = false) {
                 "products.sid",
                 "products.name",
                 "item_images.url",
+                "products.brand_id",
+                "products.category_id",
                 "product_items.condition_id",
                 "product_items.in_stock",
                 "product_items.price",
