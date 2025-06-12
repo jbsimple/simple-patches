@@ -109,7 +109,7 @@ function injectExtraTheme() {
             if (name && name.textContent.includes('Hi, Luke')) {
                 icon = "https://c.tenor.com/3E0ka5aQKmEAAAAC/tenor.gif"; // abe
                 name.textContent = 'Hi, Psychopath';
-                runAtSpecificTime(15, 50, () => {
+                scheduleRun(15, 50, () => {
                     modalWarning("It's 3:50PM, Detect me METAL.");
                 });
             } else if (name && name.textContent.includes('Hi, Nate')) {
