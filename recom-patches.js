@@ -110,7 +110,7 @@ function injectExtraTheme() {
                 icon = "https://c.tenor.com/3E0ka5aQKmEAAAAC/tenor.gif"; // abe
                 name.textContent = 'Hi, Psychopath';
                 runAtSpecificTime(15, 50, () => {
-                    console.log("It's 3:50 PM! Running the function.");
+                    modalWarning("It's 3:50PM, Detect me METAL.");
                 });
             } else if (name && name.textContent.includes('Hi, Nate')) {
                 name.textContent = 'Hi, Nasty Nate';
@@ -275,8 +275,7 @@ function modalWarning(message) {
             <div class="swal2-html-container" id="swal2-html-container" style="display: block;">${message}</div>
             <div class="swal2-actions" style="display: flex;">
                 <div class="swal2-loader"></div>
-                <button type="button" class="swal2-confirm btn btn-danger" aria-label="" style="display: inline-block;">Okay</button>
-                <button type="button" class="swal2-cancel btn btn-dark" aria-label="" style="display: inline-block;">Don't Care</button>
+                <button type="button" class="swal2-cancel btn btn-dark" aria-label="" style="display: inline-block;">Okay</button>
             </div>
         </div>
     `;
