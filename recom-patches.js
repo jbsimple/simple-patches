@@ -109,6 +109,9 @@ function injectExtraTheme() {
             if (name && name.textContent.includes('Hi, Luke')) {
                 icon = "https://c.tenor.com/3E0ka5aQKmEAAAAC/tenor.gif"; // abe
                 name.textContent = 'Hi, Psychopath';
+                runAtSpecificTime(15, 50, () => {
+                    console.log("It's 3:50 PM! Running the function.");
+                });
             } else if (name && name.textContent.includes('Hi, Nate')) {
                 name.textContent = 'Hi, Nasty Nate';
             }
@@ -214,6 +217,22 @@ function injectExtraTheme() {
     }
 }
 
+function scheduleRun(hour, minute, callback) {
+    const now = new Date();
+
+    const target = new Date(now);
+    target.setHours(hour, minute, 0, 0);
+    if (target <= now) {
+        target.setDate(target.getDate() + 1);
+    }
+
+    const delay = target - now;
+    setTimeout(() => {
+        callback();
+        runAtSpecificTime(hour, minute, callback);
+    }, delay);
+}
+
 function modifiedClockInit() {
 	const recordTime_button = document.querySelector('a[data-url="productivity/record"]');
 	if (recordTime_button) {
@@ -241,6 +260,32 @@ function modifiedClockInit() {
             recordTime_parent.insertBefore(newButton, recordTime_button.nextSibling);
 		}
 	}
+}
+
+function modalWarning(message) {
+    let modal = document.createElement('div');
+    modal.className = "swal2-container swal2-center swal2-backdrop-show";
+    modal.style.overflowY = "auto";
+    modal.innerHTML = `
+        <div aria-labelledby="swal2-title" aria-describedby="swal2-html-container" class="swal2-popup swal2-modal swal2-icon-warning swal2-show" tabindex="-1" role="dialog" aria-live="assertive" aria-modal="true" style="display: grid;">
+            <button type="button" class="swal2-close" aria-label="Close this dialog" style="display: none;">×</button>
+            <div class="swal2-icon swal2-warning swal2-icon-show" style="display: flex;">
+                <div class="swal2-icon-content">!</div>
+            </div>
+            <div class="swal2-html-container" id="swal2-html-container" style="display: block;">${message}</div>
+            <div class="swal2-actions" style="display: flex;">
+                <div class="swal2-loader"></div>
+                <button type="button" class="swal2-confirm btn btn-danger" aria-label="" style="display: inline-block;">Okay</button>
+                <button type="button" class="swal2-cancel btn btn-dark" aria-label="" style="display: inline-block;">Don't Care</button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    modal.querySelector('.swal2-confirm').addEventListener('click', () => {
+        modal.remove();
+    });
 }
 
 function modalError(message) {
