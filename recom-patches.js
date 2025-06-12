@@ -275,7 +275,7 @@ function modalWarning(message) {
             <div class="swal2-html-container" id="swal2-html-container" style="display: block;">${message}</div>
             <div class="swal2-actions" style="display: flex;">
                 <div class="swal2-loader"></div>
-                <button type="button" class="swal2-cancel btn btn-dark" aria-label="" style="display: inline-block;">Okay</button>
+                <button type="button" class="swal2-confirm btn btn-primary" aria-label="" style="display: inline-block;">Okay</button>
             </div>
         </div>
     `;
@@ -304,7 +304,7 @@ function modalError(message) {
             <div class="swal2-html-container" id="swal2-html-container" style="display: block;">${message}</div>
             <div class="swal2-actions" style="display: flex;">
                 <div class="swal2-loader"></div>
-                <button type="button" class="swal2-confirm btn btn-primary" aria-label="" style="display: inline-block;">Ok, got it!</button>
+                <button type="button" class="swal2-confirm btn btn-primary" aria-label="" style="display: inline-block;">Okay</button>
             </div>
         </div>
     `;
