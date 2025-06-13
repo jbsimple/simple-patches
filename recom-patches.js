@@ -110,7 +110,10 @@ function injectExtraTheme() {
                 icon = "https://c.tenor.com/3E0ka5aQKmEAAAAC/tenor.gif"; // abe
                 name.textContent = 'Hi, Psychopath';
                 scheduleRun(15, 50, () => {
-                    modalWarning("It's 3:50PM, Detect me METAL.");
+                    modalWarning("It's 3:50PM, get ready to detect METAL.");
+                });
+                scheduleRun(15, 55, () => {
+                    modalWarning("It's 3:55PM, Detect the METAL.");
                 });
             } else if (name && name.textContent.includes('Hi, Nate')) {
                 name.textContent = 'Hi, Nasty Nate';
