@@ -11,9 +11,18 @@
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                justify-content: center;
-                height: 100vh;
+                justify-content: flex-start;
+                min-height: 100vh;
                 margin: 0;
+                padding: 2rem 1rem;
+            }
+
+            .container {
+                width: 90%;
+                max-width: 600px;
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
             }
 
             .dropzone {
@@ -23,8 +32,7 @@
                 text-align: center;
                 transition: 0.2s ease;
                 background: #222;
-                width: 80%;
-                max-width: 500px;
+                cursor: pointer;
             }
 
             .dropzone.dragover {
@@ -33,71 +41,164 @@
             }
 
             input[type="password"] {
-                margin-bottom: 1rem;
                 padding: 0.5rem;
                 width: 100%;
                 border-radius: 6px;
                 border: none;
                 font-size: 1rem;
+                background: #222;
+                color: #eee;
             }
 
             .status {
-                margin-top: 1rem;
                 font-size: 0.9rem;
                 color: #aaa;
+            }
+
+            .queue {
+                margin-top: 2rem;
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .file-row {
+                background: #1a1a1a;
+                padding: 1rem;
+                border-radius: 8px;
+                display: flex;
+                gap: 1rem;
+                align-items: center;
+                box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+            }
+
+            .file-thumb {
+                width: 48px;
+                height: 48px;
+                object-fit: cover;
+                border-radius: 4px;
+            }
+
+            .file-info {
+                flex-grow: 1;
+                overflow-wrap: anywhere;
+            }
+
+            .file-actions button {
+                background: #333;
+                color: #eee;
+                border: none;
+                padding: 0.3rem 0.6rem;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 0.9rem;
+            }
+
+            .file-actions button:hover {
+                background: #444;
             }
         </style>
     </head>
     <body>
-        <h1>Protected Uploader</h1>
-        <input type="password" id="password" placeholder="Enter password" />
-        <div class="dropzone" id="dropzone">
-            <p>Drag and drop a file here</p>
-            <input type="file" id="fileInput" style="display: none;" />
+        <div class="container">
+            <h1>Protected Uploader</h1>
+            <p>Provide a password to upload files.</p>
+            <input type="password" id="password" placeholder="Enter password" />
+            <div class="dropzone" id="dropzone">
+                <p>Click or drag and drop a file here</p>
+                <input type="file" id="fileInput" style="display: none;" />
+            </div>
+            <div class="status" id="status">Waiting for input...</div>
+            <div class="queue" id="queue"></div>
         </div>
-        <div class="status" id="status">Waiting for input...</div>
 
         <script>
             const dropzone = document.getElementById('dropzone');
             const fileInput = document.getElementById('fileInput');
             const passwordInput = document.getElementById('password');
             const status = document.getElementById('status');
+            const queue = document.getElementById('queue');
 
-            function upload(file) {
+            function createFileRow(url, filename, type) {
+                const row = document.createElement('div');
+                row.className = 'file-row';
+
+                const thumb = document.createElement(type.startsWith('image/') ? 'img' : 'div');
+                if (type.startsWith('image/')) {
+                    thumb.src = url;
+                    thumb.className = 'file-thumb';
+                } else {
+                    thumb.textContent = '📄';
+                    thumb.className = 'file-thumb';
+                    thumb.style.display = 'flex';
+                    thumb.style.alignItems = 'center';
+                    thumb.style.justifyContent = 'center';
+                    thumb.style.fontSize = '1.5rem';
+                    thumb.style.background = '#333';
+                }
+
+                const info = document.createElement('div');
+                info.className = 'file-info';
+                const link = document.createElement('a');
+                link.href = url;
+                link.textContent = filename;
+                link.target = '_blank';
+                link.style.color = '#00bfff';
+                info.appendChild(link);
+
+                const actions = document.createElement('div');
+                actions.className = 'file-actions';
+                const copyBtn = document.createElement('button');
+                copyBtn.textContent = 'Copy URL';
+                copyBtn.onclick = () => {
+                    navigator.clipboard.writeText(url);
+                    copyBtn.textContent = 'Copied!';
+                    setTimeout(() => copyBtn.textContent = 'Copy URL', 1000);
+                };
+                actions.appendChild(copyBtn);
+
+                row.appendChild(thumb);
+                row.appendChild(info);
+                row.appendChild(actions);
+
+                queue.prepend(row);
+            }
+
+            async function upload(file) {
                 const password = passwordInput.value.trim();
                 if (!password) {
                     status.textContent = 'Please enter a password.';
                     return;
                 }
 
-                status.textContent = 'Uploading...';
+                status.textContent = `Uploading ${file.name}...`;
 
-                fetch(`/api/upload?filename=${encodeURIComponent(file.name)}`, {
-                    method: 'POST',
-                    headers: {
-                        'x-upload-password': password
-                    },
-                    body: file
-                })
-                .then(r => r.json())
-                .then(data => {
+                try {
+                    const res = await fetch(`/api/upload?filename=${encodeURIComponent(file.name)}`, {
+                        method: 'POST',
+                        headers: {
+                            'x-upload-password': password
+                        },
+                        body: file
+                    });
+
+                    const data = await res.json();
                     if (data.error) {
-                        status.textContent = 'Error: ' + data.error;
+                        status.textContent = `Error: ${data.error}`;
                     } else {
-                        status.textContent = 'Uploaded to: ' + data.url;
-                        const link = document.createElement('a');
-                        link.href = data.url;
-                        link.textContent = 'View File';
-                        link.style.display = 'block';
-                        document.body.appendChild(link);
+                        createFileRow(data.url, file.name, file.type);
+                        status.textContent = `Uploaded: ${file.name}`;
                     }
-                })
-                .catch(() => status.textContent = 'Upload failed.');
+                } catch (err) {
+                    status.textContent = 'Upload failed.';
+                }
             }
 
             dropzone.addEventListener('click', () => fileInput.click());
             fileInput.addEventListener('change', e => {
-                if (e.target.files[0]) upload(e.target.files[0]);
+                for (const file of e.target.files) {
+                    upload(file);
+                }
             });
 
             dropzone.addEventListener('dragover', e => {
@@ -112,8 +213,9 @@
             dropzone.addEventListener('drop', e => {
                 e.preventDefault();
                 dropzone.classList.remove('dragover');
-                const file = e.dataTransfer.files[0];
-                if (file) upload(file);
+                for (const file of e.dataTransfer.files) {
+                    upload(file);
+                }
             });
         </script>
     </body>
