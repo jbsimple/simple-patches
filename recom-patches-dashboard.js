@@ -93,31 +93,31 @@ function replaceEngagewidget() {
     const engagewidget = kt_app_content_container.querySelector('.card.bg-primary.card-flush.h-md-50.mb-xl-10');
     const randomImages = [
         {
-            "url": "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExeGsycjU3bTd0dGFkNmE5Y3NzcGpodGY4YW1mdTVrc3FoZmFqb2t4OSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/JqmupuTVZYaQX5s094/giphy.gif",
+            "url": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/typing.gif",
             "title": "typing..."
         },
         {
-            "url": "https://media.tenor.com/GfSX-u7VGM4AAAAM/coding.gif",
+            "url": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/coding.gif",
             "title": "typing more..."
         },
         {
-            "url": "https://media.tenor.com/PLIr_VkF6ywAAAAM/ghostedvpn-hacker-cat.gif",
+            "url": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/hackercat.gif",
             "title": "hacker cat!!!"
         },
         {
-            "url": "https://i.gifer.com/6tXM.gif",
+            "url": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/angrycoder.gif",
             "title": "average programming experience"
         },
         {
-            "url": "https://cdn.betterttv.net/emote/5b490e73cf46791f8491f6f4/3x.gif",
+            "url": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/peepoHACKERMAN.gif",
             "title": "peepoHACKERMAN"
         },
         {
-            "url": "https://cdn.betterttv.net/emote/5f6d17abc2f3a70b1ae546b9/3x.gif",
+            "url": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/peepoSPEEDERS.gif",
             "title": "peepoSPEEDERS"
         },
         {
-            "url": "https://cdn.betterttv.net/emote/5f1b0186cf6d2144653d2970/3x.gif",
+            "url": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/cat-jam.gif",
             "title": "catJAM"
         }
     ];
