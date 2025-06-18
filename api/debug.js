@@ -1,9 +1,3 @@
-export const config = {
-    runtime: 'nodejs'
-};
-
-import { put } from '@vercel/blob';
-
 export default async function handler(req, res) {
     const password = req.headers['x-upload-password'];
     const correct = process.env.UPLOAD_SECRET;
