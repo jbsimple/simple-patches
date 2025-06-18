@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Simple Patches Upload</title>
+        <style>
+            body {
+                background: #111;
+                color: #eee;
+                font-family: system-ui, sans-serif;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+                margin: 0;
+            }
+
+            .dropzone {
+                border: 2px dashed #555;
+                border-radius: 12px;
+                padding: 2rem;
+                text-align: center;
+                transition: 0.2s ease;
+                background: #222;
+                width: 80%;
+                max-width: 500px;
+            }
+
+            .dropzone.dragover {
+                border-color: #00bfff;
+                background: #333;
+            }
+
+            input[type="password"] {
+                margin-bottom: 1rem;
+                padding: 0.5rem;
+                width: 100%;
+                border-radius: 6px;
+                border: none;
+                font-size: 1rem;
+            }
+
+            .status {
+                margin-top: 1rem;
+                font-size: 0.9rem;
+                color: #aaa;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Protected Uploader</h1>
+        <div class="dropzone" id="dropzone">
+            <input type="password" id="password" placeholder="Enter password" />
+            <p>Drag and drop a file here</p>
+            <input type="file" id="fileInput" style="display: none;" />
+        </div>
+        <div class="status" id="status">Waiting for input...</div>
+
+        <script>
+            const dropzone = document.getElementById('dropzone');
+            const fileInput = document.getElementById('fileInput');
+            const passwordInput = document.getElementById('password');
+            const status = document.getElementById('status');
+
+            function upload(file) {
+                const password = passwordInput.value.trim();
+                if (!password) {
+                    status.textContent = 'Please enter a password.';
+                    return;
+                }
+
+                status.textContent = 'Uploading...';
+
+                fetch(`/api/upload?filename=${encodeURIComponent(file.name)}`, {
+                    method: 'POST',
+                    headers: {
+                        'x-upload-password': password
+                    },
+                    body: file
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.error) {
+                        status.textContent = 'Error: ' + data.error;
+                    } else {
+                        status.textContent = 'Uploaded to: ' + data.url;
+                        const link = document.createElement('a');
+                        link.href = data.url;
+                        link.textContent = 'View File';
+                        link.style.display = 'block';
+                        document.body.appendChild(link);
+                    }
+                })
+                .catch(() => status.textContent = 'Upload failed.');
+            }
+
+            dropzone.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', e => {
+                if (e.target.files[0]) upload(e.target.files[0]);
+            });
+
+            dropzone.addEventListener('dragover', e => {
+                e.preventDefault();
+                dropzone.classList.add('dragover');
+            });
+
+            dropzone.addEventListener('dragleave', () => {
+                dropzone.classList.remove('dragover');
+            });
+
+            dropzone.addEventListener('drop', e => {
+                e.preventDefault();
+                dropzone.classList.remove('dragover');
+                const file = e.dataTransfer.files[0];
+                if (file) upload(file);
+            });
+        </script>
+    </body>
+</html>
