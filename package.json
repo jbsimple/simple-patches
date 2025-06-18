@@ -1,0 +1,23 @@
+{
+  "name": "simple-patches",
+  "version": "1.0.0",
+  "description": "Quality of life changes to the work system that my work colleagues and myself wanted to make the work day go by that much faster.",
+  "main": "inject.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jbsimple/simple-patches.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jbsimple/simple-patches/issues"
+  },
+  "homepage": "https://github.com/jbsimple/simple-patches#readme",
+  "dependencies": {
+    "@vercel/blob": "^1.1.1"
+  }
+}
