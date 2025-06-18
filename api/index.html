@@ -196,6 +196,7 @@
                     const data = await res.json();
                     if (data.error) {
                         status.textContent = `Error: ${data.error}`;
+                        console.error(data);
                     } else {
                         createFileRow(data.url, file.name, file.type);
                         status.textContent = `Uploaded: ${file.name}`;
