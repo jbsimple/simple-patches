@@ -5,7 +5,11 @@ export default async function handler(req, res) {
     const correct = process.env.UPLOAD_SECRET;
 
     if (!password || password !== correct) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        return res.status(401).json(
+            { 
+                error: 'Unauthorized',
+                temp: process.env.UPLOAD_SECRET
+            });
     }
 
     const { searchParams } = new URL(req.url, `http://${req.headers.host}`);
