@@ -1,4 +1,4 @@
-export const runtime = 'nodejs';
+
 export default async function handler(req, res) {
     const password = req.headers['x-upload-password'];
     const correct = process.env.UPLOAD_SECRET;
