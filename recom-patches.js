@@ -104,10 +104,10 @@ function injectExtraTheme() {
         if (nav_sidebar_links) {
             const name = nav_sidebar_links.querySelectorAll('.menu-heading')[0];
             currentuser = name.textContent.replace(/^Hi,\s*/, '').toLocaleLowerCase();
-            let icon = "https://media.tenor.com/1MG3j4q4W5AAAAAj/cat-jam.gif";
+            let icon = "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/cat-jam.gif";
 
             if (name && name.textContent.includes('Hi, Luke')) {
-                icon = "https://c.tenor.com/3E0ka5aQKmEAAAAC/tenor.gif"; // abe
+                icon = "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/abe.gif";
                 name.textContent = 'Hi, Psychopath';
                 scheduleRun(15, 50, () => {
                     modalWarning("It's 3:50PM, get ready to detect METAL.");
@@ -116,6 +116,7 @@ function injectExtraTheme() {
                     modalWarning("It's 3:55PM, Detect the METAL.");
                 });
             } else if (name && name.textContent.includes('Hi, Nate')) {
+                icon = "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/abe.gif";
                 name.textContent = 'Hi, Nasty Nate';
             }
 
