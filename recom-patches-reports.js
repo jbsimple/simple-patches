@@ -678,6 +678,40 @@ function report_productHighQty() {
     getReport(request);
 }
 
+const report_eventColumns = [
+    "user_profile.user_id",
+    "user_profile.department_id",
+    "user_clocks.task_id",
+    "purchase_orders.id",
+    "purchase_orders.type",
+    "user_clock_activity.activity_id",
+    "user_clock_activity.activity_code",
+    "user_clock_activity.notes",
+    "user_clock_activity.units",
+    "user_clock_activity.created_at",
+    "user_clock_activity.time_spent",
+    "user_clocks.time_in",
+    "user_clocks.time_out",
+    "user_clocks.user_id",
+    "user_clocks.clock_date",
+    "products.sid",
+    "products.name",
+    "product_items.sku",
+    "product_items.condition_id",
+    "inventory_receiving.condition_id",
+    "products.category_id",
+    "categories.type",
+    "products.brand_id",
+    "order_lines.line_sku",
+    "orders.number",
+    "order_lines.line_quantity",
+    "order_lines.line_price",
+    "product_items.bulk_price",
+    "products.mpn",
+    "products.gtin",
+    "products.asin"
+];
+
 function report_eventIDLookup_submit() {
     const eventIdInput = document.getElementById('patches-reports-eventIDLookup-input');
     const eventIdValue = eventIdInput?.value;
@@ -690,38 +724,7 @@ function report_eventIDLookup_submit() {
     var request = {
         report: {
             type: "user_clock",
-            columns: [
-                "user_profile.user_id",
-                "user_profile.department_id",
-                "user_clocks.task_id",
-                "purchase_orders.id",
-                "purchase_orders.type",
-                "user_clock_activity.activity_id",
-                "user_clock_activity.activity_code",
-                "user_clock_activity.notes",
-                "user_clock_activity.units",
-                "user_clock_activity.created_at",
-                "user_clock_activity.time_spent",
-                "user_clocks.time_in",
-                "user_clocks.time_out",
-                "user_clocks.user_id",
-                "user_clocks.clock_date",
-                "products.sid",
-                "products.name",
-                "product_items.sku",
-                "product_items.condition_id",
-                "products.category_id",
-                "categories.type",
-                "products.brand_id",
-                "order_lines.line_sku",
-                "orders.number",
-                "order_lines.line_quantity",
-                "order_lines.line_price",
-                "product_items.bulk_price",
-                "products.mpn",
-                "products.gtin",
-                "products.asin"
-            ],
+            columns: report_eventColumns,
             filters: [
                 {
                     column: "user_clocks.clock_date",
@@ -753,38 +756,7 @@ function report_eventSIDLookup_submit() {
     var request = {
         report: {
             type: "user_clock",
-            columns: [
-                "user_profile.user_id",
-                "user_profile.department_id",
-                "user_clocks.task_id",
-                "purchase_orders.id",
-                "purchase_orders.type",
-                "user_clock_activity.activity_id",
-                "user_clock_activity.activity_code",
-                "user_clock_activity.notes",
-                "user_clock_activity.units",
-                "user_clock_activity.created_at",
-                "user_clock_activity.time_spent",
-                "user_clocks.time_in",
-                "user_clocks.time_out",
-                "user_clocks.user_id",
-                "user_clocks.clock_date",
-                "products.sid",
-                "products.name",
-                "product_items.sku",
-                "product_items.condition_id",
-                "products.category_id",
-                "categories.type",
-                "products.brand_id",
-                "order_lines.line_sku",
-                "orders.number",
-                "order_lines.line_quantity",
-                "order_lines.line_price",
-                "product_items.bulk_price",
-                "products.mpn",
-                "products.gtin",
-                "products.asin"
-            ],
+            columns: report_eventColumns,
             filters: [
                 {
                     column: "user_clocks.clock_date",
@@ -816,38 +788,7 @@ function report_eventSKULookup_submit() {
     var request = {
         report: {
             type: "user_clock",
-            columns: [
-                "user_profile.user_id",
-                "user_profile.department_id",
-                "user_clocks.task_id",
-                "purchase_orders.id",
-                "purchase_orders.type",
-                "user_clock_activity.activity_id",
-                "user_clock_activity.activity_code",
-                "user_clock_activity.notes",
-                "user_clock_activity.units",
-                "user_clock_activity.created_at",
-                "user_clock_activity.time_spent",
-                "user_clocks.time_in",
-                "user_clocks.time_out",
-                "user_clocks.user_id",
-                "user_clocks.clock_date",
-                "products.sid",
-                "products.name",
-                "product_items.sku",
-                "product_items.condition_id",
-                "products.category_id",
-                "categories.type",
-                "products.brand_id",
-                "order_lines.line_sku",
-                "orders.number",
-                "order_lines.line_quantity",
-                "order_lines.line_price",
-                "product_items.bulk_price",
-                "products.mpn",
-                "products.gtin",
-                "products.asin"
-            ],
+            columns: report_eventColumns,
             filters: [
                 {
                     column: "user_clocks.clock_date",
