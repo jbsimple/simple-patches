@@ -215,6 +215,7 @@ function initPreset() {
     card_body.appendChild(report_preset('picture_missingFull'));
     card_body.appendChild(report_preset('picture_missingSpecial'));
     card_body.appendChild(report_preset('product_highQty'));
+    card_body.appendChild(report_preset('productivity_eventSIDLookup'));
     card_body.appendChild(report_preset('productivity_eventSKULookup'));
     card_body.appendChild(report_preset('productivity_eventIDLookup'));
     card_body.appendChild(report_preset('attributes_color'));
@@ -418,6 +419,15 @@ function report_preset(name) {
         details.func = `report_eventIDLookup_submit();`;
         details.input = "int";
         details.desc = "Generate a report of all employee producitivty associated with an event id.<br>Includes all possible pieces of data from the employee productivity report.";
+        details.title = "Event ID Lookup";
+        return report_initHTML(details);
+    } else if (name === 'productivity_eventSIDLookup') {
+        var details = {};
+        details.id = `patches-reports-eventSIDLookup`;
+        details.name = `patches-reports-eventSIDLookup`;
+        details.func = `report_eventSIDLookup_submit();`;
+        details.input = "string";
+        details.desc = "Generate a report of all employee producitivty associated with a SID.<br>Includes all possible pieces of data from the employee productivity report.";
         details.title = "Event ID Lookup";
         return report_initHTML(details);
     } else if (name === 'productivity_eventSKULookup') {
@@ -731,6 +741,69 @@ function report_eventIDLookup_submit() {
     getReport(request);
 }
 
+function report_eventSIDLookup_submit() {
+    const eventIdInput = document.getElementById('patches-reports-eventSKULookup-input');
+    const eventIdValue = eventIdInput?.value;
+    
+    const today = new Date();
+    const date = `${String(today.getMonth() + 1).padStart(2, '0')}/${String(today.getDate()).padStart(2, '0')}/${today.getFullYear()}`;
+
+    const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
+    
+    var request = {
+        report: {
+            type: "user_clock",
+            columns: [
+                "user_profile.user_id",
+                "user_profile.department_id",
+                "user_clocks.task_id",
+                "purchase_orders.id",
+                "purchase_orders.type",
+                "user_clock_activity.activity_id",
+                "user_clock_activity.activity_code",
+                "user_clock_activity.notes",
+                "user_clock_activity.units",
+                "user_clock_activity.created_at",
+                "user_clock_activity.time_spent",
+                "user_clocks.time_in",
+                "user_clocks.time_out",
+                "user_clocks.user_id",
+                "user_clocks.clock_date",
+                "products.sid",
+                "products.name",
+                "product_items.sku",
+                "product_items.condition_id",
+                "products.category_id",
+                "categories.type",
+                "products.brand_id",
+                "order_lines.line_sku",
+                "orders.number",
+                "order_lines.line_quantity",
+                "order_lines.line_price",
+                "product_items.bulk_price",
+                "products.mpn",
+                "products.gtin",
+                "products.asin"
+            ],
+            filters: [
+                {
+                    column: "user_clocks.clock_date",
+                    opr: "between",
+                    value: `08/01/2023 - ${date}`
+                },
+                {
+                    column: "products.sid",
+                    opr: "{0} LIKE '%{1}%'",
+                    value: eventIdValue
+                }
+            ]
+        },
+        csrf_recom: csrfToken
+    };
+
+    getReport(request);
+}
+
 function report_eventSKULookup_submit() {
     const eventIdInput = document.getElementById('patches-reports-eventSKULookup-input');
     const eventIdValue = eventIdInput?.value;
@@ -783,7 +856,7 @@ function report_eventSKULookup_submit() {
                 },
                 {
                     column: "product_items.sku",
-                    opr: "{0} = {1}",
+                    opr: "{0} LIKE '%{1}%'",
                     value: eventIdValue
                 }
             ]
