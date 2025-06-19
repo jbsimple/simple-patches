@@ -428,7 +428,7 @@ function report_preset(name) {
         details.func = `report_eventSIDLookup_submit();`;
         details.input = "string";
         details.desc = "Generate a report of all employee producitivty associated with a SID.<br>Includes all possible pieces of data from the employee productivity report.";
-        details.title = "Event ID Lookup";
+        details.title = "Event SID Lookup";
         return report_initHTML(details);
     } else if (name === 'productivity_eventSKULookup') {
         var details = {};
@@ -437,7 +437,7 @@ function report_preset(name) {
         details.func = `report_eventSKULookup_submit();`;
         details.input = "string";
         details.desc = "Generate a report of all employee producitivty associated with a SKU.<br>Includes all possible pieces of data from the employee productivity report.";
-        details.title = "Event ID Lookup";
+        details.title = "Event SKU Lookup";
         return report_initHTML(details);
     } else if (name === 'attributes_color') {
         var details = {};
