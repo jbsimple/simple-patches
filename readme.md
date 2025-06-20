@@ -80,6 +80,8 @@ There are other smaller modifications made, look below at the patches list to se
   - Added Missing Picture report for Defective, Incomplete and Imaging Issues (Created last 30 days).
   - Added a Complete Missing Picture report for all items and products in the system.
   - Added a Product Items list of products over QTY 50 with ASIN column.
+  - Added a tool to look up the history of a sid's skus.
+  - Added a tool to look up the history of a sku.
   - Added a tool to look up the history of an event id.
   - Added a list of products that have incorrect color attributes.
 - On reports page, added a css fix to correct the resize on narrow screens happening too late.
