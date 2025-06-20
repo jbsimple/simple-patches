@@ -98,7 +98,7 @@ function prettyPrintMeta() {
     setTimeout(function() { injectMetaKeys() }, 500);
 }
 
-waitForElement('#kt_app_content_container', prettyPrintMeta);
+waitForElement('#LogEntriesTable', prettyPrintMeta);
 
 /* pretty print links for asins */
 function prettyLinkAsins() {
