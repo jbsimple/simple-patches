@@ -135,6 +135,8 @@ function prettyLinkAsins() {
                     }
                 } else if (label.textContent === 'ASIN Renewed' && parent) {
                     asinSingleLink(parent, 'patches-meta-renewedAsin');
+                } else if (label.textContent === 'Renewed Premium ASIN' && parent) {
+                    asinSingleLink(parent, 'patches-meta-premium');
                 } else if (label.textContent === 'ASIN' && parent) {
                     asinSingleLink(parent, 'patches-meta-asin');
                 }
