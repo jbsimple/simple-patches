@@ -74,7 +74,7 @@ function prettyPrintMeta() {
         return metaItem ? metaItem.meta_name : null;
     }
 
-    setTimeout(function() {
+    function injectMetaKeys() {
         document.querySelectorAll('.json__key').forEach(async function(keyDiv) {
             if (keyDiv.textContent.trim() === 'meta_id') {
                 let nextDiv = keyDiv.nextElementSibling;
@@ -85,7 +85,17 @@ function prettyPrintMeta() {
                 }
             }
         });
-    }, 500);
+    }
+
+    const loadMoreButton = document.getElementById('logEntriesLoadMore');
+    if (loadMoreButton) {
+        loadMoreButton.addEventListener('click', function() {
+            setTimeout(function() { injectMetaKeys() }, 500);
+        });
+    }
+
+    // default run
+    setTimeout(function() { injectMetaKeys() }, 500);
 }
 
 waitForElement('#kt_app_content_container', prettyPrintMeta);
