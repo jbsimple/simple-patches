@@ -428,216 +428,338 @@ function modifyMediaTable() {
 waitForElement('#product-images-container', modifyMediaTable);
 
 /* photo stuff */
-// Getting rid of bad gallery viewer
-var media_tab = document.getElementById('rc_product_media_tab');
-var media_tree = document.getElementById('product-images-container');
-var media_tree_parent = null;
+function initURLMedia() {
+	const dropzone_container = document.getElementById('rc_product_media');
 
-if (media_tree) {
-	media_tree_parent = media_tree.parentNode;
+	if (dropzone_container) {
+		const pasteURL_container = document.createElement('div');
+		pasteURL_container.classList.add('patches-box', 'patches-column', 'gap');
+		pasteURL_container.setAttribute('style', 'width: 100%; margin-top: 2rem; padding: 1.5rem; background-color: rgba(255,255,255,0.15);');
+		pasteURL_container.innerHTML = `<h4 style="margin: 0; padding: 0;" class="fw-bolder d-flex align-items-center text-dark">Upload from URL:</h4>
+		<div class="patches-row" style="gap: 1.25rem;">
+			<div class="patches-column" style="gap: 0.25rem !important;">
+				<h5 class="fw-bolder d-flex align-items-center text-dark">Preview:</h5>
+				<div class="patches-imgcont" style="max-height: 100px; max-width: 100px; border-radius: 0.625rem;">
+					<img src="https://s3.amazonaws.com/elog-cdn/no-image.png" style="border-radius: 0.625rem;" id="patches-urlView">
+				</div>
+				<div class="patches-spacer"></div>
+			</div>
+			<div class="patches-separatorY"></div>
+			<div class="patches-column patches-spacer patches-spacer">
+				<div class="patches-column">
+					<p style="margin: 0; padding: 0;">Paste in a DIRECT image url and the script will try and upload it.</p>
+					<p style="margin: 0; padding: 0;">Please Note: Only URLS from system CDN servers will work!</p>
+				</div>
+				<div class="patches-spacer"></div>
+				<div class="patches-column">
+					<label for="patches-urlImg" style="font-size: 1.1rem;" class="fw-bolder d-flex align-items-center text-dark">URL:</label>
+					<input class=form-control rounded-1" style="color: var(--bs-text-gray-800); width: unset;" type="text" id="patches-urlImg" autocomplete="false">
+				</div>
+			</div>
+			<div class="patches-column">
+				<div class="patches-spacer"></div>
+				<button id="patches-urlSubmit" class="btn btn-large btn-primary">
+					Upload
+          <span class="svg-icon svg-icon-4 ms-1 me-0">
+	          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+	          <rect opacity="0.5" x="18" y="13" width="13" height="2" rx="1" transform="rotate(-180 18 13)" fill="currentColor"></rect>
+	          <path d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z" fill="currentColor"></path>
+	          </svg>
+          </span>
+        </button>
+			</div>
+		</div>`;
+
+		dropzone_container.parentNode.insertBefore(pasteURL_container, dropzone_container.nextSibling);
+		
+		const urlInput = document.getElementById('patches-urlImg');
+		const urlPreview = document.getElementById('patches-urlView');
+		const urlSubmit = document.getElementById('patches-urlSubmit');
+		if (urlInput && urlPreview && urlSubmit) {
+			urlInput.addEventListener('input', () => {
+				const url = urlInput.value.trim();
+				const isImage = /\.(jpeg|jpg|gif|png|webp|svg)$/i.test(url);
+				const fallback = 'https://s3.amazonaws.com/elog-cdn/no-image.png';
+			
+				if (!isImage) {
+					urlPreview.src = fallback;
+					return;
+				}
+			
+				const testImg = new Image();
+				testImg.onload = () => {
+					urlPreview.src = url;
+				};
+				testImg.onerror = () => {
+					urlPreview.src = fallback;
+				};
+				testImg.src = url;
+			});
+			
+			urlSubmit.addEventListener('click', async () => {
+				console.debug('Patches - Attempting to convert from URL.');
+				
+				const imageURL = urlPreview.src;
+				const fallback = 'https://s3.amazonaws.com/elog-cdn/no-image.png';
+			
+				if (!imageURL || imageURL === fallback) {
+					alert('Please enter a valid image URL.');
+					return;
+				}
+			
+				try {
+					const filenameFromURL = imageURL.split('/').pop()?.split('?')[0] || '';
+					const response = await fetch(`https://simple-patches.vercel.app/api/proxy-image?url=${encodeURIComponent(imageURL)}&filename=${encodeURIComponent(filenameFromURL)}`);
+					if (!response.ok) throw new Error('Failed to fetch image.');
+					
+					const blob = await response.blob();
+					const fileType = blob.type || 'image/jpeg';
+					const extension = fileType.split('/')[1] || 'jpg';
+					let filename = filenameFromURL || `${Date.now()}.${extension}`;
+					const disposition = response.headers.get('Content-Disposition');
+					if (disposition && disposition.includes('filename=')) {
+						const match = disposition.match(/filename="(.+?)"/);
+						if (match && match[1]) {
+							filename = match[1];
+						}
+					}
+
+					const file = new File([blob], filename, { type: fileType });
+			
+					// Get Dropzone instance attached to #rc_product_media
+					const dzElement = Dropzone.forElement("#rc_product_media");
+					if (!dzElement) {
+						alert("Dropzone instance not found.");
+						return;
+					}
+			
+					// Optional: Set custom position param
+					const lastImgIndex = $(".draggable:last .imgpos").text();
+					dzElement.options.params.position = lastImgIndex ? parseInt(lastImgIndex) + 1 : 1;
+			
+					// Add the file to Dropzone
+					dzElement.addFile(file);
+			
+				} catch (err) {
+					console.error('Image upload failed:', err);
+					alert('Image upload failed.');
+				}
+			});
+		}
+	}
 }
+waitForElement('#rc_product_media', initURLMedia);
 
-var imageElements = media_tree.querySelectorAll('[data-type="image"]');
+function extraMediaInit() {
+    // Getting rid of bad gallery viewer
+    var media_tab = document.getElementById('rc_product_media_tab');
+    var media_tree = document.getElementById('product-images-container');
+    var media_tree_parent = null;
 
-if (imageElements && imageElements.length > 0) {
-    $(imageElements).off(); //jQuery ftw
+    if (media_tree) {
+        media_tree_parent = media_tree.parentNode;
+    }
 
-    imageElements.forEach(imgLink => {
-        imgLink.onclick = null;
-        imgLink.setAttribute('target', '_blank');
-    });
-}
+    var imageElements = media_tree.querySelectorAll('[data-type="image"]');
 
-// Handle new uploads
-// Before, clicking a picture freshly uploaded by accident just opens the <a> default.
-// AT LEAST it should be in a new tab.
-if (media_tree) {
-    const observer = new MutationObserver(mutations => {
-        mutations.forEach(mutation => {
-            mutation.addedNodes.forEach(node => {
-                if (node instanceof HTMLElement && node.matches('[data-type="image"]')) {
-                    $(node).off(); //jQuery ftw
-                    node.onclick = null;
-                    node.setAttribute('target', '_blank');
-                }
+    if (imageElements && imageElements.length > 0) {
+        $(imageElements).off(); //jQuery ftw
 
-                const newImages = node.querySelectorAll?.('[data-type="image"]');
-                if (newImages) {
-                    newImages.forEach(imgLink => {
-                        $(imgLink).off(); //jQuery ftw
-                        imgLink.onclick = null;
-                        imgLink.setAttribute('target', '_blank');
-                    });
+        imageElements.forEach(imgLink => {
+            imgLink.onclick = null;
+            imgLink.setAttribute('target', '_blank');
+        });
+    }
+
+    // Handle new uploads
+    // Before, clicking a picture freshly uploaded by accident just opens the <a> default.
+    // AT LEAST it should be in a new tab.
+    if (media_tree) {
+        const observer = new MutationObserver(mutations => {
+            mutations.forEach(mutation => {
+                mutation.addedNodes.forEach(node => {
+                    if (node instanceof HTMLElement && node.matches('[data-type="image"]')) {
+                        $(node).off(); //jQuery ftw
+                        node.onclick = null;
+                        node.setAttribute('target', '_blank');
+                    }
+
+                    const newImages = node.querySelectorAll?.('[data-type="image"]');
+                    if (newImages) {
+                        newImages.forEach(imgLink => {
+                            $(imgLink).off(); //jQuery ftw
+                            imgLink.onclick = null;
+                            imgLink.setAttribute('target', '_blank');
+                        });
+                    }
+                });
+            });
+        });
+
+        observer.observe(media_tree, { childList: true, subtree: true });
+    }
+
+    const dropbox = document.getElementById('rc_product_media');
+
+    if (dropbox) {
+        const expectedClasses = ['dropzone', 'dz-clickable'];
+
+        window.onbeforeunload = function () {
+            const hasExactClasses = 
+                dropbox.classList.length === expectedClasses.length &&
+                expectedClasses.every(cls => dropbox.classList.contains(cls));
+
+            if (!hasExactClasses) {
+                return "Are you sure you want to leave? Images are still uploading.";
+            }
+            return undefined;
+        };
+    }
+
+    if (media_tab && media_tree) {
+        var newElement = document.createElement('div');
+        newElement.classList.add('fv-row');
+        newElement.classList.add('mb-2');
+        newElement.setAttribute('style', 'padding-bottom: 1.5rem; display: flex; flex-wrap: wrap; gap: 1rem; align-items: center');
+        
+        // Add button if there are image elements
+        if (imageElements.length > 0) {
+
+            // open all button
+            var openAllButton = document.createElement('button');
+            openAllButton.classList.add('btn');
+            openAllButton.classList.add('btn-info');
+            openAllButton.id = 'patch_openAllImages';
+            openAllButton.textContent = 'Open All Images';
+            openAllButton.style.color = 'white';
+            openAllButton.style.border = 'none';
+            openAllButton.style.padding = '10px 20px';
+            openAllButton.style.cursor = 'pointer';
+            openAllButton.style.borderRadius = '5px';
+            openAllButton.onclick = openAllImages;
+            if (!checkPopup()) {
+                openAllButton.title = "Popups are disabled, please enable for this to work.";
+            }
+            newElement.appendChild(openAllButton);
+
+            // delete all button
+            var deleteAllButton = document.createElement('button');
+            deleteAllButton.classList.add('btn');
+            deleteAllButton.classList.add('btn-info');
+            deleteAllButton.classList.add('btn-danger');
+            deleteAllButton.id = 'deleteAllImages';
+            deleteAllButton.textContent = 'Delete All Images';
+            deleteAllButton.style.color = 'white';
+            deleteAllButton.style.border = 'none';
+            deleteAllButton.style.padding = '10px 20px';
+            deleteAllButton.style.cursor = 'pointer';
+            deleteAllButton.style.borderRadius = '5px';
+            deleteAllButton.onclick = deleteAllImages;
+            newElement.appendChild(deleteAllButton);
+
+        }
+        
+        media_tree_parent.insertBefore(newElement, media_tree);
+    }
+
+    function openAllImages() {
+        if (imageElements && imageElements.length > 0) {
+            console.debug('Patches: Opening all images by simulating clicks with delay:', imageElements);
+
+            for (let i = 0; i < imageElements.length; i++) {
+                setTimeout(() => {
+                    const imageElement = imageElements[i];
+                    console.debug(`Patches: Simulating click for URL: ${imageElement.href}`);
+                    imageElement.click();
+                }, i * 50);
+            }
+        }
+    }
+
+    function deleteAllImages() {
+        const imgwrap = document.getElementById('product-images-container');
+        const imgs = imgwrap.querySelectorAll('.col.draggable[data-id]');
+
+        let type = '';
+        const url = window.location.href;
+        if (url.includes('/products/')) {
+            type = 'product';
+        } else if (url.includes('/items/')) {
+            type = 'item';
+        }
+
+        const csrfToken = $('meta[name="X-CSRF-TOKEN"]').attr("content");
+
+        imgs.forEach(img => {
+            const id = img.getAttribute('data-id');
+
+            $.post({
+                url: "ajax/actions/productimagedelete/" + id,
+                dataType: "json",
+                data: {
+                    id: id,
+                    type: type
+                },
+                headers: {
+                    "X-CSRF-TOKEN": csrfToken,
+                },
+                success: function(data) {
+                    apiResponseAlert(data);
+                    $(img).closest(".col").remove();
+                },
+                error: function(error) {
+                    console.log("FAIL", error);
+                    ajaxFailAlert(error);
                 }
             });
         });
-    });
-
-    observer.observe(media_tree, { childList: true, subtree: true });
-}
-
-const dropbox = document.getElementById('rc_product_media');
-
-if (dropbox) {
-    const expectedClasses = ['dropzone', 'dz-clickable'];
-
-    window.onbeforeunload = function () {
-        const hasExactClasses = 
-            dropbox.classList.length === expectedClasses.length &&
-            expectedClasses.every(cls => dropbox.classList.contains(cls));
-
-        if (!hasExactClasses) {
-            return "Are you sure you want to leave? Images are still uploading.";
-        }
-        return undefined;
-    };
-}
-
-function openAllImages() {
-    if (imageElements && imageElements.length > 0) {
-        console.debug('Patches: Opening all images by simulating clicks with delay:', imageElements);
-
-        for (let i = 0; i < imageElements.length; i++) {
-            setTimeout(() => {
-                const imageElement = imageElements[i];
-                console.debug(`Patches: Simulating click for URL: ${imageElement.href}`);
-                imageElement.click();
-            }, i * 50);
-        }
-    }
-}
-
-
-if (media_tab && media_tree) {
-    var newElement = document.createElement('div');
-    newElement.classList.add('fv-row');
-    newElement.classList.add('mb-2');
-    newElement.setAttribute('style', 'padding-bottom: 1.5rem; display: flex; flex-wrap: wrap; gap: 1rem; align-items: center');
-    
-    // Add button if there are image elements
-    if (imageElements.length > 0) {
-
-        // open all button
-        var openAllButton = document.createElement('button');
-        openAllButton.classList.add('btn');
-        openAllButton.classList.add('btn-info');
-        openAllButton.id = 'patch_openAllImages';
-        openAllButton.textContent = 'Open All Images';
-        openAllButton.style.color = 'white';
-        openAllButton.style.border = 'none';
-        openAllButton.style.padding = '10px 20px';
-        openAllButton.style.cursor = 'pointer';
-        openAllButton.style.borderRadius = '5px';
-        openAllButton.onclick = openAllImages;
-        if (!checkPopup()) {
-            openAllButton.title = "Popups are disabled, please enable for this to work.";
-        }
-        newElement.appendChild(openAllButton);
-
-        // delete all button
-        var deleteAllButton = document.createElement('button');
-        deleteAllButton.classList.add('btn');
-        deleteAllButton.classList.add('btn-info');
-        deleteAllButton.classList.add('btn-danger');
-        deleteAllButton.id = 'deleteAllImages';
-        deleteAllButton.textContent = 'Delete All Images';
-        deleteAllButton.style.color = 'white';
-        deleteAllButton.style.border = 'none';
-        deleteAllButton.style.padding = '10px 20px';
-        deleteAllButton.style.cursor = 'pointer';
-        deleteAllButton.style.borderRadius = '5px';
-        deleteAllButton.onclick = deleteAllImages;
-        newElement.appendChild(deleteAllButton);
-
-    }
-    
-    media_tree_parent.insertBefore(newElement, media_tree);
-}
-
-// delete all function (wow)
-function deleteAllImages() {
-	const imgwrap = document.getElementById('product-images-container');
-	const imgs = imgwrap.querySelectorAll('.col.draggable[data-id]');
-
-	let type = '';
-	const url = window.location.href;
-	if (url.includes('/products/')) {
-		type = 'product';
-	} else if (url.includes('/items/')) {
-		type = 'item';
-	}
-
-	const csrfToken = $('meta[name="X-CSRF-TOKEN"]').attr("content");
-
-	imgs.forEach(img => {
-		const id = img.getAttribute('data-id');
-
-		$.post({
-			url: "ajax/actions/productimagedelete/" + id,
-			dataType: "json",
-			data: {
-				id: id,
-				type: type
-			},
-			headers: {
-				"X-CSRF-TOKEN": csrfToken,
-			},
-			success: function(data) {
-				apiResponseAlert(data);
-				$(img).closest(".col").remove();
-			},
-			error: function(error) {
-				console.log("FAIL", error);
-				ajaxFailAlert(error);
-			}
-		});
-	});
-}
-
-// get it to open all images
-function checkPopup() {
-    const popupStatus = getCookie("popupsEnabled");
-    if (popupStatus === "true") {
-        console.debug("Patches: Popups are enabled (from cookie).");
-        return true;
-    } else if (popupStatus === "false") {
-        console.debug("Patches: Popups are disabled (from cookie).");
-        return false;
     }
 
-    let isPopupBlocked = false;
-    try {
-        const options = 'width=100,height=100,left=100,top=100,resizable=yes';
-        const testWindow = window.open('', '', options);
-        if (!testWindow || testWindow.closed || typeof testWindow.closed === 'undefined') {
+    function checkPopup() {
+        const popupStatus = getCookie("popupsEnabled");
+        if (popupStatus === "true") {
+            console.debug("Patches: Popups are enabled (from cookie).");
+            return true;
+        } else if (popupStatus === "false") {
+            console.debug("Patches: Popups are disabled (from cookie).");
+            return false;
+        }
+
+        let isPopupBlocked = false;
+        try {
+            const options = 'width=100,height=100,left=100,top=100,resizable=yes';
+            const testWindow = window.open('', '', options);
+            if (!testWindow || testWindow.closed || typeof testWindow.closed === 'undefined') {
+                isPopupBlocked = true;
+            } else {
+                testWindow.close();
+            }
+        } catch (e) {
             isPopupBlocked = true;
-        } else {
-            testWindow.close();
         }
-    } catch (e) {
-        isPopupBlocked = true;
-    }
 
-    setCookie("popupsEnabled", !isPopupBlocked, 7);
+        setCookie("popupsEnabled", !isPopupBlocked, 7);
 
-    return !isPopupBlocked;
+        return !isPopupBlocked;
 
-    // functions
-    function setCookie(name, value, days) {
-        const date = new Date();
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-        const expires = "; expires=" + date.toUTCString();
-        document.cookie = `patch_${name}` + "=" + value + expires + "; path=/";
-    }
-    
-    function getCookie(name) {
-        const nameEQ = `patch_${name}` + "=";
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            let cookie = cookies[i];
-            while (cookie.charAt(0) === ' ') cookie = cookie.substring(1, cookie.length);
-            if (cookie.indexOf(nameEQ) === 0) return cookie.substring(nameEQ.length, cookie.length);
+        // functions
+        function setCookie(name, value, days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            const expires = "; expires=" + date.toUTCString();
+            document.cookie = `patch_${name}` + "=" + value + expires + "; path=/";
         }
-        return null;
+        
+        function getCookie(name) {
+            const nameEQ = `patch_${name}` + "=";
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                let cookie = cookies[i];
+                while (cookie.charAt(0) === ' ') cookie = cookie.substring(1, cookie.length);
+                if (cookie.indexOf(nameEQ) === 0) return cookie.substring(nameEQ.length, cookie.length);
+            }
+            return null;
+        }
     }
 }
+waitForElement('#rc_product_media_tab', extraMediaInit);
