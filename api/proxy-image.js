@@ -46,8 +46,8 @@ export default async function handler(req, res) {
 		res.setHeader('Content-Type', contentType);
 		res.setHeader('Content-Length', buffer.length);
 
-		let finalFilename = filename;
-        if (!finalFilename) {
+		let finalFilename = filename ?? '';
+        if (!finalFilename || finalFilename === '') {
             const pathPart = parsed.pathname.split('/').pop();
             const hasExtension = pathPart && pathPart.includes('.');
             const ext = (pathPart?.split('.').pop().split('?')[0] || '').toLowerCase();
@@ -59,7 +59,7 @@ export default async function handler(req, res) {
                 finalFilename = `${Date.now()}.${safeExt}`;
             }
         }
-        res.setHeader('Content-Disposition', `inline; filename="${finalFilename}"`);
+        res.setHeader('Content-Disposition', `attachment; filename="${finalFilename}"`);
 
 		res.status(200).send(buffer);
 	} catch (err) {
