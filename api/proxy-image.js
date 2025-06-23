@@ -46,10 +46,20 @@ export default async function handler(req, res) {
 		res.setHeader('Content-Type', contentType);
 		res.setHeader('Content-Length', buffer.length);
 
-		const extension = parsed.pathname.split('.').pop().split('?')[0].toLowerCase();
-		const safeExt = /^[a-z0-9]+$/.test(extension) ? extension : 'jpg';
-		const safeName = filename || `${Date.now()}.${safeExt}`;
-		res.setHeader('Content-Disposition', `inline; filename="${safeName}"`);
+		let finalFilename = filename;
+        if (!finalFilename) {
+            const pathPart = parsed.pathname.split('/').pop();
+            const hasExtension = pathPart && pathPart.includes('.');
+            const ext = (pathPart?.split('.').pop().split('?')[0] || '').toLowerCase();
+            const safeExt = /^[a-z0-9]+$/.test(ext) ? ext : 'jpg';
+
+            if (hasExtension) {
+                finalFilename = pathPart;
+            } else {
+                finalFilename = `${Date.now()}.${safeExt}`;
+            }
+        }
+        res.setHeader('Content-Disposition', `inline; filename="${finalFilename}"`);
 
 		res.status(200).send(buffer);
 	} catch (err) {
