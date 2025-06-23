@@ -43,6 +43,12 @@ export default async function handler(req, res) {
 
 		const buffer = Buffer.from(await response.arrayBuffer());
 
+        // goodbye cors!
+        // might need to eliminate other domains from scraping this?
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'GET');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
 		res.setHeader('Content-Type', contentType);
 		res.setHeader('Content-Length', buffer.length);
 
