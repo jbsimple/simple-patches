@@ -433,7 +433,7 @@ function initURLMedia() {
 
 	if (dropzone_container) {
 		const pasteURL_container = document.createElement('div');
-		pasteURL_container.classList.add('patches-box', 'patches-column', 'gap');
+		pasteURL_container.classList.add('patches-box', 'patches-column', 'patches-gap');
 		pasteURL_container.setAttribute('style', 'width: 100%; margin-top: 2rem; padding: 1.5rem; background-color: rgba(255,255,255,0.15);');
 		pasteURL_container.innerHTML = `<h4 style="margin: 0; padding: 0;" class="fw-bolder d-flex align-items-center text-dark">Upload from URL:</h4>
 		<div class="patches-row" style="gap: 1.25rem;">
