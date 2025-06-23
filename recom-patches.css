@@ -283,11 +283,13 @@ div.dataTables_wrapper div.dataTables_processing {
 .patches-row {
     display: flex;
     flex-direction: row;
+    gap: 0.25rem;
 }
 
 .patches-column {
     display: flex;
     flex-direction: column;
+    gap: 0.25rem;
 }
 
 .patches-spacer {
@@ -336,7 +338,7 @@ div.dataTables_wrapper div.dataTables_processing {
     background-color: var(--bs-gray-100);
     border-color: var(--bs-gray-100) !important;
     color: var(--bs-gray-700);
-    border-radius: 0.5rem;
+    border-radius: .625rem;
     padding: 1rem 3.5rem 1rem 2rem;
     margin: 0;
     font-size: 1rem;
