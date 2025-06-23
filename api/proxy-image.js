@@ -59,7 +59,7 @@ export default async function handler(req, res) {
                 finalFilename = `${Date.now()}.${safeExt}`;
             }
         }
-        res.setHeader('Content-Disposition', `attachment; filename="${finalFilename}"`);
+        res.setHeader('Content-Disposition', `inline; filename="${finalFilename}"`);
 
 		res.status(200).send(buffer);
 	} catch (err) {
