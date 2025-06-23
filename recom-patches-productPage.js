@@ -526,18 +526,15 @@ function initURLMedia() {
 
 					const file = new File([blob], filename, { type: fileType });
 			
-					// Get Dropzone instance attached to #rc_product_media
 					const dzElement = Dropzone.forElement("#rc_product_media");
 					if (!dzElement) {
 						alert("Dropzone instance not found.");
 						return;
 					}
 			
-					// Optional: Set custom position param
 					const lastImgIndex = $(".draggable:last .imgpos").text();
 					dzElement.options.params.position = lastImgIndex ? parseInt(lastImgIndex) + 1 : 1;
 			
-					// Add the file to Dropzone
 					dzElement.addFile(file);
 			
 				} catch (err) {
