@@ -281,19 +281,19 @@ div.dataTables_wrapper div.dataTables_processing {
 }
 
 .patches-row {
-    display: flex !important;
-    flex-direction: row !important;
+    display: flex;
+    flex-direction: row;
 }
 
 .patches-column {
-    display: flex !important;
-    flex-direction: column !important;
+    display: flex;
+    flex-direction: column;
 }
 
 .patches-spacer {
-    flex: 1 !important;
+    flex: 1;
 }
 
 .patches-gap {
-    gap: 1rem !important;
+    gap: 1rem;
 }
