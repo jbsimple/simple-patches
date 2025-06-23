@@ -41,9 +41,11 @@ export default async function handler(req, res) {
       return res.status(415).json({ error: 'Only image content is allowed.' });
     }
 
-    res.setHeader('Content-Type', contentType);
+    const buffer = Buffer.from(await response.arrayBuffer());
 
-    response.body.pipe(res);
+    res.setHeader('Content-Type', contentType);
+    res.setHeader('Content-Length', buffer.length);
+    res.status(200).send(buffer);
   } catch (err) {
     console.error('Proxy error:', err);
     res.status(500).json({ error: 'Internal server error.', details: err.message });
