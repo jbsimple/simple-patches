@@ -271,20 +271,20 @@ div.dataTables_wrapper div.dataTables_processing {
 }
 
 /* global patches css wow */
-.patches.row {
+.patches-row {
     display: flex !important;
     flex-direction: row !important;
 }
 
-.patches.column {
+.patches-column {
     display: flex !important;
     flex-direction: column !important;
 }
 
-.patches.spacer {
+.patches-spacer {
     flex: 1 !important;
 }
 
-.patches.gap {
+.patches-gap {
     gap: 1rem !important;
 }
