@@ -317,10 +317,3 @@ div.dataTables_wrapper div.dataTables_processing {
     user-drag: none;
     user-select: none;
 }
-
-.patches-column *,
-.patches-row *,
-.patches-box * {
-    margin: 0;
-    padding: 0
-}
