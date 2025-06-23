@@ -271,6 +271,15 @@ div.dataTables_wrapper div.dataTables_processing {
 }
 
 /* global patches css wow */
+.patches-box {
+    display: flex;
+    gap: 1.5rem;
+    border: var(--bs-border-width) solid var(--bs-card-border-color);
+    padding: 1.25rem;
+    border-radius: 0.625rem;
+    box-sizing: border-box;
+}
+
 .patches-row {
     display: flex !important;
     flex-direction: row !important;
