@@ -48,6 +48,7 @@ export default async function handler(req, res) {
         res.setHeader('Access-Control-Allow-Origin', '*');
         res.setHeader('Access-Control-Allow-Methods', 'GET');
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+        res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
 
 		res.setHeader('Content-Type', contentType);
 		res.setHeader('Content-Length', buffer.length);
