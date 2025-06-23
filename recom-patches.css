@@ -327,3 +327,31 @@ div.dataTables_wrapper div.dataTables_processing {
     user-drag: none;
     user-select: none;
 }
+
+.patches-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    background-color: var(--bs-gray-100);
+    border-color: var(--bs-gray-100) !important;
+    color: var(--bs-gray-700);
+    border-radius: 0.5rem;
+    padding: 0.5rem 2.5rem 0.5rem 1rem;
+    font-size: 1rem;
+    line-height: 1.2;
+    font-family: inherit;
+    cursor: pointer;
+    transition: border 0.2s ease, background-color 0.2s ease;
+
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' fill='%23aaa' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.23 7.21a.75.75 0 011.06.02L10 10.939l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.25a.75.75 0 01-1.06 0L5.25 8.27a.75.75 0 01-.02-1.06z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1rem;
+}
+
+.patches-select:focus {
+    outline: none;
+    border-color: #888;
+    background-color: var(--bs-gray-200);
+}

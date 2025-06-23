@@ -453,7 +453,7 @@ function initURLMedia() {
 				<div class="patches-spacer"></div>
 				<div class="patches-column">
 					<label for="patches-urlImg" style="font-size: 1.1rem;" class="fw-bolder d-flex align-items-center text-dark">URL:</label>
-					<input class=form-control rounded-1" style="color: var(--bs-text-gray-800); width: unset;" type="text" id="patches-urlImg" autocomplete="false">
+					<input class="form-control rounded-1" style="color: var(--bs-text-gray-800); width: unset;" type="text" id="patches-urlImg" autocomplete="false">
 				</div>
 			</div>
 			<div class="patches-column">
