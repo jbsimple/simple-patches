@@ -337,7 +337,8 @@ div.dataTables_wrapper div.dataTables_processing {
     border-color: var(--bs-gray-100) !important;
     color: var(--bs-gray-700);
     border-radius: 0.5rem;
-    padding: 0.5rem 2.5rem 0.5rem 1rem;
+    padding: 1rem 3.5rem 1rem 2rem;
+    margin: 0;
     font-size: 1rem;
     line-height: 1.2;
     font-family: inherit;
@@ -352,6 +353,7 @@ div.dataTables_wrapper div.dataTables_processing {
 
 .patches-select:focus {
     outline: none;
-    border-color: #888;
+    color: var(--bs-gray-800);
+    border-color: var(--bs-gray-200);
     background-color: var(--bs-gray-200);
 }
