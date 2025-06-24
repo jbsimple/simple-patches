@@ -29,7 +29,7 @@ function addButtonCard(title, bullets, href) {
     toolContainer.innerHTML = newToolContainer.innerHTML;
 
     let bulletcode = '';
-    if (Array.isArray(bulletcode) && bulletcode.length > 0) {
+    if (Array.isArray(bullets) && bullets.length > 0) {
         bullets.forEach(bullet => {
             bulletcode += `<div class="d-flex align-items-center py-2">
                 <span class="bullet bg-primary me-3"></span>
