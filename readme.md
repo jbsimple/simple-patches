@@ -50,6 +50,9 @@ There are other smaller modifications made, look below at the patches list to se
 - On product and item pages; Fix to the media tab by removing the existing, bad gallery viewer. Opens image in a new tab (as god intended).
 - On product and item pages; Fix to prevent newly uploaded images when clicked to default a-tag behavior. It also opens in a new tab.
 - On product and item pages; Fix to prevent navigation away while images are still uploading.
+- On product and item pages; Added extra upload options:
+  - Upload pictures from a SKU or SID. Select type and paste in the thing to steal from, preview appears with the pictures in order for fast transfer.
+  - Upload pictures from a URL. This only works for the allowed system CDN links.
 - On product and item pages; Added button to open all images in new tabs (enable popups in browser for it to work).
 - On product and item pages; Added a popups check message on above button hover.
 - On product and item pages; Added a 'copy to clipboard' button to copy unique identifier code for photo filenames.
@@ -92,6 +95,7 @@ There are other smaller modifications made, look below at the patches list to se
 - On Integrations Error Page, replaced SKU references with links to the actual SKUs.
 - On Tools Page, restructured the tool cards so it makes more sense in css.
 - On Tools Page, added tool link to email-import so it can be used as a tool.
+- On Tools Page, added tool link to simple patches cdn uploader.
 - Replaced unfinished producivity pages.
   - Created Team productivity (just our department) and User productivity (hijacks a loose JS variable from the user profile page).
   - Removes duplicate entries from appearing in reports (its not really duplicates but it doesn't count)
