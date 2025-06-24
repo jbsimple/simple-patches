@@ -428,6 +428,388 @@ function modifyMediaTable() {
 waitForElement('#product-images-container', modifyMediaTable);
 
 /* photo stuff */
+function initExtraUploadMethods() {
+	const dropzone_container = document.getElementById('rc_product_media');
+	if (dropzone_container) {
+		const uploadOptions_container = document.createElement('div');
+		uploadOptions_container.classList.add('patches-column');
+		uploadOptions_container.style.marginTop = '2.5rem';
+
+		const uploadOptions_containerRow = document.createElement('div');
+		uploadOptions_containerRow.classList.add('patches-row', 'patches-gap');
+
+		const uploadOptions_containerRowHeading = document.createElement('div');
+		uploadOptions_containerRowHeading.classList.add('patches-column', 'patches-spacer');
+		uploadOptions_containerRowHeading.innerHTML = `<h4>Extra Upload Options:</h4>
+        <p style="margin: 0; padding: 0;">Upload using an existing SKU or SID or use a system cdn link for fast picture uploads and transfers.</p>`;
+
+		uploadOptions_containerRow.appendChild(uploadOptions_containerRowHeading);
+	
+		const uploadOptions_button = document.createElement('button');
+		uploadOptions_button.textContent = 'Open';
+		uploadOptions_button.classList.add('btn', 'btn-info');
+		uploadOptions_button.style.cursor = 'pointer';
+
+		uploadOptions_containerRow.appendChild(uploadOptions_button);
+	
+		const uploadOptions_extraContent = document.createElement('div');
+		uploadOptions_extraContent.style.display = 'none';
+		uploadOptions_extraContent.style.marginTop = '0.5rem';
+		
+		uploadOptions_extraContent.appendChild(initTransferPics());
+		uploadOptions_extraContent.appendChild(initURLMedia());
+	
+		uploadOptions_button.addEventListener('click', () => {
+			const isVisible = uploadOptions_extraContent.style.display === 'block';
+			uploadOptions_extraContent.style.display = isVisible ? 'none' : 'block';
+			uploadOptions_button.textContent = isVisible ? 'Open' : 'Close';
+		});
+	
+		uploadOptions_container.appendChild(uploadOptions_containerRow);
+		uploadOptions_container.appendChild(uploadOptions_extraContent);
+		
+		dropzone_container.parentNode.insertBefore(uploadOptions_container, dropzone_container.nextSibling);
+	}
+
+	function initTransferPics() {
+		const pasteTransfer_container = document.createElement('div');
+		pasteTransfer_container.classList.add('patches-box', 'patches-column', 'patches-gap');
+		pasteTransfer_container.setAttribute('style', 'width: 100%; margin-top: 2rem; padding: 1.5rem; background-color: rgba(255,255,255,0.15);');
+		pasteTransfer_container.innerHTML = `<div class="patches-column">
+				<h4 style="margin: 0; padding: 0;" class="fw-bolder d-flex align-items-center text-dark">Transfer Pictures:</h4>
+				<p style="margin: 0; padding: 0;">Batch transfer pictures from something existing.</p>
+				<p style="margin: 0; padding: 0;">Select SID or SKU from the dropdown, paste where to transfer from, check the preview and then hit submit.</p>
+			</div>
+			<div class="patches-row" style="gap: 1.25rem;">
+				<div class="patches-column">
+					<label for="patches-transferType" style="font-size: 1.1rem;" class="fw-bolder d-flex align-items-center text-dark">Type:</label>
+					<select id="patches-transferType" class="patches-select">
+						<option value="product_images" selected>SID</option>
+						<option value="item_images">SKU</option>
+					</select>
+				</div>
+				<div class="patches-column patches-spacer">
+					<label for="patches-transferImg" style="font-size: 1.1rem;" class="fw-bolder d-flex align-items-center text-dark">Thing:</label>
+					<input class="form-control rounded-1" style="color: var(--bs-text-gray-800); width: unset;" type="text" id="patches-transferThing" autocomplete="false">
+				</div>
+				<div class="patches-column">
+					<div class="patches-spacer"></div>
+					<button id="patches-transferSubmit" class="btn btn-large btn-primary">
+						Transfer
+						<span class="svg-icon svg-icon-4 ms-1 me-0">
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+							<rect opacity="0.5" x="18" y="13" width="13" height="2" rx="1" transform="rotate(-180 18 13)" fill="currentColor"></rect>
+							<path d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z" fill="currentColor"></path>
+							</svg>
+						</span>
+					</button>
+				</div>
+			</div>
+			<div class="patches-column" style="gap: 0.25rem !important; display: none;">
+				<h5 class="fw-bolder d-flex align-items-center text-dark">Preview (In Order):</h5>
+				<div id="patches-transferList" class="patches-wrap" style="gap: 1.25rem; align-items: center; justify-content: center;"></div>
+			</div>`;
+		
+		const transferType = pasteTransfer_container.querySelector('#patches-transferType');
+		const transferThing = pasteTransfer_container.querySelector('#patches-transferThing');
+		const transferList = pasteTransfer_container.querySelector('#patches-transferList');
+		const transferSubmit = pasteTransfer_container.querySelector('#patches-transferSubmit');
+
+		if (transferThing && transferList && transferSubmit) {
+			transferThing.addEventListener('input', async () => {
+				const trimmed = transferThing.value.trim();
+				if (trimmed === "") {
+					transferList.parentElement.style.display = 'none';
+                    transferList.innerHTML = '';
+				} else {
+                    transferList.innerHTML = '';
+					transferList.parentElement.style.display = '';
+				}
+
+                let list = await getPictures(transferType.value, transferThing.value);
+                console.debug('PATCHES - Pull Results:', list);
+                if (Array.isArray(list) && list.length > 0) {
+                    list.forEach(line => {
+                        let code = generatePewviewCode(line.URL);
+                        transferList.innerHTML += code;
+                    });
+                } else {
+                    transferList.innerHTML = '';
+                    transferList.parentElement.style.display = '';
+                }
+				
+			});
+			
+			transferSubmit.addEventListener('click', async () => {
+				const dzElement = Dropzone.forElement("#rc_product_media");
+				if (!dzElement) {
+					alert("Dropzone instance not found.");
+					return;
+				}
+		
+				const lastImgIndex = $(".draggable:last .imgpos").text();
+				dzElement.options.params.position = lastImgIndex ? parseInt(lastImgIndex) + 1 : 1; // force it to have all the same index in instance of uploading because I am evil
+						
+				const transferImgs = transferList.querySelectorAll('img');
+				for (const img of transferImgs) {
+					const imageURL = img.src;
+					const fallback = 'https://s3.amazonaws.com/elog-cdn/no-image.png';
+				
+					if (!imageURL || imageURL === fallback) {
+						alert('Please enter a valid image URL.');
+						return;
+					}
+				
+					try {
+						const filenameFromURL = imageURL.split('/').pop()?.split('?')[0] || '';
+						const response = await fetch(`https://simple-patches.vercel.app/api/proxy-image?url=${encodeURIComponent(imageURL)}&filename=${encodeURIComponent(filenameFromURL)}`);
+						if (!response.ok) throw new Error('Failed to fetch image.');
+						
+						const blob = await response.blob();
+						const fileType = blob.type || 'image/jpeg';
+						const extension = fileType.split('/')[1] || 'jpg';
+						let filename = filenameFromURL || `${Date.now()}.${extension}`;
+						const disposition = response.headers.get('Content-Disposition');
+						if (disposition && disposition.includes('filename=')) {
+							const match = disposition.match(/filename="(.+?)"/);
+							if (match && match[1]) {
+								filename = match[1];
+							}
+						}
+
+						const file = new File([blob], filename, { type: fileType });
+				
+						dzElement.addFile(file);
+				
+					} catch (err) {
+						console.error('Image upload failed:', err);
+						alert('Image upload failed.');
+					}
+					
+                }
+			});
+		}
+		
+		function generatePewviewCode(url) {
+			return `<a target="_blank" href="${url}" class="patches-imgcont" style="max-height: 100px; max-width: 100px; border-radius: 0.625rem;">
+					<img src="${url}" style="border-radius: 0.625rem;">
+				</a>`;
+		}
+
+		return pasteTransfer_container;
+	}
+
+    async function getPictures(type, thing) {
+        function makeRequest(statusValue) {
+            const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
+            if (!csrfMeta || csrfMeta.getAttribute('content').length === 0) {
+                return Promise.resolve(null);
+            }
+
+            const csrfToken = csrfMeta.getAttribute('content');
+
+            let columns = [];
+            let filters = [];
+            if (type === "item_images") {
+                columns = [
+                    "products.sid",
+                    "product_items.sku",
+                    "item_images.url",
+                    "product_items.status",
+                    "product_items.created_at"
+                ];
+
+                filters = [
+                    {
+                        column: "product_items.sku",
+                        opr: "{0} = '{1}'",
+                        value: `${thing}`
+                    },
+                    {
+                        column: "product_items.status",
+                        opr: "{0} = '{1}'",
+                        value: statusValue
+                    }
+                ];
+            } else if (type === "product_images") {
+                columns = [
+                    "product_images.url",
+                    "products.status",
+                    "products.created_at"
+                ];
+                
+                filters = [
+                    {
+                        column: "products.sid",
+                        opr: "{0} = '{1}'",
+                        value: `${thing}`
+                    },
+                    {
+                        column: "products.status",
+                        opr: "{0} = '{1}'",
+                        value: statusValue
+                    }
+                ];
+            }
+
+            if (columns.length === 0 || filters.length === 0) { return null; }
+
+            const request = {
+                report: {
+                    type: `${type}`,
+                    columns: columns,
+                    filters: filters
+                },
+                csrf_recom: csrfToken
+            };
+
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: "/reports/create",
+                    data: request,
+                }).done(function (data) {
+                    if (data.success && Array.isArray(data.results?.results)) {
+                        resolve(data.results.results);
+                    } else {
+                        resolve([]);
+                    }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    console.error("Request failed: " + textStatus + ", " + errorThrown);
+                    reject(new Error("Request failed: " + textStatus + ", " + errorThrown));
+                });
+            });
+        }
+
+        return Promise.all([makeRequest("1"), makeRequest("0")])
+            .then(([status1Results, status0Results]) => {
+                return [...status1Results, ...status0Results];
+            })
+            .catch(error => {
+                console.error("Error during combined request:", error);
+                return null;
+            });
+    }
+
+	function initURLMedia() {
+		const pasteURL_container = document.createElement('div');
+		pasteURL_container.classList.add('patches-box', 'patches-column', 'patches-gap');
+		pasteURL_container.setAttribute('style', 'width: 100%; margin-top: 2rem; padding: 1.5rem; background-color: rgba(255,255,255,0.15);');
+		pasteURL_container.innerHTML = `<h4 style="margin: 0; padding: 0;" class="fw-bolder d-flex align-items-center text-dark">Upload from URL:</h4>
+		<div class="patches-row" style="gap: 1.25rem;">
+			<div class="patches-column" style="gap: 0.25rem !important;">
+				<h5 class="fw-bolder d-flex align-items-center text-dark">Preview:</h5>
+				<a target="_blank" href="https://s3.amazonaws.com/elog-cdn/no-image.png" class="patches-imgcont" style="max-height: 100px; max-width: 100px; border-radius: 0.625rem;">
+					<img src="https://s3.amazonaws.com/elog-cdn/no-image.png" style="border-radius: 0.625rem;" id="patches-urlView">
+				</a>
+				<div class="patches-spacer"></div>
+			</div>
+			<div class="patches-separatorY"></div>
+			<div class="patches-column patches-spacer patches-spacer">
+				<div class="patches-column">
+					<p style="margin: 0; padding: 0;">Paste in a DIRECT image url and the script will try and upload it.</p>
+					<p style="margin: 0; padding: 0;">Please Note: Only URLS from system CDN servers will work!</p>
+				</div>
+				<div class="patches-spacer"></div>
+				<div class="patches-column">
+					<label for="patches-urlImg" style="font-size: 1.1rem;" class="fw-bolder d-flex align-items-center text-dark">URL:</label>
+					<input class="form-control rounded-1" style="color: var(--bs-text-gray-800); width: unset;" type="text" id="patches-urlImg" autocomplete="false">
+				</div>
+			</div>
+			<div class="patches-column">
+				<div class="patches-spacer"></div>
+				<button id="patches-urlSubmit" class="btn btn-large btn-primary">
+					Upload
+                    <span class="svg-icon svg-icon-4 ms-1 me-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <rect opacity="0.5" x="18" y="13" width="13" height="2" rx="1" transform="rotate(-180 18 13)" fill="currentColor"></rect>
+                        <path d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z" fill="currentColor"></path>
+                        </svg>
+                    </span>
+		        </button>
+			</div>
+		</div>`;
+		
+		const urlInput = pasteURL_container.querySelector('#patches-urlImg');
+		const urlPreview = pasteURL_container.querySelector('#patches-urlView');
+		const urlSubmit = pasteURL_container.querySelector('#patches-urlSubmit');
+		if (urlInput && urlPreview && urlSubmit) {
+			urlInput.addEventListener('input', () => {
+				const url = urlInput.value.trim();
+				const isImage = /\.(jpeg|jpg|gif|png|webp|svg)$/i.test(url);
+				const fallback = 'https://s3.amazonaws.com/elog-cdn/no-image.png';
+			
+				if (!isImage) {
+					urlPreview.src = fallback;
+                    urlPreview.parentElement.setAttribute('href', fallback);
+					return;
+				}
+			
+				const testImg = new Image();
+				testImg.onload = () => {
+					urlPreview.src = url;
+                    urlPreview.parentElement.setAttribute('href', url);
+				};
+				testImg.onerror = () => {
+					urlPreview.src = fallback;
+                    urlPreview.parentElement.setAttribute('href', fallback);
+				};
+				testImg.src = url;
+			});
+			
+			urlSubmit.addEventListener('click', async () => {
+				console.debug('Patches - Attempting to convert from URL.');
+				
+				const imageURL = urlPreview.src;
+				const fallback = 'https://s3.amazonaws.com/elog-cdn/no-image.png';
+			
+				if (!imageURL || imageURL === fallback) {
+					alert('Please enter a valid image URL.');
+					return;
+				}
+			
+				try {
+					const filenameFromURL = imageURL.split('/').pop()?.split('?')[0] || '';
+					const response = await fetch(`https://simple-patches.vercel.app/api/proxy-image?url=${encodeURIComponent(imageURL)}&filename=${encodeURIComponent(filenameFromURL)}`);
+					if (!response.ok) throw new Error('Failed to fetch image.');
+					
+					const blob = await response.blob();
+					const fileType = blob.type || 'image/jpeg';
+					const extension = fileType.split('/')[1] || 'jpg';
+					let filename = filenameFromURL || `${Date.now()}.${extension}`;
+					const disposition = response.headers.get('Content-Disposition');
+					if (disposition && disposition.includes('filename=')) {
+						const match = disposition.match(/filename="(.+?)"/);
+						if (match && match[1]) {
+							filename = match[1];
+						}
+					}
+
+					const file = new File([blob], filename, { type: fileType });
+			
+					const dzElement = Dropzone.forElement("#rc_product_media");
+					if (!dzElement) {
+						alert("Dropzone instance not found.");
+						return;
+					}
+			
+					const lastImgIndex = $(".draggable:last .imgpos").text();
+					dzElement.options.params.position = lastImgIndex ? parseInt(lastImgIndex) + 1 : 1;
+			
+					dzElement.addFile(file);
+			
+				} catch (err) {
+					console.error('Image upload failed:', err);
+					alert('Image upload failed.');
+				}
+			});
+		}
+
+		return pasteURL_container;
+	}
+}
+waitForElement('#rc_product_media', initExtraUploadMethods);
 
 function extraMediaInit() {
     // Getting rid of bad gallery viewer
