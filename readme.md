@@ -47,6 +47,7 @@ There are other smaller modifications made, look below at the patches list to se
 - On product and item pages; CSS fix for images inside upload box not wrapping properly.
 - On product and item pages; CSS fix for activity log where the color of the name is dark even when the page is in dark mode.
 - On product and item pages; Fix to show metadata update name in activity log using live data.
+- On product and item pages; Added a button to jump to a special search in the pending inventory queue.
 - On product and item pages; Fix to the media tab by removing the existing, bad gallery viewer. Opens image in a new tab (as god intended).
 - On product and item pages; Fix to prevent newly uploaded images when clicked to default a-tag behavior. It also opens in a new tab.
 - On product and item pages; Fix to prevent navigation away while images are still uploading.
@@ -73,6 +74,8 @@ There are other smaller modifications made, look below at the patches list to se
 - On pending inventory queue page; Added a button to load icons of product images into the table.
   - There is no way to get a reduced sized image from the image cdn.
   - The process is resource heavy so it has to be a button so it can be used when it is needed.
+- On pending inventory queue page; Patch added to allow GET parameters to auto-do a search.
+  - Now links to search in pending inventory can be used throughout the patch.
 - On reports page, after submitting to generate a new report, the report displays under the original card.
   - If the file is larger than 1MB, the printing is disabled to save performance.
   - Links for products and items are automatically added into the report preview for convenience.
