@@ -8,6 +8,43 @@ function waitForElement(selector, callback) {
     }
 }
 
+function addPendingInventoryButton() {
+    const container = document.getElementById('kt_app_content_container');
+    if (!container) return;
+
+    const mainCardHeader = container.querySelector('.w-lg-300px > .card > .card-header');
+    if (!mainCardHeader) return console.warn('Missing: .w-lg-300px > .card > .card-header');
+
+    const mainTitle = mainCardHeader.querySelector('.card-title');
+    if (!mainTitle) return console.warn('Missing: .card-title');
+
+    const keyword = mainTitle.textContent?.trim();
+    if (!keyword) return console.warn('Missing or empty keyword');
+
+    const qualityAlertsButton = Array.from(
+		    container.querySelectorAll('a[data-bs-original-title]')
+		).find(el => {
+		    const title = el.getAttribute('data-bs-original-title')?.trim();
+		    return title && (title.endsWith('Alert') || title.endsWith('Alerts'));
+		});
+    if (!qualityAlertsButton) return console.warn('Missing: Quality Alerts button');
+    if (!qualityAlertsButton.parentNode) return console.warn('Missing: parentNode of Quality Alerts button');
+
+    const pendingInventorySearch = document.createElement('a');
+    pendingInventorySearch.className = 'btn btn-icon btn-success btn-sm my-sm-1 ms-1';
+    pendingInventorySearch.setAttribute('data-bs-toggle', 'tooltip');
+    pendingInventorySearch.setAttribute('aria-label', 'View in Pending Inventory');
+    pendingInventorySearch.setAttribute('data-bs-original-title', 'View in Pending Inventory');
+    pendingInventorySearch.setAttribute('data-kt-initialized', '1');
+    pendingInventorySearch.setAttribute('href', `/receiving/queues/inventory?column=0&keyword=${encodeURIComponent(keyword)}`);
+    pendingInventorySearch.setAttribute('target', '_blank');
+    pendingInventorySearch.setAttribute('style', 'margin-right: 0.325rem !important;');
+    pendingInventorySearch.innerHTML = '<i class="fas fa-boxes"></i>';
+
+    qualityAlertsButton.parentNode.insertBefore(pendingInventorySearch, qualityAlertsButton);
+}
+waitForElement('#kt_app_content_container', addPendingInventoryButton);
+
 function prettyPrintMeta() {
     let metakeys = [];
     async function fetchMeta() {
@@ -97,10 +134,8 @@ function prettyPrintMeta() {
     // default run
     setTimeout(function() { injectMetaKeys() }, 500);
 }
-
 waitForElement('#LogEntriesTable', prettyPrintMeta);
 
-/* pretty print links for asins */
 function prettyLinkAsins() {
     const productForm = document.getElementById('el_product_form');
     if (productForm) {
@@ -195,10 +230,8 @@ function prettyLinkAsins() {
         }
     }
 }
-
 waitForElement('#kt_app_content_container', prettyLinkAsins);
 
-// Copy button
 function initCopyPasteButton() {
     const main_content = document.getElementById('kt_app_content_container');
     if (main_content) {
@@ -268,7 +301,6 @@ function initCopyPasteButton() {
         console.error('Patches - Unknown Content', main_content);
     }
 }
-
 waitForElement('#kt_app_content_container', initCopyPasteButton);
 
 function modifyColorAttribute() {
@@ -332,10 +364,9 @@ function modifyColorAttribute() {
         }
     });
 }
-
 waitForElement('#el_product_form', modifyColorAttribute);
 
-
+/* photo stuff */
 function modifyMediaTable() {
     const product_images_container = document.getElementById('product-images-container');
 
@@ -424,10 +455,8 @@ function modifyMediaTable() {
 
     product_images_container.dataset.observerAttached = 'true';
 }
-
 waitForElement('#product-images-container', modifyMediaTable);
 
-/* photo stuff */
 function initExtraUploadMethods() {
 	const dropzone_container = document.getElementById('rc_product_media');
 	if (dropzone_container) {
