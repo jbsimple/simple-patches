@@ -660,8 +660,6 @@ async function updatePictureLocations() {
                                 }
                             }
 
-                            return { success: true, message: "All matching locations updated" };
-
                         } catch (err) {
                             log.push({
                                 item,
