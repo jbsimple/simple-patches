@@ -19,22 +19,22 @@ body {
     margin-right: 0.15rem;
 }
 
-@media (max-width: 1399px) {
+@media (max-width: 1499px) {
     .app-navbar-item
-        a.btn.btn-outline
-        i.fs-2.mobilefix:not(.btn-outline-danger) {
+    a.btn.btn-outline
+    i.fs-2.mobilefix:not(.btn-outline-danger) {
         display: inherit !important;
     }
 
     .app-navbar-item
-        a.btn.btn-outline
-        span.mobilefix:not(.btn-outline-danger span) {
+    a.btn.btn-outline
+    span.mobilefix:not(.btn-outline-danger span) {
         display: none !important;
     }
 
     .app-navbar-item
-        a.btn.btn-outline
-        i.fs-2.mobilefix:not(.btn-outline-danger .fs-2.mobilefix) {
+    a.btn.btn-outline
+    i.fs-2.mobilefix:not(.btn-outline-danger .fs-2.mobilefix) {
         margin: 0 !important;
         padding: 0 !important;
     }
