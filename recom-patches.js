@@ -262,6 +262,20 @@ function modifiedClockInit() {
             recordTime_button.title = 'Off System: Record Time';
             
             recordTime_parent.insertBefore(newButton, recordTime_button.nextSibling);
+
+            if (task === 'Pictures' || task === 'Testing') { // testing is for dev
+                const updatePuctureLocationsButton = document.createElement('a');
+                updatePuctureLocationsButton.className = 'btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-success me-2';
+                updatePuctureLocationsButton.href = `javascript:updatePictureLocationsInit();`;
+                updatePuctureLocationsButton.innerHTML = `
+                <span class="fa-stack fa-1x">
+                    <i class="fas fa-image fa-stack-2x"></i>
+                    <i class="fas fa-sync-alt fa-stack-1x fa-inverse"></i>
+                </span>
+                <span class="mobilefix">Update Locations</span>`;
+                updatePuctureLocationsButton.title = 'Update Picture Locations';
+                recordTime_parent.insertBefore(updatePuctureLocationsButton, recordTime_button);
+            }
 		}
 	}
 }
@@ -463,6 +477,139 @@ function modifiedClock(task) {
         }
 
         const newModal = document.getElementById('patch_clockout_fullModal');
+        if (newModal) {
+            newModal.style.display = 'block';
+            newModal.removeAttribute('aria-hidden');
+            newModal.setAttribute('aria-modal', 'true');
+
+            setTimeout(() => {
+                newModal.classList.add('show');
+            }, 200);
+        }
+
+    } else {
+        console.error("Element with ID 'rc_ajax_modal' not found.");
+    }
+}
+
+function updatePictureLocations() {
+    const modal = `<style>
+        #patch_picloc_fullModal .modal-content {
+            transform: translateY(-15vh) !important;
+            opacity: 0.25 !important;
+            transition: all 0.1s ease !important;
+        }
+
+        #patch_picloc_fullModal.show .modal-content {
+            transform: unset !important;
+            opacity: 1.0 !important;
+        }
+    </style>
+
+    <div class="modal fade" id="patch_picloc_fullModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true" role="dialog" style="display: none; background: rgba(0, 0, 0, .4) !important;">
+        <div class="modal-dialog modal-dialog-centered mw-650px">
+            <div class="modal-content rounded">
+                <div class="modal-header">
+                    <h2 class="fw-bolder">Update Picture Locations</h2>
+                    <div class="btn btn-icon btn-sm btn-active-icon-primary" id="patch_picloc_close">
+                        <span class="svg-icon svg-icon-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
+                                <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="currentColor"></rect>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+                <div class="modal-body scroll-y px-10 px-lg-15 pt-0 pb-15" style="padding-top: 1.5rem !important;">
+                    <div class="d-flex flex-column mb-8">
+                        <p class="fs-6 fw-bold">Bulk update picture locations from a nice list.</p>
+                        <p class="fs-6 fw-semibold form-label mb-2"><b>1.</b>: Paste in a list, either comma separated, comma-space separated or break-line separated.</p>
+                        <p class="fs-6 fw-semibold form-label mb-2"><b>2.</b>: Hit submit and wait a little bit for the locations to update.</p>
+                        <p class="fs-6 fw-semibold form-label mb-2"><b>3.</b>: See the results, spot any issues and be happy I guess.</p>
+                        <p class="fs-6 fw-semibold form-label mb-2"><i>* Please Note: This does a blanket search in FBA Check and Pending Inventory for your list with locations that contains PICTURES. It will update EVERYTHING it sees.</i></p>
+                    </div>
+                    <div class="d-flex flex-column mb-8">
+                        <label class="fs-6 fw-bold mb-2" for="patch_picloc-text-location">New Location:</label>
+                        <p class="fs-6 fw-semibold form-label mb-2">This will replace PICTURES with whatever is in the box, still keeps old location.</p>
+                        <input type="text" class="form-control form-control-solid" name="task" id="patch_picloc-text-location" placeholder="Enter Activity/Event" value="PUTAWAYS" spellcheck="false">
+                    </div>
+                    <div class="d-flex flex-column mb-8">
+                        <label class="fs-6 fw-bold mb-2" for="patch_picloc-textarea-list">List:</label>
+                        <textarea style="max-height: 50vh;" class="form-control form-control-solid" rows="3" name="notes" id="patch_picloc-textarea-list" placeholder="Paste the list here." spellcheck="false"></textarea>
+                    </div>
+                    <div class="separator my-10"></div>
+                    <div class="text-center">
+                        <button type="reset" id="patch_picloc_cancel" data-bs-dismiss="modal" class="btn btn-light me-3">Cancel</button>
+                        <button type="submit" id="patch_picloc_submit" class="btn btn-primary">
+                            <span class="indicator-label">Submit</span>
+                            <span class="indicator-progress" style="display: none;">Please wait...
+                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>`;
+
+    const rcAjaxModal = document.getElementById("rc_ajax_modal");
+
+    if (rcAjaxModal) {
+        const modalContainer = document.createElement("div");
+        modalContainer.innerHTML = modal;
+
+        rcAjaxModal.parentNode.insertBefore(modalContainer, rcAjaxModal);
+        //rcAjaxModal.parentNode.insertBefore(modalContainer.firstElementChild, rcAjaxModal);
+
+        const submit = document.getElementById('patch_picloc_submit');
+        if (submit) {
+            submit.onclick = function() {
+                const newLocation = document.getElementById('patch_picloc-text-location');
+                let changeLocation = 'PUTAWAYS';
+                if (newLocation && newLocation.value && newLocation.value.length > 0) {
+                    changeLocation = newLocation.value;
+                }
+
+                const list = document.getElementById('patch_picloc-textarea-list');
+                let values = [];
+                if (list && list.value) {
+                    values = list.value
+                        .split(/[\n,]+/)
+                        .map(item => item.trim())
+                        .filter(item => item.length > 0);
+                }
+                console.debug('Patches - Parsed List:', values);
+            };
+        }
+
+        const closeButton = document.getElementById('patch_picloc_close');
+        if (closeButton) {
+            closeButton.onclick = closeModal;
+        }
+
+        const cancelButton = document.getElementById('patch_picloc_cancel');
+        if (cancelButton) {
+            cancelButton.onclick = closeModal;
+        }
+
+        document.addEventListener('keydown', (event) => {
+            const notesTextarea = document.getElementById('patch_picloc-textarea-list');
+            if (event.key === 'Escape' && notesTextarea && document.activeElement !== notesTextarea) {
+                closeModal();
+            }
+        });
+
+        function closeModal() {
+            const fullModal = document.getElementById('patch_picloc_fullModal');
+            if (fullModal) {
+                newModal.classList.remove('show');
+                setTimeout(() => {
+                    fullModal.remove();
+                }, 200);
+            }
+        }
+
+        const newModal = document.getElementById('patch_picloc_fullModal');
         if (newModal) {
             newModal.style.display = 'block';
             newModal.removeAttribute('aria-hidden');
