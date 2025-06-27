@@ -578,7 +578,7 @@ async function updatePictureLocations() {
                             .filter(item => item.length > 0);
                     }
                     console.debug('Patches - Parsed List:', values);
-
+                    const log = [];
                     for (let index = 0; index < values.length; index++) {
                         const item = list[index];
                         const draw = index + 1;
@@ -607,7 +607,6 @@ async function updatePictureLocations() {
 
                             // do code
                             const parser = new DOMParser();
-                            const log = [];
                             for (const row of allData) {
                                 for (const cell of row) {
                                     const doc = parser.parseFromString(cell, 'text/html');
@@ -666,6 +665,7 @@ async function updatePictureLocations() {
                             return { success: false, message: "Fetch failed: " + err.message };
                         }
                     }
+                    console.debug('PATCHES - Location LOG Update:', log);
                 }
             };
         }
