@@ -563,74 +563,83 @@ function fixSimilarProduct() {
 }
 
 async function updateLocation(sku, eventID) {
-    eventID = parseInt(eventID, 10);
-    if (!Number.isInteger(eventID)) { return { success: false, message: "Invalid Event ID" }; }
+    const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
+    if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
+        const csrfToken = csrfMeta.getAttribute('content');
 
-    const fba = `/datatables/FbaInventoryQueue?draw=1&columns%5B0%5D%5Bdata%5D=0&columns%5B0%5D%5Bname%5D=&columns%5B0%5D%5Bsearchable%5D=true&columns%5B0%5D%5Borderable%5D=true&columns%5B0%5D%5Bsearch%5D%5Bvalue%5D=${sku}&columns%5B0%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B1%5D%5Bdata%5D=1&columns%5B1%5D%5Bname%5D=&columns%5B1%5D%5Bsearchable%5D=true&columns%5B1%5D%5Borderable%5D=true&columns%5B1%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B1%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B2%5D%5Bdata%5D=2&columns%5B2%5D%5Bname%5D=&columns%5B2%5D%5Bsearchable%5D=true&columns%5B2%5D%5Borderable%5D=true&columns%5B2%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B2%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B3%5D%5Bdata%5D=3&columns%5B3%5D%5Bname%5D=&columns%5B3%5D%5Bsearchable%5D=true&columns%5B3%5D%5Borderable%5D=true&columns%5B3%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B3%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B4%5D%5Bdata%5D=4&columns%5B4%5D%5Bname%5D=&columns%5B4%5D%5Bsearchable%5D=true&columns%5B4%5D%5Borderable%5D=true&columns%5B4%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B4%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B5%5D%5Bdata%5D=5&columns%5B5%5D%5Bname%5D=&columns%5B5%5D%5Bsearchable%5D=true&columns%5B5%5D%5Borderable%5D=true&columns%5B5%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B5%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B6%5D%5Bdata%5D=6&columns%5B6%5D%5Bname%5D=&columns%5B6%5D%5Bsearchable%5D=true&columns%5B6%5D%5Borderable%5D=true&columns%5B6%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B6%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B7%5D%5Bdata%5D=7&columns%5B7%5D%5Bname%5D=&columns%5B7%5D%5Bsearchable%5D=true&columns%5B7%5D%5Borderable%5D=true&columns%5B7%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B7%5D%5Bsearch%5D%5Bregex%5D=false&start=0&length=20&search%5Bvalue%5D=&search%5Bregex%5D=false&reset_table=true&_=${Date.now()}`
-    const pi = `/datatables/inventoryqueue?draw=1&columns%5B0%5D%5Bdata%5D=0&columns%5B0%5D%5Bname%5D=&columns%5B0%5D%5Bsearchable%5D=true&columns%5B0%5D%5Borderable%5D=true&columns%5B0%5D%5Bsearch%5D%5Bvalue%5D=${sku}&columns%5B0%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B1%5D%5Bdata%5D=1&columns%5B1%5D%5Bname%5D=&columns%5B1%5D%5Bsearchable%5D=true&columns%5B1%5D%5Borderable%5D=true&columns%5B1%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B1%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B2%5D%5Bdata%5D=2&columns%5B2%5D%5Bname%5D=&columns%5B2%5D%5Bsearchable%5D=true&columns%5B2%5D%5Borderable%5D=true&columns%5B2%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B2%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B3%5D%5Bdata%5D=3&columns%5B3%5D%5Bname%5D=&columns%5B3%5D%5Bsearchable%5D=true&columns%5B3%5D%5Borderable%5D=true&columns%5B3%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B3%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B4%5D%5Bdata%5D=4&columns%5B4%5D%5Bname%5D=&columns%5B4%5D%5Bsearchable%5D=true&columns%5B4%5D%5Borderable%5D=true&columns%5B4%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B4%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B5%5D%5Bdata%5D=5&columns%5B5%5D%5Bname%5D=&columns%5B5%5D%5Bsearchable%5D=true&columns%5B5%5D%5Borderable%5D=true&columns%5B5%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B5%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B6%5D%5Bdata%5D=6&columns%5B6%5D%5Bname%5D=&columns%5B6%5D%5Bsearchable%5D=true&columns%5B6%5D%5Borderable%5D=true&columns%5B6%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B6%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B7%5D%5Bdata%5D=7&columns%5B7%5D%5Bname%5D=&columns%5B7%5D%5Bsearchable%5D=true&columns%5B7%5D%5Borderable%5D=true&columns%5B7%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B7%5D%5Bsearch%5D%5Bregex%5D=false&start=0&length=20&search%5Bvalue%5D=&search%5Bregex%5D=false&_=${Date.now()}`;
 
-    try {
-        // Fetch both endpoints in parallel
-        const [fbaRes, piRes] = await Promise.all([
-            fetch(fba),
-            fetch(pi)
-        ]);
+        eventID = parseInt(eventID, 10);
+        if (!Number.isInteger(eventID)) { return { success: false, message: "Invalid Event ID" }; }
 
-        const [fbaData, piData] = await Promise.all([
-            fbaRes.json(),
-            piRes.json()
-        ]);
+        const fba = `/datatables/FbaInventoryQueue?draw=1&columns%5B0%5D%5Bdata%5D=0&columns%5B0%5D%5Bname%5D=&columns%5B0%5D%5Bsearchable%5D=true&columns%5B0%5D%5Borderable%5D=true&columns%5B0%5D%5Bsearch%5D%5Bvalue%5D=${sku}&columns%5B0%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B1%5D%5Bdata%5D=1&columns%5B1%5D%5Bname%5D=&columns%5B1%5D%5Bsearchable%5D=true&columns%5B1%5D%5Borderable%5D=true&columns%5B1%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B1%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B2%5D%5Bdata%5D=2&columns%5B2%5D%5Bname%5D=&columns%5B2%5D%5Bsearchable%5D=true&columns%5B2%5D%5Borderable%5D=true&columns%5B2%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B2%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B3%5D%5Bdata%5D=3&columns%5B3%5D%5Bname%5D=&columns%5B3%5D%5Bsearchable%5D=true&columns%5B3%5D%5Borderable%5D=true&columns%5B3%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B3%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B4%5D%5Bdata%5D=4&columns%5B4%5D%5Bname%5D=&columns%5B4%5D%5Bsearchable%5D=true&columns%5B4%5D%5Borderable%5D=true&columns%5B4%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B4%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B5%5D%5Bdata%5D=5&columns%5B5%5D%5Bname%5D=&columns%5B5%5D%5Bsearchable%5D=true&columns%5B5%5D%5Borderable%5D=true&columns%5B5%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B5%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B6%5D%5Bdata%5D=6&columns%5B6%5D%5Bname%5D=&columns%5B6%5D%5Bsearchable%5D=true&columns%5B6%5D%5Borderable%5D=true&columns%5B6%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B6%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B7%5D%5Bdata%5D=7&columns%5B7%5D%5Bname%5D=&columns%5B7%5D%5Bsearchable%5D=true&columns%5B7%5D%5Borderable%5D=true&columns%5B7%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B7%5D%5Bsearch%5D%5Bregex%5D=false&start=0&length=20&search%5Bvalue%5D=&search%5Bregex%5D=false&reset_table=true&_=${Date.now()}`
+        const pi = `/datatables/inventoryqueue?draw=1&columns%5B0%5D%5Bdata%5D=0&columns%5B0%5D%5Bname%5D=&columns%5B0%5D%5Bsearchable%5D=true&columns%5B0%5D%5Borderable%5D=true&columns%5B0%5D%5Bsearch%5D%5Bvalue%5D=${sku}&columns%5B0%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B1%5D%5Bdata%5D=1&columns%5B1%5D%5Bname%5D=&columns%5B1%5D%5Bsearchable%5D=true&columns%5B1%5D%5Borderable%5D=true&columns%5B1%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B1%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B2%5D%5Bdata%5D=2&columns%5B2%5D%5Bname%5D=&columns%5B2%5D%5Bsearchable%5D=true&columns%5B2%5D%5Borderable%5D=true&columns%5B2%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B2%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B3%5D%5Bdata%5D=3&columns%5B3%5D%5Bname%5D=&columns%5B3%5D%5Bsearchable%5D=true&columns%5B3%5D%5Borderable%5D=true&columns%5B3%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B3%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B4%5D%5Bdata%5D=4&columns%5B4%5D%5Bname%5D=&columns%5B4%5D%5Bsearchable%5D=true&columns%5B4%5D%5Borderable%5D=true&columns%5B4%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B4%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B5%5D%5Bdata%5D=5&columns%5B5%5D%5Bname%5D=&columns%5B5%5D%5Bsearchable%5D=true&columns%5B5%5D%5Borderable%5D=true&columns%5B5%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B5%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B6%5D%5Bdata%5D=6&columns%5B6%5D%5Bname%5D=&columns%5B6%5D%5Bsearchable%5D=true&columns%5B6%5D%5Borderable%5D=true&columns%5B6%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B6%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B7%5D%5Bdata%5D=7&columns%5B7%5D%5Bname%5D=&columns%5B7%5D%5Bsearchable%5D=true&columns%5B7%5D%5Borderable%5D=true&columns%5B7%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B7%5D%5Bsearch%5D%5Bregex%5D=false&start=0&length=20&search%5Bvalue%5D=&search%5Bregex%5D=false&_=${Date.now()}`;
 
-        const allData = [
-            ...(Array.isArray(fbaData.data) ? fbaData.data : []),
-            ...(Array.isArray(piData.data) ? piData.data : [])
-        ];
+        try {
+            // Fetch both endpoints in parallel
+            const [fbaRes, piRes] = await Promise.all([
+                fetch(fba),
+                fetch(pi)
+            ]);
 
-        if (allData.length === 0) {
-            return { success: false, message: "No data available from either source" };
-        }
+            const [fbaData, piData] = await Promise.all([
+                fbaRes.json(),
+                piRes.json()
+            ]);
 
-        const parser = new DOMParser();
+            const allData = [
+                ...(Array.isArray(fbaData.data) ? fbaData.data : []),
+                ...(Array.isArray(piData.data) ? piData.data : [])
+            ];
 
-        for (const row of allData) {
-            for (const cell of row) {
-                const doc = parser.parseFromString(cell, 'text/html');
-                const anchors = doc.querySelectorAll('a');
+            if (allData.length === 0) {
+                return { success: false, message: "No data available from either source" };
+            }
 
-                for (const a of anchors) {
-                    const href = a.getAttribute('href') || '';
-                    if (href.includes("quickCreate(") && href.includes("'Update Sorting Location'") && href.includes(`/updateSortingLocation/${eventID}`)) {
-                        const locationName = ('PICTURES ' + (a.textContent.trim() || '')).trimEnd();
+            const parser = new DOMParser();
 
-                        const formData = new FormData();
-                        formData.append('name', locationName);
+            for (const row of allData) {
+                for (const cell of row) {
+                    const doc = parser.parseFromString(cell, 'text/html');
+                    const anchors = doc.querySelectorAll('a');
 
-                        try {
-                            const postRes = await fetch(`/ajax/actions/updateSortingLocation/${eventID}`, {
-                                method: 'POST',
-                                body: formData
-                            });
+                    for (const a of anchors) {
+                        const href = a.getAttribute('href') || '';
+                        if (href.includes("quickCreate(") && href.includes("'Update Sorting Location'") && href.includes(`/updateSortingLocation/${eventID}`)) {
+                            const locationName = ('PICTURES ' + (a.textContent.trim() || '')).trimEnd();
 
-                            const result = await postRes.json();
+                            const formData = new FormData();
+                            formData.append('name', locationName);
 
-                            if (result?.success) {
-                                return { success: true, message: "Location Updated" };
-                            } else {
-                                return { success: false, message: result?.message || "Update failed" };
+                            try {
+                                const postRes = await fetch(`/ajax/actions/updateSortingLocation/${eventID}`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'x-csrf-token': csrfToken
+                                    },
+                                    body: formData
+                                });
+
+                                const result = await postRes.json();
+
+                                if (result?.success) {
+                                    return { success: true, message: "Location Updated" };
+                                } else {
+                                    return { success: false, message: result?.message || "Update failed" };
+                                }
+
+                            } catch (err) {
+                                return { success: false, message: "POST failed: " + err.message };
                             }
-
-                        } catch (err) {
-                            return { success: false, message: "POST failed: " + err.message };
                         }
                     }
                 }
             }
+
+            return { success: false, message: "Matching link not found for event ID" };
+
+        } catch (err) {
+            return { success: false, message: "Fetch failed: " + err.message };
         }
-
-        return { success: false, message: "Matching link not found for event ID" };
-
-    } catch (err) {
-        return { success: false, message: "Fetch failed: " + err.message };
     }
 }
 
@@ -782,18 +791,21 @@ async function initListingPatch() {
                             const timespent = justCreated.time_spent;
                             const eventID = justCreated.event_id;
                             code += `<br><br><p style="color: var(--bs-info);"><b>Time Spent in Minutes:</b>&nbsp;${timespent} minutes.</p>`;
-                            code += `<div class="patches-row patches-gap" style="margin: 0 !important;">
-                                <a class="btn btn-success btn-sm my-sm-1 ms-1" style="display: flex; flex-direction: row; gap: 0.25rem; align-items: center; justify-content: center;" title="View in Pending Inventory" aria-label="View in Pending Inventory" href="/receiving/queues/inventory?column=0&keyword=${sku}" target="_blank">
-                                    <i class="fas fa-boxes"></i>
-                                    <span>View In Pending Inventory</span>
-                                </a>
-                                <div class="patches-row" style="gap: 0.5rem;">
+                            code += `<div class="patches-row patches-gap">
+                                <div class="patches-row" style="gap: 0.5rem; align-items: center; justify-content: center;">
+                                    <a class="btn btn-success btn-sm my-sm-1 ms-1" style="display: flex; flex-direction: row; gap: 0.25rem; align-items: center; justify-content: center;" title="View in Pending Inventory" aria-label="View in Pending Inventory" href="/receiving/queues/inventory?column=0&keyword=${sku}" target="_blank">
+                                        <i class="fas fa-boxes"></i>
+                                        <span>View In Pending Inventory</span>
+                                    </a>
+                                </div>
+                                <div class="patches-row" style="gap: 0.5rem; align-items: center; justify-content: center;">
                                     <a class="btn btn-info btn-sm my-sm-1 ms-1" style="display: flex; flex-direction: row; gap: 0.25rem; align-items: center; justify-content: center;" title="Add PICTURES to Location" aria-label="Add PICTURES to Location" data-sku="${sku}" data-eventID="${eventID}" onclick="handleLocationButton(this);">
                                         <i class="fas fa-map-marker-alt"></i>
                                         <span>Update Location</span>
                                     </a>
                                     <span></span>
                                 </div>
+                                <span class="spacer"></span>
                             </div>`;
                         }
                     }                    
