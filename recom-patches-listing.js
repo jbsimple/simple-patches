@@ -39,6 +39,7 @@ async function getTimeSpentInMinutes(sku) {
             report: {
                 type: "user_clock",
                 columns: [
+                    "user_clock_activity.activity_id",
                     "user_clock_activity.activity_code",
                     "user_clock_activity.time_spent"
                 ],
@@ -70,17 +71,18 @@ async function getTimeSpentInMinutes(sku) {
                 data: request,
             }).done(function(data) {
                 if (data.success && Array.isArray(data.results?.results)) {
+                    console.debug("PATCHES - Listing Results received:", data.results.results);
                     const matchingEntries = data.results.results.filter(
                         entry => entry.Event_Code === "Inventory Listing" 
                         && entry.hasOwnProperty("Time_Spent_in_mintues")
-                        && entry.hasOwnProperty("Event_Code")
+                        && entry.hasOwnProperty("Event_ID")
                     );
 
                     if (matchingEntries.length > 0) {
                         const lastMatch = matchingEntries[matchingEntries.length - 1];
                         resolve({
                             time_spent: parseFloat(lastMatch.Time_Spent_in_mintues),
-                            activity_code: lastMatch.Event_Code
+                            event_id: parseInt(lastMatch.Event_ID)
                         });
                         return;
                     }
@@ -564,17 +566,33 @@ async function updateLocation(sku, eventID) {
     eventID = parseInt(eventID, 10);
     if (!Number.isInteger(eventID)) { return { success: false, message: "Invalid Event ID" }; }
 
-    const pi = `/datatables/inventoryqueue?draw=1&columns%5B0%5D%5Bdata%5D=0&columns%5B0%5D%5Bname%5D=&columns%5B0%5D%5Bsearchable%5D=true&columns%5B0%5D%5Borderable%5D=true&columns%5B0%5D%5Bsearch%5D%5Bvalue%5D=${sku}&columns%5B0%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B1%5D%5Bdata%5D=1&columns%5B1%5D%5Bname%5D=&columns%5B1%5D%5Bsearchable%5D=true&columns%5B1%5D%5Borderable%5D=true&columns%5B1%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B1%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B2%5D%5Bdata%5D=2&columns%5B2%5D%5Bname%5D=&columns%5B2%5D%5Bsearchable%5D=true&columns%5B2%5D%5Borderable%5D=true&columns%5B2%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B2%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B3%5D%5Bdata%5D=3&columns%5B3%5D%5Bname%5D=&columns%5B3%5D%5Bsearchable%5D=true&columns%5B3%5D%5Borderable%5D=true&columns%5B3%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B3%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B4%5D%5Bdata%5D=4&columns%5B4%5D%5Bname%5D=&columns%5B4%5D%5Bsearchable%5D=true&columns%5B4%5D%5Borderable%5D=true&columns%5B4%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B4%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B5%5D%5Bdata%5D=5&columns%5B5%5D%5Bname%5D=&columns%5B5%5D%5Bsearchable%5D=true&columns%5B5%5D%5Borderable%5D=true&columns%5B5%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B5%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B6%5D%5Bdata%5D=6&columns%5B6%5D%5Bname%5D=&columns%5B6%5D%5Bsearchable%5D=true&columns%5B6%5D%5Borderable%5D=true&columns%5B6%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B6%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B7%5D%5Bdata%5D=7&columns%5B7%5D%5Bname%5D=&columns%5B7%5D%5Bsearchable%5D=true&columns%5B7%5D%5Borderable%5D=true&columns%5B7%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B7%5D%5Bsearch%5D%5Bregex%5D=false&start=0&length=20&search%5Bvalue%5D=&search%5Bregex%5D=false&_=1751021588292`;
+    const fba = `/datatables/FbaInventoryQueue?draw=1&columns%5B0%5D%5Bdata%5D=0&columns%5B0%5D%5Bname%5D=&columns%5B0%5D%5Bsearchable%5D=true&columns%5B0%5D%5Borderable%5D=true&columns%5B0%5D%5Bsearch%5D%5Bvalue%5D=${sku}&columns%5B0%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B1%5D%5Bdata%5D=1&columns%5B1%5D%5Bname%5D=&columns%5B1%5D%5Bsearchable%5D=true&columns%5B1%5D%5Borderable%5D=true&columns%5B1%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B1%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B2%5D%5Bdata%5D=2&columns%5B2%5D%5Bname%5D=&columns%5B2%5D%5Bsearchable%5D=true&columns%5B2%5D%5Borderable%5D=true&columns%5B2%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B2%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B3%5D%5Bdata%5D=3&columns%5B3%5D%5Bname%5D=&columns%5B3%5D%5Bsearchable%5D=true&columns%5B3%5D%5Borderable%5D=true&columns%5B3%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B3%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B4%5D%5Bdata%5D=4&columns%5B4%5D%5Bname%5D=&columns%5B4%5D%5Bsearchable%5D=true&columns%5B4%5D%5Borderable%5D=true&columns%5B4%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B4%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B5%5D%5Bdata%5D=5&columns%5B5%5D%5Bname%5D=&columns%5B5%5D%5Bsearchable%5D=true&columns%5B5%5D%5Borderable%5D=true&columns%5B5%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B5%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B6%5D%5Bdata%5D=6&columns%5B6%5D%5Bname%5D=&columns%5B6%5D%5Bsearchable%5D=true&columns%5B6%5D%5Borderable%5D=true&columns%5B6%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B6%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B7%5D%5Bdata%5D=7&columns%5B7%5D%5Bname%5D=&columns%5B7%5D%5Bsearchable%5D=true&columns%5B7%5D%5Borderable%5D=true&columns%5B7%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B7%5D%5Bsearch%5D%5Bregex%5D=false&start=0&length=20&search%5Bvalue%5D=&search%5Bregex%5D=false&reset_table=true&_=${time()}`
+    const pi = `/datatables/inventoryqueue?draw=1&columns%5B0%5D%5Bdata%5D=0&columns%5B0%5D%5Bname%5D=&columns%5B0%5D%5Bsearchable%5D=true&columns%5B0%5D%5Borderable%5D=true&columns%5B0%5D%5Bsearch%5D%5Bvalue%5D=${sku}&columns%5B0%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B1%5D%5Bdata%5D=1&columns%5B1%5D%5Bname%5D=&columns%5B1%5D%5Bsearchable%5D=true&columns%5B1%5D%5Borderable%5D=true&columns%5B1%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B1%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B2%5D%5Bdata%5D=2&columns%5B2%5D%5Bname%5D=&columns%5B2%5D%5Bsearchable%5D=true&columns%5B2%5D%5Borderable%5D=true&columns%5B2%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B2%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B3%5D%5Bdata%5D=3&columns%5B3%5D%5Bname%5D=&columns%5B3%5D%5Bsearchable%5D=true&columns%5B3%5D%5Borderable%5D=true&columns%5B3%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B3%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B4%5D%5Bdata%5D=4&columns%5B4%5D%5Bname%5D=&columns%5B4%5D%5Bsearchable%5D=true&columns%5B4%5D%5Borderable%5D=true&columns%5B4%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B4%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B5%5D%5Bdata%5D=5&columns%5B5%5D%5Bname%5D=&columns%5B5%5D%5Bsearchable%5D=true&columns%5B5%5D%5Borderable%5D=true&columns%5B5%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B5%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B6%5D%5Bdata%5D=6&columns%5B6%5D%5Bname%5D=&columns%5B6%5D%5Bsearchable%5D=true&columns%5B6%5D%5Borderable%5D=true&columns%5B6%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B6%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B7%5D%5Bdata%5D=7&columns%5B7%5D%5Bname%5D=&columns%5B7%5D%5Bsearchable%5D=true&columns%5B7%5D%5Borderable%5D=true&columns%5B7%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B7%5D%5Bsearch%5D%5Bregex%5D=false&start=0&length=20&search%5Bvalue%5D=&search%5Bregex%5D=false&_=${time()}`;
 
     try {
-        const res = await fetch(pi);
-        const data = await res.json();
+        // Fetch both endpoints in parallel
+        const [fbaRes, piRes] = await Promise.all([
+            fetch(fba),
+            fetch(pi)
+        ]);
 
-        if (!data || !Array.isArray(data.data)) { return { success: false, message: "Invalid data format" }; }
+        const [fbaData, piData] = await Promise.all([
+            fbaRes.json(),
+            piRes.json()
+        ]);
+
+        const allData = [
+            ...(Array.isArray(fbaData.data) ? fbaData.data : []),
+            ...(Array.isArray(piData.data) ? piData.data : [])
+        ];
+
+        if (allData.length === 0) {
+            return { success: false, message: "No data available from either source" };
+        }
 
         const parser = new DOMParser();
 
-        for (const row of data.data) {
+        for (const row of allData) {
             for (const cell of row) {
                 const doc = parser.parseFromString(cell, 'text/html');
                 const anchors = doc.querySelectorAll('a');
@@ -583,6 +601,7 @@ async function updateLocation(sku, eventID) {
                     const href = a.getAttribute('href') || '';
                     if (href.includes("quickCreate(") && href.includes("'Update Sorting Location'") && href.includes(`/updateSortingLocation/${eventID}`)) {
                         const locationName = ('PICTURES ' + (a.textContent.trim() || '')).trimEnd();
+
                         const formData = new FormData();
                         formData.append('name', locationName);
 
@@ -591,11 +610,15 @@ async function updateLocation(sku, eventID) {
                                 method: 'POST',
                                 body: formData
                             });
+
                             const result = await postRes.json();
 
-                            if (result?.success) { return { success: true, message: "Location Updated" };
-                            } else { return { success: false, message: result?.message || "Update failed" }; }
-                            
+                            if (result?.success) {
+                                return { success: true, message: "Location Updated" };
+                            } else {
+                                return { success: false, message: result?.message || "Update failed" };
+                            }
+
                         } catch (err) {
                             return { success: false, message: "POST failed: " + err.message };
                         }
@@ -604,7 +627,7 @@ async function updateLocation(sku, eventID) {
             }
         }
 
-        return { success: false, message: "Matching link not found" };
+        return { success: false, message: "Matching link not found for event ID" };
 
     } catch (err) {
         return { success: false, message: "Fetch failed: " + err.message };
@@ -628,7 +651,7 @@ async function handleLocationButton(e) {
     e.disabled = true;
     const oldButtonText = e.textContent;
     e.textContent = 'Loading...';
-    e.setAttribute('style', 'background-color: gray !important;');
+    e.style.setProperty('background-color', 'gray', 'important');
 
     // do le update
     const response = await updateLocation(sku, eventID);
@@ -639,7 +662,7 @@ async function handleLocationButton(e) {
 
     // reset le button
     e.classList.remove('disabled');
-    e.removeAttribute('style');
+    e.style.removeProperty('background-color');
     e.textContent = oldButtonText;
 }
 
@@ -757,15 +780,15 @@ async function initListingPatch() {
                             const sku = getCreatedSKU[0].textContent;
                             const justCreated = await getTimeSpentInMinutes(sku); // await here
                             const timespent = justCreated.time_spent;
-                            const eventID = justCreated.activity_code;
+                            const eventID = justCreated.event_id;
                             code += `<br><br><p style="color: var(--bs-info);"><b>Time Spent in Minutes:</b>&nbsp;${timespent} minutes.</p>`;
                             code += `<div class="patches-row patches-gap">
-                                <a class="btn btn-success btn-sm my-sm-1 ms-1 patches-row patches-gap" title="View in Pending Inventory" aria-label="View in Pending Inventory" href="/receiving/queues/inventory?column=0&keyword=${sku}" target="_blank">
+                                <a class="btn btn-success btn-sm my-sm-1 ms-1" style="display: flex; flex-direction: row; gap: 0.25rem; align-items: center; justify-content: center;" title="View in Pending Inventory" aria-label="View in Pending Inventory" href="/receiving/queues/inventory?column=0&keyword=${sku}" target="_blank">
                                     <i class="fas fa-boxes"></i>
                                     <span>View In Pending Inventory</span>
                                 </a>
                                 <div class="patches-row" style="gap: 0.5rem;">
-                                    <a class="btn btn-info btn-sm my-sm-1 ms-1 patches-row patches-gap" title="Add PICTURES to Location" aria-label="Add PICTURES to Location" data-sku="${sku}" data-eventID="${eventID}" onclick="updateLocation(this);">
+                                    <a class="btn btn-info btn-sm my-sm-1 ms-1" style="display: flex; flex-direction: row; gap: 0.25rem; align-items: center; justify-content: center;" title="Add PICTURES to Location" aria-label="Add PICTURES to Location" data-sku="${sku}" data-eventID="${eventID}" onclick="updateLocation(this);">
                                         <i class="fas fa-map-marker-alt"></i>
                                         <span>Update Location</span>
                                     </a>
