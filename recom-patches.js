@@ -487,7 +487,7 @@ function modifiedClock(task) {
     }
 }
 
-function updatePictureLocations() {
+async function updatePictureLocations() {
     const modal = `<style>
         #patch_picloc_fullModal .modal-content {
             transform: translateY(-15vh) !important;
@@ -518,9 +518,9 @@ function updatePictureLocations() {
                 <div class="modal-body scroll-y px-10 px-lg-15 pt-0 pb-15" style="padding-top: 1.5rem !important;">
                     <div class="d-flex flex-column mb-8">
                         <p class="fs-6 fw-bold">Bulk update picture locations from a nice list.</p>
-                        <p class="fs-6 fw-semibold form-label mb-2"><b>1.</b>: Paste in a list, either comma separated, comma-space separated or break-line separated.</p>
-                        <p class="fs-6 fw-semibold form-label mb-2"><b>2.</b>: Hit submit and wait a little bit for the locations to update.</p>
-                        <p class="fs-6 fw-semibold form-label mb-2"><b>3.</b>: See the results, spot any issues and be happy I guess.</p>
+                        <p class="fs-6 fw-semibold form-label mb-2"><b>1</b>: Paste in a list, either comma separated, comma-space separated or break-line separated.</p>
+                        <p class="fs-6 fw-semibold form-label mb-2"><b>2</b>: Hit submit and wait a little bit for the locations to update.</p>
+                        <p class="fs-6 fw-semibold form-label mb-2"><b>3</b>: See the results, spot any issues and be happy I guess.</p>
                         <p class="fs-6 fw-semibold form-label mb-2"><i>* Please Note: This does a blanket search in FBA Check and Pending Inventory for your list with locations that contains PICTURES. It will update EVERYTHING it sees.</i></p>
                     </div>
                     <div class="d-flex flex-column mb-8">
@@ -558,22 +558,114 @@ function updatePictureLocations() {
 
         const submit = document.getElementById('patch_picloc_submit');
         if (submit) {
-            submit.onclick = function() {
-                const newLocation = document.getElementById('patch_picloc-text-location');
-                let changeLocation = 'PUTAWAYS';
-                if (newLocation && newLocation.value && newLocation.value.length > 0) {
-                    changeLocation = newLocation.value;
-                }
+            submit.onclick = async function() {
+                const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
+                if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
+                    const csrfToken = csrfMeta.getAttribute('content');
 
-                const list = document.getElementById('patch_picloc-textarea-list');
-                let values = [];
-                if (list && list.value) {
-                    values = list.value
-                        .split(/[\n,]+/)
-                        .map(item => item.trim())
-                        .filter(item => item.length > 0);
+                    const newLocation = document.getElementById('patch_picloc-text-location');
+                    let changeLocation = 'PUTAWAYS';
+                    if (newLocation && newLocation.value && newLocation.value.length > 0) {
+                        changeLocation = newLocation.value;
+                    }
+
+                    const list = document.getElementById('patch_picloc-textarea-list');
+                    let values = [];
+                    if (list && list.value) {
+                        values = list.value
+                            .split(/[\n,]+/)
+                            .map(item => item.trim())
+                            .filter(item => item.length > 0);
+                    }
+                    console.debug('Patches - Parsed List:', values);
+
+                    for (let index = 0; index < values.length; index++) {
+                        const draw = index + 1;
+                        let fba = `/datatables/FbaInventoryQueue?draw=${draw}&columns%5B0%5D%5Bdata%5D=0&columns%5B0%5D%5Bname%5D=&columns%5B0%5D%5Bsearchable%5D=true&columns%5B0%5D%5Borderable%5D=true&columns%5B0%5D%5Bsearch%5D%5Bvalue%5D=${item}&columns%5B0%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B1%5D%5Bdata%5D=1&columns%5B1%5D%5Bname%5D=&columns%5B1%5D%5Bsearchable%5D=true&columns%5B1%5D%5Borderable%5D=true&columns%5B1%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B1%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B2%5D%5Bdata%5D=2&columns%5B2%5D%5Bname%5D=&columns%5B2%5D%5Bsearchable%5D=true&columns%5B2%5D%5Borderable%5D=true&columns%5B2%5D%5Bsearch%5D%5Bvalue%5D=PICTURES&columns%5B2%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B3%5D%5Bdata%5D=3&columns%5B3%5D%5Bname%5D=&columns%5B3%5D%5Bsearchable%5D=true&columns%5B3%5D%5Borderable%5D=true&columns%5B3%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B3%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B4%5D%5Bdata%5D=4&columns%5B4%5D%5Bname%5D=&columns%5B4%5D%5Bsearchable%5D=true&columns%5B4%5D%5Borderable%5D=true&columns%5B4%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B4%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B5%5D%5Bdata%5D=5&columns%5B5%5D%5Bname%5D=&columns%5B5%5D%5Bsearchable%5D=true&columns%5B5%5D%5Borderable%5D=true&columns%5B5%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B5%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B6%5D%5Bdata%5D=6&columns%5B6%5D%5Bname%5D=&columns%5B6%5D%5Bsearchable%5D=true&columns%5B6%5D%5Borderable%5D=true&columns%5B6%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B6%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B7%5D%5Bdata%5D=7&columns%5B7%5D%5Bname%5D=&columns%5B7%5D%5Bsearchable%5D=true&columns%5B7%5D%5Borderable%5D=true&columns%5B7%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B7%5D%5Bsearch%5D%5Bregex%5D=false&start=0&length=20&search%5Bvalue%5D=&search%5Bregex%5D=false&_=${Date.now()}`
+                        let pi = `/datatables/inventoryqueue?draw=${draw}&columns%5B0%5D%5Bdata%5D=0&columns%5B0%5D%5Bname%5D=&columns%5B0%5D%5Bsearchable%5D=true&columns%5B0%5D%5Borderable%5D=true&columns%5B0%5D%5Bsearch%5D%5Bvalue%5D=${item}&columns%5B0%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B1%5D%5Bdata%5D=1&columns%5B1%5D%5Bname%5D=&columns%5B1%5D%5Bsearchable%5D=true&columns%5B1%5D%5Borderable%5D=true&columns%5B1%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B1%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B2%5D%5Bdata%5D=2&columns%5B2%5D%5Bname%5D=&columns%5B2%5D%5Bsearchable%5D=true&columns%5B2%5D%5Borderable%5D=true&columns%5B2%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B2%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B3%5D%5Bdata%5D=3&columns%5B3%5D%5Bname%5D=&columns%5B3%5D%5Bsearchable%5D=true&columns%5B3%5D%5Borderable%5D=true&columns%5B3%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B3%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B4%5D%5Bdata%5D=4&columns%5B4%5D%5Bname%5D=&columns%5B4%5D%5Bsearchable%5D=true&columns%5B4%5D%5Borderable%5D=true&columns%5B4%5D%5Bsearch%5D%5Bvalue%5D=PICTURES&columns%5B4%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B5%5D%5Bdata%5D=5&columns%5B5%5D%5Bname%5D=&columns%5B5%5D%5Bsearchable%5D=true&columns%5B5%5D%5Borderable%5D=true&columns%5B5%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B5%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B6%5D%5Bdata%5D=6&columns%5B6%5D%5Bname%5D=&columns%5B6%5D%5Bsearchable%5D=true&columns%5B6%5D%5Borderable%5D=true&columns%5B6%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B6%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B7%5D%5Bdata%5D=7&columns%5B7%5D%5Bname%5D=&columns%5B7%5D%5Bsearchable%5D=true&columns%5B7%5D%5Borderable%5D=true&columns%5B7%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B7%5D%5Bsearch%5D%5Bregex%5D=false&start=0&length=20&search%5Bvalue%5D=&search%5Bregex%5D=false&_=${Date.now()}`
+                        try {
+                            // Fetch both endpoints in parallel
+                            const [fbaRes, piRes] = await Promise.all([
+                                fetch(fba),
+                                fetch(pi)
+                            ]);
+
+                            const [fbaData, piData] = await Promise.all([
+                                fbaRes.json(),
+                                piRes.json()
+                            ]);
+
+                            const allData = [
+                                ...(Array.isArray(fbaData.data) ? fbaData.data : []),
+                                ...(Array.isArray(piData.data) ? piData.data : [])
+                            ];
+
+                            if (allData.length === 0) {
+                                return { success: false, message: "No data available from either source" };
+                            }
+
+                            // do code
+                            const parser = new DOMParser();
+                            const log = [];
+                            for (const row of allData) {
+                                for (const cell of row) {
+                                    const doc = parser.parseFromString(cell, 'text/html');
+                                    const anchors = doc.querySelectorAll('a');
+
+                                    for (const a of anchors) {
+                                        const href = a.getAttribute('href') || '';
+
+                                        // Match only hrefs that contain updateSortingLocation and PICTURES
+                                        if (href.includes("quickCreate(") && href.includes("updateSortingLocation") && href.includes("PICTURES")) {
+                                            const updatedHref = href.replace("PICTURES", changeLocation);
+                                            const locationName = (a.textContent.trim().replace("PICTURES", changeLocation)).trimEnd();
+
+                                            const eventMatch = updatedHref.match(/\/updateSortingLocation\/(\d+)/);
+                                            const eventID = eventMatch ? eventMatch[1] : null;
+                                            if (!eventID) {
+                                                log.push({ eventID: null, success: false, message: 'Invalid eventID extracted from href' });
+                                                continue;
+                                            }
+
+                                            const formData = new FormData();
+                                            formData.append('name', locationName);
+
+                                            try {
+                                                const postRes = await fetch(`/ajax/actions/updateSortingLocation/${eventID}`, {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'x-csrf-token': csrfToken
+                                                    },
+                                                    body: formData
+                                                });
+
+                                                const result = await postRes.json();
+
+                                                log.push({
+                                                    eventID,
+                                                    success: result?.success === true,
+                                                    message: result?.message || (result?.success ? 'Updated successfully' : 'Update failed')
+                                                });
+
+                                            } catch (err) {
+                                                log.push({
+                                                    eventID,
+                                                    success: false,
+                                                    message: `POST failed: ${err.message}`
+                                                });
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            return { success: true, message: "All matching locations updated" };
+
+                        } catch (err) {
+                            return { success: false, message: "Fetch failed: " + err.message };
+                        }
+                    }
                 }
-                console.debug('Patches - Parsed List:', values);
             };
         }
 
