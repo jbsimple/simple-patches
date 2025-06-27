@@ -265,7 +265,7 @@ function modifiedClockInit() {
 
             if (task === 'Pictures' || task === 'Testing') { // testing is for dev
                 const updatePuctureLocationsButton = document.createElement('a');
-                updatePuctureLocationsButton.className = 'btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-success me-2';
+                updatePuctureLocationsButton.className = 'btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-primary me-2';
                 updatePuctureLocationsButton.href = `javascript:updatePictureLocations();`;
                 updatePuctureLocationsButton.innerHTML = '<i class="bi bi-arrow-repeat fs-2"></i><span class="mobilefix">Update Locations</span>';
                 updatePuctureLocationsButton.title = 'Update Picture Locations';
