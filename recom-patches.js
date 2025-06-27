@@ -617,11 +617,11 @@ async function updatePictureLocations() {
                                         const href = a.getAttribute('href') || '';
 
                                         // Match only hrefs that contain updateSortingLocation and PICTURES
-                                        if (href.includes("quickCreate(") && href.includes("updateSortingLocation") && href.includes("PICTURES")) {
+                                        if (href.includes("quickCreate(") && href.includes("updateSortingLocation") && a.textContent.includes("PICTURES")) {
                                             const updatedHref = href.replace("PICTURES", changeLocation);
                                             const locationName = (a.textContent.trim().replace("PICTURES", changeLocation)).trimEnd();
 
-                                            const eventMatch = updatedHref.match(/\/updateSortingLocation\/(\d+)/);
+                                            const eventMatch = href.match(/updateSortingLocation\/(\d+)/);
                                             const eventID = eventMatch ? eventMatch[1] : null;
                                             if (!eventID) {
                                                 log.push({ eventID: null, success: false, message: 'Invalid eventID extracted from href' });
