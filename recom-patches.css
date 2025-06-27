@@ -19,7 +19,8 @@ body {
     margin-right: 0.15rem;
 }
 
-@media (max-width: 1499px) {
+/* making space for 4 buttons omg */
+@media (max-width: 1549px) {
     .app-navbar-item
     a.btn.btn-outline
     i.fs-2.mobilefix:not(.btn-outline-danger) {
