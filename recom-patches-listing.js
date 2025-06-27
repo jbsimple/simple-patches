@@ -1,46 +1,3 @@
-// verify gtin code for listing
-var gtin_input = document.querySelectorAll('.product_gtin')[0]; //inital
-gtin_input = document.querySelector('input[name="product[gtin]"]'); //if specific loaded
-
-var listingSubmit = document.querySelector('button[data-kt-stepper-action="submit"]');
-var listingResults = document.getElementById('listing-results');
-
-var initGTIN = null;
-var curGTIN = null;
-
-var generateButton = document.querySelector('a[href="javascript:generateGtin();"]');
-
-function fixSimilarProduct() {
-    const titleInput = document.querySelector('[name="product[name]"]');
-    
-    const newTitleInput = titleInput.cloneNode(true);
-    titleInput.parentNode.replaceChild(newTitleInput, titleInput);
-
-    const divRow = document.createElement('div');
-    divRow.setAttribute('style', 'display: inline-flex; flex-direction: row; align-items: center;');
-
-    const styles = 'margin-left: 0.5rem; padding: 0.5rem 1rem; border-radius: 0 0 0.5rem 0.5rem; font-weight: 700; color: white;';
-    const charCountSpan = document.createElement("span");
-    charCountSpan.textContent = "0 / 80";
-    charCountSpan.setAttribute('style', `background-color: var(--bs-info-active) !important; ${styles}`);
-    divRow.appendChild(charCountSpan);
-
-    const spacer = document.createElement('div');
-    spacer.setAttribute('style', 'flex: 1;');
-    divRow.appendChild(spacer);
-
-    newTitleInput.parentNode.insertBefore(divRow, newTitleInput.nextSibling);
-
-    newTitleInput.addEventListener("input", () => {
-        if (newTitleInput.value.length === 80) {
-            charCountSpan.setAttribute('style', `background-color: var(--bs-danger) !important; ${styles}`);
-        } else {
-            charCountSpan.setAttribute('style', `background-color: var(--bs-info-active) !important; ${styles}`);
-        }
-        charCountSpan.textContent = `${newTitleInput.value.length} / 80`;
-    });
-}
-
 async function getTimeSpentInMinutes(sku) {
     async function getUserID() {
         try {
@@ -114,13 +71,17 @@ async function getTimeSpentInMinutes(sku) {
             }).done(function(data) {
                 if (data.success && Array.isArray(data.results?.results)) {
                     const matchingEntries = data.results.results.filter(
-                        entry => entry.Event_Code === "Inventory Listing" && entry.hasOwnProperty("Time_Spent_in_mintues")
+                        entry => entry.Event_Code === "Inventory Listing" 
+                        && entry.hasOwnProperty("Time_Spent_in_mintues")
+                        && entry.hasOwnProperty("Event_Code")
                     );
 
                     if (matchingEntries.length > 0) {
                         const lastMatch = matchingEntries[matchingEntries.length - 1];
-                        const timeSpent = parseFloat(lastMatch.Time_Spent_in_mintues);
-                        resolve(timeSpent);
+                        resolve({
+                            time_spent: parseFloat(lastMatch.Time_Spent_in_mintues),
+                            activity_code: lastMatch.Event_Code
+                        });
                         return;
                     }
                 }
@@ -280,8 +241,6 @@ function inWrongTaskCheck() {
     const link = document.querySelector('a[href="javascript:clockInOut(\'out\');"]');
     const currentTask = link?.textContent.trim().toLowerCase() ?? 'na';
     console.debug('PATCHES - Task Check:', currentTask);
-
-    
 
     // this modal is just for the full page wizard wizard
     if (window.location.href.includes('/receiving/queues/listing/')) {
@@ -570,8 +529,133 @@ async function fetchExistingRenewedAsins(asin) {
     }
 }
 
+function fixSimilarProduct() {
+    const titleInput = document.querySelector('[name="product[name]"]');
+    
+    const newTitleInput = titleInput.cloneNode(true);
+    titleInput.parentNode.replaceChild(newTitleInput, titleInput);
+
+    const divRow = document.createElement('div');
+    divRow.setAttribute('style', 'display: inline-flex; flex-direction: row; align-items: center;');
+
+    const styles = 'margin-left: 0.5rem; padding: 0.5rem 1rem; border-radius: 0 0 0.5rem 0.5rem; font-weight: 700; color: white;';
+    const charCountSpan = document.createElement("span");
+    charCountSpan.textContent = "0 / 80";
+    charCountSpan.setAttribute('style', `background-color: var(--bs-info-active) !important; ${styles}`);
+    divRow.appendChild(charCountSpan);
+
+    const spacer = document.createElement('div');
+    spacer.setAttribute('style', 'flex: 1;');
+    divRow.appendChild(spacer);
+
+    newTitleInput.parentNode.insertBefore(divRow, newTitleInput.nextSibling);
+
+    newTitleInput.addEventListener("input", () => {
+        if (newTitleInput.value.length === 80) {
+            charCountSpan.setAttribute('style', `background-color: var(--bs-danger) !important; ${styles}`);
+        } else {
+            charCountSpan.setAttribute('style', `background-color: var(--bs-info-active) !important; ${styles}`);
+        }
+        charCountSpan.textContent = `${newTitleInput.value.length} / 80`;
+    });
+}
+
+async function updateLocation(sku, eventID) {
+    eventID = parseInt(eventID, 10);
+    if (!Number.isInteger(eventID)) { return { success: false, message: "Invalid Event ID" }; }
+
+    const pi = `/datatables/inventoryqueue?draw=1&columns%5B0%5D%5Bdata%5D=0&columns%5B0%5D%5Bname%5D=&columns%5B0%5D%5Bsearchable%5D=true&columns%5B0%5D%5Borderable%5D=true&columns%5B0%5D%5Bsearch%5D%5Bvalue%5D=${sku}&columns%5B0%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B1%5D%5Bdata%5D=1&columns%5B1%5D%5Bname%5D=&columns%5B1%5D%5Bsearchable%5D=true&columns%5B1%5D%5Borderable%5D=true&columns%5B1%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B1%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B2%5D%5Bdata%5D=2&columns%5B2%5D%5Bname%5D=&columns%5B2%5D%5Bsearchable%5D=true&columns%5B2%5D%5Borderable%5D=true&columns%5B2%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B2%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B3%5D%5Bdata%5D=3&columns%5B3%5D%5Bname%5D=&columns%5B3%5D%5Bsearchable%5D=true&columns%5B3%5D%5Borderable%5D=true&columns%5B3%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B3%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B4%5D%5Bdata%5D=4&columns%5B4%5D%5Bname%5D=&columns%5B4%5D%5Bsearchable%5D=true&columns%5B4%5D%5Borderable%5D=true&columns%5B4%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B4%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B5%5D%5Bdata%5D=5&columns%5B5%5D%5Bname%5D=&columns%5B5%5D%5Bsearchable%5D=true&columns%5B5%5D%5Borderable%5D=true&columns%5B5%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B5%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B6%5D%5Bdata%5D=6&columns%5B6%5D%5Bname%5D=&columns%5B6%5D%5Bsearchable%5D=true&columns%5B6%5D%5Borderable%5D=true&columns%5B6%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B6%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B7%5D%5Bdata%5D=7&columns%5B7%5D%5Bname%5D=&columns%5B7%5D%5Bsearchable%5D=true&columns%5B7%5D%5Borderable%5D=true&columns%5B7%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B7%5D%5Bsearch%5D%5Bregex%5D=false&start=0&length=20&search%5Bvalue%5D=&search%5Bregex%5D=false&_=1751021588292`;
+
+    try {
+        const res = await fetch(pi);
+        const data = await res.json();
+
+        if (!data || !Array.isArray(data.data)) { return { success: false, message: "Invalid data format" }; }
+
+        const parser = new DOMParser();
+
+        for (const row of data.data) {
+            for (const cell of row) {
+                const doc = parser.parseFromString(cell, 'text/html');
+                const anchors = doc.querySelectorAll('a');
+
+                for (const a of anchors) {
+                    const href = a.getAttribute('href') || '';
+                    if (href.includes("quickCreate(") && href.includes("'Update Sorting Location'") && href.includes(`/updateSortingLocation/${eventID}`)) {
+                        const locationName = ('PICTURES ' + (a.textContent.trim() || '')).trimEnd();
+                        const formData = new FormData();
+                        formData.append('name', locationName);
+
+                        try {
+                            const postRes = await fetch(`/ajax/actions/updateSortingLocation/${eventID}`, {
+                                method: 'POST',
+                                body: formData
+                            });
+                            const result = await postRes.json();
+
+                            if (result?.success) { return { success: true, message: "Location Updated" };
+                            } else { return { success: false, message: result?.message || "Update failed" }; }
+                            
+                        } catch (err) {
+                            return { success: false, message: "POST failed: " + err.message };
+                        }
+                    }
+                }
+            }
+        }
+
+        return { success: false, message: "Matching link not found" };
+
+    } catch (err) {
+        return { success: false, message: "Fetch failed: " + err.message };
+    }
+}
+
+async function handleLocationButton(e) {
+    // get le info
+    const sku = e.getAttribute('data-sku');
+    const eventID = parseInt(e.getAttribute('data-eventID'), 10);
+
+    // init le message
+    const messageSpan = e.nextElementSibling;
+    if (!Number.isInteger(eventID)) {
+        messageSpan.textContent = "Invalid Event ID";
+        messageSpan.style.color = "var(--bs-danger)";
+        return;
+    }
+
+    // show le button press
+    e.disabled = true;
+    const oldButtonText = e.textContent;
+    e.textContent = 'Loading...';
+    e.setAttribute('style', 'background-color: gray !important;');
+
+    // do le update
+    const response = await updateLocation(sku, eventID);
+
+    // show le response
+    messageSpan.textContent = response.message;
+    messageSpan.style.color = response.success ? 'var(--bs-primary)' : 'var(--bs-danger)';
+
+    // reset le button
+    e.classList.remove('disabled');
+    e.removeAttribute('style');
+    e.textContent = oldButtonText;
+}
+
 async function initListingPatch() {
     console.debug('PATCHES - initListingPatch for wizard');
+    var gtin_input = document.querySelectorAll('.product_gtin')[0]; //inital
+    gtin_input = document.querySelector('input[name="product[gtin]"]'); //if specific loaded
+
+    var listingSubmit = document.querySelector('button[data-kt-stepper-action="submit"]');
+    var listingResults = document.getElementById('listing-results');
+
+    var initGTIN = null;
+    var curGTIN = null;
+
+    var generateButton = document.querySelector('a[href="javascript:generateGtin();"]');
+
     const observer = new MutationObserver(() => {
         const elements = document.querySelectorAll('.fv-plugins-message-container.invalid-feedback');
       
@@ -666,16 +750,33 @@ async function initListingPatch() {
         if (listingSubmit && listingResults) {
             listingSubmit.addEventListener('click', function() {
                 setTimeout(async function() {
+                    let code = '';
                     if (listingResults) {
                         const getCreatedSKU = listingResults.querySelectorAll('h2');
                         if (getCreatedSKU && getCreatedSKU[0]) {
-                            const timespent = await getTimeSpentInMinutes(getCreatedSKU[0].textContent); // await here
-                            listingResults.innerHTML += `<br><br><p style="color: var(--bs-info);"><b>Time Spent in Minutes:</b>&nbsp;${timespent} minutes.</p>`;
+                            const sku = getCreatedSKU[0].textContent;
+                            const justCreated = await getTimeSpentInMinutes(sku); // await here
+                            const timespent = justCreated.time_spent;
+                            const eventID = justCreated.activity_code;
+                            code += `<br><br><p style="color: var(--bs-info);"><b>Time Spent in Minutes:</b>&nbsp;${timespent} minutes.</p>`;
+                            code += `<div class="patches-row patches-gap">
+                                <a class="btn btn-success btn-sm my-sm-1 ms-1 patches-row patches-gap" title="View in Pending Inventory" aria-label="View in Pending Inventory" href="/receiving/queues/inventory?column=0&keyword=${sku}" target="_blank">
+                                    <i class="fas fa-boxes"></i>
+                                    <span>View In Pending Inventory</span>
+                                </a>
+                                <div class="patches-row" style="gap: 0.5rem;">
+                                    <a class="btn btn-info btn-sm my-sm-1 ms-1 patches-row patches-gap" title="Add PICTURES to Location" aria-label="Add PICTURES to Location" data-sku="${sku}" data-eventID="${eventID}" onclick="updateLocation(this);">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span>Update Location</span>
+                                    </a>
+                                    <span></span>
+                                </div>
+                            </div>`;
                         }
                     }                    
     
                     if (listingResults && initGTIN !== curGTIN) {
-                        var code = `<br><br>
+                        code += `<br><br>
                         <strong class="patches-warning">
                             <i class="fa fa-triangle-exclamation fs-2"></i>
                             <span>GTIN Change Detected!</span>
@@ -715,8 +816,10 @@ async function initListingPatch() {
                             <a class="btn btn-lg btn-light-warning me-3" onclick="productGTIN()">Update GTINS</a>
                             <div style="flex: 1;" id="productsGTIN-response"></div>
                         </div>`;
-                        listingResults.innerHTML += code;
                     }
+                    // finally add the code
+                    listingResults.innerHTML += code;
+
                 }, 500); // yikes
             });
         }
