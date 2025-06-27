@@ -267,12 +267,7 @@ function modifiedClockInit() {
                 const updatePuctureLocationsButton = document.createElement('a');
                 updatePuctureLocationsButton.className = 'btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-success me-2';
                 updatePuctureLocationsButton.href = `javascript:updatePictureLocationsInit();`;
-                updatePuctureLocationsButton.innerHTML = `
-                <span class="fa-stack fa-1x">
-                    <i class="fas fa-image fa-stack-2x"></i>
-                    <i class="fas fa-sync-alt fa-stack-1x fa-inverse"></i>
-                </span>
-                <span class="mobilefix">Update Locations</span>`;
+                updatePuctureLocationsButton.innerHTML = '<i class="bi bi-arrow-repeat fs-2"></i><span class="mobilefix">Update Locations</span>';
                 updatePuctureLocationsButton.title = 'Update Picture Locations';
                 recordTime_parent.insertBefore(updatePuctureLocationsButton, recordTime_button);
             }
