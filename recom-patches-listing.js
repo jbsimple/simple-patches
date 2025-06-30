@@ -594,7 +594,7 @@ async function updateLocation(sku, eventID) {
             ];
 
             if (allData.length === 0) {
-                return { success: false, message: "No data available from either source" };
+                return { success: false, message: "No data available from either source", 'allData': allData};
             }
 
             const parser = new DOMParser();
