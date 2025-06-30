@@ -608,7 +608,9 @@ async function updatePictureLocations() {
                             ];
 
                             if (allData.length === 0) {
-                                log.push({ item, eventID: null, success: false, message: "No data available from either source" });
+                                const newLog = { item, eventID: null, success: false, message: "No data available from either source" };
+                                log.push(newLog);
+                                printLog(newLog);
                                 continue;
                             }
 
@@ -630,7 +632,9 @@ async function updatePictureLocations() {
                                             const eventMatch = href.match(/updateSortingLocation\/(\d+)/);
                                             const eventID = eventMatch ? eventMatch[1] : null;
                                             if (!eventID) {
-                                                log.push({ eventID: null, success: false, message: 'Invalid eventID extracted from href' });
+                                                const newLog = { eventID: null, success: false, message: 'Invalid eventID extracted from href' };
+                                                log.push(newLog);
+                                                printLog(newLog);
                                                 continue;
                                             }
 
@@ -649,18 +653,23 @@ async function updatePictureLocations() {
 
                                                 const result = await postRes.json();
 
-                                                log.push({
+                                                const newLog = {
                                                     eventID,
                                                     success: result?.success === true,
                                                     message: result?.message || (result?.success ? (`${heading}: Successful`) : (`${heading}: Fail`))
-                                                });
+                                                };
+                                                log.push(newLog);
+                                                printLog(newLog);
 
                                             } catch (err) {
-                                                log.push({
+                                                const newLog = {
                                                     eventID,
                                                     success: false,
                                                     message: `${heading}: POST failed: ${err.message}`
-                                                });
+                                                };
+                                                log.push(newLog);
+                                                printLog(newLog);
+
                                             }
                                         }
                                     }
@@ -668,27 +677,17 @@ async function updatePictureLocations() {
                             }
 
                         } catch (err) {
-                            log.push({
+                            const newLog = {
                                 item,
                                 eventID: null,
                                 success: false,
                                 message: `Fetch failed: ${err.message}`
-                            });
+                            };
+                            log.push(newLog);
+                            printLog(newLog);
                         }
                     }
                     console.debug('PATCHES - Location LOG Update:', log);
-                    const resultPrintout = document.getElementById('patch_picloc_result');
-                    patch_picloc_result.style.display = 'flex';
-                    let resultCode = '';
-                    log.forEach(entry => {
-                        const status = entry.success ? '<span style="color: var(--bs-primary);">GOOD</span>' : '<span style="color: var(--bs-danger);">ERROR</span>';
-                        const event = entry.eventID ? ` (Event ID: ${entry.eventID})` : '';
-                        resultCode += `<p>${status} <strong>${entry.item || event}</strong>: ${entry.message}</p>`;
-                    });
-
-                    if (resultPrintout) {
-                        resultPrintout.innerHTML = resultCode;
-                    }
                     resetSubmitButton();
                 }
 
@@ -699,6 +698,14 @@ async function updatePictureLocations() {
                                             <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
                                         </span>`;
                     submit.style.backgroundColor = '';
+                }
+
+                function printLog(entry) {
+                    const resultPrintout = document.getElementById('patch_picloc_result');
+                    patch_picloc_result.style.display = 'flex';
+                    const status = entry.success ? '<span style="color: var(--bs-primary);">GOOD</span>' : '<span style="color: var(--bs-danger);">ERROR</span>';
+                    const event = entry.eventID ? ` (Event ID: ${entry.eventID})` : '';
+                    resultPrintout.innerHTML += `<p>${status} <strong>${entry.item || event}</strong>: ${entry.message}</p>`;
                 }
             };
         }
