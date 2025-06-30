@@ -488,6 +488,7 @@ function modifiedClock(task) {
 }
 
 async function updatePictureLocations() {
+    let isRunning = false;
     const modal = `<style>
         #patch_picloc_fullModal .modal-content {
             transform: translateY(-15vh) !important;
@@ -564,6 +565,10 @@ async function updatePictureLocations() {
                 submit.textContent = 'Loading...';
                 submit.setAttribute('style', 'background-color: gray !important;');
                 submit.disabled = true;
+
+                // prevent navigation away
+                window.addEventListener('beforeunload', unloadWarning);
+                isRunning = true;
                 
                 const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
                 if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
@@ -701,6 +706,13 @@ async function updatePictureLocations() {
                     const resultPrintout = document.getElementById('patch_picloc_result');
                     patch_picloc_result.style.display = 'flex';
                     resultPrintout.innerHTML += `<p style="text-align: center; font-weight: 700;">List Finished.</p>`;
+                    window.removeEventListener('beforeunload', unloadWarning);
+                    isRunning = false;
+                }
+
+                function unloadWarning(e) {
+                    e.preventDefault();
+                    e.returnValue = '';
                 }
 
                 function printLog(entry) {
@@ -731,6 +743,8 @@ async function updatePictureLocations() {
         });
 
         function closeModal() {
+            if (isRunning) return;
+            
             const fullModal = document.getElementById('patch_picloc_fullModal');
             if (fullModal) {
                 newModal.classList.remove('show');
