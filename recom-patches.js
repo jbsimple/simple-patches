@@ -921,7 +921,7 @@ function hijackAjaxModal() {
                     // console.debug('Patches - AJAX modal is clock in:', target);
                     modalClockIn();
                 } else {
-                    console.debug('Patches - AJAX modal not defined modal:', target);
+                    // console.debug('Patches - AJAX modal not defined modal:', target);
                 }
             }
         }
