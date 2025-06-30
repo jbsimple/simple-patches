@@ -298,9 +298,10 @@ function isValidBarcode(value) {
     return ((10 - (result % 10)) % 10) === parseInt(paddedValue.charAt(13), 10);
 }
 
-function productGTIN() {
+function productGTIN(listingResults) {
     const gtin_input = document.getElementById('patches-oldgtin');
     const secondary_input = document.getElementById('patches-newgtin');
+    var listingResults = document.getElementById('listing-results');
 
     if (gtin_input && secondary_input && listingResults) {
         const gtin = gtin_input.value;
