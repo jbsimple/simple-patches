@@ -543,7 +543,7 @@ async function updatePictureLocations() {
                             </span>
                         </button>
                     </div>
-                    <div class="patches-column" id="patch_picloc_result">S</div>
+                    <div class="patches-column" style="gap: 0.25rem !important;" id="patch_picloc_result"></div>
                 </div>
             </div>
         </div>
@@ -708,7 +708,7 @@ async function updatePictureLocations() {
                     patch_picloc_result.style.display = 'flex';
                     const status = entry.success ? '<span style="color: var(--bs-primary);">GOOD</span>' : '<span style="color: var(--bs-danger);">ERROR</span>';
                     const event = entry.eventID ? ` (Event ID: ${entry.eventID})` : '';
-                    resultPrintout.innerHTML += `<p>${status} <strong>${entry.item || event}</strong>: ${entry.message}</p>`;
+                    resultPrintout.innerHTML += `<p><strong>${status} => ${entry.item || event}</strong>: ${entry.message}</p>`;
                 }
             };
         }
