@@ -560,6 +560,10 @@ async function updatePictureLocations() {
         const submit = document.getElementById('patch_picloc_submit');
         if (submit) {
             submit.onclick = async function() {
+                submit.textContent = 'Loading...';
+                submit.setAttribute('style', 'background-color: gray !important;');
+                submit.disabled = true;
+                
                 const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
                 if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
                     const csrfToken = csrfMeta.getAttribute('content');
@@ -684,6 +688,16 @@ async function updatePictureLocations() {
                     if (resultPrintout) {
                         resultPrintout.innerHTML = resultCode;
                     }
+                    resetSubmitButton();
+                }
+
+                function resetSubmitButton() {
+                    submit.disabled = false;
+                    submit.innerHTML = `<span class="indicator-label">Submit</span>
+                                        <span class="indicator-progress" style="display: none;">Please wait...
+                                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                        </span>`;
+                    submit.style.backgroundColor = '';
                 }
             };
         }
