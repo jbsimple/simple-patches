@@ -698,6 +698,9 @@ async function updatePictureLocations() {
                                             <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
                                         </span>`;
                     submit.style.backgroundColor = '';
+                    const resultPrintout = document.getElementById('patch_picloc_result');
+                    patch_picloc_result.style.display = 'flex';
+                    resultPrintout.innerHTML += `<p><strong>FINISHED!</strong></p>`;
                 }
 
                 function printLog(entry) {
