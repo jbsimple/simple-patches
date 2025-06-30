@@ -717,6 +717,7 @@ async function handlePrefillLocationUpdate() {
     }
 
     async function prefillSubmit() {
+        console.debug('PATCHES - PrefillSubmit Called');
         const ajax_modalForm = document.getElementById('rc_ajax_modal_form');
         if (!ajax_modalForm) return;
 
