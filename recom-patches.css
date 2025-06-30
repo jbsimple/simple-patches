@@ -376,3 +376,7 @@ div.dataTables_wrapper div.dataTables_processing {
     display: none;
     margin-top: 1rem;
 }
+
+#patch_picloc_result * {
+    margin: 0 !important;
+}

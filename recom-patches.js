@@ -700,7 +700,7 @@ async function updatePictureLocations() {
                     submit.style.backgroundColor = '';
                     const resultPrintout = document.getElementById('patch_picloc_result');
                     patch_picloc_result.style.display = 'flex';
-                    resultPrintout.innerHTML += `<p><strong>FINISHED!</strong></p>`;
+                    resultPrintout.innerHTML += `<p style="text-align: center; font-weight: 700;">List Finished.</p>`;
                 }
 
                 function printLog(entry) {
