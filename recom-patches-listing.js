@@ -690,7 +690,7 @@ async function handlePrefillLocationUpdate() {
                         if (mutation.type === 'childList' && mutation.addedNodes.length > 0 || mutation.type === 'attributes' || mutation.type === 'subtree' ) {
                             observer.disconnect();
                             setTimeout(() => {
-                                console.log('PATCHES - Modal has updated. Run your logic here.');
+                                console.log('PATCHES - Modal has updated.');
                                 const ajax_button = document.getElementById('rc_ajax_modal_submit');
                                 if (ajax_button) {
                                     ajax_button.addEventListener('click', async (e) => {
