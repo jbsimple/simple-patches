@@ -542,6 +542,7 @@ async function updatePictureLocations() {
                             </span>
                         </button>
                     </div>
+                    <div class="patches-column" id="patch_picloc_result"></div>
                 </div>
             </div>
         </div>
@@ -630,6 +631,7 @@ async function updatePictureLocations() {
 
                                             const formData = new FormData();
                                             formData.append('name', locationName);
+                                            let heading = `${item}`;
 
                                             try {
                                                 const postRes = await fetch(`/ajax/actions/updateSortingLocation/${eventID}`, {
@@ -645,14 +647,14 @@ async function updatePictureLocations() {
                                                 log.push({
                                                     eventID,
                                                     success: result?.success === true,
-                                                    message: result?.message || (result?.success ? 'Updated successfully' : 'Update failed')
+                                                    message: result?.message || (result?.success ? (`${heading}: Successful`) : (`${heading}: Fail`))
                                                 });
 
                                             } catch (err) {
                                                 log.push({
                                                     eventID,
                                                     success: false,
-                                                    message: `POST failed: ${err.message}`
+                                                    message: `${heading}: POST failed: ${err.message}`
                                                 });
                                             }
                                         }
@@ -670,6 +672,17 @@ async function updatePictureLocations() {
                         }
                     }
                     console.debug('PATCHES - Location LOG Update:', log);
+                    const resultPrintout = document.getElementById('patch_picloc_result');
+                    let resultCode = '';
+                    log.forEach(entry => {
+                        const status = entry.success ? '<span style="color: var(--bs-primary);">GOOD</span>' : '<span style="color: var(--bs-danger);">ERROR</span>';
+                        const event = entry.eventID ? ` (Event ID: ${entry.eventID})` : '';
+                        resultCode += `<p>${status} <strong>${entry.item || event}</strong>: ${entry.message}</p>`;
+                    });
+
+                    if (resultPrintout) {
+                        resultPrintout.innerHTML = resultCode;
+                    }
                 }
             };
         }
