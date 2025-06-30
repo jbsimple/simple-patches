@@ -739,6 +739,7 @@ async function handlePrefillLocationUpdate() {
                 throw new Error('Event ID not found from getTimeSpentInMinutes');
             }
 
+            // this here
             const updateLocationResponse = await updateLocation(sku, eventID);
             if (updateLocationResponse.success) {
                 window.removeEventListener('beforeunload', unloadWarning);
@@ -746,7 +747,8 @@ async function handlePrefillLocationUpdate() {
             } else {
                 window.removeEventListener('beforeunload', unloadWarning);
                 console.error('PATCHES - Unable to Update Location:', updateLocationResponse);
-                alert('Issue Updating Location. Check console.');
+                // im just gonna comment out this error until I can figure out why its appearing when it shouldn't
+                // alert('Issue Updating Location. Check console.');
             }
         } catch (err) {
             console.error('PATCHES - Error during location update:', err);
