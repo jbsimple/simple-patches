@@ -717,6 +717,7 @@ async function handlePrefillLocationUpdate() {
     }
 
     async function prefillSubmit() {
+        window.addEventListener('beforeunload', unloadWarning);
         console.debug('PATCHES - PrefillSubmit Called');
         const ajax_modalForm = document.getElementById('rc_ajax_modal_form');
         if (!ajax_modalForm) return;
@@ -740,8 +741,10 @@ async function handlePrefillLocationUpdate() {
 
             const updateLocationResponse = await updateLocation(sku, eventID);
             if (updateLocationResponse.success) {
+                window.removeEventListener('beforeunload', unloadWarning);
                 console.log('PATCHES - Location Updated');
             } else {
+                window.removeEventListener('beforeunload', unloadWarning);
                 console.error('PATCHES - Unable to Update Location:', updateLocationResponse);
                 alert('Issue Updating Location. Check console.');
             }
@@ -749,6 +752,11 @@ async function handlePrefillLocationUpdate() {
             console.error('PATCHES - Error during location update:', err);
             alert('Failed to prefill location. Check console.');
         }
+    }
+
+    function unloadWarning(e) {
+        e.preventDefault();
+        e.returnValue = '';
     }
 }
 
@@ -884,10 +892,13 @@ async function initListingPatch() {
                                     <span></span>
                                 </div>`;
                             } else {
+                                window.addEventListener('beforeunload', unloadWarning);
                                 const updateLocationResponse = await updateLocation(sku, eventID);
                                 if (updateLocationResponse.success) {
+                                    window.removeEventListener('beforeunload', unloadWarning);
                                     console.log('PATCHES - Location Updated');
                                 } else {
+                                    window.removeEventListener('beforeunload', unloadWarning);
                                     console.error('PATCHES - Unable to Update Location:', updateLocationResponse);
                                     alert('Issue Updating Location, Check Console');
                                 }
@@ -947,6 +958,11 @@ async function initListingPatch() {
 
         // i guess this goes here akkoShrug
         (async () => { duplicateAsin(); })();
+
+        function unloadWarning(e) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
     }
 }
 
