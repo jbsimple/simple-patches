@@ -366,3 +366,12 @@ div.dataTables_wrapper div.dataTables_processing {
     border-color: var(--bs-gray-200);
     background-color: var(--bs-gray-200);
 }
+
+#patch_picloc_result {
+    border: var(--bs-modal-header-border-width) solid var(--bs-modal-header-border-color);
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+}

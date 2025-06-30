@@ -542,7 +542,7 @@ async function updatePictureLocations() {
                             </span>
                         </button>
                     </div>
-                    <div class="patches-column" id="patch_picloc_result"></div>
+                    <div class="patches-column" id="patch_picloc_result">S</div>
                 </div>
             </div>
         </div>
@@ -673,6 +673,7 @@ async function updatePictureLocations() {
                     }
                     console.debug('PATCHES - Location LOG Update:', log);
                     const resultPrintout = document.getElementById('patch_picloc_result');
+                    patch_picloc_result.style.display = 'flex';
                     let resultCode = '';
                     log.forEach(entry => {
                         const status = entry.success ? '<span style="color: var(--bs-primary);">GOOD</span>' : '<span style="color: var(--bs-danger);">ERROR</span>';
