@@ -1,3 +1,5 @@
+const autoLocationUpdate = true;
+
 async function getTimeSpentInMinutes(sku) {
     async function getUserID() {
         try {
@@ -675,6 +677,80 @@ async function handleLocationButton(e) {
     e.textContent = oldButtonText;
 }
 
+async function handlePrefillLocationUpdate() {
+    const table = document.getElementById('dtTable_wrapper');
+    if (table) {
+        table.addEventListener('click', function(event) {
+            const target = event.target.closest('button');
+            if (target && target.matches('.btn.ajax-modal') && target.textContent.trim() === 'Create Item') {
+                console.log('PATCHES - Create Item button clicked:', target);
+                const modal = document.getElementById('rc_ajax_modal');
+                const observer = new MutationObserver((mutationsList, observer) => {
+                    for (const mutation of mutationsList) {
+                        if (mutation.type === 'childList' && mutation.addedNodes.length > 0 || mutation.type === 'attributes' || mutation.type === 'subtree' ) {
+                            observer.disconnect();
+                            setTimeout(() => {
+                                console.log('PATCHES - Modal has updated. Run your logic here.');
+                                const ajax_button = document.getElementById('rc_ajax_modal_submit');
+                                if (ajax_button) {
+                                    ajax_button.addEventListener('click', async (e) => {
+                                        try {
+                                            await prefillSubmit();
+                                        } catch (err) {
+                                            console.error('PATCHES - Error during prefillSubmit:', err);
+                                            alert('Unexpected error. Check console for details.');
+                                        }
+                                    }, { once: true });
+                                }
+                            }, 50);
+                            break;
+                        }
+                    }
+                });
+                observer.observe(modal, {
+                    childList: true,
+                    subtree: true,
+                    attributes: true
+                });
+            }
+        });
+    }
+
+    async function prefillSubmit() {
+        const ajax_modalForm = document.getElementById('rc_ajax_modal_form');
+        if (!ajax_modalForm) return;
+
+        const skuInput = ajax_modalForm.querySelector('input[name="item[sku]"]');
+        if (!skuInput) return;
+
+        const sku = skuInput.value.trim();
+        if (!sku) {
+            alert('SKU is missing.');
+            return;
+        }
+
+        try {
+            const justCreated = await getTimeSpentInMinutes(sku);
+            const eventID = justCreated?.event_id;
+
+            if (!eventID) {
+                throw new Error('Event ID not found from getTimeSpentInMinutes');
+            }
+
+            const updateLocationResponse = await updateLocation(sku, eventID);
+            if (updateLocationResponse.success) {
+                console.log('PATCHES - Location Updated');
+            } else {
+                console.error('PATCHES - Unable to Update Location:', updateLocationResponse);
+                alert('Issue Updating Location. Check console.');
+            }
+        } catch (err) {
+            console.error('PATCHES - Error during location update:', err);
+            alert('Failed to prefill location. Check console.');
+        }
+    }
+}
+
 async function initListingPatch() {
     console.debug('PATCHES - initListingPatch for wizard');
     var gtin_input = document.querySelectorAll('.product_gtin')[0]; //inital
@@ -797,16 +873,25 @@ async function initListingPatch() {
                                         <i class="fas fa-boxes"></i>
                                         <span>View In Pending Inventory</span>
                                     </a>
-                                </div>
-                                <div class="patches-row" style="gap: 0.5rem; align-items: center; justify-content: center;">
+                                </div>`;
+                            if (!autoLocationUpdate) {
+                                code += `<div class="patches-row" style="gap: 0.5rem; align-items: center; justify-content: center;">
                                     <a class="btn btn-info btn-sm my-sm-1 ms-1" style="display: flex; flex-direction: row; gap: 0.25rem; align-items: center; justify-content: center;" title="Add PICTURES to Location" aria-label="Add PICTURES to Location" data-sku="${sku}" data-eventID="${eventID}" onclick="handleLocationButton(this);">
                                         <i class="fas fa-map-marker-alt"></i>
                                         <span>Update Location</span>
                                     </a>
                                     <span></span>
-                                </div>
-                                <span class="spacer"></span>
-                            </div>`;
+                                </div>`;
+                            } else {
+                                const updateLocationResponse = await updateLocation(sku, eventID);
+                                if (updateLocationResponse.success) {
+                                    console.log('PATCHES - Location Updated');
+                                } else {
+                                    console.error('PATCHES - Unable to Update Location:', updateLocationResponse);
+                                    alert('Issue Updating Location, Check Console');
+                                }
+                            }
+                            code += `<span class="spacer"></span></div>`;
                         }
                     }                    
     
@@ -865,7 +950,12 @@ async function initListingPatch() {
 }
 
 (async () => {
-    if (window.location.href.includes('/receiving/queues/listing/') || window.location.href.includes('/products/new')) { initListingPatch(); }
+    if (window.location.href.includes('/receiving/queues/listing/') || window.location.href.includes('/products/new')) { 
+        initListingPatch();
+    } else if (autoLocationUpdate) {
+        // prefill
+        handlePrefillLocationUpdate();
+    }
     inWrongTaskCheck();
 })();
   
