@@ -741,11 +741,10 @@ async function handlePrefillLocationUpdate() {
 
             // this here
             const updateLocationResponse = await updateLocation(sku, eventID);
+            window.removeEventListener('beforeunload', unloadWarning);
             if (updateLocationResponse.success) {
-                window.removeEventListener('beforeunload', unloadWarning);
                 console.log('PATCHES - Location Updated');
             } else {
-                window.removeEventListener('beforeunload', unloadWarning);
                 console.error('PATCHES - Unable to Update Location:', updateLocationResponse);
                 // im just gonna comment out this error until I can figure out why its appearing when it shouldn't
                 // alert('Issue Updating Location. Check console.');
@@ -896,13 +895,12 @@ async function initListingPatch() {
                             } else {
                                 window.addEventListener('beforeunload', unloadWarning);
                                 const updateLocationResponse = await updateLocation(sku, eventID);
+                                window.removeEventListener('beforeunload', unloadWarning);
                                 if (updateLocationResponse.success) {
-                                    window.removeEventListener('beforeunload', unloadWarning);
                                     console.log('PATCHES - Location Updated');
                                 } else {
-                                    window.removeEventListener('beforeunload', unloadWarning);
                                     console.error('PATCHES - Unable to Update Location:', updateLocationResponse);
-                                    alert('Issue Updating Location, Check Console');
+                                    // alert('Issue Updating Location, Check Console');
                                 }
                             }
                             code += `<span class="spacer"></span></div>`;
