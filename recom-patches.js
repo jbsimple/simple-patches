@@ -632,8 +632,8 @@ async function updatePictureLocations() {
 
                                         // Match only hrefs that contain updateSortingLocation and PICTURES
                                         if (href.includes("quickCreate(") && href.includes("updateSortingLocation") && a.textContent.includes("PICTURES")) {
-                                            const updatedHref = href.replace("PICTURES", changeLocation);
-                                            const locationName = (a.textContent.trim().replace("PICTURES", changeLocation)).trimEnd();
+                                            const updatedHref = href.replace(/PICTURES/gi, changeLocation);
+                                            const locationName = a.textContent.trim().replace(/PICTURES/gi, changeLocation).trimEnd();
 
                                             const eventMatch = href.match(/updateSortingLocation\/(\d+)/);
                                             const eventID = eventMatch ? eventMatch[1] : null;
