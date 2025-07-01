@@ -747,8 +747,7 @@ async function handlePrefillLocationUpdate() {
                 console.log('PATCHES - Location Updated');
             } else {
                 console.error('PATCHES - Unable to Update Location:', updateLocationResponse);
-                // im just gonna comment out this error until I can figure out why its appearing when it shouldn't
-                // alert('Issue Updating Location. Check console.');
+                alert(`Issue Updating Location: ${updateLocationResponse.message ?? 'Check Console'}`);
             }
         } catch (err) {
             console.error('PATCHES - Error during location update:', err);
@@ -901,7 +900,7 @@ async function initListingPatch() {
                                     console.log('PATCHES - Location Updated');
                                 } else {
                                     console.error('PATCHES - Unable to Update Location:', updateLocationResponse);
-                                    // alert('Issue Updating Location, Check Console');
+                                    alert(`Issue Updating Location: ${updateLocationResponse.message ?? 'Check Console'}`);
                                 }
                             }
                             code += `<span class="spacer"></span></div>`;
