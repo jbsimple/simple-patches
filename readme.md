@@ -1,8 +1,11 @@
 ### Hello!
-Quality of life changes to the work system that my work colleagues and myself wanted to make the work day go by that much faster.
+This is just various javascript-based quality of life patches to our work system so we can better interface with it, complete time-consuming tasks faster and make the day go by slightly faster.
 
 #### How it works:
-This is a layer of javascript that is loaded on top of the system page load. It introduces various extra functions and pages, css style sheets and fixes bugs that were "denied because it's not worth fixing". It uses a free vercel host that mirrors this repository so it can be directly added into a browser extension to load external js.
+With the inject js code, it will load various extra scripts and css files depending on what page of the system your on.
+Each page as its own set of "patches" so that way not everything has to be downloaded and loaded on each page navigation.
+These can be small things like fixing annoying or broken css to introducing extra, necessary features for various day-to-day tasks.
+The reason why this github exists is so I can deploy it using vercel for free. Version control is also nice.
 
 #### Key features of note:
 Revamped reports; including various reporting presets and a visual display of report data before download.

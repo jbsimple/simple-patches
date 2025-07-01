@@ -90,6 +90,7 @@ function injectGoods() {
 
     document.body.appendChild(script_patch);
 
+    // get build info, might move around
     let script_version = document.createElement('script');
     script_version.src = "https://simple-patches.vercel.app/buildInfo.js?v=" + Date.now();
     script_version.onload = function() { console.debug('Patch Loaded: buildInfo.js'); };
