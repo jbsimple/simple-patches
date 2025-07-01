@@ -42,6 +42,8 @@ There are other smaller modifications made, look below at the patches list to se
   - Adjusted the width of various columns to make it fit better; shrunk location width, expanded width of created, sku and condition name.
   - Adjusted some of the heading labels to make them shorter, better for width (In Stock and Stock Available).
 - On all pages; Added a refresh check to clock in tasks, every minute it checks and applies the clock-in task if it has changed.
+- For Listings; Custom feature to prepend "PICTURES" to all newly-created SKUs.
+- On All Pages; When clocked into PICTURES, an extra clock function appears where a list of items can be pasted to update the locations from PICTURES to whatever the user defines.
 - On product and item pages; CSS fix for layout of cards.
 - On product and item pages; CSS fix for image box being too small.
 - On product and item pages; CSS fix for images inside upload box not wrapping properly.
