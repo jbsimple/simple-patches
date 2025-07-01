@@ -703,9 +703,14 @@ async function updatePictureLocations() {
                                             <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
                                         </span>`;
                     submit.style.backgroundColor = '';
+                    
                     const resultPrintout = document.getElementById('patch_picloc_result');
                     patch_picloc_result.style.display = 'flex';
                     resultPrintout.innerHTML += `<p style="text-align: center; font-weight: 700;">List Finished.</p>`;
+                    setTimeout(() => {
+                        resultPrintout.scrollTop = resultPrintout.scrollHeight;
+                    }, 0);
+
                     window.removeEventListener('beforeunload', unloadWarning);
                     isRunning = false;
                 }
@@ -721,6 +726,9 @@ async function updatePictureLocations() {
                     const status = entry.success ? '<span style="color: var(--bs-primary);">GOOD</span>' : '<span style="color: var(--bs-danger);">ERROR</span>';
                     const event = entry.eventID ? ` (Event ID: ${entry.eventID})` : '';
                     resultPrintout.innerHTML += `<p><strong>${status} => ${entry.item || event}</strong>: ${entry.message}</p>`;
+                    setTimeout(() => {
+                        resultPrintout.scrollTop = resultPrintout.scrollHeight;
+                    }, 0);
                 }
             };
         }
