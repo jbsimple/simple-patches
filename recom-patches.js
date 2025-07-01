@@ -620,6 +620,8 @@ async function updatePictureLocations() {
                                 continue;
                             }
 
+                            let heading = `${item}`;
+
                             // do code
                             const parser = new DOMParser();
                             for (const row of allData) {
@@ -645,7 +647,6 @@ async function updatePictureLocations() {
 
                                             const formData = new FormData();
                                             formData.append('name', locationName);
-                                            let heading = `${item}`;
 
                                             try {
                                                 const postRes = await fetch(`/ajax/actions/updateSortingLocation/${eventID}`, {
@@ -676,6 +677,13 @@ async function updatePictureLocations() {
                                                 printLog(newLog);
 
                                             }
+                                        } else {
+                                            const newLog = {
+                                                success: false,
+                                                message: `${heading}: Nothing in Queues to update.`
+                                            };
+                                            log.push(newLog);
+                                            printLog(newLog);
                                         }
                                     }
                                 }
