@@ -677,13 +677,6 @@ async function updatePictureLocations() {
                                                 printLog(newLog);
 
                                             }
-                                        } else {
-                                            const newLog = {
-                                                success: false,
-                                                message: `${heading}: Nothing in Queues to update.`
-                                            };
-                                            log.push(newLog);
-                                            printLog(newLog);
                                         }
                                     }
                                 }
