@@ -620,8 +620,6 @@ async function updatePictureLocations() {
                                 continue;
                             }
 
-                            let heading = `${item}`;
-
                             // do code
                             const parser = new DOMParser();
                             for (const row of allData) {
@@ -661,8 +659,9 @@ async function updatePictureLocations() {
 
                                                 const newLog = {
                                                     eventID,
+                                                    item,
                                                     success: result?.success === true,
-                                                    message: result?.message || (result?.success ? (`${heading}: Successful`) : (`${heading}: Fail`))
+                                                    message: result?.message || (result?.success ? (`Successful`) : (`Fail`))
                                                 };
                                                 log.push(newLog);
                                                 printLog(newLog);
@@ -670,8 +669,9 @@ async function updatePictureLocations() {
                                             } catch (err) {
                                                 const newLog = {
                                                     eventID,
+                                                    item,
                                                     success: false,
-                                                    message: `${heading}: POST failed: ${err.message}`
+                                                    message: `POST failed: ${err.message}`
                                                 };
                                                 log.push(newLog);
                                                 printLog(newLog);
@@ -725,8 +725,15 @@ async function updatePictureLocations() {
                     const resultPrintout = document.getElementById('patch_picloc_result');
                     patch_picloc_result.style.display = 'flex';
                     const status = entry.success ? '<span style="color: var(--bs-primary);">GOOD</span>' : '<span style="color: var(--bs-danger);">ERROR</span>';
-                    const event = entry.eventID ? ` (Event ID: ${entry.eventID})` : '';
-                    resultPrintout.innerHTML += `<p><strong>${status} => ${entry.item || event}</strong>: ${entry.message}</p>`;
+                    const event = entry.eventID ? `<span>[(Event ID: ${entry.eventID})]</span>` : '';
+                    resultPrintout.innerHTML += `<p>
+                        <strong>${status}</strong>
+                        <span>=><span>
+                        <a href="/receiving/queues/inventory?column=0&keyword=${encodeURIComponent(entry.item)}" target="_blank">${entry.item}</a>
+                        ${event}
+                        <span>:</span>
+                        <span>${entry.message}</span>
+                    </p>`;
                     setTimeout(() => {
                         resultPrintout.scrollTop = resultPrintout.scrollHeight;
                     }, 0);
