@@ -637,7 +637,7 @@ async function updatePictureLocations() {
                                             const eventMatch = href.match(/updateSortingLocation\/(\d+)/);
                                             const eventID = eventMatch ? eventMatch[1] : null;
                                             if (!eventID) {
-                                                const newLog = { eventID: null, success: false, message: 'Invalid eventID extracted from href' };
+                                                const newLog = { item, eventID: null, success: false, message: 'Invalid eventID extracted from href' };
                                                 log.push(newLog);
                                                 printLog(newLog);
                                                 continue;
@@ -726,7 +726,7 @@ async function updatePictureLocations() {
                     patch_picloc_result.style.display = 'flex';
                     const status = entry.success ? '<span style="color: var(--bs-primary);">GOOD</span>' : '<span style="color: var(--bs-danger);">ERROR</span>';
                     const event = entry.eventID ? `<span>[(Event ID: ${entry.eventID})]</span>` : '';
-                    resultPrintout.innerHTML += `<p>
+                    resultPrintout.innerHTML += `<p style="display: inline-flex; flex-direction: row; gap: 0.25rem; margin: 0;">
                         <strong>${status}</strong>
                         <span>=><span>
                         <a href="/receiving/queues/inventory?column=0&keyword=${encodeURIComponent(entry.item)}" target="_blank">${entry.item}</a>
