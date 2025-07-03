@@ -52,6 +52,10 @@ function injectGoods() {
         loadPatchScript('recom-patches-pendinginv.js');
         loadPatchScript('recom-patches-dtTableParams.js');
 
+    } else if (window.location.href.includes('/receiving/queues/fba-check')) {
+
+        loadPatchScript('recom-patches-dtTableParams.js');
+
     } else if (document.title.includes('Dashboard - ')) {
 
         loadPatchStyle('recom-patches-dashboard.css');
