@@ -30,6 +30,19 @@ function addPendingInventoryButton() {
     if (!qualityAlertsButton) return console.warn('Missing: Quality Alerts button');
     if (!qualityAlertsButton.parentNode) return console.warn('Missing: parentNode of Quality Alerts button');
 
+    const fbaCheckSearch = document.createElement('a');
+    fbaCheckSearch.className = 'btn btn-icon btn-success btn-sm my-sm-1 ms-1';
+    fbaCheckSearch.setAttribute('data-bs-toggle', 'tooltip');
+    fbaCheckSearch.setAttribute('aria-label', 'View in FBA Check');
+    fbaCheckSearch.setAttribute('data-bs-original-title', 'View in FBA Check');
+    fbaCheckSearch.setAttribute('data-kt-initialized', '1');
+    fbaCheckSearch.setAttribute('href', `/receiving/queues/fba-check?column=0&keyword=${encodeURIComponent(keyword)}`);
+    fbaCheckSearch.setAttribute('target', '_blank');
+    fbaCheckSearch.setAttribute('style', 'margin-right: 0.325rem !important;');
+    fbaCheckSearch.innerHTML = '<i class="fas fa-shipping-fast"></i>';
+
+    qualityAlertsButton.parentNode.insertBefore(fbaCheckSearch, qualityAlertsButton);
+
     const pendingInventorySearch = document.createElement('a');
     pendingInventorySearch.className = 'btn btn-icon btn-success btn-sm my-sm-1 ms-1';
     pendingInventorySearch.setAttribute('data-bs-toggle', 'tooltip');
