@@ -9,92 +9,73 @@ function injectGoods() {
 
     if (window.location.href.includes('/receiving/queues/listing') || window.location.href.includes('/products/new')) {
 
-        document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches-listing.css?v=' + Date.now() + '" type="text/css"/>';
-        script_patch.src = "https://simple-patches.vercel.app/recom-patches-listing.js?v=" + Date.now();
-        script_patch.name = 'recom-patches-listing.js';
+        loadPatchStyle('recom-patches-listing.css');
+        loadPatchScript('recom-patches-listing.js');
 
-    }
-
-    if (window.location.href.includes('/queues/conditions/')) {
+    } else if (window.location.href.includes('/queues/conditions/')) {
         
-        script_patch.src = "https://simple-patches.vercel.app/recom-patches-condqueue.js?v=" + Date.now();
-        script_patch.name = 'recom-patches-condqueue.js';
+        loadPatchScript('recom-patches-condqueue.js');
 
-    }
-
-    if ((window.location.href.includes('/products/') || window.location.href.includes('/product/items/')) && !window.location.href.includes('/products/new')) {
+    } else if ((window.location.href.includes('/products/') || window.location.href.includes('/product/items/')) && !window.location.href.includes('/products/new')) {
         // ending slash is needed to ensure that the code only applies the patch for the sku and sid pages
 
-        document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches-product.css?v=' + Date.now() + '" type="text/css"/>';
-        script_patch.src = "https://simple-patches.vercel.app/recom-patches-productPage.js?v=" + Date.now();
-        script_patch.name = 'recom-patches-productPage.js';
+        loadPatchStyle('recom-patches-product.css');
+        loadPatchScript('recom-patches-productPage.js');
 
-    }
-
-    if (window.location.href.includes('/receiving') && document.getElementById('searchProductForm')) {
+    } else if (window.location.href.includes('/receiving') && document.getElementById('searchProductForm')) {
         
-        script_patch.src = "https://simple-patches.vercel.app/recom-patches-newInventory.js?v=" + Date.now();
-        script_patch.name = 'recom-patches-newInventory.js';
+        loadPatchScript('recom-patches-newInventory.js');
 
+    } else if (window.location.href.includes('/reports')) {
+
+        loadPatchStyle('recom-patches-reports.css');
+        loadPatchScript('recom-patches-reports.js');
+
+    } else if (window.location.href.includes('/users/show')) {
+
+        loadPatchStyle('recom-patches-userShow.css');
+
+    } else if (window.location.href.includes('/integrations/store/logs')) {
+
+        loadPatchScript('recom-patches-errors.js');
+
+    } else if (window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board')) {
+
+        loadPatchScript('recom-patches-productivity.js');
+
+    } else if (window.location.href.includes('/tools') && !window.location.href.includes('/tools/import')) {
+
+        loadPatchScript('recom-patches-tools.js');
+
+    } else if (window.location.href.includes('/receiving/queues/inventory')) {
+
+        loadPatchScript('recom-patches-pendinginv.js');
+        loadPatchScript('recom-patches-dtTableParams.js');
+
+    } else if (document.title.includes('Dashboard - ')) {
+
+        loadPatchStyle('recom-patches-dashboard.css');
+        loadPatchScript('recom-patches-dashboard.js');
     }
-
-    if (window.location.href.includes('/reports')) {
-
-        document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches-reports.css?v=' + Date.now() + '" type="text/css"/>';
-        script_patch.src = "https://simple-patches.vercel.app/recom-patches-reports.js?v=" + Date.now();
-        script_patch.name = "recom-patches-reports.js";
-
-    }
-
-    if (window.location.href.includes('/users/show')) {
-
-        document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches-userShow.css?v=' + Date.now() + '" type="text/css"/>';
-
-    }
-
-    if (window.location.href.includes('/integrations/store/logs')) {
-        
-        script_patch.src = "https://simple-patches.vercel.app/recom-patches-errors.js?v=" + Date.now();
-        script_patch.name = 'recom-patches-errors.js';
-
-    }
-
-    if (window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board')) {
-        
-        script_patch.src = "https://simple-patches.vercel.app/recom-patches-productivity.js?v=" + Date.now();
-        script_patch.name = 'recom-patches-productivity.js';
-
-    }
-
-    if (window.location.href.includes('/tools') && !window.location.href.includes('/tools/import')) {
-        
-        script_patch.src = "https://simple-patches.vercel.app/recom-patches-tools.js?v=" + Date.now();
-        script_patch.name = 'recom-patches-tools.js';
-
-    }
-
-    if (window.location.href.includes('/receiving/queues/inventory')) {
-        
-        script_patch.src = "https://simple-patches.vercel.app/recom-patches-pendinginv.js?v=" + Date.now();
-        script_patch.name = 'recom-patches-pendinginv.js';
-
-    }
-
-    if (document.title.includes('Dashboard - ')) {
-
-        document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches-dashboard.css?v=' + Date.now() + '" type="text/css"/>';
-        script_patch.src = "https://simple-patches.vercel.app/recom-patches-dashboard.js?v=" + Date.now();
-        script_patch.name = "recom-patches-dashboard.js";
-
-    }
-
-    document.body.appendChild(script_patch);
 
     // get build info, might move around
     let script_version = document.createElement('script');
     script_version.src = "https://simple-patches.vercel.app/buildInfo.js?v=" + Date.now();
     script_version.onload = function() { console.debug('Patch Loaded: buildInfo.js'); };
     document.body.appendChild(script_version);
+}
+
+function loadPatchScript(script) {
+    let script_patch = document.createElement('script');
+    script_patch.name = 'n/a';
+    script_patch.onload = function() { console.debug('Patch Loaded:', script_patch.name); };
+    script_patch.src = `https://simple-patches.vercel.app/${script}?v=${Date.now()}`;
+    script_patch.name = script;
+    document.body.appendChild(script_patch);
+}
+
+function loadPatchStyle(name) {
+    document.head.innerHTML += `<link rel="stylesheet" href="https://simple-patches.vercel.app/${name}?v=${Date.now()}" type="text/css"/>`;
 }
 
 function injectExtraTheme() {
