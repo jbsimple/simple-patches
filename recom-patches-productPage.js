@@ -31,7 +31,7 @@ function addPendingInventoryButton() {
     if (!qualityAlertsButton.parentNode) return console.warn('Missing: parentNode of Quality Alerts button');
 
     const fbaCheckSearch = document.createElement('a');
-    fbaCheckSearch.className = 'btn btn-icon btn-success btn-sm my-sm-1 ms-1';
+    fbaCheckSearch.className = 'btn btn-icon btn-info btn-sm my-sm-1 ms-1';
     fbaCheckSearch.setAttribute('data-bs-toggle', 'tooltip');
     fbaCheckSearch.setAttribute('aria-label', 'View in FBA Check');
     fbaCheckSearch.setAttribute('data-bs-original-title', 'View in FBA Check');
