@@ -385,6 +385,6 @@ div.dataTables_wrapper div.dataTables_processing {
     display: none;
     height: 0.25rem;
     width: 0%;
-    background: var(--bs-progress);
+    background: var(--bs-primary);
     transition: width 0.3s ease;
 }

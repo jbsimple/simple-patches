@@ -713,6 +713,8 @@ async function updatePictureLocations() {
                         resultPrintout.scrollTop = resultPrintout.scrollHeight;
                     }, 0);
 
+                    updateProgress(1/1);
+
                     window.removeEventListener('beforeunload', unloadWarning);
                     isRunning = false;
                 }
