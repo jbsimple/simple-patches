@@ -387,4 +387,5 @@ div.dataTables_wrapper div.dataTables_processing {
     width: 0%;
     background: var(--bs-primary);
     transition: width 0.3s ease;
+    margin-top: 0.5rem;
 }
