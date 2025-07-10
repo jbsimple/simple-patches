@@ -712,6 +712,42 @@ async function hijackAjaxPrefill() {
     }
 }
 
+function handlePrefillWarning(message) { 
+    const messageHTML = `<div class="alert alert-danger my-5">${message}<br></div>`; 
+    const form = document.getElementById('rc_ajax_modal_form');
+    if (form) {
+        const walker = document.createTreeWalker(form, NodeFilter.SHOW_COMMENT, {
+            acceptNode: (node) => {
+                return node.nodeValue.trim() === 'end::Heading' ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
+            }
+        });
+
+        const commentNode = walker.nextNode();
+        if (commentNode) {
+            const container = document.createElement('div');
+            container.innerHTML = messageHTML;
+            commentNode.parentNode.insertBefore(container.firstElementChild, commentNode.nextSibling);
+        }
+    }
+}
+
+function handlePrefillPictureWarning() {
+    const form = document.getElementById('rc_ajax_modal_form');
+    if (form) {
+        const img = form.querySelector('.img-thumbnail');
+        if (img) {
+            const imgsrc = img.getAttribute('src');
+            if (imgsrc.toLowerCase.includes('no-image.png')) {
+                handlePrefillWarning('There is no image on the SID, Please send over for pictures.');
+            }
+
+            if (imgsrc.toLowerCase.includes('stock')) {
+                handlePrefillWarning('This SID has Stock Photos, Please send over for pictures.');
+            }
+        }
+    }
+}
+
 async function handlePrefillLocationUpdate() {
     const ajax_button = document.getElementById('rc_ajax_modal_submit');
      if (ajax_button) {
