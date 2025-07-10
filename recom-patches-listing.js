@@ -694,6 +694,8 @@ async function hijackAjaxPrefill() {
                                 await new Promise(resolve => setTimeout(resolve, 50));
                                 console.log('PATCHES - Modal has updated.');
 
+                                handlePrefillPictureWarning();
+
                                 if (autoLocationUpdate) {
                                     await handlePrefillLocationUpdate();
                                 }
