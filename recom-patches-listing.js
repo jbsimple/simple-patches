@@ -739,6 +739,8 @@ function handlePrefillPictureWarning() {
         const img = form.querySelector('.img-thumbnail');
         if (img) {
             const imgsrc = img.getAttribute('src');
+            console.debug('PATCHES - Prefill IMG src:', imgsrc);
+            
             if (imgsrc.toLowerCase.includes('no-image.png')) {
                 handlePrefillWarning('There is no image on the SID, Please send over for pictures.');
             }
@@ -746,7 +748,11 @@ function handlePrefillPictureWarning() {
             if (imgsrc.toLowerCase.includes('stock')) {
                 handlePrefillWarning('This SID has Stock Photos, Please send over for pictures.');
             }
+        } else {
+            console.error('Unable to find image?', img);
         }
+    } else {
+        console.error('Unable to find form?', form);
     }
 }
 
