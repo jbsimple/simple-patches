@@ -738,14 +738,14 @@ function handlePrefillPictureWarning() {
     if (form) {
         const img = form.querySelector('.img-thumbnail');
         if (img) {
-            const imgsrc = img.getAttribute('src');
+            const imgsrc = img.getAttribute('src').toLowerCase();
             console.debug('PATCHES - Prefill IMG src:', imgsrc);
-            
-            if (imgsrc.toLowerCase.includes('no-image.png')) {
+
+            if (imgsrc.includes('no-image.png')) {
                 handlePrefillWarning('There is no image on the SID, Please send over for pictures.');
             }
 
-            if (imgsrc.toLowerCase.includes('stock')) {
+            if (imgsrc.includes('stock')) {
                 handlePrefillWarning('This SID has Stock Photos, Please send over for pictures.');
             }
         } else {
