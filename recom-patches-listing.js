@@ -678,7 +678,7 @@ async function handleLocationButton(e) {
     e.textContent = oldButtonText;
 }
 
-async function handlePrefillLocationUpdate() {
+async function hijackAjaxPrefill() {
     const table = document.getElementById('dtTable_wrapper');
     if (table) {
         table.addEventListener('click', function(event) {
@@ -690,20 +690,14 @@ async function handlePrefillLocationUpdate() {
                     for (const mutation of mutationsList) {
                         if (mutation.type === 'childList' && mutation.addedNodes.length > 0 || mutation.type === 'attributes' || mutation.type === 'subtree' ) {
                             observer.disconnect();
-                            setTimeout(() => {
+                            (async () => {
+                                await new Promise(resolve => setTimeout(resolve, 50));
                                 console.log('PATCHES - Modal has updated.');
-                                const ajax_button = document.getElementById('rc_ajax_modal_submit');
-                                if (ajax_button) {
-                                    ajax_button.addEventListener('click', async (e) => {
-                                        try {
-                                            await prefillSubmit();
-                                        } catch (err) {
-                                            console.error('PATCHES - Error during prefillSubmit:', err);
-                                            alert('Unexpected error. Check console for details.');
-                                        }
-                                    }, { once: true });
+
+                                if (autoLocationUpdate) {
+                                    await handlePrefillLocationUpdate();
                                 }
-                            }, 50);
+                            })();
                             break;
                         }
                     }
@@ -715,6 +709,20 @@ async function handlePrefillLocationUpdate() {
                 });
             }
         });
+    }
+}
+
+async function handlePrefillLocationUpdate() {
+    const ajax_button = document.getElementById('rc_ajax_modal_submit');
+     if (ajax_button) {
+        ajax_button.addEventListener('click', async (e) => {
+            try {
+                await prefillSubmit();
+            } catch (err) {
+                console.error('PATCHES - Error during prefillSubmit:', err);
+                alert('Unexpected error. Check console for details.');
+            }
+        }, { once: true });
     }
 
     async function prefillSubmit() {
@@ -973,9 +981,8 @@ async function initListingPatch() {
 (async () => {
     if (window.location.href.includes('/receiving/queues/listing/') || window.location.href.includes('/products/new')) { 
         initListingPatch();
-    } else if (autoLocationUpdate) {
-        // prefill
-        handlePrefillLocationUpdate();
+    } else {
+        hijackAjaxPrefill();
     }
     inWrongTaskCheck();
 })();
