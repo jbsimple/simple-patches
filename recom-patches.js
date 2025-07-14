@@ -1452,49 +1452,46 @@ window.trackUserActivity = function () {
     console.debug("PATCHES - trackUserActivity disabled.");
 };
 
-function bustUserTracker() {
-    window.__intervalRegistry = [];
+function bustLateIntervals() {
+    const dummyID = setInterval(() => {}, 999999);
+    clearInterval(dummyID);
 
-    const originalSetInterval = window.setInterval;
-    window.setInterval = function (fn, delay, ...args) {
-        const id = originalSetInterval(fn, delay, ...args);
-        window.__intervalRegistry.push({ id, fn, delay });
-        return id;
-    };
+    for (let i = dummyID - 100; i <= dummyID; i++) {
+        try {
+            const intervalDesc = window.__lookupIntervalCallback
+                ? window.__lookupIntervalCallback(i)
+                : null;
 
-    setTimeout(() => {
-        const dummyID = setInterval(() => {}, 999999);
-        clearInterval(dummyID);
+            const originalClear = clearInterval;
+            let found = false;
 
-        for (let i = dummyID - 50; i <= dummyID; i++) {
-            const tracked = window.__intervalRegistry.find(entry => entry.id === i);
+            const callbackMap = new Map();
+            const tempSet = window.setInterval;
 
-            if (tracked) {
-                if (tracked.delay === 60000) {
-                    clearInterval(i);
-                    console.debug(
-                        `PATCHES - Cleared tracked 60s interval: ID=${i}, Function=${tracked.fn.name || 'anonymous'}`
-                    );
-                } else {
-                    console.debug(
-                        `PATCHES - Kept interval: ID=${i}, Delay=${tracked.delay}ms`
-                    );
-                }
-            }
-        }
+            window.setInterval = function (fn, delay) {
+                const id = tempSet(fn, delay);
+                callbackMap.set(id, fn);
+                return id;
+            };
 
-        if (typeof clockTaskVisualRefresh === 'function') {
-            console.debug('PATCHES - Restarting visual refresh manually.');
-            clockTaskVisualRefresh();
-        }
-    }, 1000);
+            const trappedID = setInterval(() => {}, 10);
+            const trappedFn = callbackMap.get(trappedID);
+            clearInterval(trappedID);
+
+            window.setInterval = tempSet;
+
+        } catch (err) {}
+        clearInterval(i);
+
+        console.debug(`PATCHES - Cleared suspected interval ID=${i}`);
+    }
 }
 
 function patchInit() {
     bustUserTracker(); // byebye user tracker
     injectGoods();
     injectExtraTheme();
-    // clockTaskVisualRefresh(); // also is new user tracker
+    clockTaskVisualRefresh(); // also does ping
     modifiedClockInit();
     checkWeatherAndCreateEffects();
     adjustToolbar();
