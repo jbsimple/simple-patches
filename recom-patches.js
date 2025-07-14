@@ -1456,19 +1456,33 @@ window.trackUserActivity = function () {
 };
 
 function bustUserTracker() {
-    function simulateUserActivity() {
-        console.debug('PATCHES - Simulated events for userTracker');
-        const events = ["mousemove", "keydown", "scroll", "click"];
-        
-        events.forEach(eventType => {
-            const event = new Event(eventType, {
-            bubbles: true,
-            cancelable: true,
+    // Using Web Worker and BroadcastChannel to bypass inactive tab issues.
+    const workerCode = `
+        const channel = new BroadcastChannel('userSim');
+        setInterval(() => {
+            channel.postMessage('simulate');
+        }, 30000);
+    `;
+
+    const blob = new Blob([workerCode], { type: 'application/javascript' });
+    const workerUrl = URL.createObjectURL(blob);
+
+    const worker = new Worker(workerUrl);
+    const channel = new BroadcastChannel('userSim');
+
+    channel.onmessage = (e) => {
+        if (e.data === 'simulate') {
+            console.debug('PATCHES - Simulated events for userTracker');
+            const events = ["mousemove", "keydown", "scroll", "click"];
+            events.forEach(eventType => {
+                const event = new Event(eventType, {
+                    bubbles: true,
+                    cancelable: true,
+                });
+                document.dispatchEvent(event);
             });
-            document.dispatchEvent(event);
-        });
-    }
-    setInterval(simulateUserActivity, 30000);
+        }
+    };
 }
 
 function patchInit() {
