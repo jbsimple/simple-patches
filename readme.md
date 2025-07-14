@@ -148,5 +148,6 @@ Below is a detailed list of all the pages made to the site. Everything that is m
   - Added a date selector to look at any producivity report within the last year.
 
 #### Future Patches:
+- Proper handling of users in different departments, Listing department is hard-coded for productivity page.
 - Create a proper set of CSS rules for dark mode.
 - Overhaul of CSS sizing, everything is so large that the page requires it to be zoomed out in order to be used.
