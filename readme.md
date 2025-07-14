@@ -25,6 +25,15 @@ There are other smaller modifications made, look below at the patches list to se
 - I don't have a good recommendation for an extension, just find something that allows JS injects.
 - Paste the code from [inject.js](https://simple-patches.vercel.app/inject.js) into the code editor.
 
+#### Temporary Patches:
+- Added a UserTracker Busting routine.
+  - The user tracker does not rely on API calls, it's based on eventListeners in Javascript.
+  - The user tracker if it detects inactivity for 15 minutes will log the user out.
+  - If you have multiple tabs open and you leave one open for 15 minutes without looking or using it, it logs you out everywhere.
+  - The UserTracker Buster simulates the movement, takes advantage of Web Worker and BroadcastChannel to bypass tabs that have not been interracted with for longer than 15 minutes.
+  - Added in a more aggresive silulator cooldown for tabs that aren't visible.
+  - Temporary because there's a good chance this feature gets reversed or changed, in which case it will be removed.
+
 #### Patches:
 - On all pages; CSS fix to correct spacing issues in header.
 - On all pages; CSS fix to get rid of light mode logo.
