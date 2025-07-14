@@ -1428,6 +1428,23 @@ function adjustToolbar() {
     }
 }
 
+/* override this function because this is annoying */
+function trackUserActivity() {
+    console.debug('PATCHES - User Activity Tracker HIJACKED!');
+    function sendPing() {
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "/ajax/actions/ping",
+            data: { task: "ping" },
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="X-CSRF-TOKEN"]').attr("content"),
+            },
+        });
+    }
+    setInterval(sendPing, 60 * 1000);
+}
+
 function patchInit() {
     version = "4-30-2025__1";
     injectGoods();
