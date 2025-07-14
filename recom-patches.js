@@ -1467,16 +1467,13 @@ function bustUserTracker() {
         const dummyID = setInterval(() => {}, 999999);
         clearInterval(dummyID);
 
-        for (let i = dummyID - 50; i <= dummyID; i++) {
+        for (let i = 0; i <= dummyID; i++) {
             const tracked = window.__intervalRegistry.find(entry => entry.id === i);
 
             if (!tracked) {
                 try {
-                    console.debug(`
-                        PATCHES - Unknown interval ID=${i} — attempting to clear.`);
-
                     clearInterval(i);
-                    console.debug(`PATCHES - Cleared UNKNOWN interval ID=${i}\nTracked:`, tracked);
+                    console.debug(`PATCHES - Cleared UNKNOWN interval ID=${i}.`);
                 } catch (err) {
                     console.warn(`Could not clear interval ID=${i}`, err);
                 }
