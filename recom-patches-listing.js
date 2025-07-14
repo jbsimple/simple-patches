@@ -748,6 +748,16 @@ function handlePrefillPictureWarning() {
             if (imgsrc.includes('stock')) {
                 handlePrefillWarning('This SID has Stock Photos, Please send over for pictures.');
             }
+
+            img.onload = function() {
+                if (img.naturalWidth !== 1200 || img.naturalHeight !== 1200) {
+                    handlePrefillWarning(`Image is not 1200x1200 (actual: ${img.naturalWidth}x${img.naturalHeight}), Please send over for pictures.`);
+                }
+            };
+            
+            if (img.complete) {
+                img.onload();
+            }
         } else {
             console.error('Unable to find image?', img);
         }
