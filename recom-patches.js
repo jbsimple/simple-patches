@@ -803,6 +803,12 @@ function clockTaskVisualRefresh() {
                 headers: {
                     "X-CSRF-TOKEN": $('meta[name="X-CSRF-TOKEN"]').attr("content"),
                 },
+                success: function(response) {
+                    console.debug('Ping request sent successfully:', response);
+                },
+                error: function(xhr, status, error) {
+                    console.warn('Ping request failed:', status, error);
+                }
             });
         }
         sendPing(); // user activity busting
@@ -846,7 +852,8 @@ function clockTaskVisualRefresh() {
         }
     }
     checkAndUpdate();
-    setInterval(checkAndUpdate, 60000);
+    const id = setInterval(checkAndUpdate, 60000);
+    checkAndUpdate.__isMine = true;
 }
 
 async function checkWeatherAndCreateEffects() {
@@ -1440,11 +1447,38 @@ function adjustToolbar() {
     }
 }
 
+// bust attempt 1
+window.trackUserActivity = function () {
+    console.debug("PATCHES - trackUserActivity disabled.");
+};
+
+function bustUserTracker() {
+    window.__intervalRegistry = [];
+
+    const originalSetInterval = window.setInterval;
+    window.setInterval = function (fn, delay, ...args) {
+        const id = originalSetInterval(fn, delay, ...args);
+        window.__intervalRegistry.push({ id, fn, delay });
+        return id;
+    };
+
+    const dummyID = setInterval(() => {}, 999999);
+    clearInterval(dummyID);
+
+    for (let i = dummyID - 10; i <= dummyID; i++) {
+        if (!window.__intervalRegistry.some(entry => entry.id === i)) {
+        clearInterval(i);
+        console.debug("Cleared unknown interval:", i);
+        }
+    }
+}
+
+
 function patchInit() {
-    version = "4-30-2025__1";
+    bustUserTracker(); // byebye user tracker
     injectGoods();
     injectExtraTheme();
-    clockTaskVisualRefresh();
+    clockTaskVisualRefresh(); // also is new user tracker
     modifiedClockInit();
     checkWeatherAndCreateEffects();
     adjustToolbar();
