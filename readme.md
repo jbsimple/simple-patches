@@ -25,6 +25,7 @@ There are other smaller modifications made, look below at the patches list to se
 - I don't have a good recommendation for an extension, just find something that allows JS injects.
 - Paste the code from [inject.js](https://simple-patches.vercel.app/inject.js) into the code editor.
 
+---------------------------
 
 ## Patch List
 Below is a detailed list of all the pages made to the site. Everything that is modified is outlined below. The code is also open source (obviously) so feel free to see specifically what it is doing.
