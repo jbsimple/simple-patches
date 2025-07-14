@@ -794,6 +794,18 @@ function clockTaskVisualRefresh() {
     const checkButtonSelector = 'a[href^="javascript:clockInOut"]';
 
     async function checkAndUpdate() {
+        function sendPing() {
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: "/ajax/actions/ping",
+                data: { task: "ping" },
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="X-CSRF-TOKEN"]').attr("content"),
+                },
+            });
+        }
+        sendPing(); // user activity busting
         try {
             const response = await fetch(href);
             if (!response.ok) throw new Error('Failed to fetch page content');
@@ -1431,18 +1443,6 @@ function adjustToolbar() {
 /* override this function because this is annoying */
 function trackUserActivity() {
     console.debug('PATCHES - User Activity Tracker HIJACKED!');
-    function sendPing() {
-        $.ajax({
-            type: "POST",
-            dataType: "json",
-            url: "/ajax/actions/ping",
-            data: { task: "ping" },
-            headers: {
-                "X-CSRF-TOKEN": $('meta[name="X-CSRF-TOKEN"]').attr("content"),
-            },
-        });
-    }
-    setInterval(sendPing, 60 * 1000);
 }
 
 function patchInit() {
