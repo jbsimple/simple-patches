@@ -1462,32 +1462,39 @@ function bustUserTracker() {
         return id;
     };
 
-    const dummyID = setInterval(() => {}, 999999);
-    clearInterval(dummyID);
+    setTimeout(() => {
+        const dummyID = setInterval(() => {}, 999999);
+        clearInterval(dummyID);
 
-    for (let i = dummyID - 50; i <= dummyID; i++) {
-        const tracked = window.__intervalRegistry.find(entry => entry.id === i);
+        for (let i = dummyID - 50; i <= dummyID; i++) {
+            const tracked = window.__intervalRegistry.find(entry => entry.id === i);
 
-        if (tracked) {
-            if (tracked.delay === 60000) {
-                clearInterval(i);
-                console.debug(
-                    `PATCHES - Cleared tracked 60s interval: ID=${i}, Function=${tracked.fn.name || 'anonymous'}`
-                );
-            } else {
-                console.debug(
-                    `PATCHES - Kept interval: ID=${i}, Delay=${tracked.delay}ms`
-                );
+            if (tracked) {
+                if (tracked.delay === 60000) {
+                    clearInterval(i);
+                    console.debug(
+                        `PATCHES - Cleared tracked 60s interval: ID=${i}, Function=${tracked.fn.name || 'anonymous'}`
+                    );
+                } else {
+                    console.debug(
+                        `PATCHES - Kept interval: ID=${i}, Delay=${tracked.delay}ms`
+                    );
+                }
             }
         }
-    }
+
+        if (typeof clockTaskVisualRefresh === 'function') {
+            console.debug('PATCHES - Restarting visual refresh manually.');
+            clockTaskVisualRefresh();
+        }
+    }, 1000);
 }
 
 function patchInit() {
     bustUserTracker(); // byebye user tracker
     injectGoods();
     injectExtraTheme();
-    clockTaskVisualRefresh(); // also is new user tracker
+    // clockTaskVisualRefresh(); // also is new user tracker
     modifiedClockInit();
     checkWeatherAndCreateEffects();
     adjustToolbar();
