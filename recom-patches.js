@@ -1452,46 +1452,51 @@ window.trackUserActivity = function () {
     console.debug("PATCHES - trackUserActivity disabled.");
 };
 
-function bustLateIntervals() {
-    const dummyID = setInterval(() => {}, 999999);
-    clearInterval(dummyID);
+function bustUserTracker() {
+    window.__intervalRegistry = [];
 
-    for (let i = dummyID - 100; i <= dummyID; i++) {
-        try {
-            const intervalDesc = window.__lookupIntervalCallback
-                ? window.__lookupIntervalCallback(i)
-                : null;
+    // Monkey-patch setInterval to track future intervals
+    const originalSetInterval = window.setInterval;
+    window.setInterval = function (fn, delay, ...args) {
+        const id = originalSetInterval(fn, delay, ...args);
+        window.__intervalRegistry.push({ id, fn, delay });
+        return id;
+    };
 
-            const originalClear = clearInterval;
-            let found = false;
+    // Give the page a second to load its own intervals
+    setTimeout(() => {
+        const dummyID = setInterval(() => {}, 999999);
+        clearInterval(dummyID);
 
-            const callbackMap = new Map();
-            const tempSet = window.setInterval;
+        for (let i = dummyID - 50; i <= dummyID; i++) {
+            const tracked = window.__intervalRegistry.find(entry => entry.id === i);
 
-            window.setInterval = function (fn, delay) {
-                const id = tempSet(fn, delay);
-                callbackMap.set(id, fn);
-                return id;
-            };
+            if (!tracked) {
+                // Try to detect if the interval is calling a ping function
+                try {
+                    // We'll try to rewrap the ID and see if it triggers anything (risky, not reliable)
+                    console.debug(`Unknown interval ID=${i} — attempting to clear.`);
 
-            const trappedID = setInterval(() => {}, 10);
-            const trappedFn = callbackMap.get(trappedID);
-            clearInterval(trappedID);
-
-            window.setInterval = tempSet;
-
-        } catch (err) {}
-        clearInterval(i);
-
-        console.debug(`PATCHES - Cleared suspected interval ID=${i}`);
-    }
+                    clearInterval(i);
+                    console.debug(`PATCHES - Cleared UNKNOWN interval ID=${i}`);
+                } catch (err) {
+                    console.warn(`Could not clear interval ID=${i}`, err);
+                }
+            } else {
+                const fnText = tracked.fn.toString();
+                console.debug(
+                    `Keeping interval: ID=${i}, Delay=${tracked.delay}ms\nFunction:\n${fnText}`
+                );
+            }
+        }
+    }, 1500); // Delay long enough for trackUserActivity() to run
 }
 
 function patchInit() {
     bustUserTracker(); // byebye user tracker
     injectGoods();
     injectExtraTheme();
-    clockTaskVisualRefresh(); // also does ping
+    // clockTaskVisualRefresh(); // also is new user tracker
     modifiedClockInit();
     checkWeatherAndCreateEffects();
     adjustToolbar();
