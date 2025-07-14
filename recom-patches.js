@@ -1519,7 +1519,10 @@ function bustUserTracker() {
 }
 
 function patchInit() {
-    bustUserTracker(); // byebye user tracker
+    // the logout code has been disabled
+    // so theres no need to bust the tracking
+    // bustUserTracker();
+    
     injectGoods();
     injectExtraTheme();
     clockTaskVisualRefresh(false);
