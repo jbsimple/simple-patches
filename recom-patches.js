@@ -1457,6 +1457,7 @@ window.trackUserActivity = function () {
 
 function bustUserTracker() {
     function simulateUserActivity() {
+        console.debug('PATCHES - Simulated events for userTracker');
         const events = ["mousemove", "keydown", "scroll", "click"];
         
         events.forEach(eventType => {
