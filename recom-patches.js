@@ -1463,7 +1463,6 @@ function bustUserTracker() {
         return id;
     };
 
-    // Give the page a second to load its own intervals
     setTimeout(() => {
         const dummyID = setInterval(() => {}, 999999);
         clearInterval(dummyID);
@@ -1472,21 +1471,17 @@ function bustUserTracker() {
             const tracked = window.__intervalRegistry.find(entry => entry.id === i);
 
             if (!tracked) {
-                // Try to detect if the interval is calling a ping function
                 try {
-                    // We'll try to rewrap the ID and see if it triggers anything (risky, not reliable)
-                    console.debug(`Unknown interval ID=${i} — attempting to clear.`);
+                    console.debug(`
+                        PATCHES - Unknown interval ID=${i} — attempting to clear.`);
 
                     clearInterval(i);
-                    console.debug(`PATCHES - Cleared UNKNOWN interval ID=${i}`);
+                    console.debug(`PATCHES - Cleared UNKNOWN interval ID=${i}\nTracked:`, tracked);
                 } catch (err) {
                     console.warn(`Could not clear interval ID=${i}`, err);
                 }
             } else {
-                const fnText = tracked.fn.toString();
-                console.debug(
-                    `Keeping interval: ID=${i}, Delay=${tracked.delay}ms\nFunction:\n${fnText}`
-                );
+                console.debug(`Keeping interval: ID=${i}, \nTracked:`, tracked);
             }
         }
     }, 1500); // Delay long enough for trackUserActivity() to run
