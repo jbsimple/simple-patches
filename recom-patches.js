@@ -1513,6 +1513,9 @@ function bustUserTracker() {
             }
         }
     });
+
+    // still do it on first run
+    simulateUserActivity();
 }
 
 function patchInit() {
