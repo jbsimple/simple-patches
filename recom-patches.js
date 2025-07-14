@@ -1456,12 +1456,29 @@ window.trackUserActivity = function () {
 };
 
 function bustUserTracker() {
-    // Using Web Worker and BroadcastChannel to bypass inactive tab issues.
+    function simulateUserActivity() {
+        console.debug('PATCHES - Simulated events for userTracker');
+        const events = ["mousemove", "keydown", "scroll", "click"];
+        events.forEach(eventType => {
+            const event = new Event(eventType, {
+                bubbles: true,
+                cancelable: true,
+            });
+            document.dispatchEvent(event);
+        });
+    }
+
     const workerCode = `
         const channel = new BroadcastChannel('userSim');
-        setInterval(() => {
-            channel.postMessage('simulate');
-        }, 30000);
+        let interval = 30000;
+
+        function start() {
+            setInterval(() => {
+                channel.postMessage('simulate');
+            }, interval);
+        }
+
+        start();
     `;
 
     const blob = new Blob([workerCode], { type: 'application/javascript' });
@@ -1470,19 +1487,32 @@ function bustUserTracker() {
     const worker = new Worker(workerUrl);
     const channel = new BroadcastChannel('userSim');
 
+    let aggressiveIntervalId = null;
+
     channel.onmessage = (e) => {
-        if (e.data === 'simulate') {
-            console.debug('PATCHES - Simulated events for userTracker');
-            const events = ["mousemove", "keydown", "scroll", "click"];
-            events.forEach(eventType => {
-                const event = new Event(eventType, {
-                    bubbles: true,
-                    cancelable: true,
-                });
-                document.dispatchEvent(event);
-            });
+        if (e.data === 'simulate' && document.visibilityState === 'visible') {
+            simulateUserActivity();
         }
     };
+
+    document.addEventListener('visibilitychange', () => {
+        console.debug('Document visibility changed:', document.visibilityState);
+        if (document.visibilityState === 'hidden') {
+            console.debug('Entering aggressive simulation mode');
+
+            if (!aggressiveIntervalId) {
+                aggressiveIntervalId = setInterval(() => {
+                    simulateUserActivity();
+                }, 10000); // when tab not visible, change to 10s to "bypass" browser inactive tab behavior
+            }
+        } else {
+            console.debug('Resuming normal simulation mode');
+            if (aggressiveIntervalId) {
+                clearInterval(aggressiveIntervalId);
+                aggressiveIntervalId = null;
+            }
+        }
+    });
 }
 
 function patchInit() {
