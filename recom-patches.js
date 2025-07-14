@@ -1440,11 +1440,6 @@ function adjustToolbar() {
     }
 }
 
-/* override this function because this is annoying */
-function trackUserActivity() {
-    console.debug('PATCHES - User Activity Tracker HIJACKED!');
-}
-
 function patchInit() {
     version = "4-30-2025__1";
     injectGoods();
