@@ -789,29 +789,32 @@ async function updatePictureLocations() {
     }
 }
 
-function clockTaskVisualRefresh() {
+function clockTaskVisualRefresh(ping = false) {
     const href = '/user/me';
     const checkButtonSelector = 'a[href^="javascript:clockInOut"]';
 
     async function checkAndUpdate() {
-        function sendPing() {
-            $.ajax({
-                type: "POST",
-                dataType: "json",
-                url: "/ajax/actions/ping",
-                data: { task: "ping" },
-                headers: {
-                    "X-CSRF-TOKEN": $('meta[name="X-CSRF-TOKEN"]').attr("content"),
-                },
-                success: function(response) {
-                    console.debug('Ping request sent successfully:', response);
-                },
-                error: function(xhr, status, error) {
-                    console.warn('Ping request failed:', status, error);
-                }
-            });
+        if (ping) {
+            function sendPing() {
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: "/ajax/actions/ping",
+                    data: { task: "ping" },
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="X-CSRF-TOKEN"]').attr("content"),
+                    },
+                    success: function(response) {
+                        console.debug('Ping request sent successfully:', response);
+                    },
+                    error: function(xhr, status, error) {
+                        console.warn('Ping request failed:', status, error);
+                    }
+                });
+            }
+            sendPing(); // user activity busting
         }
-        sendPing(); // user activity busting
+
         try {
             const response = await fetch(href);
             if (!response.ok) throw new Error('Failed to fetch page content');
@@ -1453,42 +1456,25 @@ window.trackUserActivity = function () {
 };
 
 function bustUserTracker() {
-    window.__intervalRegistry = [];
-
-    // Monkey-patch setInterval to track future intervals
-    const originalSetInterval = window.setInterval;
-    window.setInterval = function (fn, delay, ...args) {
-        const id = originalSetInterval(fn, delay, ...args);
-        window.__intervalRegistry.push({ id, fn, delay });
-        return id;
-    };
-
-    setTimeout(() => {
-        const dummyID = setInterval(() => {}, 999999);
-        clearInterval(dummyID);
-
-        for (let i = 0; i <= dummyID; i++) {
-            const tracked = window.__intervalRegistry.find(entry => entry.id === i);
-
-            if (!tracked) {
-                try {
-                    clearInterval(i);
-                    console.debug(`PATCHES - Cleared UNKNOWN interval ID=${i}.`);
-                } catch (err) {
-                    console.warn(`Could not clear interval ID=${i}`, err);
-                }
-            } else {
-                console.debug(`Keeping interval: ID=${i}, \nTracked:`, tracked);
-            }
-        }
-    }, 1500); // Delay long enough for trackUserActivity() to run
+    function simulateUserActivity() {
+        const events = ["mousemove", "keydown", "scroll", "click"];
+        
+        events.forEach(eventType => {
+            const event = new Event(eventType, {
+            bubbles: true,
+            cancelable: true,
+            });
+            document.dispatchEvent(event);
+        });
+    }
+    setInterval(simulateUserActivity, 30000);
 }
 
 function patchInit() {
     bustUserTracker(); // byebye user tracker
     injectGoods();
     injectExtraTheme();
-    // clockTaskVisualRefresh(); // also is new user tracker
+    clockTaskVisualRefresh(false);
     modifiedClockInit();
     checkWeatherAndCreateEffects();
     adjustToolbar();
