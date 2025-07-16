@@ -533,7 +533,7 @@ async function updatePictureLocations() {
                     <div class="patches-column" style="gap: 0;">
                         <div class="patches-progress" id="patch_picloc_progress" style="display: none;"></div>
                     </div>
-                    <div class="patches-row" style="patch_picloc_stats">
+                    <div class="patches-row" id="patch_picloc_stats" style="display: none;">
                         <div class="patches-column" style="gap: 0.25rem;">
                             <strong>Success:</strong>
                             <span id="patch_picloc_success">0</span>
