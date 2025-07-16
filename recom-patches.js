@@ -509,7 +509,7 @@ async function updatePictureLocations() {
                         <p class="fs-6 fw-semibold form-label mb-2"><b>2</b>: Hit submit and wait a little bit for the locations to update.</p>
                         <p class="fs-6 fw-semibold form-label mb-2"><b>3</b>: See the results, spot any issues and be happy I guess.</p>
                         <p class="fs-6 fw-semibold form-label mb-2"><i>* Please Note: This does a blanket search in FBA Check and Pending Inventory for your list with locations that contains PICTURES. It will update EVERYTHING it sees.</i></p>
-                        <p class="fs-6 fw-semibold form-label mb-2"><i>* Also Note: This is a very slow process, especially for long lists. So once you start it, just leave it. Start another batch, move the stuff over. Just don't close the tab.</i></p>
+                        <p class="fs-6 fw-semibold form-label mb-2"><i>* Also Note: This is a very slow process, especially for long lists. So once you start it, just leave it, don't close the tab.</i></p>
                     </div>
                     <div class="d-flex flex-column mb-8">
                         <label class="fs-6 fw-bold mb-2" for="patch_picloc-text-location">New Location:</label>
