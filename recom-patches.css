@@ -368,8 +368,8 @@ div.dataTables_wrapper div.dataTables_processing {
 }
 
 #patch_picloc_stats {
-    gap: 1rem !important;
-    margin-top: 1.5rem !important;
+    gap: 1.5rem !important;
+    margin-top: 2rem !important;
 }
 
 #patch_picloc_result {
