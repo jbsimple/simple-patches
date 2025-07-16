@@ -533,6 +533,22 @@ async function updatePictureLocations() {
                     <div class="patches-column" style="gap: 0;">
                         <div class="patches-progress" id="patch_picloc_progress" style="display: none;"></div>
                     </div>
+                    <div class="patches-row" style="patch_picloc_stats">
+                        <div class="patches-column" style="gap: 0.25rem;">
+                            <strong>Success:</strong>
+                            <span id="patch_picloc_success">0</span>
+                        </div>
+                        <span>|</span>
+                        <div class="patches-column" style="gap: 0.25rem;">
+                            <strong>Fail:</strong>
+                            <span id="patch_picloc_fail">0</span>
+                        </div>
+                        <span>|</span>
+                        <div class="patches-column" style="gap: 0.25rem;">
+                            <strong>Total:</strong>
+                            <span id="patch_picloc_total">0</span>
+                        </div>
+                    </div>
                     <div class="patches-column" style="gap: 0.25rem !important;" id="patch_picloc_result"></div>
                 </div>
             </div>
@@ -580,7 +596,7 @@ async function updatePictureLocations() {
                     console.debug('Patches - Parsed List:', values);
                     const log = [];
                     for (let index = 0; index < values.length; index++) {
-                        updateProgress(index, values.length);
+                        //updateProgress(index, values.length);
                         const item = values[index];
                         const draw = index + 1;
                         let fba = `/datatables/FbaInventoryQueue?draw=${draw}&columns%5B0%5D%5Bdata%5D=0&columns%5B0%5D%5Bname%5D=&columns%5B0%5D%5Bsearchable%5D=true&columns%5B0%5D%5Borderable%5D=true&columns%5B0%5D%5Bsearch%5D%5Bvalue%5D=${item}&columns%5B0%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B1%5D%5Bdata%5D=1&columns%5B1%5D%5Bname%5D=&columns%5B1%5D%5Bsearchable%5D=true&columns%5B1%5D%5Borderable%5D=true&columns%5B1%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B1%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B2%5D%5Bdata%5D=2&columns%5B2%5D%5Bname%5D=&columns%5B2%5D%5Bsearchable%5D=true&columns%5B2%5D%5Borderable%5D=true&columns%5B2%5D%5Bsearch%5D%5Bvalue%5D=PICTURES&columns%5B2%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B3%5D%5Bdata%5D=3&columns%5B3%5D%5Bname%5D=&columns%5B3%5D%5Bsearchable%5D=true&columns%5B3%5D%5Borderable%5D=true&columns%5B3%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B3%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B4%5D%5Bdata%5D=4&columns%5B4%5D%5Bname%5D=&columns%5B4%5D%5Bsearchable%5D=true&columns%5B4%5D%5Borderable%5D=true&columns%5B4%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B4%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B5%5D%5Bdata%5D=5&columns%5B5%5D%5Bname%5D=&columns%5B5%5D%5Bsearchable%5D=true&columns%5B5%5D%5Borderable%5D=true&columns%5B5%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B5%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B6%5D%5Bdata%5D=6&columns%5B6%5D%5Bname%5D=&columns%5B6%5D%5Bsearchable%5D=true&columns%5B6%5D%5Borderable%5D=true&columns%5B6%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B6%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B7%5D%5Bdata%5D=7&columns%5B7%5D%5Bname%5D=&columns%5B7%5D%5Bsearchable%5D=true&columns%5B7%5D%5Borderable%5D=true&columns%5B7%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B7%5D%5Bsearch%5D%5Bregex%5D=false&start=0&length=20&search%5Bvalue%5D=&search%5Bregex%5D=false&_=${Date.now()}`
@@ -686,7 +702,26 @@ async function updatePictureLocations() {
                     resetSubmitButton();
                 }
 
-                function updateProgress(num, den) {
+                function printLog(entry, index, length) {
+                    updateProgress((index + 1), length, entry.success); // plus one
+                    const resultPrintout = document.getElementById('patch_picloc_result');
+                    patch_picloc_result.style.display = 'flex';
+                    const status = entry.success ? '<span style="color: var(--bs-primary);">GOOD</span>' : '<span style="color: var(--bs-danger);">ERROR</span>';
+                    const event = entry.eventID ? `<span>[(Event ID: ${entry.eventID})]</span>` : '';
+                    resultPrintout.innerHTML += `<p style="display: inline-flex; flex-direction: row; gap: 0.25rem; margin: 0;">
+                        <strong>${status}</strong>
+                        <span>=><span>
+                        <a href="/receiving/queues/inventory?column=0&keyword=${encodeURIComponent(entry.item)}" target="_blank">${entry.item}</a>
+                        ${event}
+                        <span>:</span>
+                        <span>${entry.message}</span>
+                    </p>`;
+                    setTimeout(() => {
+                        resultPrintout.scrollTop = resultPrintout.scrollHeight;
+                    }, 0);
+                }
+
+                function updateProgress(num, den, good) {
                     const bar = document.getElementById('patch_picloc_progress');
                     if (bar && den !== 0) {
                         const percentage = (num / den) * 100;
@@ -695,6 +730,26 @@ async function updatePictureLocations() {
                     } else if (bar) {
                         bar.style.display = 'none';
                         bar.style.width = '0%';
+                    }
+
+                    const stats = document.getElementById('patch_picloc_stats');
+                    const success = document.getElementById('patch_picloc_success');
+                    const fail = document.getElementById('patch_picloc_fail');
+                    const total = document.getElementById('patch_picloc_total');
+                    if (stats && success && fail && total) {
+                        stats.style.display = 'flex';
+
+                        let successCount = parseInt(success.textContent) || 0;
+                        let failCount = parseInt(fail.textContent) || 0;
+                        if (good) {
+                            successCount++;
+                        } else {
+                            failCount++;
+                        }
+
+                        success.textContent = successCount;
+                        fail.textContent = failCount;
+                        total.textContent = successCount + failCount;
                     }
                 }
 
@@ -713,8 +768,6 @@ async function updatePictureLocations() {
                         resultPrintout.scrollTop = resultPrintout.scrollHeight;
                     }, 0);
 
-                    updateProgress(1/1);
-
                     window.removeEventListener('beforeunload', unloadWarning);
                     isRunning = false;
                 }
@@ -722,24 +775,6 @@ async function updatePictureLocations() {
                 function unloadWarning(e) {
                     e.preventDefault();
                     e.returnValue = '';
-                }
-
-                function printLog(entry) {
-                    const resultPrintout = document.getElementById('patch_picloc_result');
-                    patch_picloc_result.style.display = 'flex';
-                    const status = entry.success ? '<span style="color: var(--bs-primary);">GOOD</span>' : '<span style="color: var(--bs-danger);">ERROR</span>';
-                    const event = entry.eventID ? `<span>[(Event ID: ${entry.eventID})]</span>` : '';
-                    resultPrintout.innerHTML += `<p style="display: inline-flex; flex-direction: row; gap: 0.25rem; margin: 0;">
-                        <strong>${status}</strong>
-                        <span>=><span>
-                        <a href="/receiving/queues/inventory?column=0&keyword=${encodeURIComponent(entry.item)}" target="_blank">${entry.item}</a>
-                        ${event}
-                        <span>:</span>
-                        <span>${entry.message}</span>
-                    </p>`;
-                    setTimeout(() => {
-                        resultPrintout.scrollTop = resultPrintout.scrollHeight;
-                    }, 0);
                 }
             };
         }
