@@ -1049,7 +1049,7 @@ function extraMediaInit() {
     }
 
     async function nukeAllSkuImages() {
-        let protected_conditions = protected_conditions = [
+        let protected_conditions = [
             {"id":6, "title":"Defective"},
             {"id":8, "title":"Incomplete"},
             {"id":18, "title":"Used Phones - Imaging"}
