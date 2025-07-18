@@ -1038,7 +1038,11 @@ function extraMediaInit() {
     async function nukeAllSkuImages(safe = true) {
         let protected_conditions = [];
         if (safe) {
-            protected_conditions = [6, 8, 18];
+            protected_conditions = [
+                {"id":6, "title":"Defective"},
+                {"id":8, "title":"Incomplete"},
+                {"id":18, "title":"Used Phones - Imaging"}
+            ];
         }
 
         const url = window.location.href;
@@ -1059,8 +1063,26 @@ function extraMediaInit() {
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
 
-            const skuLinks = Array.from(doc.querySelectorAll('a[href^="product/items/"]'))
-                .map(a => a.getAttribute('href'));
+            const protectedTitles = protected_conditions.map(p => p.title.toLowerCase());
+            const tableRows = doc.querySelectorAll('table tbody tr');
+
+            const skuLinks = [];
+
+            tableRows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                if (cells.length >= 2) {
+                    const linkElement = cells[0].querySelector('a[href^="product/items/"]');
+                    const conditionText = cells[1].textContent.trim().toLowerCase();
+
+                    if (linkElement) {
+                        if (protectedTitles.includes(conditionText)) {
+                            console.log(`Skipping protected condition: "${conditionText}"`);
+                        } else {
+                            skuLinks.push(linkElement.getAttribute('href'));
+                        }
+                    }
+                }
+            });
 
             console.log('Found SKU links:', skuLinks);
 
@@ -1095,7 +1117,7 @@ function extraMediaInit() {
             }
 
             console.log('Collected image IDs:', imageIds);
-            
+
         } catch (err) {
             console.error('Error during SKU image nuke process:', err);
         }
