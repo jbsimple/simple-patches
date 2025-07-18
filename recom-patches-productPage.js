@@ -924,11 +924,9 @@ function extraMediaInit() {
         newElement.classList.add('fv-row');
         newElement.classList.add('mb-2');
         newElement.setAttribute('style', 'padding-bottom: 1.5rem; display: flex; flex-wrap: wrap; gap: 1rem; align-items: center');
-        
-        // Add button if there are image elements
-        if (imageElements.length > 0) {
 
-            // open all button
+        // open all button
+        if (imageElements.length > 0) {
             var openAllButton = document.createElement('button');
             openAllButton.classList.add('btn');
             openAllButton.classList.add('btn-info');
@@ -944,8 +942,10 @@ function extraMediaInit() {
                 openAllButton.title = "Popups are disabled, please enable for this to work.";
             }
             newElement.appendChild(openAllButton);
+        }
 
-            // delete all button
+        // delete all button
+        if (imageElements.length > 0) {
             var deleteAllButton = document.createElement('button');
             deleteAllButton.classList.add('btn');
             deleteAllButton.classList.add('btn-info');
@@ -959,25 +959,24 @@ function extraMediaInit() {
             deleteAllButton.style.borderRadius = '5px';
             deleteAllButton.onclick = deleteAllImages;
             newElement.appendChild(deleteAllButton);
+        }
 
-            // nuke sku button
-            const url = window.location.href;
-            if (url.includes('/products/')) {
-                var nukeAllButton = document.createElement('button');
-                nukeAllButton.classList.add('btn');
-                nukeAllButton.classList.add('btn-info');
-                nukeAllButton.classList.add('btn-danger');
-                nukeAllButton.id = 'deleteAllImages';
-                nukeAllButton.textContent = 'Delete All SKU Images';
-                nukeAllButton.style.color = 'white';
-                nukeAllButton.style.border = 'none';
-                nukeAllButton.style.padding = '10px 20px';
-                nukeAllButton.style.cursor = 'pointer';
-                nukeAllButton.style.borderRadius = '5px';
-                nukeAllButton.onclick = nukeAllSkuImages;
-                newElement.appendChild(nukeAllButton);
-            }
-
+        // nuke sku button
+        const url = window.location.href;
+        if (url.includes('/products/')) {
+            var nukeAllButton = document.createElement('button');
+            nukeAllButton.classList.add('btn');
+            nukeAllButton.classList.add('btn-info');
+            nukeAllButton.classList.add('btn-danger');
+            nukeAllButton.id = 'deleteAllImages';
+            nukeAllButton.textContent = 'Delete All SKU Images';
+            nukeAllButton.style.color = 'white';
+            nukeAllButton.style.border = 'none';
+            nukeAllButton.style.padding = '10px 20px';
+            nukeAllButton.style.cursor = 'pointer';
+            nukeAllButton.style.borderRadius = '5px';
+            nukeAllButton.onclick = nukeAllSkuImages;
+            newElement.appendChild(nukeAllButton);
         }
         
         media_tree_parent.insertBefore(newElement, media_tree);
