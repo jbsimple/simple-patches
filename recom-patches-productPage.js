@@ -969,6 +969,13 @@ function extraMediaInit() {
         // nuke sku button
         const url = window.location.href;
         if (url.includes('/products/')) {
+            const parameterContainer = document.createElement('div');
+            parameterContainer.setAttribute('style', 'display: flex; flex-direction: column; gap: 0.25rem;');
+            parameterContainer.title = 'Unchecking this will also delete 6, 8, and 18';
+            parameterContainer.innerHTML = `<label for="patches-nukeButtonToggle">Safe Delete?</label>
+            <input type="checkbox" id="patches-nukeButtonToggle" checked>`;
+            newElement.appendChild(parameterContainer);
+
             var nukeAllButton = document.createElement('button');
             nukeAllButton.classList.add('btn');
             nukeAllButton.classList.add('btn-info');
@@ -1041,16 +1048,18 @@ function extraMediaInit() {
         });
     }
 
-    async function nukeAllSkuImages(safe = true) {
-        let protected_conditions = [];
-        if (safe) {
-            protected_conditions = [
-                {"id":6, "title":"Defective"},
-                {"id":8, "title":"Incomplete"},
-                {"id":18, "title":"Used Phones - Imaging"}
-            ];
-        }
+    async function nukeAllSkuImages() {
+        let protected_conditions = protected_conditions = [
+            {"id":6, "title":"Defective"},
+            {"id":8, "title":"Incomplete"},
+            {"id":18, "title":"Used Phones - Imaging"}
+        ];
 
+        const safeCheckbox = document.getElementById('patches-nukeButtonToggle');
+        if (safeCheckbox && !safeCheckbox.checked) {
+            protected_conditions = [];
+        }
+        
         const url = window.location.href;
         const parts = url.split('/');
         const lastPart = parts.filter(Boolean).pop();
