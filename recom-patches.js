@@ -273,6 +273,7 @@ function modalWarning(message, icon = 'warning', refresh = false) {
             confirmButton: 'btn btn-primary',
             cancelButton: 'btn btn-secondary'
         },
+        buttonsStyling: false,
         allowOutsideClick: false,
         allowEscapeKey: true
     }).then((result) => {
