@@ -921,9 +921,7 @@ function extraMediaInit() {
 
     if (media_tab && media_tree) {
         var newElement = document.createElement('div');
-        newElement.classList.add('fv-row');
-        newElement.classList.add('mb-2');
-        newElement.setAttribute('style', 'padding-bottom: 1.5rem; display: flex; flex-direction: row; gap: 1rem; align-items: center');
+        newElement.setAttribute('style', 'margin-bottom: 2.5rem; display: flex; flex-direction: row; gap: 1rem; align-items: center');
 
         // open all button
         if (imageElements.length > 0) {
@@ -932,6 +930,7 @@ function extraMediaInit() {
             openAllButton.classList.add('btn-info');
             openAllButton.id = 'patch_openAllImages';
             openAllButton.textContent = 'Open All Images';
+            openAllButton.title = 'Opens each image into a new tab.';
             openAllButton.style.color = 'white';
             openAllButton.style.border = 'none';
             openAllButton.style.padding = '10px 20px';
@@ -952,6 +951,7 @@ function extraMediaInit() {
             deleteAllButton.classList.add('btn-danger');
             deleteAllButton.id = 'deleteAllImages';
             deleteAllButton.textContent = 'Delete All Images';
+            deleteAllButton.title = 'Deletes All Images Below.';
             deleteAllButton.style.color = 'white';
             deleteAllButton.style.border = 'none';
             deleteAllButton.style.padding = '10px 20px';
@@ -975,6 +975,7 @@ function extraMediaInit() {
             nukeAllButton.classList.add('btn-danger');
             nukeAllButton.id = 'deleteAllImages';
             nukeAllButton.textContent = 'Delete All SKU Images';
+            nukeAllButton.title = 'Deletes All Children SKU Images (except for 6,8,18)';
             nukeAllButton.style.color = 'white';
             nukeAllButton.style.border = 'none';
             nukeAllButton.style.padding = '10px 20px';
