@@ -269,8 +269,12 @@ function modalWarning(message, icon = 'warning', refresh = false) {
         showCancelButton: true,
         confirmButtonText: "Gocha",
         cancelButtonText: "Close",
+        customClass: {
+            confirmButton: 'btn btn-primary',
+            cancelButton: 'btn btn-secondary'
+        },
         allowOutsideClick: false,
-        allowEscapeKey: true,
+        allowEscapeKey: true
     }).then((result) => {
         console.debug('PATCHES - Swal response:', result);
         if (refresh) {
