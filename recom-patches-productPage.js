@@ -963,19 +963,19 @@ function extraMediaInit() {
             // nuke sku button
             const url = window.location.href;
             if (url.includes('/products/')) {
-                var deleteAllButton = document.createElement('button');
-                deleteAllButton.classList.add('btn');
-                deleteAllButton.classList.add('btn-info');
-                deleteAllButton.classList.add('btn-danger');
-                deleteAllButton.id = 'deleteAllImages';
-                deleteAllButton.textContent = 'Delete All SKU Images';
-                deleteAllButton.style.color = 'white';
-                deleteAllButton.style.border = 'none';
-                deleteAllButton.style.padding = '10px 20px';
-                deleteAllButton.style.cursor = 'pointer';
-                deleteAllButton.style.borderRadius = '5px';
-                deleteAllButton.onclick = nukeAllSkuImages;
-                newElement.appendChild(deleteAllButton);
+                var nukeAllButton = document.createElement('button');
+                nukeAllButton.classList.add('btn');
+                nukeAllButton.classList.add('btn-info');
+                nukeAllButton.classList.add('btn-danger');
+                nukeAllButton.id = 'deleteAllImages';
+                nukeAllButton.textContent = 'Delete All SKU Images';
+                nukeAllButton.style.color = 'white';
+                nukeAllButton.style.border = 'none';
+                nukeAllButton.style.padding = '10px 20px';
+                nukeAllButton.style.cursor = 'pointer';
+                nukeAllButton.style.borderRadius = '5px';
+                nukeAllButton.onclick = nukeAllSkuImages;
+                newElement.appendChild(nukeAllButton);
             }
 
         }
