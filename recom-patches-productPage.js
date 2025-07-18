@@ -949,7 +949,7 @@ function extraMediaInit() {
             var deleteAllButton = document.createElement('button');
             deleteAllButton.classList.add('btn');
             deleteAllButton.classList.add('btn-info');
-            deleteAllButton.classList.add('btn-danger');
+            deleteAllButton.classList.add('btn-warning');
             deleteAllButton.id = 'deleteAllImages';
             deleteAllButton.textContent = 'Delete All Images';
             deleteAllButton.style.color = 'white';
@@ -959,6 +959,24 @@ function extraMediaInit() {
             deleteAllButton.style.borderRadius = '5px';
             deleteAllButton.onclick = deleteAllImages;
             newElement.appendChild(deleteAllButton);
+
+            // nuke sku button
+            const url = window.location.href;
+            if (url.includes('/products/')) {
+                var deleteAllButton = document.createElement('button');
+                deleteAllButton.classList.add('btn');
+                deleteAllButton.classList.add('btn-info');
+                deleteAllButton.classList.add('btn-danger');
+                deleteAllButton.id = 'deleteAllImages';
+                deleteAllButton.textContent = 'Delete All SKU Images';
+                deleteAllButton.style.color = 'white';
+                deleteAllButton.style.border = 'none';
+                deleteAllButton.style.padding = '10px 20px';
+                deleteAllButton.style.cursor = 'pointer';
+                deleteAllButton.style.borderRadius = '5px';
+                deleteAllButton.onclick = nukeAllSkuImages;
+                newElement.appendChild(deleteAllButton);
+            }
 
         }
         
@@ -1016,6 +1034,42 @@ function extraMediaInit() {
                 }
             });
         });
+    }
+
+    function nukeAllSkuImages(safe = true) {
+        let protected_conditions = [];
+        if (safe) {
+            protected_conditions = [6, 8, 18];
+        }
+
+        const url = window.location.href;
+        const parts = url.split('/');
+        const lastPart = parts.filter(Boolean).pop();
+        const id = parseInt(lastPart);
+
+        if (isNaN(id)) {
+            console.error('Invalid product ID in URL:', lastPart);
+            return;
+        }
+
+        fetch(`/ajax/modals/productitems/${id}`)
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to fetch product modal info.');
+                return response.text();
+            })
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+
+                const skuLinks = Array.from(doc.querySelectorAll('a[href^="product/items/"]'))
+                    .map(a => a.getAttribute('href'));
+
+                console.log('Found SKU links:', skuLinks);
+
+            })
+            .catch(err => {
+                console.error('Error fetching or parsing modal:', err);
+            });
     }
 
     function checkPopup() {
