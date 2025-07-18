@@ -1,5 +1,6 @@
 let version = '...';
 let currentuser = '';
+let metals = 'Kurtis';
 
 function injectGoods() {
     document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches.css?v=' + Date.now() + '" type="text/css"/>';
@@ -95,15 +96,19 @@ function injectExtraTheme() {
             if (name && name.textContent.includes('Hi, Luke')) {
                 icon = "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/abe.gif";
                 name.textContent = 'Hi, Psychopath';
+            } else if (name && name.textContent.includes('Hi, Nate')) {
+                icon = "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/abe.gif";
+                name.textContent = 'Hi, Nasty Nate';
+            }
+
+            // metals warning 
+            if (name && name.textContent.includes(metals)) {
                 scheduleRun(15, 50, () => {
-                    fireSwal("CLOCK CHECK!", "It's 3:50PM, get ready to detect METAL.");
+                        fireSwal("CLOCK CHECK!", "It's 3:50PM, get ready to detect METAL.");
                 });
                 scheduleRun(15, 55, () => {
                     fireSwal("CLOCK CHECK!", "It's 3:55PM, Detect the METAL.");
                 });
-            } else if (name && name.textContent.includes('Hi, Nate')) {
-                icon = "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/abe.gif";
-                name.textContent = 'Hi, Nasty Nate';
             }
 
             /*
