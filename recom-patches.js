@@ -96,10 +96,10 @@ function injectExtraTheme() {
                 icon = "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/abe.gif";
                 name.textContent = 'Hi, Psychopath';
                 scheduleRun(15, 50, () => {
-                    modalWarning("It's 3:50PM, get ready to detect METAL.");
+                    fireSwal("CLOCK CHECK!", "It's 3:50PM, get ready to detect METAL.");
                 });
                 scheduleRun(15, 55, () => {
-                    modalWarning("It's 3:55PM, Detect the METAL.");
+                    fireSwal("CLOCK CHECK!", "It's 3:55PM, Detect the METAL.");
                 });
             } else if (name && name.textContent.includes('Hi, Nate')) {
                 icon = "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/abe.gif";
@@ -261,13 +261,15 @@ function modifiedClockInit() {
 	}
 }
 
-function modalWarning(message, icon = 'warning', refresh = false) {
+function fireSwal(title, message, icon = 'warning', refresh = false) {
+    const isArray = Array.isArray(message);
+    const htmlMessage = isArray ? message.join('<br>') : message;
     Swal.fire({
-        title: "Patches:",
-        text: message,
+        title: title,
+        text: htmlMessage,
         icon: icon,
         showCancelButton: true,
-        confirmButtonText: "Gocha",
+        confirmButtonText: (refresh ? 'Refresh' : 'Gocha'),
         cancelButtonText: "Close",
         customClass: {
             confirmButton: 'btn btn-primary',
@@ -279,7 +281,7 @@ function modalWarning(message, icon = 'warning', refresh = false) {
         allowEscapeKey: true
     }).then((result) => {
         console.debug('PATCHES - Swal response:', result);
-        if (refresh) {
+        if (result.isConfirmed && refresh) {
             location.reload();
         }
     });
