@@ -982,7 +982,7 @@ function extraMediaInit() {
             nukeAllButton.classList.add('btn-danger');
             nukeAllButton.id = 'deleteAllImages';
             nukeAllButton.textContent = 'Delete All SKU Images';
-            nukeAllButton.title = 'Deletes All Children SKU Images (except for 6,8,18)';
+            nukeAllButton.title = 'Deletes All Children SKU Images';
             nukeAllButton.style.color = 'white';
             nukeAllButton.style.border = 'none';
             nukeAllButton.style.padding = '10px 20px';
