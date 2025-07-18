@@ -1132,7 +1132,6 @@ function extraMediaInit() {
                     },
                     success: function(data) {
                         apiResponseAlert(data);
-                        $(img).closest(".col").remove();
                     },
                     error: function(error) {
                         console.log("FAIL", error);
