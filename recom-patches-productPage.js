@@ -1035,7 +1035,7 @@ function extraMediaInit() {
         });
     }
 
-    function nukeAllSkuImages(safe = true) {
+    async function nukeAllSkuImages(safe = true) {
         let protected_conditions = [];
         if (safe) {
             protected_conditions = [6, 8, 18];
@@ -1051,24 +1051,54 @@ function extraMediaInit() {
             return;
         }
 
-        fetch(`/ajax/modals/productitems/${id}`)
-            .then(response => {
-                if (!response.ok) throw new Error('Failed to fetch product modal info.');
-                return response.text();
-            })
-            .then(html => {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
+        try {
+            const response = await fetch(`/ajax/modals/productitems/${id}`);
+            if (!response.ok) throw new Error('Failed to fetch product modal info.');
+            const html = await response.text();
 
-                const skuLinks = Array.from(doc.querySelectorAll('a[href^="product/items/"]'))
-                    .map(a => a.getAttribute('href'));
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
 
-                console.log('Found SKU links:', skuLinks);
+            const skuLinks = Array.from(doc.querySelectorAll('a[href^="product/items/"]'))
+                .map(a => a.getAttribute('href'));
 
-            })
-            .catch(err => {
-                console.error('Error fetching or parsing modal:', err);
-            });
+            console.log('Found SKU links:', skuLinks);
+
+            let imageIds = [];
+
+            for (const link of skuLinks) {
+                try {
+                    const res = await fetch(`/${link}`);
+                    if (!res.ok) throw new Error(`Failed to fetch ${link}`);
+                    const skuHtml = await res.text();
+
+                    const skuDoc = new DOMParser().parseFromString(skuHtml, 'text/html');
+                    const imageContainer = skuDoc.querySelector('#product-images-container');
+
+                    if (imageContainer) {
+                        const imageElements = imageContainer.querySelectorAll('.col.draggable');
+
+                        imageElements.forEach(el => {
+                            const idAttr = el.getAttribute('data-id');
+                            const imageId = parseInt(idAttr);
+                            if (!isNaN(imageId)) {
+                                imageIds.push(imageId);
+                            }
+                        });
+                    } else {
+                        console.warn(`No #product-images-container found in ${link}`);
+                    }
+
+                } catch (err) {
+                    console.error(`Error fetching ${link}:`, err);
+                }
+            }
+
+            console.log('Collected image IDs:', imageIds);
+            
+        } catch (err) {
+            console.error('Error during SKU image nuke process:', err);
+        }
     }
 
     function checkPopup() {
