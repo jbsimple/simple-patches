@@ -1140,7 +1140,7 @@ async function report_pictureMissingFull_init() {
         var list = [];
         for (let i = 0; i < items_images_qunique_report.length; i++) {
             var item = items_images_qunique_report[i];
-            item.Value = parseInt(item.In_Stock) * parseFloat(item.Price);
+            item.Value = parseInt(item.MAIN_Qty) * parseFloat(item.Price);
             list.push(item);
         }
 
@@ -1148,7 +1148,7 @@ async function report_pictureMissingFull_init() {
             for (let j = 0; j < product_images_report.length; j++) { 
                 if (items_images_report[i].SID === product_images_report[j].SID) {
                     var item = items_images_report[i];
-                    item.Value = parseInt(item.In_Stock) & parseFloat(item.Price);
+                    item.Value = parseInt(item.MAIN_Qty) & parseFloat(item.Price);
                     if (product_images_report[j].items) {
                         product_images_report[j].items.push(item);
                     } else {
@@ -1166,7 +1166,7 @@ async function report_pictureMissingFull_init() {
             const married_product = filtered__product_images_report[i];
             var value = 0;
             for (let j = 0; j < married_product.items.length; j++) {
-                value += parseInt(married_product.items[j].In_Stock) * parseFloat(married_product.items[j].Price);
+                value += parseInt(married_product.items[j].MAIN_Qty) * parseFloat(married_product.items[j].Price);
             }
             married_product.Value = value;
             list.push(married_product);
