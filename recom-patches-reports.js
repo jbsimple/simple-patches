@@ -836,8 +836,8 @@ function getReport(request) {
             }
             
             goToLastStep();
-        } else if (data.errors) { modalError(`<strong>Error:</strong><br>${data.errors}`);
-        } else { modalError(`<strong>Error:</strong><br>Unable to get report data.`); }
+        } else if (data.errors) { fireSwal('UHOH! ERRORS!', data.errors, 'error', true);
+        } else { fireSwal('UHOH! ERROR!', 'Unable to fetch your report.', 'error', true); }
             
     }).fail(function(jqXHR, textStatus, errorThrown) {
         console.error("Request failed: " + textStatus + ", " + errorThrown);

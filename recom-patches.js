@@ -264,6 +264,13 @@ function modifiedClockInit() {
 function fireSwal(title, message, icon = 'warning', refresh = false) {
     const isArray = Array.isArray(message);
     const htmlMessage = isArray ? message.join('<br>') : message;
+
+    const validIcons = ['success', 'error', 'warning', 'info', 'question'];
+    if (!validIcons.includes(icon)) {
+        console.warn(`Invalid icon "${icon}" passed to fireSwal. Defaulting to "warning".`);
+        icon = 'warning';
+    }
+
     Swal.fire({
         title: title,
         text: htmlMessage,
@@ -284,35 +291,6 @@ function fireSwal(title, message, icon = 'warning', refresh = false) {
         if (result.isConfirmed && refresh) {
             location.reload();
         }
-    });
-}
-
-function modalError(message) {
-    let modal = document.createElement('div');
-    modal.className = "swal2-container swal2-center swal2-backdrop-show";
-    modal.style.overflowY = "auto";
-    modal.innerHTML = `
-        <div aria-labelledby="swal2-title" aria-describedby="swal2-html-container"
-             class="swal2-popup swal2-modal swal2-icon-error swal2-show" tabindex="-1"
-             role="dialog" aria-live="assertive" aria-modal="true" style="display: grid;">
-            <div class="swal2-icon swal2-error swal2-icon-show" style="display: flex;">
-                <span class="swal2-x-mark">
-                    <span class="swal2-x-mark-line-left"></span>
-                    <span class="swal2-x-mark-line-right"></span>
-                </span>
-            </div>
-            <div class="swal2-html-container" id="swal2-html-container" style="display: block;">${message}</div>
-            <div class="swal2-actions" style="display: flex;">
-                <div class="swal2-loader"></div>
-                <button type="button" class="swal2-confirm btn btn-primary" aria-label="" style="display: inline-block;">Okay</button>
-            </div>
-        </div>
-    `;
-
-    document.body.appendChild(modal);
-
-    modal.querySelector('.swal2-confirm').addEventListener('click', () => {
-        modal.remove();
     });
 }
 
