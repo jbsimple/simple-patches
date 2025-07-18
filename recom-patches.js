@@ -263,7 +263,7 @@ function modifiedClockInit() {
 
 function modalWarning(message, icon = 'warning', refresh = false) {
     Swal.fire({
-        title: "Patches Response:",
+        title: "Patches:",
         text: message,
         icon: icon,
         showCancelButton: true,
@@ -274,6 +274,7 @@ function modalWarning(message, icon = 'warning', refresh = false) {
             cancelButton: 'btn btn-secondary'
         },
         buttonsStyling: false,
+        reverseButtons: true,
         allowOutsideClick: false,
         allowEscapeKey: true
     }).then((result) => {
