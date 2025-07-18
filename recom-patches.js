@@ -285,39 +285,6 @@ function modalWarning(message, icon = 'warning', refresh = false) {
     });
 }
 
-function modalWarningOld(message, icon = 'warning') {
-    let icon_html = `<div class="swal2-icon swal2-warning swal2-icon-show" style="display: flex;">
-                <div class="swal2-icon-content">!</div>
-            </div>`;
-    if (icon === 'success') {
-        let icon_html = `<div class="swal2-icon swal2-warning swal2-icon-show" style="display: flex;">
-                <div class="swal2-icon-content">!</div>
-            </div>`;
-    }
-    let modal = document.createElement('div');
-    modal.className = "swal2-container swal2-center swal2-backdrop-show";
-    modal.style.overflowY = "auto";
-    modal.innerHTML = `
-        <div aria-labelledby="swal2-title" aria-describedby="swal2-html-container" class="swal2-popup swal2-modal swal2-icon-warning swal2-show" tabindex="-1" role="dialog" aria-live="assertive" aria-modal="true" style="display: grid;">
-            <button type="button" class="swal2-close" aria-label="Close this dialog" style="display: none;">×</button>
-            <div class="swal2-icon swal2-warning swal2-icon-show" style="display: flex;">
-                <div class="swal2-icon-content">!</div>
-            </div>
-            <div class="swal2-html-container" id="swal2-html-container" style="display: block;">${message}</div>
-            <div class="swal2-actions" style="display: flex;">
-                <div class="swal2-loader"></div>
-                <button type="button" class="swal2-confirm btn btn-primary" aria-label="" style="display: inline-block;">Okay</button>
-            </div>
-        </div>
-    `;
-
-    document.body.appendChild(modal);
-
-    modal.querySelector('.swal2-confirm').addEventListener('click', () => {
-        modal.remove();
-    });
-}
-
 function modalError(message) {
     let modal = document.createElement('div');
     modal.className = "swal2-container swal2-center swal2-backdrop-show";
