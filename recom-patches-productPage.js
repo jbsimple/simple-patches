@@ -1118,6 +1118,28 @@ function extraMediaInit() {
 
             console.log('Collected image IDs:', imageIds);
 
+            const csrfToken = $('meta[name="X-CSRF-TOKEN"]').attr("content");
+            imageIds.forEach(id => {
+                $.post({
+                    url: "ajax/actions/productimagedelete/" + id,
+                    dataType: "json",
+                    data: {
+                        id: id,
+                        type: 'item'
+                    },
+                    headers: {
+                        "X-CSRF-TOKEN": csrfToken,
+                    },
+                    success: function(data) {
+                        apiResponseAlert(data);
+                        $(img).closest(".col").remove();
+                    },
+                    error: function(error) {
+                        console.log("FAIL", error);
+                        ajaxFailAlert(error);
+                    }
+                });
+            })
         } catch (err) {
             console.error('Error during SKU image nuke process:', err);
         }
