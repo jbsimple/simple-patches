@@ -261,7 +261,33 @@ function modifiedClockInit() {
 	}
 }
 
-function modalWarning(message) {
+function modalWarning(message, icon = 'warning', refresh = false) {
+    Swal.fire({
+        title: "Patches Response:",
+        text: message,
+        icon: icon,
+        showCancelButton: true,
+        confirmButtonText: "Gocha",
+        cancelButtonText: "Close",
+        allowOutsideClick: false,
+        allowEscapeKey: true,
+    }).then((result) => {
+        console.debug('PATCHES - Swal response:', result);
+        if (refresh) {
+            location.reload();
+        }
+    });
+}
+
+function modalWarningOld(message, icon = 'warning') {
+    let icon_html = `<div class="swal2-icon swal2-warning swal2-icon-show" style="display: flex;">
+                <div class="swal2-icon-content">!</div>
+            </div>`;
+    if (icon === 'success') {
+        let icon_html = `<div class="swal2-icon swal2-warning swal2-icon-show" style="display: flex;">
+                <div class="swal2-icon-content">!</div>
+            </div>`;
+    }
     let modal = document.createElement('div');
     modal.className = "swal2-container swal2-center swal2-backdrop-show";
     modal.style.overflowY = "auto";

@@ -1146,7 +1146,7 @@ function extraMediaInit() {
                     });
                 });
             } else {
-                modalWarning('No Images To Delete.');
+                modalWarning('No Images To Delete.', 'success');
             }
             
         } catch (err) {
