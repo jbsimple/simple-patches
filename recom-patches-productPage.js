@@ -923,7 +923,7 @@ function extraMediaInit() {
         var newElement = document.createElement('div');
         newElement.classList.add('fv-row');
         newElement.classList.add('mb-2');
-        newElement.setAttribute('style', 'padding-bottom: 1.5rem; display: flex; flex-wrap: wrap; gap: 1rem; align-items: center');
+        newElement.setAttribute('style', 'padding-bottom: 1.5rem; display: flex; flex-direction: row; gap: 1rem; align-items: center');
 
         // open all button
         if (imageElements.length > 0) {
@@ -949,7 +949,7 @@ function extraMediaInit() {
             var deleteAllButton = document.createElement('button');
             deleteAllButton.classList.add('btn');
             deleteAllButton.classList.add('btn-info');
-            deleteAllButton.classList.add('btn-warning');
+            deleteAllButton.classList.add('btn-danger');
             deleteAllButton.id = 'deleteAllImages';
             deleteAllButton.textContent = 'Delete All Images';
             deleteAllButton.style.color = 'white';
@@ -960,6 +960,11 @@ function extraMediaInit() {
             deleteAllButton.onclick = deleteAllImages;
             newElement.appendChild(deleteAllButton);
         }
+
+        // spacer
+        var spacer = document.createElement('span');
+        spacer.setAttribute('style', 'flex: 1');
+        newElement.appendChild(spacer);
 
         // nuke sku button
         const url = window.location.href;
