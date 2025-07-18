@@ -1123,28 +1123,32 @@ function extraMediaInit() {
             }
 
             console.log('Collected image IDs:', imageIds);
-
-            const csrfToken = $('meta[name="X-CSRF-TOKEN"]').attr("content");
-            imageIds.forEach(id => {
-                $.post({
-                    url: "ajax/actions/productimagedelete/" + id,
-                    dataType: "json",
-                    data: {
-                        id: id,
-                        type: 'item'
-                    },
-                    headers: {
-                        "X-CSRF-TOKEN": csrfToken,
-                    },
-                    success: function(data) {
-                        apiResponseAlert(data);
-                    },
-                    error: function(error) {
-                        console.log("FAIL", error);
-                        ajaxFailAlert(error);
-                    }
+            if (imageIds.length > 0) {
+                const csrfToken = $('meta[name="X-CSRF-TOKEN"]').attr("content");
+                imageIds.forEach(id => {
+                    $.post({
+                        url: "ajax/actions/productimagedelete/" + id,
+                        dataType: "json",
+                        data: {
+                            id: id,
+                            type: 'item'
+                        },
+                        headers: {
+                            "X-CSRF-TOKEN": csrfToken,
+                        },
+                        success: function(data) {
+                            apiResponseAlert(data);
+                        },
+                        error: function(error) {
+                            console.log("FAIL", error);
+                            ajaxFailAlert(error);
+                        }
+                    });
                 });
-            })
+            } else {
+                modalWarning('No Images To Delete.');
+            }
+            
         } catch (err) {
             console.error('Error during SKU image nuke process:', err);
         }
