@@ -612,7 +612,7 @@ function handlePrefillPictureWarning() {
             }
 
             img.onload = function() {
-                if (img.naturalWidth !== 1200 || img.naturalHeight !== 1200) {
+                if (!imgsrc.includes('no-image.png') && (img.naturalWidth !== 1200 || img.naturalHeight !== 1200)) {
                     handlePrefillWarning(`Image is not 1200x1200 (actual: ${img.naturalWidth}x${img.naturalHeight}), Please send over for pictures.`);
                 }
             };
