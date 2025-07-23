@@ -631,14 +631,38 @@ function handlePrefillPictureWarning() {
 async function handlePrefillLocationUpdate() {
     const ajax_button = document.getElementById('rc_ajax_modal_submit');
      if (ajax_button) {
+        let prefillComplete = false;
+        let redirectQueued = null;
+        if (!window._patches_location_override) {
+            Object.defineProperty(window, 'location', {
+                configurable: true,
+                get() {
+                    return document.location;
+                },
+                set(value) {
+                    if (!prefillComplete) {
+                        redirectQueued = value;
+                    } else {
+                        document.location = value;
+                    }
+                }
+            });
+            window._patches_location_override = true;
+        }
+
         ajax_button.addEventListener('click', async (e) => {
-            window.addEventListener('beforeunload', unloadWarning); //When the button is pressed before updating
+            window.addEventListener('beforeunload', unloadWarning);
             try {
                 await prefillSubmit();
+                prefillComplete = true;
+                if (redirectQueued) {
+                    window.location = redirectQueued;
+                }
             } catch (err) {
-                window.removeEventListener('beforeunload', unloadWarning);
                 console.error('PATCHES - Error during prefillSubmit:', err);
                 alert('Unexpected error. Check console for details.');
+            } finally {
+                window.removeEventListener('beforeunload', unloadWarning);
             }
         }, { once: true });
     }
@@ -667,7 +691,6 @@ async function handlePrefillLocationUpdate() {
 
             // this here
             const updateLocationResponse = await updateLocation(sku, eventID);
-            window.removeEventListener('beforeunload', unloadWarning);
             if (updateLocationResponse.success) {
                 console.log('PATCHES - Location Updated');
             } else {
