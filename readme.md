@@ -25,19 +25,11 @@ There are other smaller modifications made, look below at the patches list to se
 - I don't have a good recommendation for an extension, just find something that allows JS injects.
 - Paste the code from [inject.js](https://simple-patches.vercel.app/inject.js) into the code editor.
 
----------------------------
-
 ## Patch List
 Below is a detailed list of all the pages made to the site. Everything that is modified is outlined below. The code is also open source (obviously) so feel free to see specifically what it is doing.
 
 #### Temporary Patches:
-- Added a UserTracker Busting routine.
-  - The user tracker does not rely on API calls, it's based on eventListeners in Javascript.
-  - The user tracker if it detects inactivity for 15 minutes will log the user out.
-  - If you have multiple tabs open and you leave one open for 15 minutes without looking or using it, it logs you out everywhere.
-  - The UserTracker Buster simulates the movement, takes advantage of Web Worker and BroadcastChannel to bypass tabs that have not been interracted with for longer than 15 minutes.
-  - Added in a more aggresive silulator cooldown for tabs that aren't visible.
-  - Temporary because there's a good chance this feature gets reversed or changed, in which case it will be removed.
+No temporary patches at the moment.
 
 #### Global Patches:
 - When the user is clocked into the Pictures task, an extra button and window is added for bulk location updates.
@@ -64,6 +56,7 @@ Below is a detailed list of all the pages made to the site. Everything that is m
   - Adjusted some of the heading labels to make them shorter, better for width (In Stock and Stock Available).
 - Added a refresh check to clock in tasks, every minute it checks and applies the clock-in task if it has changed.
 - Change to UI-block loading wheel so it appears at the top of the div instead of the middle, and made it larger, so you can see that it is actually loading and not just sitting there.
+- When clocked into the pictures task, there is an activity buster to prevent the logout. This also means when clocked into pictures you're sendign user activity that you're active the whole time, so remember to clock out!
 
 #### Product and Item Page Patches:
 - CSS fix for layout of cards.

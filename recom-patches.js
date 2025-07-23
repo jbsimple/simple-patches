@@ -261,6 +261,9 @@ function modifiedClockInit() {
                 updatePuctureLocationsButton.innerHTML = '<i class="bi bi-arrow-repeat fs-2"></i><span class="mobilefix">Update Locations</span>';
                 updatePuctureLocationsButton.title = 'Update Picture Locations';
                 recordTime_parent.insertBefore(updatePuctureLocationsButton, recordTime_button);
+
+                // enable logout bust because I still hate it
+                bustUserTracker();
             }
 		}
 	}
