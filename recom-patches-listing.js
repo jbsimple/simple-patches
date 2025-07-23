@@ -632,9 +632,11 @@ async function handlePrefillLocationUpdate() {
     const ajax_button = document.getElementById('rc_ajax_modal_submit');
      if (ajax_button) {
         ajax_button.addEventListener('click', async (e) => {
+            window.addEventListener('beforeunload', unloadWarning); //When the button is pressed before updating
             try {
                 await prefillSubmit();
             } catch (err) {
+                window.removeEventListener('beforeunload', unloadWarning);
                 console.error('PATCHES - Error during prefillSubmit:', err);
                 alert('Unexpected error. Check console for details.');
             }
@@ -642,7 +644,6 @@ async function handlePrefillLocationUpdate() {
     }
 
     async function prefillSubmit() {
-        window.addEventListener('beforeunload', unloadWarning);
         console.debug('PATCHES - PrefillSubmit Called');
         const ajax_modalForm = document.getElementById('rc_ajax_modal_form');
         if (!ajax_modalForm) return;
