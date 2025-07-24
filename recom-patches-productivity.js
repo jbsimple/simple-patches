@@ -553,9 +553,6 @@ function injectDateSelect(funct, content) {
 }
 
 /* recent picture check */
-function recentPictureCheckInit() {
-    
-}
 
 
 (async () => {
@@ -611,7 +608,7 @@ function recentPictureCheckInit() {
         if (heading) {
             heading.textContent = 'Team Productivity';
         }
-    } else if (content && window.location.href.includes('/productivity') && params.has('recentpics')) {
+    } else if (content && typeof recentPictureCheckInit === 'function' && window.location.href.includes('/productivity') && params.has('recentpics')) {
         injectDateSelect('injectRecentPicturesCheck', content);
         recentPictureCheckInit();
 
