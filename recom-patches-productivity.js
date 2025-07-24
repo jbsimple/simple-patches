@@ -697,6 +697,23 @@ async function recentPictureCheckInit() {
                         const statsContainer = box.querySelector('.card-p');
                         if (statsContainer) statsContainer.insertAdjacentHTML('beforeend', statsHTML);
                     };
+                } else {
+                    const statsHTML = `
+                        <div class="mb-5 text-center"></div>
+                        <div class="d-flex flex-center text-center flex-wrap" style="transform: rotate(0);">
+                            <div class="border border-gray-300 border-dashed rounded min-w-80px py-3 px-4 mx-2 mb-3">
+                                <div class="fs-6 fw-bolder text-gray-700">Filename</div>
+                                <div class="fw-bold text-gray-400">N/A</div>
+                            </div>
+                            <div class="border border-gray-300 border-dashed rounded min-w-80px py-3 px-4 mx-2 mb-3">
+                                <div class="fs-6 fw-bolder text-gray-700">Resolution</div>
+                                <div class="fw-bold text-gray-400">N/A</div>
+                            </div>
+                        </div>
+                    `;
+
+                    const statsContainer = box.querySelector('.card-p');
+                    if (statsContainer) statsContainer.insertAdjacentHTML('beforeend', statsHTML);
                 }
             }
 
