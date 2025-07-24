@@ -652,89 +652,72 @@ async function recentPictureCheckInit() {
     }
     
     function printResult(wrap, entry, eyeball, imgSrc) {
-    		console.debug('PATCHES - Result', {
-    			"entry":entry,
-    			"eyeball":eyeball,
-    			"imgSrc":imgSrc
-    		});
-    		
-    		const box = document.createElement('div');
-    		box.classList = 'card';
+        console.debug('PATCHES - Result', {
+            "entry": entry,
+            "eyeball": eyeball,
+            "imgSrc": imgSrc
+        });
 
-    		let color = '';
-    		if (
-				    entry.Condition.includes('6-Defective') || 
-				    entry.Condition.includes('8-Incomplete') || 
-				    entry.Condition.includes('18-Used Phones - Imaging')
-				) {
-    				color = 'background-color:color-mix(in srgb, red 15%, transparent 85%);';
-    		}
+        const box = document.createElement('div');
+        box.classList = 'card';
 
-            let stats = '';
-            if (imgSrc) {
-                const filename = imgSrc.split('/').pop().split('?')[0];
-                if (filename.toLowerCase() !== 'no-image.png') {
-                    const tempImg = new Image();
-                    tempImg.src = imgSrc;
-                    tempImg.onload = () => {
-                        const width = tempImg.naturalWidth;
-                        const height = tempImg.naturalHeight;
+        let color = '';
+        if (
+            entry.Condition.includes('6-Defective') ||
+            entry.Condition.includes('8-Incomplete') ||
+            entry.Condition.includes('18-Used Phones - Imaging')
+        ) {
+            color = 'background-color:color-mix(in srgb, red 15%, transparent 85%);';
+        }
 
-                        const statsHTML = `
-                            <div class="mb-5 text-center"></div>
-                            <div class="d-flex flex-center text-center flex-wrap" style="transform: rotate(0);">
-                                <div class="border border-gray-300 border-dashed rounded min-w-80px py-3 px-4 mx-2 mb-3">
-                                    <div class="fs-6 fw-bolder text-gray-700">Filename</div>
-                                    <div class="fw-bold text-gray-400">${filename}</div>
-                                </div>
-                                <div class="border border-gray-300 border-dashed rounded min-w-80px py-3 px-4 mx-2 mb-3">
-                                    <div class="fs-6 fw-bolder text-gray-700">Resolution</div>
-                                    <div class="fw-bold text-gray-400">${width}x${height}</div>
-                                </div>
-                            </div>
-                        `;
+        const filename = imgSrc ? imgSrc.split('/').pop().split('?')[0] : 'no-image.png';
+        const isPlaceholder = filename.toLowerCase() === 'no-image.png';
 
-                        const statsContainer = box.querySelector('.card-p');
-                        if (statsContainer) statsContainer.insertAdjacentHTML('beforeend', statsHTML);
-                    };
-                } else {
-                    const statsHTML = `
-                        <div class="mb-5 text-center"></div>
-                        <div class="d-flex flex-center text-center flex-wrap" style="transform: rotate(0);">
-                            <div class="border border-gray-300 border-dashed rounded min-w-80px py-3 px-4 mx-2 mb-3">
-                                <div class="fs-6 fw-bolder text-gray-700">Filename</div>
-                                <div class="fw-bold text-gray-400">N/A</div>
-                            </div>
-                            <div class="border border-gray-300 border-dashed rounded min-w-80px py-3 px-4 mx-2 mb-3">
-                                <div class="fs-6 fw-bolder text-gray-700">Resolution</div>
-                                <div class="fw-bold text-gray-400">N/A</div>
-                            </div>
-                        </div>
-                    `;
-
-                    const statsContainer = box.querySelector('.card-p');
-                    if (statsContainer) statsContainer.insertAdjacentHTML('beforeend', statsHTML);
-                }
-            }
-
-    		box.setAttribute('style', `width:calc(33% - 0.5rem);${color}`);
-    		box.innerHTML = `<div class="card-header">
-                    <h3 class="card-title">
-                    	<a target="_blank" class="text-success" href="/product/items/${entry.SKU}">${entry.SKU}</a>
-                    </h3>
-                    <div class="card-toolbar">${eyeball}</div>
+        const stats = `
+            <div class="mb-5 text-center"></div>
+            <div class="d-flex flex-center text-center flex-wrap" style="transform: rotate(0);">
+                <div class="border border-gray-300 border-dashed rounded min-w-80px py-3 px-4 mx-2 mb-3">
+                    <div class="fs-6 fw-bolder text-gray-700">Filename</div>
+                    <div class="fw-bold text-gray-400" data-filename>${isPlaceholder ? 'N/A' : filename}</div>
                 </div>
-                <div class="card-body p-0">
-                
+                <div class="border border-gray-300 border-dashed rounded min-w-80px py-3 px-4 mx-2 mb-3">
+                    <div class="fs-6 fw-bolder text-gray-700">Resolution</div>
+                    <div class="fw-bold text-gray-400" data-resolution>${isPlaceholder ? 'N/A' : 'Loading...'}</div>
+                </div>
+            </div>
+        `;
+
+        box.setAttribute('style', `width:calc(33% - 0.5rem);${color}`);
+        box.innerHTML = `
+            <div class="card-header">
+                <h3 class="card-title">
+                    <a target="_blank" class="text-success" href="/product/items/${entry.SKU}">${entry.SKU}</a>
+                </h3>
+                <div class="card-toolbar">${eyeball}</div>
+            </div>
+            <div class="card-body p-0">
                 <div class="text-center px-4 my-5">
                     <img class="mw-100 mh-250px card-rounded-bottom" src="${imgSrc || ''}"/>
                 </div>
                 <div class="card-p">
-	                <div class="fw-bold text-gray-800 text-center mb-6 fs-3">${entry.Product_Name}</div>
+                    <div class="fw-bold text-gray-800 text-center mb-6 fs-3">${entry.Product_Name}</div>
                     ${stats}
                 </div>
-            </div>`;
-      	wrap.appendChild(box);
+            </div>
+        `;
+
+        wrap.appendChild(box);
+
+        if (!isPlaceholder && imgSrc) {
+            const tempImg = new Image();
+            tempImg.src = imgSrc;
+            tempImg.onload = () => {
+                const width = tempImg.naturalWidth;
+                const height = tempImg.naturalHeight;
+                const resolutionEl = box.querySelector('[data-resolution]');
+                if (resolutionEl) resolutionEl.textContent = `${width}x${height}`;
+            };
+        }
     }
 }
 
