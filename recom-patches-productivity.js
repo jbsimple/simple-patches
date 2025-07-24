@@ -799,11 +799,7 @@ async function recentPictureCheckInit() {
             </li>`;
         }
         
-    } else if (
-        content && 
-        window.location.href.includes('/productivity') && 
-        !window.location.href.includes('/productivity/board') && 
-        !params.has('recentpics')) 
+    } else if (content && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board') && !params.has('recentpics') && !params.has('overview')) 
     {
         injectDateSelect('injectTeamReport', content);
         injectTeamReport();
