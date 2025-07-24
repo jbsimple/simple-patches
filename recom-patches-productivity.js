@@ -669,6 +669,8 @@ async function recentPictureCheckInit() {
             "imgSrc": imgSrc
         });
 
+        const fbacheck = `<a class="btn btn-icon btn-info btn-sm my-sm-1 ms-1" data-bs-toggle="tooltip" aria-label="View in FBA Check" data-bs-original-title="View in FBA Check" data-kt-initialized="1" href="/receiving/queues/fba-check?column=0&amp;keyword=${entry.SKU}" target="_blank"><i class="fas fa-shipping-fast"></i></a>`;
+        const pendinginv = `<a class="btn btn-icon btn-success btn-sm my-sm-1 ms-1" data-bs-toggle="tooltip" aria-label="View in Pending Inventory" data-bs-original-title="View in Pending Inventory" data-kt-initialized="1" href="/receiving/queues/inventory?column=0&amp;keyword=${entry.SKU}" target="_blank"><i class="fas fa-boxes"></i></a>`;
         const box = document.createElement('div');
         box.classList = 'card';
 
@@ -708,7 +710,7 @@ async function recentPictureCheckInit() {
                 <h3 class="card-title">
                     <a target="_blank" class="text-success" href="/product/items/${entry.SKU}">${entry.SKU}</a>
                 </h3>
-                <div class="card-toolbar">${eyeball}</div>
+                <div class="card-toolbar">${fbacheck}${pendinginv}${eyeball}</div>
             </div>
             <div class="card-body p-0">
                 <div class="text-center px-4 my-5">
