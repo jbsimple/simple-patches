@@ -980,7 +980,6 @@ async function injectOverview() {
             heading.textContent = 'Recent Pictures';
         }
     } else if (content && typeof injectOverview === 'function' && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board') && params.has('overview') && !params.has('recentpics')) {
-        injectDateSelect('injectOverview', content);
         injectOverview();
 
         document.title = document.title.replace('Productivity', 'Last 14 Days - Productivity');
