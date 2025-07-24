@@ -660,6 +660,7 @@ async function recentPictureCheckInit() {
     		
     		const box = document.createElement('div');
     		box.classList = 'card';
+
     		let color = '';
     		if (
 				    entry.Condition.includes('6-Defective') || 
@@ -668,6 +669,37 @@ async function recentPictureCheckInit() {
 				) {
     				color = 'background-color:color-mix(in srgb, red 15%, transparent 85%);';
     		}
+
+            let stats = '';
+            if (imgSrc) {
+                const filename = imgSrc.split('/').pop().split('?')[0];
+                if (filename.toLowerCase() !== 'no-image.png') {
+                    const tempImg = new Image();
+                    tempImg.src = imgSrc;
+                    tempImg.onload = () => {
+                        const width = tempImg.naturalWidth;
+                        const height = tempImg.naturalHeight;
+
+                        const statsHTML = `
+                            <div class="mb-5 text-center"></div>
+                            <div class="d-flex flex-center text-center flex-wrap" style="transform: rotate(0);">
+                                <div class="border border-gray-300 border-dashed rounded min-w-80px py-3 px-4 mx-2 mb-3">
+                                    <div class="fs-6 fw-bolder text-gray-700">Filename</div>
+                                    <div class="fw-bold text-gray-400">${filename}</div>
+                                </div>
+                                <div class="border border-gray-300 border-dashed rounded min-w-80px py-3 px-4 mx-2 mb-3">
+                                    <div class="fs-6 fw-bolder text-gray-700">Resolution</div>
+                                    <div class="fw-bold text-gray-400">${width}x${height}</div>
+                                </div>
+                            </div>
+                        `;
+
+                        const statsContainer = box.querySelector('.card-p');
+                        if (statsContainer) statsContainer.insertAdjacentHTML('beforeend', statsHTML);
+                    };
+                }
+            }
+
     		box.setAttribute('style', `width:calc(33% - 0.5rem);${color}`);
     		box.innerHTML = `<div class="card-header">
                     <h3 class="card-title">
@@ -682,6 +714,7 @@ async function recentPictureCheckInit() {
                 </div>
                 <div class="card-p">
 	                <div class="fw-bold text-gray-800 text-center mb-6 fs-3">${entry.Product_Name}</div>
+                    ${stats}
                 </div>
             </div>`;
       	wrap.appendChild(box);
