@@ -566,26 +566,6 @@ async function recentPictureCheckInit() {
     /* heading css */
     const heading_css = 'padding: 0.5rem 30px; display: flex; justify-content: center; align-items: center;';
     
-    /* heading */
-    const today = new Date();
-    const today_mm = String(today.getMonth() + 1).padStart(2, '0');
-    const today_dd = String(today.getDate()).padStart(2, '0');
-    const today_yyyy = today.getFullYear();
-    const todayFormatted = `${today_mm}/${today_dd}/${today_yyyy}`;
-
-    let date = todayFormatted;
-    const dateInput = document.getElementById('patches-productivity-dateInput');
-    if (dateInput) {
-        const rawValue = dateInput.value;
-        if (rawValue) {
-            const [yyyy, mm, dd] = rawValue.split('-');
-            date = `${mm}/${dd}/${yyyy}`;
-        }
-    }
-    const heading = document.createElement('h2');
-    heading.textContent = `SKUS Created on ${date}:`;
-    heading.setAttribute('style', heading_css);
-    
     /* spinner */
     const loading = document.createElement('div');
 		loading.id = 'patches-loading-indicator';
@@ -608,6 +588,7 @@ async function recentPictureCheckInit() {
 
     // Filter out entries with a null SKU
     const entries = report.filter(entry => entry.SKU !== null && typeof entry.SKU !== 'undefined');
+    let counter = 0;
 
     for (const entry of entries) {
         const sku = entry.SKU;
@@ -629,6 +610,7 @@ async function recentPictureCheckInit() {
             const eyeball = eyeballBtn ? eyeballBtn.outerHTML : '';
 
             printResult(wrap, entry, eyeball, imgSrc);
+            counter++;
         } catch (err) {
             console.warn(`Failed to fetch image for SKU ${sku}:`, err);
         }
@@ -637,6 +619,26 @@ async function recentPictureCheckInit() {
     /* if it is here, loading is done */
     const loadingEl = document.getElementById('patches-loading-indicator');
 		if (loadingEl) {
+            /* heading */
+                const today = new Date();
+                const today_mm = String(today.getMonth() + 1).padStart(2, '0');
+                const today_dd = String(today.getDate()).padStart(2, '0');
+                const today_yyyy = today.getFullYear();
+                const todayFormatted = `${today_mm}/${today_dd}/${today_yyyy}`;
+
+                let date = todayFormatted;
+                const dateInput = document.getElementById('patches-productivity-dateInput');
+                if (dateInput) {
+                    const rawValue = dateInput.value;
+                    if (rawValue) {
+                        const [yyyy, mm, dd] = rawValue.split('-');
+                        date = `${mm}/${dd}/${yyyy}`;
+                    }
+                }
+                const heading = document.createElement('h2');
+                heading.textContent = `The ${counter} SKUS Created on ${date}:`;
+                heading.setAttribute('style', heading_css);
+
 				loadingEl.replaceWith(heading);
 		}
     
