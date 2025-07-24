@@ -813,7 +813,7 @@ async function recentPictureCheckInit() {
         injectDateSelect('recentPictureCheckInit', content);
         recentPictureCheckInit();
 
-        document.title = document.title.replace('Productivity', 'Recent Pictures');
+        document.title = document.title.replace('Productivity', 'Recent Pictures - Productivity');
 
         if (heading) {
             heading.textContent = 'Recent Pictures';
@@ -822,7 +822,7 @@ async function recentPictureCheckInit() {
         injectDateSelect('injectOverview', content);
         injectOverview();
 
-        document.title = document.title.replace('Productivity', 'Last 14 Days');
+        document.title = document.title.replace('Productivity', 'Last 14 Days - Productivity');
 
         if (heading) {
             heading.textContent = 'Last 14 Days';
