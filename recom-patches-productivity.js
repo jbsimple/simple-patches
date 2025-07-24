@@ -609,7 +609,7 @@ function injectDateSelect(funct, content) {
             heading.textContent = 'Team Productivity';
         }
     } else if (content && typeof recentPictureCheckInit === 'function' && window.location.href.includes('/productivity') && params.has('recentpics')) {
-        injectDateSelect('injectRecentPicturesCheck', content);
+        injectDateSelect('recentPictureCheckInit', content);
         recentPictureCheckInit();
 
         document.title = document.title.replace('Productivity', 'Recent Pictures');
