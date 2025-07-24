@@ -584,10 +584,19 @@ async function recentPictureCheckInit() {
     kt_app_content.appendChild(wrap);
 
     let report = await getReport('team');
-    report = report.data;
+    const uniqueData = [];
+    const seenKeys = new Set();
+
+    report.data.forEach(row => {
+        const key = `${row.User}-${row.Task}-${row.SKU}-${row.Event_Date}`;
+        if (!seenKeys.has(key)) {
+            seenKeys.add(key);
+            uniqueData.push(row);
+        }
+    });
 
     // Filter out entries with a null SKU
-    const entries = report.filter(entry => entry.SKU !== null && typeof entry.SKU !== 'undefined');
+    const entries = uniqueData.filter(entry => entry.SKU !== null && typeof entry.SKU !== 'undefined');
     let counter = 0;
 
     for (const entry of entries) {
