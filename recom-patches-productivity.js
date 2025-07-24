@@ -668,7 +668,7 @@ async function recentPictureCheckInit() {
 				) {
     				color = 'background-color:color-mix(in srgb, red 15%, transparent 85%);';
     		}
-    		box.setAttribute('style', `width:calc(33%);${color}`);
+    		box.setAttribute('style', `width:calc(33% - 0.5rem);${color}`);
     		box.innerHTML = `<div class="card-header">
                     <h3 class="card-title">
                     	<a target="_blank" class="text-success" href="/product/items/${entry.SKU}">${entry.SKU}</a>
