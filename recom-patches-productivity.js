@@ -679,16 +679,16 @@ async function recentPictureCheckInit() {
             <div class="mb-5 text-center"></div>
             <div class="d-flex flex-center text-center flex-wrap" style="transform: rotate(0);">
                 <div class="border border-gray-300 border-dashed rounded min-w-80px py-3 px-4 mx-2 mb-3">
-                    <div class="fs-6 fw-bolder text-gray-700">SID</div>
-                    <div class="fw-bold text-gray-400">${entry.SID}</div>
+                    <span class="fs-6 fw-bolder text-gray-700">SID</span>
+                    <a target="_blank" href="/products/${entry.SID}" class="fw-bold text-gray-400">${entry.SID}</a>
                 </div>
                 <div class="border border-gray-300 border-dashed rounded min-w-80px py-3 px-4 mx-2 mb-3">
-                    <div class="fs-6 fw-bolder text-gray-700">Filename</div>
-                    <div class="fw-bold text-gray-400" data-filename>${isPlaceholder ? 'N/A' : filename}</div>
+                    <span class="fs-6 fw-bolder text-gray-700">Filename</span>
+                    <span class="fw-bold text-gray-400" data-filename>${isPlaceholder ? 'N/A' : filename}</span>
                 </div>
                 <div class="border border-gray-300 border-dashed rounded min-w-80px py-3 px-4 mx-2 mb-3">
-                    <div class="fs-6 fw-bolder text-gray-700">Resolution</div>
-                    <div class="fw-bold text-gray-400" data-resolution>${isPlaceholder ? 'N/A' : 'Loading...'}</div>
+                    <span class="fs-6 fw-bolder text-gray-700">Resolution</span>
+                    <span class="fw-bold text-gray-400" data-resolution>${isPlaceholder ? 'N/A' : 'Loading...'}</span>
                 </div>
             </div>
         `;
