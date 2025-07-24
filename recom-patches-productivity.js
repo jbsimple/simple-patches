@@ -21,26 +21,43 @@ async function getUserID() {
     }
 }
 
-async function getReport(type) {
+async function getReport(type, overview = false) {
     const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
     if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
         const csrfToken = csrfMeta.getAttribute('content');
-
+        
         const today = new Date();
         const today_mm = String(today.getMonth() + 1).padStart(2, '0');
         const today_dd = String(today.getDate()).padStart(2, '0');
         const today_yyyy = today.getFullYear();
         const todayFormatted = `${today_mm}/${today_dd}/${today_yyyy}`;
 
-        let date = todayFormatted;
+        let start = null;
+        let end = null;
 
-        const dateInput = document.getElementById('patches-productivity-dateInput');
-        if (dateInput) {
-            const rawValue = dateInput.value;
-            if (rawValue) {
-                const [yyyy, mm, dd] = rawValue.split('-');
-                date = `${mm}/${dd}/${yyyy}`;
+        if (overview) {
+            const past = new Date(today);
+            past.setDate(past.getDate() - 13);
+
+            const past_mm = String(past.getMonth() + 1).padStart(2, '0');
+            const past_dd = String(past.getDate()).padStart(2, '0');
+            const past_yyyy = past.getFullYear();
+            start = `${past_mm}/${past_dd}/${past_yyyy}`;
+            end = todayFormatted;
+        } else {
+            let date = todayFormatted;
+
+            const dateInput = document.getElementById('patches-productivity-dateInput');
+            if (dateInput) {
+                const rawValue = dateInput.value;
+                if (rawValue) {
+                    const [yyyy, mm, dd] = rawValue.split('-');
+                    date = `${mm}/${dd}/${yyyy}`;
+                }
             }
+
+            start = date;
+            end = date;
         }
         
         let request = null;
@@ -78,7 +95,7 @@ async function getReport(type) {
                         {
                             column: "user_clocks.clock_date",
                             opr: "between",
-                            value: `${date} - ${date}`
+                            value: `${start} - ${end}`
                         }
                     ]
                 },
@@ -782,7 +799,12 @@ async function recentPictureCheckInit() {
             </li>`;
         }
         
-    } else if (content && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board') && !params.has('recentpics')) {
+    } else if (
+        content && 
+        window.location.href.includes('/productivity') && 
+        !window.location.href.includes('/productivity/board') && 
+        !params.has('recentpics')) 
+    {
         injectDateSelect('injectTeamReport', content);
         injectTeamReport();
 
@@ -791,7 +813,7 @@ async function recentPictureCheckInit() {
         if (heading) {
             heading.textContent = 'Team Productivity';
         }
-    } else if (content && typeof recentPictureCheckInit === 'function' && window.location.href.includes('/productivity') && params.has('recentpics')) {
+    } else if (content && typeof recentPictureCheckInit === 'function' && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board') && params.has('recentpics') && !params.has('overview')) {
         injectDateSelect('recentPictureCheckInit', content);
         recentPictureCheckInit();
 
@@ -799,6 +821,15 @@ async function recentPictureCheckInit() {
 
         if (heading) {
             heading.textContent = 'Recent Pictures';
+        }
+    } else if (content && typeof injectOverview === 'function' && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board') && params.has('overview') && !params.has('recentpics')) {
+        injectDateSelect('injectOverview', content);
+        injectOverview();
+
+        document.title = document.title.replace('Productivity', 'Last 14 Days');
+
+        if (heading) {
+            heading.textContent = 'Last 14 Days';
         }
     }
     
