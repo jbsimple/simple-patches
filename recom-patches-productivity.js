@@ -755,6 +755,167 @@ async function recentPictureCheckInit() {
     }
 }
 
+/* overview */
+async function injectOverview() {
+    const content = document.getElementById('kt_app_content');
+    if (content) {
+        Array.from(content.children).forEach(child => {
+            if (child.id !== "patches-productivity-donotremove") {
+                child.remove();
+            }
+        });
+    }
+
+    const report = await getReport('team', true);
+    const teamData = report.data;
+
+    const downloadButton = document.getElementById('patches-productivity-download');
+    if (downloadButton) {
+        downloadButton.href = report.download;
+        downloadButton.download = report.filename;
+        downloadButton.disabled = false;
+    } else {
+        console.error('Patches - No Download Button', downloadButton);
+    }
+
+    if (teamData && teamData.length > 0) {
+        const uniqueData = [];
+        const seenKeys = new Set();
+
+        teamData.forEach(row => {
+            const key = `${row.User}-${row.Task}-${row.SKU}-${row.Event_Date}`;
+            if (!seenKeys.has(key)) {
+                seenKeys.add(key);
+                uniqueData.push(row);
+            }
+        });
+
+        console.debug('PATCHES - uniqueData', uniqueData);
+        
+        const dailyStats = {};
+        uniqueData.forEach(row => {
+            if (row.Event_Code === "Inventory Listing") {
+                const day = row.Event_Date.split(' ')[0];
+                const units = parseFloat(row.Units) || 0;
+                const minutes = parseFloat(row.Time_Spent_in_mintues) || 0;
+        
+                if (!dailyStats[day]) {
+                    dailyStats[day] = {
+                        units: 0,
+                        minutes: 0
+                    };
+                }
+        
+                dailyStats[day].units += units;
+                dailyStats[day].minutes += minutes;
+            }
+        });
+        
+        for (const day in dailyStats) {
+            dailyStats[day].minutes = parseFloat(dailyStats[day].minutes.toFixed(2));
+        }
+        
+        console.debug('PATCHES - Daily Inventory Listing Stats', dailyStats);
+				
+        if (typeof Chart === 'undefined') {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+            script.onload = drawChart;
+            document.head.appendChild(script);
+        } else {
+            drawChart();
+        }
+
+        function drawChart() {
+            const container = document.createElement('div');
+						container.style.display = 'flex';
+						container.style.justifyContent = 'center';
+						container.style.padding = '0 30px';
+						container.style.marginTop = '2rem';
+						
+						const card = document.createElement('div');
+						card.classList = 'card';
+						card.style.width = '100%';
+						card.style.boxSizing = 'border-box';
+						card.style.padding = '2rem';
+						
+						const canvas = document.createElement('canvas');
+						canvas.id = 'dailyStatsChart';
+						canvas.style.width = 'calc(100% - 2rem)';
+						canvas.style.display = 'block';
+						canvas.style.margin = '0 auto';
+						
+						card.appendChild(canvas);
+						container.appendChild(card);
+						content.appendChild(container);
+
+            const ctx = canvas.getContext('2d');
+
+            const sortedDays = Object.keys(dailyStats).sort();
+            const unitsData = sortedDays.map(day => dailyStats[day].units);
+            const minutesData = sortedDays.map(day => dailyStats[day].minutes);
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: sortedDays,
+                    datasets: [
+                        {
+                            label: 'Units',
+                            data: unitsData,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Time Spent (Minutes)',
+                            data: minutesData,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            tension: 0.3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Inventory Listing: Units & Time per Day'
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    },
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Units / Minutes'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+    } else {
+        content.innerHTML = '<p>No data available</p>';
+    }
+}
+
 (async () => {
     console.debug('PATCHES - Start');
     const params = new URLSearchParams(window.location.search);
