@@ -679,15 +679,15 @@ async function recentPictureCheckInit() {
             <div class="mb-5 text-center"></div>
             <div class="d-flex flex-center text-center flex-wrap" style="transform: rotate(0);">
                 <div class="border border-gray-300 border-dashed rounded min-w-80px py-3 px-4 mx-2 mb-3">
-                    <span class="fs-6 fw-bolder text-gray-700">SID</span>
+                    <span class="fs-6 fw-bolder text-gray-700">SID</span><br>
                     <a target="_blank" href="/products/${entry.SID}" class="fw-bold text-gray-400">${entry.SID}</a>
                 </div>
                 <div class="border border-gray-300 border-dashed rounded min-w-80px py-3 px-4 mx-2 mb-3">
-                    <span class="fs-6 fw-bolder text-gray-700">Filename</span>
+                    <span class="fs-6 fw-bolder text-gray-700">Filename</span><br>
                     <span class="fw-bold text-gray-400" data-filename>${isPlaceholder ? 'N/A' : filename}</span>
                 </div>
                 <div class="border border-gray-300 border-dashed rounded min-w-80px py-3 px-4 mx-2 mb-3">
-                    <span class="fs-6 fw-bolder text-gray-700">Resolution</span>
+                    <span class="fs-6 fw-bolder text-gray-700">Resolution</span><br>
                     <span class="fw-bold text-gray-400" data-resolution>${isPlaceholder ? 'N/A' : 'Loading...'}</span>
                 </div>
             </div>
