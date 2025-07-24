@@ -134,7 +134,7 @@ async function getReport(type, overview = false) {
                         {
                             column: "user_clocks.clock_date",
                             opr: "between",
-                            value: `${date} - ${date}`
+                            value: `${start} - ${end}`
                         }
                     ]
                 },
