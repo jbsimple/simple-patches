@@ -553,7 +553,140 @@ function injectDateSelect(funct, content) {
 }
 
 /* recent picture check */
+async function recentPictureCheckInit() {
+    const content = document.getElementById('kt_app_content');
+    if (content) {
+        Array.from(content.children).forEach(child => {
+            if (child.id !== "patches-productivity-donotremove") {
+                child.remove();
+            }
+        });
+    }
+    
+    /* heading css */
+    const heading_css = 'padding: 0.5rem 30px; display: flex; justify-content: center; align-items: center;';
+    
+    /* heading */
+    const today = new Date();
+    const today_mm = String(today.getMonth() + 1).padStart(2, '0');
+    const today_dd = String(today.getDate()).padStart(2, '0');
+    const today_yyyy = today.getFullYear();
+    const todayFormatted = `${today_mm}/${today_dd}/${today_yyyy}`;
 
+    let date = todayFormatted;
+    const dateInput = document.getElementById('patches-productivity-dateInput');
+    if (dateInput) {
+        const rawValue = dateInput.value;
+        if (rawValue) {
+            const [yyyy, mm, dd] = rawValue.split('-');
+            date = `${mm}/${dd}/${yyyy}`;
+        }
+    }
+    const heading = document.createElement('h2');
+    heading.textContent = `SKUS Created on ${date}:`;
+    heading.setAttribute('style', heading_css);
+    
+    /* spinner */
+    const loading = document.createElement('div');
+		loading.id = 'patches-loading-indicator';
+		loading.setAttribute('style', heading_css);
+		loading.innerHTML = `
+		    <div class="d-flex align-items-center px-30 pb-5 gap-3">
+		        <div class="spinner-border text-primary" role="status"></div>
+		        <strong class="fs-4 text-gray-700">Loading recent pictures...</strong>
+		    </div>`;
+    kt_app_content.appendChild(loading);
+    
+    /* main wrap */
+    const wrap = document.createElement('div');
+    wrap.setAttribute('style', 'display: flex; padding: 30px; flex-wrap: wrap; gap: 1rem;');
+    wrap.id = 'patches-productivity-recentPicsWrap';
+    kt_app_content.appendChild(wrap);
+
+    let report = await getReport('team');
+    report = report.data;
+
+    // Filter out entries with a null SKU
+    const entries = report.filter(entry => entry.SKU !== null && typeof entry.SKU !== 'undefined');
+
+    for (const entry of entries) {
+        const sku = entry.SKU;
+        const url = `/product/items/${sku}`;
+
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error(`Fetch failed for ${sku}`);
+
+            const html = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+
+            const aTag = doc.querySelector('a[data-fslightbox="gallery"][data-type="image"]');
+						const img = aTag?.querySelector('img');
+						const imgSrc = img?.getAttribute('src') || aTag?.getAttribute('href') || null;
+            
+            const eyeballBtn = doc.querySelector('a.ajax-modal[data-url^="ajax/modals/productitems/"]');
+            const eyeball = eyeballBtn ? eyeballBtn.outerHTML : '';
+
+            printResult(wrap, entry, eyeball, imgSrc);
+        } catch (err) {
+            console.warn(`Failed to fetch image for SKU ${sku}:`, err);
+        }
+    }
+    
+    /* if it is here, loading is done */
+    const loadingEl = document.getElementById('patches-loading-indicator');
+		if (loadingEl) {
+				loadingEl.replaceWith(heading);
+		}
+    
+    if (wrap.innerHTML === '') {
+    		wrap.innerHTML += `<div class="card p-5">
+                <div class="card-body d-flex flex-center flex-column pt-12 p-9">
+                    <div type="button" class="btn btn-clear d-flex flex-column flex-center" data-index="0" data-id="0" data-catalog="0">
+                        <img src="assets/media/illustrations/dozzy-1/4.png" alt="" class="mw-100 mh-300px mb-7">
+                        <h1 class="fs-1 text-center pt-5 pb-10 text-muted">No Listings?</h1>
+                    </div>
+                </div>
+            </div>`;
+    }
+    
+    function printResult(wrap, entry, eyeball, imgSrc) {
+    		console.debug('PATCHES - Result', {
+    			"entry":entry,
+    			"eyeball":eyeball,
+    			"imgSrc":imgSrc
+    		});
+    		
+    		const box = document.createElement('div');
+    		box.classList = 'card';
+    		let color = '';
+    		if (
+				    entry.Condition.includes('6-Defective') || 
+				    entry.Condition.includes('8-Incomplete') || 
+				    entry.Condition.includes('18-Used Phones - Imaging')
+				) {
+    				color = 'background-color:color-mix(in srgb, red 15%, transparent 85%);';
+    		}
+    		box.setAttribute('style', `width:calc(33% - 1rem);${color}`);
+    		box.innerHTML = `<div class="card-header">
+                    <h3 class="card-title">
+                    	<a target="_blank" class="text-success" href="/product/items/${entry.SKU}">${entry.SKU}</a>
+                    </h3>
+                    <div class="card-toolbar">${eyeball}</div>
+                </div>
+                <div class="card-body p-0">
+                
+                <div class="text-center px-4 my-5">
+                    <img class="mw-100 mh-250px card-rounded-bottom" src="${imgSrc || ''}"/>
+                </div>
+                <div class="card-p">
+	                <div class="fw-bold text-gray-800 text-center mb-6 fs-3">${entry.Product_Name}</div>
+                </div>
+            </div>`;
+      	wrap.appendChild(box);
+    }
+}
 
 (async () => {
     console.debug('PATCHES - Start');

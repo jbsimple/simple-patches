@@ -131,6 +131,18 @@ function injectExtraTheme() {
                         title.textContent = 'My Productivity';
                     } else if (href && href.includes('productivity') && !href.includes('productivity/board')) {
                         title.textContent = 'Team Productivity';
+                        const parentItem = link.closest('.menu-item');
+                        if (parentItem && !nav_sidebar_links.querySelector('a[href="productivity?recentpics"]')) {
+                            const newItem = document.createElement('div');
+                            newItem.className = 'menu-item';
+                            newItem.innerHTML = `
+                                <a class="menu-link" href="productivity?recentpics">
+                                    <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
+                                    <span class="menu-title">Recent Pictures</span>
+                                </a>
+                            `;
+                            parentItem.insertAdjacentElement('afterend', newItem);
+                        }
                     }
                 });
             } else {
