@@ -552,8 +552,15 @@ function injectDateSelect(funct, content) {
     content.prepend(wrapper);
 }
 
+/* recent picture check */
+function recentPictureCheckInit() {
+    
+}
+
+
 (async () => {
     console.debug('PATCHES - Start');
+    const params = new URLSearchParams(window.location.search);
     const content = document.getElementById('kt_app_content');
     const toolbar = document.getElementById('kt_app_toolbar');
     let heading = null;
@@ -575,7 +582,7 @@ function injectDateSelect(funct, content) {
     }
 
 
-    if (content && window.location.href.includes('/productivity/employee')) {
+    if (content && window.location.href.includes('/productivity/employee') && !params.has('recentpics')) {
         injectDateSelect('injectUserReport', content);
         injectUserReport();
 
@@ -595,7 +602,7 @@ function injectDateSelect(funct, content) {
             </li>`;
         }
         
-    } else if (content && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board')) {
+    } else if (content && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board') && !params.has('recentpics')) {
         injectDateSelect('injectTeamReport', content);
         injectTeamReport();
 
@@ -603,6 +610,15 @@ function injectDateSelect(funct, content) {
 
         if (heading) {
             heading.textContent = 'Team Productivity';
+        }
+    } else if (content && window.location.href.includes('/productivity') && params.has('recentpics')) {
+        injectDateSelect('injectRecentPicturesCheck', content);
+        recentPictureCheckInit();
+
+        document.title = document.title.replace('Productivity', 'Recent Pictures');
+
+        if (heading) {
+            heading.textContent = 'Recent Pictures';
         }
     }
     
