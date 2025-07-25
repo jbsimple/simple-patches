@@ -1221,13 +1221,13 @@ async function injectOverview() {
 
             const searchWrapper = document.createElement('div');
             searchWrapper.style.marginBottom = '1rem';
-            searchWrapper.style.textAlign = 'right';
+            searchWrapper.style.textAlign = 'center';
 
             const searchInput = document.createElement('input');
             searchInput.type = 'text';
             searchInput.placeholder = 'Search SID, SKU, or Product Name...';
             searchInput.classList.add('form-control');
-            searchInput.style.maxWidth = '300px';
+            searchInput.style.maxWidth = '75%';
             searchInput.style.display = 'inline-block';
 
             searchWrapper.appendChild(searchInput);
