@@ -420,15 +420,14 @@ async function printTable(uniqueData) {
     outerContainer.style.margin = '2rem 30px';
 
     const toggleButton = document.createElement('button');
+    toggleButton.classList.add('btn', 'btn-light', 'btn-sm');
     toggleButton.textContent = 'Show Table';
-    toggleButton.style.padding = '0.5rem 1rem';
-    toggleButton.style.marginBottom = '1rem';
     toggleButton.style.cursor = 'pointer';
 
     const tableContainer = document.createElement('div');
     tableContainer.style.overflowX = 'auto';
     tableContainer.style.maxWidth = '100%';
-    tableContainer.style.display = 'none'; // Initially hidden
+    tableContainer.style.display = 'none';
 
     toggleButton.addEventListener('click', () => {
         const isVisible = tableContainer.style.display === 'block';
