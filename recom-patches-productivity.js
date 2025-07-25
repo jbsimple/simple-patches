@@ -392,16 +392,10 @@ async function printTable(uniqueData) {
         }
 
         if (input) {
-            const inputCont = document.createElement('div');
-            inputCont.setAttribute('style', 'display: inline-flex; flex-direction: column; gap: 0.5rem; align-items: center; justify-content: center;')
-            inputCont.style.width = '100%';
-            inputCont.style.height = '100%';
-
             input.style.width = '100%';
             filters[key] = input;
-            inputCont.appendChild(input);
-
-            th.appendChild(inputCont);
+            input.style.verticalAlign = 'middle';
+            th.appendChild(input);
         }
 
         filterRow.appendChild(th);
