@@ -1095,6 +1095,52 @@ async function injectOverview() {
             });
         }
 
+        const filteredRows = uniqueData.filter(row =>
+            row.Event_Code === "Inventory Listing" &&
+            row.SKU && row.SID && row.Product_Name && row.Condition && row.Category
+        );
+
+        if (filteredRows.length > 0) {
+            const tableContainer = document.createElement('div');
+            tableContainer.style.padding = '2rem 30px';
+
+            const table = document.createElement('table');
+            table.className = 'table table-bordered table-striped table-hover';
+            table.style.width = '100%';
+            table.style.marginTop = '2rem';
+
+            const thead = document.createElement('thead');
+            thead.innerHTML = `
+                <tr>
+                    <th>Date</th>
+                    <th>SKU</th>
+                    <th>SID</th>
+                    <th>Product Title</th>
+                    <th>Condition</th>
+                    <th>Category</th>
+                </tr>
+            `;
+            table.appendChild(thead);
+
+            // Table Body
+            const tbody = document.createElement('tbody');
+            filteredRows.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.Event_Date.split(' ')[0]}</td>
+                    <td>${row.SKU}</td>
+                    <td>${row.SID}</td>
+                    <td>${row.Product_Name}</td>
+                    <td>${row.Condition}</td>
+                    <td>${row.Category}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+            table.appendChild(tbody);
+            tableContainer.appendChild(table);
+            content.appendChild(tableContainer);
+        }
+
     } else {
         content.innerHTML = '<p>No data available</p>';
     }
