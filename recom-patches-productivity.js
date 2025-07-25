@@ -452,9 +452,15 @@ async function printTable(uniqueData) {
                     return vTime >= from && vTime <= to;
                 }
 
-                const filterVal = f.value?.toLowerCase().trim() ?? '';
+                let filterVal = '';
+                if (f instanceof HTMLSelectElement || f instanceof HTMLInputElement) {
+                    filterVal = f.value.trim().toLowerCase();
+                } else {
+                    filterVal = '';
+                }
                 const valStr = val !== null && val !== undefined ? val.toString().toLowerCase() : '';
                 return !filterVal || valStr.includes(filterVal);
+
             });
         });
 
