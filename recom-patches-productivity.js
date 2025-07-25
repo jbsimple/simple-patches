@@ -383,7 +383,7 @@ async function printTable(uniqueData) {
             filterRow.appendChild(th);
             return;
         } else {
-                const width = columnWidths[key] || '200px';
+            const width = columnWidths[key] || '200px';
             input = document.createElement('input');
             input.type = 'text';
             input.placeholder = 'Search...';
@@ -392,9 +392,16 @@ async function printTable(uniqueData) {
         }
 
         if (input) {
+            const inputCont = document.createElement('div');
+            inputCont.setAttribute('style', 'display: inline-flex; flex-direction: column; gap: 0.5rem; align-items: center; justify-content: center;')
+            inputCont.style.width = '100%';
+            inputCont.style.height = '100%';
+
             input.style.width = '100%';
             filters[key] = input;
-            th.appendChild(input);
+            inputCont.appendChild(input);
+
+            th.appendChild(inputCont);
         }
 
         filterRow.appendChild(th);
