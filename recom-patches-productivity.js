@@ -310,6 +310,7 @@ async function printTable(uniqueData) {
 
     keys.forEach(key => {
         const th = document.createElement('th');
+        th.setAttribute('style', 'vertical-align: middle; text-align: center;');
         let input;
 
         const asDropdown = ['User', 'Department', 'Task', 'PO_Number', 'Event_Code', 'Condition', 'Category'];
@@ -396,8 +397,6 @@ async function printTable(uniqueData) {
             filters[key] = input;
             th.appendChild(input);
         }
-
-        th.setAttribute('style', 'vertical-align: middle; text-align: center;');
         filterRow.appendChild(th);
     });
 
