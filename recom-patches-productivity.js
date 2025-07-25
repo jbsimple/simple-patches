@@ -416,10 +416,25 @@ async function injectTeamReport() {
 }
 
 async function printTable(uniqueData) {
-    const tableWrapper = document.createElement('div');
-    tableWrapper.style.overflowX = 'auto';
-    tableWrapper.style.maxWidth = '100%';
-    tableWrapper.style.margin = '2rem 30px';
+    const outerContainer = document.createElement('div');
+    outerContainer.style.margin = '2rem 30px';
+
+    const toggleButton = document.createElement('button');
+    toggleButton.textContent = 'Show Table';
+    toggleButton.style.padding = '0.5rem 1rem';
+    toggleButton.style.marginBottom = '1rem';
+    toggleButton.style.cursor = 'pointer';
+
+    const tableContainer = document.createElement('div');
+    tableContainer.style.overflowX = 'auto';
+    tableContainer.style.maxWidth = '100%';
+    tableContainer.style.display = 'none'; // Initially hidden
+
+    toggleButton.addEventListener('click', () => {
+        const isVisible = tableContainer.style.display === 'block';
+        tableContainer.style.display = isVisible ? 'none' : 'block';
+        toggleButton.textContent = isVisible ? 'Show Table' : 'Hide Table';
+    });
 
     const table = document.createElement('table');
     table.classList.add('table', 'table-striped');
@@ -471,8 +486,12 @@ async function printTable(uniqueData) {
     });
 
     table.appendChild(tbody);
-    tableWrapper.appendChild(table);
-    return tableWrapper;
+    tableContainer.appendChild(table);
+
+    outerContainer.appendChild(toggleButton);
+    outerContainer.appendChild(tableContainer);
+
+    return outerContainer;
 }
 
 async function injectUserLog(userID) {
