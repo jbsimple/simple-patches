@@ -171,6 +171,7 @@ async function getReport(type, overview = false) {
 
 function parseData(report, sort = false, group = false, filter = false) {
     let data = [...report];
+
     if (filter) {
         data = data.filter(row =>
             row.Event_Code === "Inventory Listing" &&
@@ -179,37 +180,37 @@ function parseData(report, sort = false, group = false, filter = false) {
     }
 
     const seenKeys = new Set();
-    let deduped = [];
+    const uniqueData = [];
 
     data.forEach(row => {
         const key = `${row.User}-${row.Task}-${row.SKU}-${row.Event_Date}`;
         if (!seenKeys.has(key)) {
             seenKeys.add(key);
-            deduped.push(row);
+            uniqueData.push(row);
         }
     });
 
     if (group) {
-        const userGroups = {};
-        deduped.forEach(row => {
-            if (!userGroups[row.User]) userGroups[row.User] = [];
-            userGroups[row.User].push(row);
+        uniqueData.sort((a, b) => {
+            if (a.User < b.User) return -1;
+            if (a.User > b.User) return 1;
+            return 0;
         });
-
-        if (sort) {
-            Object.keys(userGroups).forEach(user => {
-                userGroups[user].sort((a, b) => new Date(a.Event_Date) - new Date(b.Event_Date));
-            });
-        }
-
-        return userGroups;
-    } else {
-        if (sort) {
-            deduped.sort((a, b) => new Date(a.Event_Date) - new Date(b.Event_Date));
-        }
-
-        return deduped;
     }
+
+    if (sort) {
+        uniqueData.sort((a, b) => new Date(a.Event_Date) - new Date(b.Event_Date));
+    }
+
+    if (group && sort) {
+        uniqueData.sort((a, b) => {
+            if (a.User < b.User) return -1;
+            if (a.User > b.User) return 1;
+            return new Date(a.Event_Date) - new Date(b.Event_Date);
+        });
+    }
+
+    return uniqueData;
 }
 
 async function printTable(uniqueData) {
