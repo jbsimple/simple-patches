@@ -805,7 +805,8 @@ async function recentPictureCheckInit() {
     kt_app_content.appendChild(wrap);
 
     let report = await getReport('team');
-    const uniqueData = parseData(report);
+    let uniqueData = parseData(report);
+    uniqueData = uniqueData.filter(row => row.Event_Code === "Inventory Listing");
 
     const entries = uniqueData.filter(entry => entry.SKU !== null && typeof entry.SKU !== 'undefined');
     let counter = 0;
@@ -973,7 +974,8 @@ async function injectOverview() {
     }
 
     if (teamData && teamData.length > 0) {
-        const uniqueData = parseData(teamData);
+        let uniqueData = parseData(teamData);
+        uniqueData = uniqueData.filter(row => row.Event_Code === "Inventory Listing");
         console.debug('PATCHES - uniqueData', uniqueData);
         
         const dailyStats = {};
