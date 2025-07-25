@@ -392,11 +392,21 @@ async function printTable(uniqueData) {
         }
 
         if (input) {
-            input.style.width = '100%';
             filters[key] = input;
-            input.style.verticalAlign = 'middle';
-            th.appendChild(input);
+
+            const wrapper = document.createElement('div');
+            wrapper.style.display = 'flex';
+            wrapper.style.flexDirection = 'column';
+            wrapper.style.justifyContent = 'center';
+            wrapper.style.height = '100%';
+
+            input.style.width = '100%';
+            input.style.margin = '0 auto';
+
+            wrapper.appendChild(input);
+            th.appendChild(wrapper);
         }
+
 
         filterRow.appendChild(th);
     });
