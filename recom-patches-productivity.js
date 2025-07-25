@@ -181,9 +181,269 @@ function parseData(report) {
         }
     });
 
-    uniqueData.sort((a, b) => new Date(a.Event_Date) - new Date(b.Event_Date));
+    const sortedData = Object.values(userGroups).flatMap(group =>
+        group.sort((a, b) => new Date(a.Event_Date) - new Date(b.Event_Date))
+    );
 
     return uniqueData;
+}
+
+async function printTable(uniqueData) {
+			const columnWidths = {
+		    'User': '150px',
+		    'Department': '150px',
+		    'Task': '150px',
+		    'Event_ID': '100px',
+		    'Event_Code': '150px',
+		    'Event_Date': '175px',
+		    'Time_In': '175px',
+		    'Time_Out': '175px',
+		    'Clock_Date': '175px',
+		    'Notes': '300px',
+		    'SKU': '150px',
+		    'SID': '150px',
+		    'Product_Name': '300px',
+		    'Condition': '150px',
+		    'Category': '150px',
+		    'Total_Time': '100px',
+		    'Units': '100px',
+		    'PO_Number': '100px',
+		};
+
+    const outerContainer = document.createElement('div');
+    outerContainer.style.margin = '2rem 30px';
+
+    const buttonWrapper = document.createElement('div');
+    buttonWrapper.style.display = 'flex';
+    buttonWrapper.style.justifyContent = 'center';
+    buttonWrapper.style.marginBottom = '1rem';
+
+    const toggleButton = document.createElement('button');
+    toggleButton.classList.add('btn', 'btn-light', 'btn-sm');
+    toggleButton.textContent = 'Show Table';
+    toggleButton.style.cursor = 'pointer';
+    buttonWrapper.appendChild(toggleButton);
+
+    const tableContainer = document.createElement('div');
+    tableContainer.style.overflowX = 'auto';
+    tableContainer.style.maxWidth = '100%';
+    tableContainer.style.display = 'none';
+
+    toggleButton.addEventListener('click', () => {
+        const isVisible = tableContainer.style.display === 'block';
+        tableContainer.style.display = isVisible ? 'none' : 'block';
+        toggleButton.textContent = isVisible ? 'Show Table' : 'Hide Table';
+    });
+    
+    const resetButton = document.createElement('button');
+		resetButton.classList.add('btn', 'btn-secondary', 'btn-sm', 'ms-2');
+		resetButton.innerHTML = `<span><i class="la la-close"></i><span>Reset</span></span>`;
+		resetButton.style.cursor = 'pointer';
+		resetButton.style.marginLeft = '1rem';
+		
+		resetButton.addEventListener('click', () => {
+		    Object.values(filters).forEach(f => {
+		        if (f instanceof HTMLElement) {
+		            f.value = '';
+		        } else {
+		            Object.values(f).forEach(input => input.value = '');
+		        }
+		    });
+		    renderTable(uniqueData);
+		});
+		tableContainer.appendChild(resetButton);
+
+    const table = document.createElement('table');
+    table.classList.add('table', 'table-striped');
+    table.style.width = '100%';
+    table.style.borderCollapse = 'collapse';
+
+    const keys = Object.keys(uniqueData[0]);
+
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+    keys.forEach(key => {
+        const th = document.createElement('th');
+        th.textContent = key;
+        th.style.padding = '8px';
+        const width = columnWidths[key] || '200px';
+        th.style.minWidth = width;
+        headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+
+    const filterRow = document.createElement('tr');
+    const filters = {};
+
+    const getUniqueValues = (key) => [...new Set(uniqueData.map(r => r[key]).filter(v => v != null && v !== ''))];
+
+    keys.forEach(key => {
+        const th = document.createElement('th');
+        let input;
+
+        const asDropdown = ['User', 'Department', 'Task', 'PO_Number', 'Event_Code', 'Condition', 'Category'];
+        const asText = ['Notes', 'SID', 'Product_Name', 'SKU'];
+        const asInt = ['Event_ID', 'Units'];
+        const asFloat = ['Time_Spent_in_mintues', 'Total_Time'];
+        const asDate = ['Event_Date', 'Time_In', 'Time_Out', 'Clock_Date'];
+
+        if (asDropdown.includes(key)) {
+            input = document.createElement('select');
+            input.innerHTML = `<option value="">All</option>`;
+            input.className = 'form-control rounded-1';
+            const width = columnWidths[key] || '200px';
+            input.style.width = width;
+            getUniqueValues(key).forEach(v => {
+                const opt = document.createElement('option');
+                opt.value = v;
+                opt.textContent = v;
+                input.appendChild(opt);
+            });
+        } else if (key === 'Units' || asFloat.includes(key)) {
+        		const width = columnWidths[key] || '200px';
+				    const min = document.createElement('input');
+				    min.type = 'number';
+				    min.placeholder = 'Min';
+				    min.style.width = width;
+				    min.className = 'form-control rounded-1';
+				    const max = document.createElement('input');
+				    max.type = 'number';
+				    max.placeholder = 'Max';
+				    max.style.width = width;
+				    max.className = 'form-control rounded-1';
+				    th.appendChild(min);
+				    th.appendChild(max);
+				    filters[key] = { min, max };
+				    filterRow.appendChild(th);
+				    return;
+				} else if (key === 'Event_ID') {
+						const width = columnWidths[key] || '200px';
+				    const input = document.createElement('input');
+				    input.type = 'number';
+				    input.placeholder = 'Enter ID';
+				    input.style.width = width;
+				    input.className = 'form-control rounded-1';
+				    filters[key] = input;
+				    th.appendChild(input);
+				    filterRow.appendChild(th);
+				    return;
+				} else if (asDate.includes(key)) {
+						const width = columnWidths[key] || '200px';
+            const from = document.createElement('input');
+            from.type = 'datetime-local';
+            from.placeholder = 'From';
+            from.style.width = width;
+            from.className = 'form-control rounded-1';
+            const to = document.createElement('input');
+            to.type = 'datetime-local';
+            to.placeholder = 'To';
+            to.style.width = width;
+            to.className = 'form-control rounded-1';
+            th.appendChild(from);
+            th.appendChild(to);
+            filters[key] = { from, to };
+            filterRow.appendChild(th);
+            return;
+        } else {
+        		const width = columnWidths[key] || '200px';
+            input = document.createElement('input');
+            input.type = 'text';
+            input.placeholder = 'Search...';
+            input.className = 'form-control rounded-1';
+            input.style.width = width;
+        }
+
+        if (input) {
+            input.style.width = '100%';
+            filters[key] = input;
+            th.appendChild(input);
+        }
+
+        filterRow.appendChild(th);
+    });
+
+    thead.appendChild(filterRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+    table.appendChild(tbody);
+
+    function renderTable(data) {
+        tbody.innerHTML = '';
+        data.forEach(row => {
+            const tr = document.createElement('tr');
+            keys.forEach(key => {
+                const td = document.createElement('td');
+                const value = row[key];
+                td.style.padding = '8px';
+                const width = columnWidths[key] || '200px';
+                td.style.minWidth = width;
+
+                if (key === 'SID' && value) {
+                    const a = document.createElement('a');
+                    a.href = `/products/${encodeURIComponent(value)}`;
+                    a.textContent = value;
+                    a.target = '_blank';
+                    td.appendChild(a);
+                } else if (key === 'SKU' && value) {
+                    const a = document.createElement('a');
+                    a.href = `/product/items/${encodeURIComponent(value)}`;
+                    a.textContent = value;
+                    a.target = '_blank';
+                    td.appendChild(a);
+                } else {
+                    td.textContent = value !== null ? value : '';
+                }
+
+                tr.appendChild(td);
+            });
+            tbody.appendChild(tr);
+        });
+    }
+
+    function filterData() {
+        let filtered = uniqueData.filter(row => {
+            return keys.every(key => {
+                const val = row[key];
+                if (!(key in filters)) return true;
+
+                const f = filters[key];
+
+                if (f.min && f.max) {
+                    const min = f.min.value ? parseFloat(f.min.value) : -Infinity;
+                    const max = f.max.value ? parseFloat(f.max.value) : Infinity;
+                    return parseFloat(val) >= min && parseFloat(val) <= max;
+                }
+
+                if (f.from && f.to) {
+                    const from = f.from.value ? new Date(f.from.value).getTime() : -Infinity;
+                    const to = f.to.value ? new Date(f.to.value).getTime() : Infinity;
+                    const vTime = val ? new Date(val).getTime() : null;
+                    return vTime !== null && vTime >= from && vTime <= to;
+                }
+
+                const filterVal = f.value.toLowerCase();
+                return !filterVal || (val && val.toString().toLowerCase().includes(filterVal));
+            });
+        });
+
+        renderTable(filtered);
+    }
+
+    Object.values(filters).forEach(f => {
+        if (f instanceof HTMLElement) {
+            f.addEventListener('input', filterData);
+        } else {
+            Object.values(f).forEach(input => input.addEventListener('input', filterData));
+        }
+    });
+
+    renderTable(uniqueData);
+    tableContainer.appendChild(table);
+    outerContainer.appendChild(buttonWrapper);
+    outerContainer.appendChild(tableContainer);
+
+    return outerContainer;
 }
 
 async function injectUserReport() {
