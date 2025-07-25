@@ -1113,12 +1113,12 @@ async function injectOverview() {
             const thead = document.createElement('thead');
             thead.innerHTML = `
                 <tr>
-                    <th>Date</th>
-                    <th>SKU</th>
-                    <th>SID</th>
-                    <th>Product Title</th>
-                    <th>Condition</th>
-                    <th>Category</th>
+                    <th style="min-width: 100px;">Date</th>
+                    <th style="min-width: 150px;">SKU</th>
+                    <th style="min-width: 150px;">SID</th>
+                    <th style="width: 100%">Product Title</th>
+                    <th style="min-width: 150px;">Condition</th>
+                    <th style="min-width: 150px;">Category</th>
                 </tr>
             `;
             table.appendChild(thead);
@@ -1126,14 +1126,36 @@ async function injectOverview() {
             const tbody = document.createElement('tbody');
             filteredRows.forEach(row => {
                 const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${row.Event_Date.split(' ')[0]}</td>
-                    <td>${row.SKU}</td>
-                    <td>${row.SID}</td>
-                    <td>${row.Product_Name}</td>
-                    <td>${row.Condition}</td>
-                    <td>${row.Category}</td>
-                `;
+                const keys = [
+                    'Event_Date', 'SKU', 'SID', 'Product_Name', 'Condition', 'Category'
+                ];
+
+                keys.forEach(key => {
+                    const td = document.createElement('td');
+                    let value = row[key];
+
+                    if (key === 'Event_Date') {
+                        value = value?.split(' ')[0];
+                        td.textContent = value;
+                    } else if (key === 'SID' && value) {
+                        const a = document.createElement('a');
+                        a.href = `/products/${encodeURIComponent(value)}`;
+                        a.textContent = value;
+                        a.target = '_blank';
+                        td.appendChild(a);
+                    } else if (key === 'SKU' && value) {
+                        const a = document.createElement('a');
+                        a.href = `/product/items/${encodeURIComponent(value)}`;
+                        a.textContent = value;
+                        a.target = '_blank';
+                        td.appendChild(a);
+                    } else {
+                        td.textContent = value !== null ? value : '';
+                    }
+
+                    tr.appendChild(td);
+                });
+
                 tbody.appendChild(tr);
             });
             table.appendChild(tbody);
