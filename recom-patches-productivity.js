@@ -1083,7 +1083,7 @@ async function injectOverview() {
                 
                 const canvas = document.createElement('canvas');
                 canvas.id = 'dailyStatsChart';
-                canvas.style.width = 'calc(100% - 2rem)';
+                canvas.style.width = 'calc(60vh - 2rem)';
                 canvas.style.display = 'block';
                 canvas.style.margin = '0 auto';
                 
