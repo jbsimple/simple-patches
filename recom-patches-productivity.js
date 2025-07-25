@@ -287,15 +287,15 @@ async function printTable(uniqueData) {
     });
     tableBefore.appendChild(resetButton);
 
-    const spacer = document.createElement('span');
-    spacer.style.flex = '1';
-    tableBefore.appendChild(spacer);
-
     const tableLabel = document.createElement('span');
     tableLabel.textContent = `Lines: ${uniqueData.length}`;
     tableLabel.classList = 'text-success';
     tableBefore.appendChild(tableLabel);
 
+    const spacer = document.createElement('span');
+    spacer.style.flex = '1';
+    tableBefore.appendChild(spacer);
+    
     tableContainer.appendChild(tableBefore);
 
     const table = document.createElement('table');
