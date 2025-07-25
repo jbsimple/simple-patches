@@ -267,7 +267,7 @@ async function printTable(uniqueData) {
     });
 
     const tableBefore = document.createElement('div');
-    tableBefore.setAttribute('style', 'display: flex; flex-direction: row; justify-content: center; align-items: center;');
+    tableBefore.setAttribute('style', 'display: flex; gap: 1.5rem; flex-direction: row; justify-content: center; align-items: center;');
     
     const resetButton = document.createElement('button');
     resetButton.classList.add('btn', 'btn-secondary', 'btn-sm', 'ms-2');
