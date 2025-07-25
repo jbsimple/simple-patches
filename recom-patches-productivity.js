@@ -1321,10 +1321,10 @@ async function injectOverview() {
     } else if (content && typeof injectOverview === 'function' && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board') && params.has('overview') && !params.has('recentpics')) {
         injectOverview();
 
-        document.title = document.title.replace('Productivity', 'Last 14 Days - Productivity');
+        document.title = document.title.replace('Productivity', 'Team Overview - Productivity');
 
         if (heading) {
-            heading.textContent = 'Last 14 Days';
+            heading.textContent = 'Team Overview';
         }
     }
     

@@ -133,8 +133,8 @@ function injectExtraTheme() {
                     const title = link.querySelector('.menu-title');
                     if (href && href.includes('productivity/employee')) {
                         title.textContent = 'My Productivity';
-                        const parentItem = link.closest('.menu-item');
 
+                        const parentItem = link.closest('.menu-item');
                         if (parentItem && !nav_sidebar_links.querySelector('a[href="productivity?recentpics"]')) {
                             const newItem = document.createElement('div');
                             newItem.className = 'menu-item';
@@ -146,20 +146,21 @@ function injectExtraTheme() {
                             `;
                             parentItem.insertAdjacentElement('afterend', newItem);
                         }
+                    } else if (href && href.includes('productivity') && !href.includes('productivity/board')) {
+                        title.textContent = 'Team Productivity';
 
+                        const parentItem = link.closest('.menu-item');
                         if (parentItem && !nav_sidebar_links.querySelector('a[href="productivity?overview"]')) {
                             const newItem = document.createElement('div');
                             newItem.className = 'menu-item';
                             newItem.innerHTML = `
                                 <a class="menu-link" href="productivity?overview">
                                     <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-                                    <span class="menu-title">Overview</span>
+                                    <span class="menu-title">Team Overview</span>
                                 </a>
                             `;
-                            parentItem.insertAdjacentElement('afterend', newItem);
+                            parentItem.insertAdjacentElement('beforebegin', newItem);
                         }
-                    } else if (href && href.includes('productivity') && !href.includes('productivity/board')) {
-                        title.textContent = 'Team Productivity';
                     }
                 });
             } else {
