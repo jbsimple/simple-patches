@@ -169,6 +169,23 @@ async function getReport(type, overview = false) {
     }
 }
 
+function parseData(report) {
+    const uniqueData = [];
+    const seenKeys = new Set();
+
+    report.forEach(row => {
+        const key = `${row.User}-${row.Task}-${row.SKU}-${row.Event_Date}`;
+        if (!seenKeys.has(key)) {
+            seenKeys.add(key);
+            uniqueData.push(row);
+        }
+    });
+
+    uniqueData.sort((a, b) => new Date(a.Event_Date) - new Date(b.Event_Date));
+
+    return uniqueData;
+}
+
 async function injectUserReport() {
     const content = document.getElementById('kt_app_content');
     if (content) {
@@ -192,17 +209,7 @@ async function injectUserReport() {
     }
 
     if (userData && userData.length > 0) {
-        const uniqueData = [];
-        const seenKeys = new Set();
-
-        userData.forEach(row => {
-            const key = `${row.User}-${row.Task}-${row.SKU}-${row.Event_Date}`;
-            if (!seenKeys.has(key)) {
-                seenKeys.add(key);
-                uniqueData.push(row);
-            }
-        });
-
+        const uniqueData = parseData(userData);
         console.debug('PATCHES - uniqueData', uniqueData);
 
         const taskData = {};
@@ -304,17 +311,7 @@ async function injectTeamReport() {
     }
 
     if (teamData && teamData.length > 0) {
-        const uniqueData = [];
-        const seenKeys = new Set();
-
-        teamData.forEach(row => {
-            const key = `${row.User}-${row.Task}-${row.SKU}-${row.Event_Date}`;
-            if (!seenKeys.has(key)) {
-                seenKeys.add(key);
-                uniqueData.push(row);
-            }
-        });
-
+        const uniqueData = parseData(teamData);
         console.debug('PATCHES - uniqueData', uniqueData);
 
         const userDataMap = {};
@@ -601,18 +598,8 @@ async function recentPictureCheckInit() {
     kt_app_content.appendChild(wrap);
 
     let report = await getReport('team');
-    const uniqueData = [];
-    const seenKeys = new Set();
+    const uniqueData = parseData(report);
 
-    report.data.forEach(row => {
-        const key = `${row.User}-${row.Task}-${row.SKU}-${row.Event_Date}`;
-        if (!seenKeys.has(key)) {
-            seenKeys.add(key);
-            uniqueData.push(row);
-        }
-    });
-
-    // Filter out entries with a null SKU
     const entries = uniqueData.filter(entry => entry.SKU !== null && typeof entry.SKU !== 'undefined');
     let counter = 0;
 
@@ -779,17 +766,7 @@ async function injectOverview() {
     }
 
     if (teamData && teamData.length > 0) {
-        const uniqueData = [];
-        const seenKeys = new Set();
-
-        teamData.forEach(row => {
-            const key = `${row.User}-${row.Task}-${row.SKU}-${row.Event_Date}`;
-            if (!seenKeys.has(key)) {
-                seenKeys.add(key);
-                uniqueData.push(row);
-            }
-        });
-
+        const uniqueData = parseData(teamData);
         console.debug('PATCHES - uniqueData', uniqueData);
         
         const dailyStats = {};
