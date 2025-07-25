@@ -439,13 +439,13 @@ async function printTable(uniqueData) {
                     if (isNaN(value)) return false;
                     const min = f.min.value ? parseFloat(f.min.value) : -Infinity;
                     const max = f.max.value ? parseFloat(f.max.value) : Infinity;
-                    return parseFloat(val) >= min && parseFloat(val) <= max;
+                    return value >= min && value <= max;
                 }
 
                 if (f.from && f.to) {
                     const from = f.from.value ? new Date(f.from.value).getTime() : -Infinity;
                     const to = f.to.value ? new Date(f.to.value).getTime() : Infinity;
-                    const vTime = val ? new Date(val).getTime() : null;
+                    const vTime = val ? new Date(val.replace(' ', 'T')).getTime() : null;
                     return vTime !== null && vTime >= from && vTime <= to;
                 }
 
