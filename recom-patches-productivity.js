@@ -419,10 +419,16 @@ async function printTable(uniqueData) {
     const outerContainer = document.createElement('div');
     outerContainer.style.margin = '2rem 30px';
 
+    const buttonWrapper = document.createElement('div');
+    buttonWrapper.style.display = 'flex';
+    buttonWrapper.style.justifyContent = 'center';
+    buttonWrapper.style.marginBottom = '1rem';
+
     const toggleButton = document.createElement('button');
     toggleButton.classList.add('btn', 'btn-light', 'btn-sm');
     toggleButton.textContent = 'Show Table';
     toggleButton.style.cursor = 'pointer';
+    buttonWrapper.appendChild(toggleButton);
 
     const tableContainer = document.createElement('div');
     tableContainer.style.overflowX = 'auto';
@@ -440,10 +446,10 @@ async function printTable(uniqueData) {
     table.style.width = '100%';
     table.style.borderCollapse = 'collapse';
 
-    const thead = document.createElement('thead');
-    const headerRow = document.createElement('tr');
     const keys = Object.keys(uniqueData[0]);
 
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
     keys.forEach(key => {
         const th = document.createElement('th');
         th.textContent = key;
@@ -452,42 +458,152 @@ async function printTable(uniqueData) {
         headerRow.appendChild(th);
     });
     thead.appendChild(headerRow);
+
+    const filterRow = document.createElement('tr');
+    const filters = {};
+
+    const getUniqueValues = (key) => [...new Set(uniqueData.map(r => r[key]).filter(v => v != null && v !== ''))];
+
+    keys.forEach(key => {
+        const th = document.createElement('th');
+        let input;
+
+        const asDropdown = ['User', 'Department', 'Task', 'PO_Number', 'Event_Code', 'Condition', 'Category'];
+        const asText = ['Notes', 'SID', 'Product_Name', 'SKU'];
+        const asInt = ['Event_ID', 'Units'];
+        const asFloat = ['Time_Spent_in_mintues', 'Total_Time'];
+        const asDate = ['Event_Date', 'Time_In', 'Time_Out', 'Clock_Date'];
+
+        if (asDropdown.includes(key)) {
+            input = document.createElement('select');
+            input.innerHTML = `<option value="">All</option>`;
+            getUniqueValues(key).forEach(v => {
+                const opt = document.createElement('option');
+                opt.value = v;
+                opt.textContent = v;
+                input.appendChild(opt);
+            });
+        } else if (asInt.includes(key) || asFloat.includes(key)) {
+            const min = document.createElement('input');
+            min.type = 'number';
+            min.placeholder = 'Min';
+            min.style.width = '45%';
+            const max = document.createElement('input');
+            max.type = 'number';
+            max.placeholder = 'Max';
+            max.style.width = '45%';
+            th.appendChild(min);
+            th.appendChild(max);
+            filters[key] = { min, max };
+            filterRow.appendChild(th);
+            return;
+        } else if (asDate.includes(key)) {
+            const from = document.createElement('input');
+            from.type = 'datetime-local';
+            from.placeholder = 'From';
+            from.style.width = '45%';
+            const to = document.createElement('input');
+            to.type = 'datetime-local';
+            to.placeholder = 'To';
+            to.style.width = '45%';
+            th.appendChild(from);
+            th.appendChild(to);
+            filters[key] = { from, to };
+            filterRow.appendChild(th);
+            return;
+        } else {
+            input = document.createElement('input');
+            input.type = 'text';
+            input.placeholder = 'Search...';
+        }
+
+        if (input) {
+            input.style.width = '100%';
+            filters[key] = input;
+            th.appendChild(input);
+        }
+
+        filterRow.appendChild(th);
+    });
+
+    thead.appendChild(filterRow);
     table.appendChild(thead);
 
     const tbody = document.createElement('tbody');
-    uniqueData.forEach(row => {
-        const tr = document.createElement('tr');
-        keys.forEach(key => {
-            const td = document.createElement('td');
-            const value = row[key];
-            td.style.padding = '8px';
-            td.style.minWidth = '200px';
+    table.appendChild(tbody);
 
-            if ((key === 'SID') && value) {
-                const a = document.createElement('a');
-                a.href = `/products/${encodeURIComponent(value)}`;
-                a.textContent = value;
-                a.target = '_blank';
-                td.appendChild(a);
-            } else if ((key === 'SKU') && value) {
-                const a = document.createElement('a');
-                a.href = `/product/items/${encodeURIComponent(value)}`;
-                a.textContent = value;
-                a.target = '_blank';
-                td.appendChild(a);
-            } else {
-                td.textContent = value !== null ? value : '';
-            }
+    function renderTable(data) {
+        tbody.innerHTML = '';
+        data.forEach(row => {
+            const tr = document.createElement('tr');
+            keys.forEach(key => {
+                const td = document.createElement('td');
+                const value = row[key];
+                td.style.padding = '8px';
+                td.style.minWidth = '200px';
 
-            tr.appendChild(td);
+                if (key === 'SID' && value) {
+                    const a = document.createElement('a');
+                    a.href = `/products/${encodeURIComponent(value)}`;
+                    a.textContent = value;
+                    a.target = '_blank';
+                    td.appendChild(a);
+                } else if (key === 'SKU' && value) {
+                    const a = document.createElement('a');
+                    a.href = `/product/items/${encodeURIComponent(value)}`;
+                    a.textContent = value;
+                    a.target = '_blank';
+                    td.appendChild(a);
+                } else {
+                    td.textContent = value !== null ? value : '';
+                }
+
+                tr.appendChild(td);
+            });
+            tbody.appendChild(tr);
         });
-        tbody.appendChild(tr);
+    }
+
+    function filterData() {
+        let filtered = uniqueData.filter(row => {
+            return keys.every(key => {
+                const val = row[key];
+                if (!(key in filters)) return true;
+
+                const f = filters[key];
+
+                if (f.min && f.max) {
+                    const min = f.min.value ? parseFloat(f.min.value) : -Infinity;
+                    const max = f.max.value ? parseFloat(f.max.value) : Infinity;
+                    return parseFloat(val) >= min && parseFloat(val) <= max;
+                }
+
+                if (f.from && f.to) {
+                    const from = f.from.value ? new Date(f.from.value).getTime() : -Infinity;
+                    const to = f.to.value ? new Date(f.to.value).getTime() : Infinity;
+                    const vTime = val ? new Date(val).getTime() : null;
+                    return vTime !== null && vTime >= from && vTime <= to;
+                }
+
+                const filterVal = f.value.toLowerCase();
+                return !filterVal || (val && val.toString().toLowerCase().includes(filterVal));
+            });
+        });
+
+        renderTable(filtered);
+    }
+
+    Object.values(filters).forEach(f => {
+        if (f instanceof HTMLElement) {
+            f.addEventListener('input', filterData);
+        } else {
+            Object.values(f).forEach(input => input.addEventListener('input', filterData));
+        }
     });
 
-    table.appendChild(tbody);
+    renderTable(uniqueData);
     tableContainer.appendChild(table);
-
-    outerContainer.appendChild(toggleButton);
+    outerContainer.appendChild(buttonWrapper);
     outerContainer.appendChild(tableContainer);
 
     return outerContainer;
