@@ -8,52 +8,56 @@ function injectGoods() {
     script_patch.name = 'n/a';
     script_patch.onload = function() { console.debug('Patch Loaded:', script_patch.name); };
 
-    if (window.location.href.includes('/receiving/queues/listing') || window.location.href.includes('/products/new')) {
+    if (location.pathname.includes('/receiving/queues/listing') || location.pathname.includes('/products/new')) {
 
         loadPatchStyle('recom-patches-listing.css');
         loadPatchScript('recom-patches-listing.js');
 
-    } else if (window.location.href.includes('/queues/conditions/')) {
+        if (location.pathname === '/receiving/queues/listing') {
+            loadPatchScript('recom-patches-dtTableParams.js');
+        }
+
+    } else if (location.pathname.includes('/queues/conditions/')) {
         
         loadPatchScript('recom-patches-condqueue.js');
 
-    } else if ((window.location.href.includes('/products/') || window.location.href.includes('/product/items/')) && !window.location.href.includes('/products/new')) {
+    } else if ((location.pathname.includes('/products/') || location.pathname.includes('/product/items/')) && !location.pathname.includes('/products/new')) {
         // ending slash is needed to ensure that the code only applies the patch for the sku and sid pages
 
         loadPatchStyle('recom-patches-product.css');
         loadPatchScript('recom-patches-productPage.js');
 
-    } else if (window.location.href.includes('/receiving') && document.getElementById('searchProductForm')) {
+    } else if (location.pathname.includes('/receiving') && document.getElementById('searchProductForm')) {
         
         loadPatchScript('recom-patches-newInventory.js');
 
-    } else if (window.location.href.includes('/reports')) {
+    } else if (location.pathname.includes('/reports')) {
 
         loadPatchStyle('recom-patches-reports.css');
         loadPatchScript('recom-patches-reports.js');
 
-    } else if (window.location.href.includes('/users/show')) {
+    } else if (location.pathname.includes('/users/show')) {
 
         loadPatchStyle('recom-patches-userShow.css');
 
-    } else if (window.location.href.includes('/integrations/store/logs')) {
+    } else if (location.pathname.includes('/integrations/store/logs')) {
 
         loadPatchScript('recom-patches-errors.js');
 
-    } else if (window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board')) {
+    } else if (location.pathname.includes('/productivity') && !location.pathname.includes('/productivity/board')) {
 
         loadPatchScript('recom-patches-productivity.js');
 
-    } else if (window.location.href.includes('/tools') && !window.location.href.includes('/tools/import')) {
+    } else if (location.pathname.includes('/tools') && !location.pathname.includes('/tools/import')) {
 
         loadPatchScript('recom-patches-tools.js');
 
-    } else if (window.location.href.includes('/receiving/queues/inventory')) {
+    } else if (location.pathname.includes('/receiving/queues/inventory')) {
 
         loadPatchScript('recom-patches-pendinginv.js');
         loadPatchScript('recom-patches-dtTableParams.js');
 
-    } else if (window.location.href.includes('/receiving/queues/fba-check')) {
+    } else if (location.pathname.includes('/receiving/queues/fba-check')) {
 
         loadPatchScript('recom-patches-dtTableParams.js');
 
