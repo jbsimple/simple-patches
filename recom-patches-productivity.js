@@ -170,14 +170,17 @@ async function getReport(type, overview = false) {
 }
 
 function parseData(report) {
-    const uniqueData = [];
+    const userGroups = {};
     const seenKeys = new Set();
 
     report.forEach(row => {
         const key = `${row.User}-${row.Task}-${row.SKU}-${row.Event_Date}`;
         if (!seenKeys.has(key)) {
             seenKeys.add(key);
-            uniqueData.push(row);
+            if (!userGroups[row.User]) {
+                userGroups[row.User] = [];
+            }
+            userGroups[row.User].push(row);
         }
     });
 
@@ -185,7 +188,7 @@ function parseData(report) {
         group.sort((a, b) => new Date(a.Event_Date) - new Date(b.Event_Date))
     );
 
-    return uniqueData;
+    return sortedData;
 }
 
 async function printTable(uniqueData) {
