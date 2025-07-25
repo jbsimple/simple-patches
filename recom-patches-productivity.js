@@ -443,8 +443,6 @@ async function printTable(uniqueData) {
                 }
 
                 if (f.from && f.to) {
-                    const value = parseFloat(val);
-                    if (isNaN(value)) return false;
                     const from = f.from.value ? new Date(f.from.value).getTime() : -Infinity;
                     const to = f.to.value ? new Date(f.to.value).getTime() : Infinity;
                     const vTime = val ? new Date(val).getTime() : null;
