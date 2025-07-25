@@ -265,24 +265,38 @@ async function printTable(uniqueData) {
         tableContainer.style.display = isVisible ? 'none' : 'block';
         toggleButton.textContent = isVisible ? 'Show Table' : 'Hide Table';
     });
+
+    const tableBefore = document.createElement('div');
+    tableBefore.setAttribute('style', 'display: flex; flex-direction: row; justify-content: center; align-items: center;');
     
     const resetButton = document.createElement('button');
-		resetButton.classList.add('btn', 'btn-secondary', 'btn-sm', 'ms-2');
-		resetButton.innerHTML = `<span><i class="la la-close"></i><span>Reset</span></span>`;
-		resetButton.style.cursor = 'pointer';
-		resetButton.style.marginLeft = '1rem';
-		
-		resetButton.addEventListener('click', () => {
-		    Object.values(filters).forEach(f => {
-		        if (f instanceof HTMLElement) {
-		            f.value = '';
-		        } else {
-		            Object.values(f).forEach(input => input.value = '');
-		        }
-		    });
-		    renderTable(uniqueData);
-		});
-		tableContainer.appendChild(resetButton);
+    resetButton.classList.add('btn', 'btn-secondary', 'btn-sm', 'ms-2');
+    resetButton.innerHTML = `<span><i class="la la-close"></i><span>Reset</span></span>`;
+    resetButton.style.cursor = 'pointer';
+    resetButton.style.marginLeft = '1rem';
+    
+    resetButton.addEventListener('click', () => {
+        Object.values(filters).forEach(f => {
+            if (f instanceof HTMLElement) {
+                f.value = '';
+            } else {
+                Object.values(f).forEach(input => input.value = '');
+            }
+        });
+        renderTable(uniqueData);
+    });
+    tableBefore.appendChild(resetButton);
+
+    const spacer = document.createElement('span');
+    spacer.style.flex = '1';
+    tableBefore.appendChild(spacer);
+
+    const tableLabel = document.createElement('span');
+    tableLabel.textContent = `Lines: ${uniqueData.length}`;
+    tableLabel.classList = 'text-success';
+    tableBefore.appendChild(tableLabel);
+
+    tableContainer.appendChild(tableBefore);
 
     const table = document.createElement('table');
     table.classList.add('table', 'table-striped');
