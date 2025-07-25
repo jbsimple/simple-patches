@@ -170,10 +170,11 @@ async function getReport(type, overview = false) {
 }
 
 function parseData(report, sort = false, group = false, filter = false) {
+    let data = null;
     if (!Array.isArray(report)) {
-        let data = report.data;
+        data = report.data;
     } else {
-        let data = [...report];
+        data = [...report];
     }
 
     if (filter) {
