@@ -310,7 +310,14 @@ async function printTable(uniqueData) {
         const asText = ['Notes', 'SID', 'Product_Name', 'SKU'];
         const asInt = ['Event_ID', 'Units'];
         const asFloat = ['Time_Spent_in_mintues', 'Total_Time'];
-        const asDate = ['Event_Date', 'Time_In', 'Time_Out', 'Clock_Date'];
+        const asDate = ['Event_Date'];
+
+        const filterableKeys = [...asDropdown, ...asText, ...asInt, ...asFloat, ...asDate];
+        if (!filterableKeys.includes(key)) {
+            filters[key] = {};
+            filterRow.appendChild(document.createElement('th'));
+            return;
+        }
 
         if (asDropdown.includes(key)) {
             input = document.createElement('select');
@@ -325,35 +332,35 @@ async function printTable(uniqueData) {
                 input.appendChild(opt);
             });
         } else if (key === 'Units' || asFloat.includes(key)) {
-        		const width = columnWidths[key] || '200px';
-				    const min = document.createElement('input');
-				    min.type = 'number';
-				    min.placeholder = 'Min';
-				    min.style.width = width;
-				    min.className = 'form-control rounded-1';
-				    const max = document.createElement('input');
-				    max.type = 'number';
-				    max.placeholder = 'Max';
-				    max.style.width = width;
-				    max.className = 'form-control rounded-1';
-				    th.appendChild(min);
-				    th.appendChild(max);
-				    filters[key] = { min, max };
-				    filterRow.appendChild(th);
-				    return;
-				} else if (key === 'Event_ID') {
-						const width = columnWidths[key] || '200px';
-				    const input = document.createElement('input');
-				    input.type = 'number';
-				    input.placeholder = 'Enter ID';
-				    input.style.width = width;
-				    input.className = 'form-control rounded-1';
-				    filters[key] = input;
-				    th.appendChild(input);
-				    filterRow.appendChild(th);
-				    return;
-				} else if (asDate.includes(key)) {
-						const width = columnWidths[key] || '200px';
+            const width = columnWidths[key] || '200px';
+            const min = document.createElement('input');
+            min.type = 'number';
+            min.placeholder = 'Min';
+            min.style.width = width;
+            min.className = 'form-control rounded-1';
+            const max = document.createElement('input');
+            max.type = 'number';
+            max.placeholder = 'Max';
+            max.style.width = width;
+            max.className = 'form-control rounded-1';
+            th.appendChild(min);
+            th.appendChild(max);
+            filters[key] = { min, max };
+            filterRow.appendChild(th);
+            return;
+        } else if (key === 'Event_ID') {
+            const width = columnWidths[key] || '200px';
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.placeholder = 'Enter ID';
+            input.style.width = width;
+            input.className = 'form-control rounded-1';
+            filters[key] = input;
+            th.appendChild(input);
+            filterRow.appendChild(th);
+            return;
+        } else if (asDate.includes(key)) {
+            const width = columnWidths[key] || '200px';
             const from = document.createElement('input');
             from.type = 'datetime-local';
             from.placeholder = 'From';
@@ -370,7 +377,7 @@ async function printTable(uniqueData) {
             filterRow.appendChild(th);
             return;
         } else {
-        		const width = columnWidths[key] || '200px';
+                const width = columnWidths[key] || '200px';
             input = document.createElement('input');
             input.type = 'text';
             input.placeholder = 'Search...';
