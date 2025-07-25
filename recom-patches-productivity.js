@@ -1105,9 +1105,10 @@ async function injectOverview() {
             tableContainer.style.padding = '2rem 30px';
 
             const table = document.createElement('table');
-            table.className = 'table table-bordered table-striped table-hover';
+            table.classList.add('table', 'table-striped');
             table.style.width = '100%';
             table.style.marginTop = '2rem';
+            table.style.borderCollapse = 'collapse';
 
             const thead = document.createElement('thead');
             thead.innerHTML = `
@@ -1122,7 +1123,6 @@ async function injectOverview() {
             `;
             table.appendChild(thead);
 
-            // Table Body
             const tbody = document.createElement('tbody');
             filteredRows.forEach(row => {
                 const tr = document.createElement('tr');
@@ -1137,8 +1137,36 @@ async function injectOverview() {
                 tbody.appendChild(tr);
             });
             table.appendChild(tbody);
+
+            const searchWrapper = document.createElement('div');
+            searchWrapper.style.marginBottom = '1rem';
+            searchWrapper.style.textAlign = 'right';
+
+            const searchInput = document.createElement('input');
+            searchInput.type = 'text';
+            searchInput.placeholder = 'Search SID, SKU, or Product Name...';
+            searchInput.classList.add('form-control');
+            searchInput.style.maxWidth = '300px';
+            searchInput.style.display = 'inline-block';
+
+            searchWrapper.appendChild(searchInput);
+            tableContainer.appendChild(searchWrapper);
             tableContainer.appendChild(table);
             content.appendChild(tableContainer);
+
+            // Filtering logic
+            searchInput.addEventListener('input', () => {
+                const keyword = searchInput.value.toLowerCase();
+                const rows = tbody.querySelectorAll('tr');
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    const sid = cells[2]?.textContent.toLowerCase() || '';
+                    const sku = cells[1]?.textContent.toLowerCase() || '';
+                    const product = cells[3]?.textContent.toLowerCase() || '';
+                    const match = sid.includes(keyword) || sku.includes(keyword) || product.includes(keyword);
+                    row.style.display = match ? '' : 'none';
+                });
+            });
         }
 
     } else {
