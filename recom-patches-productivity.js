@@ -310,7 +310,7 @@ async function printTable(uniqueData) {
         const asDropdown = ['User', 'Department', 'Task', 'PO_Number', 'Event_Code', 'Condition', 'Category'];
         const asText = ['Notes', 'SID', 'Product_Name', 'SKU'];
         const asInt = ['Event_ID', 'Units'];
-        const asFloat = ['Time_Spent_in_mintues', 'Total_Time'];
+        const asFloat = ['Time_Spent_in_mintues'];
         const asDate = ['Event_Date'];
 
         const filterableKeys = [...asDropdown, ...asText, ...asInt, ...asFloat, ...asDate];
