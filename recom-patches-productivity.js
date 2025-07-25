@@ -437,17 +437,22 @@ async function printTable(uniqueData) {
                 if (f.min || f.max) {
                     const value = parseFloat(val);
                     if (isNaN(value)) return false;
-
                     const min = f.min?.value ? parseFloat(f.min.value) : -Infinity;
                     const max = f.max?.value ? parseFloat(f.max.value) : Infinity;
-
                     return value >= min && value <= max;
                 }
 
                 if (f.from || f.to) {
-                    const from = f.from?.value ? new Date(f.from.value).getTime() : -Infinity;
-                    const to = f.to?.value ? new Date(f.to.value).getTime() + 59999 : Infinity;
-                    if (val === null || val === undefined || val === '') return false;
+                    const fromSet = f.from?.value;
+                    const toSet = f.to?.value;
+
+                    if (!fromSet && !toSet) return true;
+
+                    if (!val) return false;
+
+                    const from = fromSet ? new Date(f.from.value).getTime() : -Infinity;
+                    const to = toSet ? new Date(f.to.value).getTime() + 59999 : Infinity;
+
                     const vTime = new Date(val.replace(' ', 'T')).getTime();
                     if (isNaN(vTime)) return false;
                     return vTime >= from && vTime <= to;
@@ -456,12 +461,10 @@ async function printTable(uniqueData) {
                 let filterVal = '';
                 if (f instanceof HTMLSelectElement || f instanceof HTMLInputElement) {
                     filterVal = f.value.trim().toLowerCase();
-                } else {
-                    filterVal = '';
                 }
-                const valStr = val !== null && val !== undefined ? val.toString().toLowerCase() : '';
-                return !filterVal || valStr.includes(filterVal);
 
+                const valStr = val != null ? val.toString().toLowerCase() : '';
+                return !filterVal || valStr.includes(filterVal);
             });
         });
 
