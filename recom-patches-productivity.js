@@ -221,7 +221,7 @@ async function printTable(uniqueData) {
 		    'Event_ID': '100px',
 		    'Event_Code': '150px',
 		    'Event_Date': '175px',
-            'Time_Spent_in_mintues': '100px',
+            'Time_Spent_in_mintues': '125px',
 		    'Time_In': '175px',
 		    'Time_Out': '175px',
 		    'Clock_Date': '175px',
