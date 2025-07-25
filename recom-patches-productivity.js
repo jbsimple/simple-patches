@@ -447,8 +447,9 @@ async function printTable(uniqueData) {
                 if (f.from || f.to) {
                     const from = f.from?.value ? new Date(f.from.value).getTime() : -Infinity;
                     const to = f.to?.value ? new Date(f.to.value).getTime() + 59999 : Infinity;
-                    const vTime = val ? new Date(val.replace(' ', 'T')).getTime() : null;
-                    if (vTime === null || isNaN(vTime)) return false;
+                    if (val === null || val === undefined || val === '') return false;
+                    const vTime = new Date(val.replace(' ', 'T')).getTime();
+                    if (isNaN(vTime)) return false;
                     return vTime >= from && vTime <= to;
                 }
 
