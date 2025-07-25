@@ -172,9 +172,9 @@ async function getReport(type, overview = false) {
 function parseData(report, sort = false, group = false, filter = false) {
     if (!Array.isArray(report)) {
         let data = report.data;
+    } else {
+        let data = [...report];
     }
-
-    let data = [...report];
 
     if (filter) {
         data = data.filter(row =>
