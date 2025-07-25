@@ -397,7 +397,7 @@ async function printTable(uniqueData) {
             th.appendChild(input);
         }
 
-        th.setAttribute('style', 'display: flex; justify-content: center; align-items: center;');
+        th.setAttribute('style', 'vertical-align: middle; text-align: center;');
         filterRow.appendChild(th);
     });
 
