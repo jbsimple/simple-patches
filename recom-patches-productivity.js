@@ -1069,27 +1069,28 @@ async function injectOverview() {
 
         function drawChart() {
             const container = document.createElement('div');
-            container.style.display = 'flex';
-            container.style.justifyContent = 'center';
-            container.style.padding = '0 30px';
-            container.style.marginTop = '2rem';
-            
-            const card = document.createElement('div');
-            card.classList = 'card';
-            card.style.width = '100%';
-            card.style.boxSizing = 'border-box';
-            card.style.padding = '2rem';
-            card.style.maxHeight = '60vh';
-            
-            const canvas = document.createElement('canvas');
-            canvas.id = 'dailyStatsChart';
-            canvas.style.width = '60vh';
-            canvas.style.display = 'block';
-            canvas.style.margin = '0 auto';
-            
-            card.appendChild(canvas);
-            container.appendChild(card);
-            content.appendChild(container);
+                container.style.display = 'flex';
+                container.style.justifyContent = 'center';
+                container.style.padding = '0 30px';
+                container.style.marginTop = '2rem';
+                
+                const card = document.createElement('div');
+                card.classList = 'card';
+                card.style.width = '100%';
+                card.style.boxSizing = 'border-box';
+                card.style.padding = '2rem';
+                card.style.maxHeight = '60vh';
+                
+                const canvas = document.createElement('canvas');
+                canvas.id = 'dailyStatsChart';
+                canvas.style.width = 'calc(100% - 2rem)';
+                canvas.style.height = 'calc(60vh - 2rem)';
+                canvas.style.display = 'block';
+                canvas.style.margin = '0 auto';
+                
+                card.appendChild(canvas);
+                container.appendChild(card);
+                content.appendChild(container);
 
             const ctx = canvas.getContext('2d');
 
