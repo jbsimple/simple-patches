@@ -435,20 +435,25 @@ async function printTable(uniqueData) {
                 const f = filters[key];
 
                 if (f.min && f.max) {
+                    const value = parseFloat(val);
+                    if (isNaN(value)) return false;
                     const min = f.min.value ? parseFloat(f.min.value) : -Infinity;
                     const max = f.max.value ? parseFloat(f.max.value) : Infinity;
                     return parseFloat(val) >= min && parseFloat(val) <= max;
                 }
 
                 if (f.from && f.to) {
+                    const value = parseFloat(val);
+                    if (isNaN(value)) return false;
                     const from = f.from.value ? new Date(f.from.value).getTime() : -Infinity;
                     const to = f.to.value ? new Date(f.to.value).getTime() : Infinity;
                     const vTime = val ? new Date(val).getTime() : null;
                     return vTime !== null && vTime >= from && vTime <= to;
                 }
 
-                const filterVal = f.value.toLowerCase();
-                return !filterVal || (val && val.toString().toLowerCase().includes(filterVal));
+                const filterVal = f.value.toLowerCase().trim();
+                const valStr = val !== null && val !== undefined ? val.toString().toLowerCase() : '';
+                return !filterVal || valStr.includes(filterVal);
             });
         });
 
