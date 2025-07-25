@@ -169,26 +169,47 @@ async function getReport(type, overview = false) {
     }
 }
 
-function parseData(report) {
-    const userGroups = {};
-    const seenKeys = new Set();
+function parseData(report, sort = false, group = false, filter = false) {
+    let data = [...report];
+    if (filter) {
+        data = data.filter(row =>
+            row.Event_Code === "Inventory Listing" &&
+            row.Condition !== '10-Scrap/Recycle'
+        );
+    }
 
-    report.forEach(row => {
+    const seenKeys = new Set();
+    let deduped = [];
+
+    data.forEach(row => {
         const key = `${row.User}-${row.Task}-${row.SKU}-${row.Event_Date}`;
         if (!seenKeys.has(key)) {
             seenKeys.add(key);
-            if (!userGroups[row.User]) {
-                userGroups[row.User] = [];
-            }
-            userGroups[row.User].push(row);
+            deduped.push(row);
         }
     });
 
-    const sortedData = Object.values(userGroups).flatMap(group =>
-        group.sort((a, b) => new Date(a.Event_Date) - new Date(b.Event_Date))
-    );
+    if (group) {
+        const userGroups = {};
+        deduped.forEach(row => {
+            if (!userGroups[row.User]) userGroups[row.User] = [];
+            userGroups[row.User].push(row);
+        });
 
-    return sortedData;
+        if (sort) {
+            Object.keys(userGroups).forEach(user => {
+                userGroups[user].sort((a, b) => new Date(a.Event_Date) - new Date(b.Event_Date));
+            });
+        }
+
+        return userGroups;
+    } else {
+        if (sort) {
+            deduped.sort((a, b) => new Date(a.Event_Date) - new Date(b.Event_Date));
+        }
+
+        return deduped;
+    }
 }
 
 async function printTable(uniqueData) {
@@ -472,7 +493,7 @@ async function injectUserReport() {
     }
 
     if (userData && userData.length > 0) {
-        const uniqueData = parseData(userData);
+        const uniqueData = parseData(userData, true, true, false);
         console.debug('PATCHES - uniqueData', uniqueData);
 
         const taskData = {};
@@ -576,7 +597,7 @@ async function injectTeamReport() {
     }
 
     if (teamData && teamData.length > 0) {
-        const uniqueData = parseData(teamData);
+        const uniqueData = parseData(teamData, true, true, false);
         console.debug('PATCHES - uniqueData', uniqueData);
 
         const userDataMap = {};
@@ -805,7 +826,7 @@ async function recentPictureCheckInit() {
     kt_app_content.appendChild(wrap);
 
     let report = await getReport('team');
-    let uniqueData = parseData(report);
+    let uniqueData = parseData(report, true, true, true);
     uniqueData = uniqueData.filter(row => row.Event_Code === "Inventory Listing");
 
     const entries = uniqueData.filter(entry => entry.SKU !== null && typeof entry.SKU !== 'undefined');
@@ -964,18 +985,8 @@ async function injectOverview() {
     const report = await getReport('team', true);
     const teamData = report.data;
 
-    const downloadButton = document.getElementById('patches-productivity-download');
-    if (downloadButton) {
-        downloadButton.href = report.download;
-        downloadButton.download = report.filename;
-        downloadButton.disabled = false;
-    } else {
-        console.error('Patches - No Download Button', downloadButton);
-    }
-
     if (teamData && teamData.length > 0) {
-        let uniqueData = parseData(teamData);
-        uniqueData = uniqueData.filter(row => row.Event_Code === "Inventory Listing");
+        let uniqueData = parseData(teamData, true, true, true);
         console.debug('PATCHES - uniqueData', uniqueData);
         
         const dailyStats = {};
