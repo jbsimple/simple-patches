@@ -427,29 +427,32 @@ async function printTable(uniqueData) {
     }
 
     function filterData() {
-        let filtered = uniqueData.filter(row => {
+        const filtered = uniqueData.filter(row => {
             return keys.every(key => {
                 const val = row[key];
                 if (!(key in filters)) return true;
 
                 const f = filters[key];
 
-                if (f.min && f.max) {
+                if (f.min || f.max) {
                     const value = parseFloat(val);
                     if (isNaN(value)) return false;
-                    const min = f.min.value ? parseFloat(f.min.value) : -Infinity;
-                    const max = f.max.value ? parseFloat(f.max.value) : Infinity;
+
+                    const min = f.min?.value ? parseFloat(f.min.value) : -Infinity;
+                    const max = f.max?.value ? parseFloat(f.max.value) : Infinity;
+
                     return value >= min && value <= max;
                 }
 
-                if (f.from && f.to) {
-                    const from = f.from.value ? new Date(f.from.value).getTime() : -Infinity;
-                    const to = f.to.value ? new Date(f.to.value).getTime() : Infinity;
+                if (f.from || f.to) {
+                    const from = f.from?.value ? new Date(f.from.value).getTime() : -Infinity;
+                    const to = f.to?.value ? new Date(f.to.value).getTime() + 59999 : Infinity;
                     const vTime = val ? new Date(val.replace(' ', 'T')).getTime() : null;
-                    return vTime !== null && vTime >= from && vTime <= to;
+                    if (vTime === null || isNaN(vTime)) return false;
+                    return vTime >= from && vTime <= to;
                 }
 
-                const filterVal = f.value.toLowerCase().trim();
+                const filterVal = f.value?.toLowerCase().trim() ?? '';
                 const valStr = val !== null && val !== undefined ? val.toString().toLowerCase() : '';
                 return !filterVal || valStr.includes(filterVal);
             });
