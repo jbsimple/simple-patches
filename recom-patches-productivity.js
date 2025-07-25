@@ -170,6 +170,11 @@ async function getReport(type, overview = false) {
 }
 
 function parseData(report, sort = false, group = false, filter = false) {
+    if (!Array.isArray(report)) {
+        console.error("Expected 'report' to be an array, got:", report);
+        return [];
+    }
+
     let data = [...report];
 
     if (filter) {
