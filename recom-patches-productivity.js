@@ -328,7 +328,7 @@ async function printTable(uniqueData) {
         if (asDropdown.includes(key)) {
             input = document.createElement('select');
             input.innerHTML = `<option value="">All</option>`;
-            input.className = 'form-control rounded-1';
+            input.className = 'select2-selection form-select form-select-solid form-select-lg';
             const width = columnWidths[key] || '200px';
             input.style.width = width;
             getUniqueValues(key).forEach(v => {
@@ -392,22 +392,12 @@ async function printTable(uniqueData) {
         }
 
         if (input) {
-            filters[key] = input;
-
-            const wrapper = document.createElement('div');
-            wrapper.style.display = 'flex';
-            wrapper.style.flexDirection = 'column';
-            wrapper.style.justifyContent = 'center';
-            wrapper.style.height = '100%';
-
             input.style.width = '100%';
-            input.style.margin = '0 auto';
-
-            wrapper.appendChild(input);
-            th.appendChild(wrapper);
+            filters[key] = input;
+            th.appendChild(input);
         }
 
-
+        th.setAttribute('style', 'display: flex; justify-content: center; align-items: center;');
         filterRow.appendChild(th);
     });
 
