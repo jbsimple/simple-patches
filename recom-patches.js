@@ -311,7 +311,7 @@ function fireSwal(title, message, icon = 'warning', refresh = false) {
 
     Swal.fire({
         title: title,
-        text: htmlMessage,
+        html: htmlMessage,
         icon: icon,
         showCancelButton: true,
         confirmButtonText: (refresh ? 'Refresh' : 'Gocha'),
