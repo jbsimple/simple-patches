@@ -1,6 +1,6 @@
 let version = '...';
 let currentuser = '';
-let metals = 'Kurtis';
+let metals = 'Luke';
 
 function injectGoods() {
     document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches.css?v=' + Date.now() + '" type="text/css"/>';
