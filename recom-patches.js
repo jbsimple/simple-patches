@@ -2,14 +2,14 @@ let version = '...';
 let currentuser = '';
 let metals = [
     {
-        "name": "Luke",
+        "name": "luke",
         "warnings": [
             {"hour": 15,"minute": 50,"message": "It's 3:50PM, get ready to detect METAL."},
             {"hour": 15,"minute": 55,"message": "It's 3:55PM, Detect the METAL."}
         ]
     },
     {
-        "name": "Kurtis",
+        "name": "kurtis",
         "warnings": [
             {"hour": 12,"minute": 20,"message": "It's 12:50PM, get ready to detect METAL."},
             {"hour": 12,"minute": 25,"message": "It's 12:55PM, Detect the METAL."}
@@ -17,10 +17,10 @@ let metals = [
     }
 ];
 let pfpPatch = {
-    "Luke": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/abe.gif",
-    "Nate": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/cat-jam.gif",
-    "Kurtis": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/cat-jam.gif",
-    "Jonathan": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/sounds%20good%20116.jpg"
+    "luke": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/abe.gif",
+    "nate": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/cat-jam.gif",
+    "kurtis": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/cat-jam.gif",
+    "jonathan": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/sounds%20good%20116.jpg"
 }
 let autoLocationUpdate = true;
 
