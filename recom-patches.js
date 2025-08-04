@@ -1,6 +1,21 @@
 let version = '...';
 let currentuser = '';
-let metals = 'Luke';
+let metals = [
+    {
+        "name": "Luke",
+        "warnings": [
+            {"hour": 15,"minute": 50,"message": "It's 3:50PM, get ready to detect METAL."},
+            {"hour": 15,"minute": 55,"message": "It's 3:55PM, Detect the METAL."}
+        ]
+    },
+    {
+        "name": "Kurtis",
+        "warnings": [
+            {"hour": 12,"minute": 20,"message": "It's 12:50PM, get ready to detect METAL."},
+            {"hour": 12,"minute": 25,"message": "It's 12:55PM, Detect the METAL."}
+        ]
+    }
+];
 let autoLocationUpdate = true;
 
 function injectGoods() {
@@ -97,7 +112,6 @@ function injectExtraTheme() {
             const name = nav_sidebar_links.querySelectorAll('.menu-heading')[0];
             currentuser = name.textContent.replace(/^Hi,\s*/, '').toLocaleLowerCase();
             let icon = "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/cat-jam.gif";
-
             if (name && name.textContent.includes('Hi, Luke')) {
                 icon = "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/abe.gif";
                 name.textContent = 'Hi, Psychopath';
@@ -106,14 +120,16 @@ function injectExtraTheme() {
                 name.textContent = 'Hi, Nasty Nate';
             }
 
-            // metals warning 
-            if (name && name.textContent.includes(metals)) {
-                scheduleRun(15, 50, () => {
-                        fireSwal("CLOCK CHECK!", "It's 3:50PM, get ready to detect METAL.");
-                });
-                scheduleRun(15, 55, () => {
-                    fireSwal("CLOCK CHECK!", "It's 3:55PM, Detect the METAL.");
-                });
+            // new metals warning
+            if (name) {
+                const userMeta = metals.find(m => m.name === name);
+                if (userMeta && Array.isArray(userMeta.warnings)) {
+                    userMeta.warnings.forEach(warning => {
+                        scheduleRun(warning.hour, warning.minute, () => {
+                            fireSwal("CLOCK CHECK!", warning.message);
+                        });
+                    });
+                }
             }
 
             /*
