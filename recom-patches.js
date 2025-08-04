@@ -117,10 +117,10 @@ function injectExtraTheme() {
         if (nav_sidebar_links) {
             const name = nav_sidebar_links.querySelectorAll('.menu-heading')[0];
             currentuser = name.textContent.replace(/^Hi,\s*/, '').toLocaleLowerCase();
-            
+
             // new metals warning
-            if (name && currentName) {
-                const userMeta = metals.find(m => m.name === currentName);
+            if (name && currentuser) {
+                const userMeta = metals.find(m => m.name === currentuser);
                 if (userMeta?.warnings) {
                     userMeta.warnings.forEach(({ hour, minute, message }) => {
                         scheduleRun(hour, minute, () => {
