@@ -59,6 +59,7 @@ function addPendingInventoryButton() {
 waitForElement('#kt_app_content_container', addPendingInventoryButton);
 
 let metakeys = [];
+let fetchingMetaPromise = null;
 function prettyPrintMeta() {
     async function fetchMeta() {
         const defaultMeta = [
