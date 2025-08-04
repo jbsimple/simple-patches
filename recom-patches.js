@@ -117,6 +117,19 @@ function injectExtraTheme() {
         if (nav_sidebar_links) {
             const name = nav_sidebar_links.querySelectorAll('.menu-heading')[0];
             currentuser = name.textContent.replace(/^Hi,\s*/, '').toLocaleLowerCase();
+            console.debug('PATCHES - currentuser', currentuser);
+            
+            // seap icon
+            let icon = "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/cat-jam.gif";
+            if (pfpPatch.hasOwnProperty(currentuser)) { icon = pfpPatch[currentuser]; }
+            const allImgs = document.querySelectorAll('img');
+            allImgs.forEach(avatar => {
+                const src = avatar.getAttribute('src') || '';
+                if (src.includes('assets') && src.includes('avatars')) {
+                    console.debug('PATCHES - Swapping Avatar:', src);
+                    avatar.src = icon;
+                }
+            });
 
             // new metals warning
             if (name && currentuser) {
@@ -129,17 +142,6 @@ function injectExtraTheme() {
                     });
                 }
             }
-
-            let icon = "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/cat-jam.gif";
-            if (pfpPatch.hasOwnProperty(currentuser)) { icon = pfpPatch[currentuser]; }
-            const allImgs = document.querySelectorAll('img');
-            allImgs.forEach(avatar => {
-                const src = avatar.getAttribute('src') || '';
-                if (src.includes('assets') && src.includes('avatars')) {
-                    console.debug('PATCHES - Swapping Avatar:', src);
-                    avatar.src = icon;
-                }
-            });
 
             if (name && name.textContent.includes('Hi, Luke')) {
                 name.textContent = 'Hi, Psychopath';
