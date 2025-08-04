@@ -20,7 +20,7 @@ let pfpPatch = {
     "Luke": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/abe.gif",
     "Nate": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/cat-jam.gif",
     "Kurtis": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/cat-jam.gif",
-    "Jonathan": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/cat-jam.gif"
+    "Jonathan": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/sounds%20good%20116.jpg"
 }
 let autoLocationUpdate = true;
 
