@@ -117,7 +117,8 @@ function prettyPrintMeta() {
 
     async function getMetaName(meta_id) {
         if (metakeys.length === 0) {
-            await fetchMeta();
+            if (!fetchingMetaPromise) { fetchingMetaPromise = fetchMeta(); }
+            await fetchingMetaPromise;
         }
 
         const metaItem = metakeys.find(item => item.meta_id === meta_id);
