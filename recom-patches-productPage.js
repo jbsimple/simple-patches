@@ -58,8 +58,8 @@ function addPendingInventoryButton() {
 }
 waitForElement('#kt_app_content_container', addPendingInventoryButton);
 
+let metakeys = [];
 function prettyPrintMeta() {
-    let metakeys = [];
     async function fetchMeta() {
         const defaultMeta = [
             { meta_id: 7, meta_name: "asin_check" },
