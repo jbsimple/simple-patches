@@ -16,11 +16,24 @@ let metals = [
         ]
     }
 ];
+
 let pfpPatch = {
-    "luke": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/abe.gif",
-    "nate": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/cat-jam.gif",
-    "kurtis": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/cat-jam.gif",
-    "jonathan": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/sounds%20good%20116.jpg"
+    "luke": {
+        "show": false,
+        "src": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/abe.gif"
+    },
+    "nate": {
+        "show": false,
+        "src": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/cat-jam.gif"
+    },
+    "kurtis": {
+        "show": false,
+        "src": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/cat-jam.gif"
+    },
+    "jonathan": {
+        "show": true,
+        "src": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/sounds%20good%20116.jpg"
+    }
 }
 let autoLocationUpdate = true;
 
@@ -119,9 +132,9 @@ function injectExtraTheme() {
             currentuser = name.textContent.replace(/^Hi,\s*/, '').toLocaleLowerCase();
             console.debug('PATCHES - currentuser', currentuser);
             
-            // seap icon
+            // swap icon
             let icon = "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/cat-jam.gif";
-            if (pfpPatch.hasOwnProperty(currentuser)) { icon = pfpPatch[currentuser]; }
+            if (pfpPatch.hasOwnProperty(currentuser) && pfpPatch[currentuser] && pfpPatch[currentuser].show) { icon = pfpPatch[currentuser].src; }
             const allImgs = document.querySelectorAll('img');
             allImgs.forEach(avatar => {
                 const src = avatar.getAttribute('src') || '';
