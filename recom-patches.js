@@ -16,6 +16,12 @@ let metals = [
         ]
     }
 ];
+let pfpPatch = {
+    "Luke": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/abe.gif",
+    "Nate": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/cat-jam.gif",
+    "Kurtis": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/cat-jam.gif",
+    "Jonathan": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/cat-jam.gif"
+}
 let autoLocationUpdate = true;
 
 function injectGoods() {
@@ -111,28 +117,21 @@ function injectExtraTheme() {
         if (nav_sidebar_links) {
             const name = nav_sidebar_links.querySelectorAll('.menu-heading')[0];
             currentuser = name.textContent.replace(/^Hi,\s*/, '').toLocaleLowerCase();
-            let icon = "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/cat-jam.gif";
-            if (name && name.textContent.includes('Hi, Luke')) {
-                icon = "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/abe.gif";
-                name.textContent = 'Hi, Psychopath';
-            } else if (name && name.textContent.includes('Hi, Nate')) {
-                icon = "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/abe.gif";
-                name.textContent = 'Hi, Nasty Nate';
-            }
-
+            
             // new metals warning
-            if (name) {
-                const userMeta = metals.find(m => m.name === name);
-                if (userMeta && Array.isArray(userMeta.warnings)) {
-                    userMeta.warnings.forEach(warning => {
-                        scheduleRun(warning.hour, warning.minute, () => {
-                            fireSwal("CLOCK CHECK!", warning.message);
+            if (name && currentName) {
+                const userMeta = metals.find(m => m.name === currentName);
+                if (userMeta?.warnings) {
+                    userMeta.warnings.forEach(({ hour, minute, message }) => {
+                        scheduleRun(hour, minute, () => {
+                            fireSwal("CLOCK CHECK!", message);
                         });
                     });
                 }
             }
 
-            /*
+            let icon = "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/cat-jam.gif";
+            if (pfpPatch.hasOwnProperty(currentuser)) { icon = pfpPatch[currentuser]; }
             const allImgs = document.querySelectorAll('img');
             allImgs.forEach(avatar => {
                 const src = avatar.getAttribute('src') || '';
@@ -141,7 +140,12 @@ function injectExtraTheme() {
                     avatar.src = icon;
                 }
             });
-            */        
+
+            if (name && name.textContent.includes('Hi, Luke')) {
+                name.textContent = 'Hi, Psychopath';
+            } else if (name && name.textContent.includes('Hi, Nate')) {
+                name.textContent = 'Hi, Nasty Nate';
+            }   
 
             const links = nav_sidebar_links.querySelectorAll('.menu-link');
             if (links.length > 0) {
