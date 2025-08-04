@@ -29,6 +29,7 @@ window.BUILD_INFO = {
 // this is sloppy and I don't even really need a version tracker on the page
 // but I want it.
 const nav_sidebar = document.getElementById('kt_app_sidebar_navs_wrappers');
+const build_version = document.getElementById('build-version');
 if (nav_sidebar) {
 nav_sidebar.style.display = 'flex';
     nav_sidebar.style.flexDirection = 'column';
@@ -55,6 +56,8 @@ nav_sidebar.style.display = 'flex';
     version_container.appendChild(loaded_message);
 
     nav_sidebar.appendChild(version_container);
+} else if (build_version) {
+    build_version.textContent = "Ver. ${build_version}";
 }
 EOF
 
