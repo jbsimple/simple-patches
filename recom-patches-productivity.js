@@ -947,7 +947,7 @@ async function recentPictureCheckInit() {
         });
 
         const fbacheck = `<a class="btn btn-icon btn-info btn-sm my-sm-1 ms-1" data-bs-toggle="tooltip" aria-label="View in FBA Check" data-bs-original-title="View in FBA Check" data-kt-initialized="1" href="/receiving/queues/fba-check?column=0&amp;keyword=${entry.SKU}" target="_blank"><i class="fas fa-shipping-fast"></i></a>`;
-        const pendinginv = `<a class="btn btn-icon btn-success btn-sm my-sm-1 ms-1" data-bs-toggle="tooltip" aria-label="View in Pending Inventory" data-bs-original-title="View in Pending Inventory" data-kt-initialized="1" href="/receiving/queues/inventory?column=0&amp;keyword=${entry.SKU}" target="_blank"><i class="fas fa-boxes"></i></a>`;
+        const pendinginv = `<a class="btn btn-icon btn-success btn-sm my-sm-1 ms-1" data-bs-toggle="tooltip" aria-label="View in Pending Inventory" data-bs-original-title="View in Pending Inventory" data-kt-initialized="1" href="/receiving/queues/inventory?column=1&amp;keyword=${entry.SKU}" target="_blank"><i class="fas fa-boxes"></i></a>`;
         const box = document.createElement('div');
         box.classList = 'card';
 

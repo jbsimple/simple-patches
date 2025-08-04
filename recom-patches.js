@@ -730,7 +730,7 @@ async function updatePictureLocations() {
                     resultPrintout.innerHTML += `<p style="display: inline-flex; flex-direction: row; gap: 0.25rem; margin: 0;">
                         <strong>${status}</strong>
                         <span>=><span>
-                        <a href="/receiving/queues/inventory?column=0&keyword=${encodeURIComponent(entry.item)}" target="_blank">${entry.item}</a>
+                        <a href="/receiving/queues/inventory?column=1&keyword=${encodeURIComponent(entry.item)}" target="_blank">${entry.item}</a>
                         ${event}
                         <span>:</span>
                         <span>${entry.message}</span>

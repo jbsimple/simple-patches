@@ -831,7 +831,7 @@ async function initListingPatch() {
                                         <i class="fas fa-shipping-fast"></i>
                                         <span>View In FBA Check</span>
                                     </a>
-                                    <a class="btn btn-success btn-sm my-sm-1 ms-1" style="display: flex; flex-direction: row; gap: 0.25rem; align-items: center; justify-content: center;" title="View in Pending Inventory" aria-label="View in Pending Inventory" href="/receiving/queues/inventory?column=0&keyword=${sku}" target="_blank">
+                                    <a class="btn btn-success btn-sm my-sm-1 ms-1" style="display: flex; flex-direction: row; gap: 0.25rem; align-items: center; justify-content: center;" title="View in Pending Inventory" aria-label="View in Pending Inventory" href="/receiving/queues/inventory?column=1&keyword=${sku}" target="_blank">
                                         <i class="fas fa-boxes"></i>
                                         <span>View In Pending Inventory</span>
                                     </a>

@@ -49,7 +49,7 @@ function addPendingInventoryButton() {
     pendingInventorySearch.setAttribute('aria-label', 'View in Pending Inventory');
     pendingInventorySearch.setAttribute('data-bs-original-title', 'View in Pending Inventory');
     pendingInventorySearch.setAttribute('data-kt-initialized', '1');
-    pendingInventorySearch.setAttribute('href', `/receiving/queues/inventory?column=0&keyword=${encodeURIComponent(keyword)}`);
+    pendingInventorySearch.setAttribute('href', `/receiving/queues/inventory?column=1&keyword=${encodeURIComponent(keyword)}`);
     pendingInventorySearch.setAttribute('target', '_blank');
     pendingInventorySearch.setAttribute('style', 'margin-right: 0.325rem !important;');
     pendingInventorySearch.innerHTML = '<i class="fas fa-boxes"></i>';
