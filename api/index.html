@@ -20,7 +20,7 @@
                 margin: 0;
             }
 
-            .container {
+            main {
                 width: 90%;
                 max-width: 600px;
                 display: flex;
@@ -37,18 +37,18 @@
                 flex-direction: row;
             }
 
-            .subcontainer {
+            .container {
                 gap: 0.25rem;
                 display: flex;
                 flex-direction: column;
                 width: 100%;
             }
 
-            .container * {
+            main * {
                 margin: 0 !important;
             }
 
-            .container h1 {
+            main h1 {
                 margin-bottom: 0.75rem !important;
             }
 
@@ -126,22 +126,24 @@
         </style>
     </head>
     <body>
-        <div class="container">
-            <div class="subcontainer">
+        <main>
+            <div class="container">
                 <h1>Simple Patches Asset Uploader</h1>
                 <p>Upload files to get a CDN link to paste in code, or anywhere I guess.</p>
             </div>
-            <div class="subcontainer">
+            <div class="container">
                 <label for="password">Provide a password to upload files.</label>
                 <input type="password" id="password" placeholder="Enter password" />
             </div>
-            <div class="dropzone" id="dropzone">
-                <p>Click or drag and drop a file here</p>
-                <input type="file" id="fileInput" style="display: none;" />
+            <div class="container">
+                <div class="dropzone" id="dropzone">
+                    <p>Click or drag and drop a file here</p>
+                    <input type="file" id="fileInput" style="display: none;" />
+                </div>
+                <div class="status" id="status">Waiting for input...</div>
             </div>
-            <div class="status" id="status">Waiting for input...</div>
             <div class="queue" id="queue"></div>
-        </div>
+        </main>
         <footer>
             (C)2025 Simple Patches
         </footer>
