@@ -1,6 +1,7 @@
 let version = '...';
 let currentuser = '';
 let metals = 'Luke';
+let autoLocationUpdate = true;
 
 function injectGoods() {
     document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches.css?v=' + Date.now() + '" type="text/css"/>';
@@ -284,13 +285,15 @@ function modifiedClockInit() {
             
             recordTime_parent.insertBefore(newButton, recordTime_button.nextSibling);
 
-            if (task === 'Pictures' || task === 'Testing') { // testing is for dev
-                const updatePuctureLocationsButton = document.createElement('a');
-                updatePuctureLocationsButton.className = 'btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-primary me-2';
-                updatePuctureLocationsButton.href = `javascript:updatePictureLocations();`;
-                updatePuctureLocationsButton.innerHTML = '<i class="bi bi-arrow-repeat fs-2"></i><span class="mobilefix">Update Locations</span>';
-                updatePuctureLocationsButton.title = 'Update Picture Locations';
-                recordTime_parent.insertBefore(updatePuctureLocationsButton, recordTime_button);
+            if (task === 'Pictures' || task === 'Testing') {
+                if (autoLocationUpdate) {
+                    const updatePuctureLocationsButton = document.createElement('a');
+                    updatePuctureLocationsButton.className = 'btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-primary me-2';
+                    updatePuctureLocationsButton.href = `javascript:updatePictureLocations();`;
+                    updatePuctureLocationsButton.innerHTML = '<i class="bi bi-arrow-repeat fs-2"></i><span class="mobilefix">Update Locations</span>';
+                    updatePuctureLocationsButton.title = 'Update Picture Locations';
+                    recordTime_parent.insertBefore(updatePuctureLocationsButton, recordTime_button);
+                }
 
                 // enable logout bust because I still hate it
                 bustUserTracker();

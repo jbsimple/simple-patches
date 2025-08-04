@@ -1,5 +1,3 @@
-const autoLocationUpdate = true;
-
 async function getTimeSpentInMinutes(sku) {
     async function getUserID() {
         try {
