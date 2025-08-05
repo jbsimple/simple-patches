@@ -141,6 +141,14 @@ function replaceEngagewidget() {
 }
 
 function fixStatCards() {
+    function getTheme() {
+        var theme = 'light';
+        if (document.documentElement.getAttribute('data-bs-theme')) {
+            theme = document.documentElement.getAttribute('data-bs-theme');
+        }
+        return theme;
+    }
+    
     const statcardfix = document.querySelectorAll('.card.card-xl-stretch.mb-xl-8');
     if (statcardfix && statcardfix.length === 3 && getTheme() === 'dark') {
         statcardfix[0].setAttribute('style', `background-color: rgb(65,40,50) !important; color: white !important;`);

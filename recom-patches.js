@@ -16,15 +16,17 @@ async function loadEdgeConfig(key) {
 
         if (typeof value === 'object' && value !== null) {
             for (const prop in value) {
-                if (Object.prototype.hasOwnProperty.call(globalThis, prop)) {
-                    globalThis[prop] = value[prop];
-                }
+                try {
+                    eval(`${prop}`);
+                    eval(`${prop} = ${JSON.stringify(value[prop])}`);
+                } catch (e) {}
             }
         }
     } catch (err) {
         console.error('Failed to load Edge Config:', err);
     }
 }
+
 
 function injectGoods() {
     document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches.css?v=' + Date.now() + '" type="text/css"/>';
@@ -226,13 +228,6 @@ function injectExtraTheme() {
     }
 
     /* theme stuff */
-    function getTheme() {
-        var theme = 'light';
-        if (document.documentElement.getAttribute('data-bs-theme')) {
-            theme = document.documentElement.getAttribute('data-bs-theme');
-        }
-        return theme;
-    }
 
     function rainbowMessage(message) {
         const mainelem = document.getElementById('rc_header_search').parentElement;
