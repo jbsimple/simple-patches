@@ -810,11 +810,11 @@ async function initListingPatch() {
             }
         }
     
-        if (listingSubmit && listingResults) {
+        if (listingSubmit) {
             listingSubmit.addEventListener('click', function() {
                 setTimeout(async function() {
-                    let code = '';
                     if (listingResults) {
+                        let code = '';
                         const getCreatedSKU = listingResults.querySelectorAll('h2');
                         if (getCreatedSKU && getCreatedSKU[0]) {
                             const sku = getCreatedSKU[0].textContent;
@@ -854,53 +854,54 @@ async function initListingPatch() {
                             }
                             code += `<span class="spacer"></span></div>`;
                         }
-                    }                    
-    
-                    if (listingResults && initGTIN !== curGTIN) {
-                        code += `<br><br>
-                        <strong class="patches-warning">
-                            <i class="fa fa-triangle-exclamation fs-2"></i>
-                            <span>GTIN Change Detected!</span>
-                            <i class="fa fa-triangle-exclamation fs-2"></i>
-                        </strong>
-                        <br>
-                        <div class="patches-column">
-                            <div class="patches-row">
-                                <strong>Original Queue GTIN:</strong>
-                                <input type="text" class="form-control form-control-solid form-control-lg" disabled value="${initGTIN}"></input>
-                            </div>
-                            <div class="patches-row">
-                                <strong>Created Listing GTIN:</strong>
-                                <input type="text" class="form-control form-control-solid form-control-lg" disabled value="${curGTIN}"></input>
-                            </div>
-                        </div>
-                        <div class="patches-column">
-                            <span>With the GTIN change detected, you can change it back here. The fields below will update the product.</span>
-                        </div>
-                        <div class="patches-column">
-                            <label for="patches-oldgtin">Product GTIN:</label>
-                            <input type="text" id="patches-oldgtin" class="form-control form-control-solid form-control-lg" value="${initGTIN}"></input>
-                        </div>
-                        <div class="patches-column">
-                            <label for="patches-newgtin">Product Secondary GTIN:</label>
-                            <input type="text" id="patches-newgtin" class="form-control form-control-solid form-control-lg" value="${curGTIN}"></input>
-                        </div>
-                        <div class="patches-column">
-                            <span style="flex: 1;">You can set the GTIN back to the original and the generated GTIN as the secondary by pressing the button below.<br><br>
-                                * Old GTIN becomes the product's real GTIN.<br>
-                                * Current GTIN becomes the product's secondary GTIN.
-                                * If it doesn't save here, the GTIN is REALLY invalid and there's nothing that can be done.
-                            </span>
-                            <strong>In order for the switch to happen, you must hit the 'Update GTINS' button! It is NOT Automatic!</strong>
-                        </div>
-                        <div class="patches-row">
-                            <a class="btn btn-lg btn-light-warning me-3" onclick="productGTIN()">Update GTINS</a>
-                            <div style="flex: 1;" id="productsGTIN-response"></div>
-                        </div>`;
-                    }
-                    // finally add the code
-                    listingResults.innerHTML += code;
 
+                        if (initGTIN !== curGTIN) {
+                            code += `<br><br>
+                            <strong class="patches-warning">
+                                <i class="fa fa-triangle-exclamation fs-2"></i>
+                                <span>GTIN Change Detected!</span>
+                                <i class="fa fa-triangle-exclamation fs-2"></i>
+                            </strong>
+                            <br>
+                            <div class="patches-column">
+                                <div class="patches-row">
+                                    <strong>Original Queue GTIN:</strong>
+                                    <input type="text" class="form-control form-control-solid form-control-lg" disabled value="${initGTIN}"></input>
+                                </div>
+                                <div class="patches-row">
+                                    <strong>Created Listing GTIN:</strong>
+                                    <input type="text" class="form-control form-control-solid form-control-lg" disabled value="${curGTIN}"></input>
+                                </div>
+                            </div>
+                            <div class="patches-column">
+                                <span>With the GTIN change detected, you can change it back here. The fields below will update the product.</span>
+                            </div>
+                            <div class="patches-column">
+                                <label for="patches-oldgtin">Product GTIN:</label>
+                                <input type="text" id="patches-oldgtin" class="form-control form-control-solid form-control-lg" value="${initGTIN}"></input>
+                            </div>
+                            <div class="patches-column">
+                                <label for="patches-newgtin">Product Secondary GTIN:</label>
+                                <input type="text" id="patches-newgtin" class="form-control form-control-solid form-control-lg" value="${curGTIN}"></input>
+                            </div>
+                            <div class="patches-column">
+                                <span style="flex: 1;">You can set the GTIN back to the original and the generated GTIN as the secondary by pressing the button below.<br><br>
+                                    * Old GTIN becomes the product's real GTIN.<br>
+                                    * Current GTIN becomes the product's secondary GTIN.
+                                    * If it doesn't save here, the GTIN is REALLY invalid and there's nothing that can be done.
+                                </span>
+                                <strong>In order for the switch to happen, you must hit the 'Update GTINS' button! It is NOT Automatic!</strong>
+                            </div>
+                            <div class="patches-row">
+                                <a class="btn btn-lg btn-light-warning me-3" onclick="productGTIN()">Update GTINS</a>
+                                <div style="flex: 1;" id="productsGTIN-response"></div>
+                            </div>`;
+                        }
+
+                        // finally add the code
+                        console.debug('PATCHES - Listing Submit Code Check', code);
+                        listingResults.innerHTML += code;
+                    }                    
                 }, 500); // yikes
             });
         }
