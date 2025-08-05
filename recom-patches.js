@@ -1,4 +1,4 @@
-import { getEdgeConfigValue } from './json/edgeConfig.js';
+const { getEdgeConfigValue } = require('./json/edgeConfig');
 
 let version = '...';
 let currentuser = '';
