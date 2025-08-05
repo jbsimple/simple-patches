@@ -1,5 +1,3 @@
-const { getEdgeConfigValue } = require('./json/edgeConfig');
-
 let version = '...';
 let currentuser = '';
 
