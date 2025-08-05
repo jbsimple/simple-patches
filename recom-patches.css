@@ -1,3 +1,8 @@
+/* force it to not do the slide thing */
+#kt_drawer_chat.bg-body.drawer.drawer-end:not(.drawer-on) {
+	display: none !important;	
+}
+
 /* dark mode fix for date input */
 [data-bs-theme="dark"] input[type="date"] {
     color-scheme: dark;

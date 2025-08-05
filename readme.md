@@ -20,6 +20,7 @@ There are other smaller modifications made, look below at the patches list to se
 - Click on the extention and add a new rule.
 - Add a '/*' to the end of the url to ensure it works on all pages.
 - Paste code from [inject.js](https://simple-patches.vercel.app/inject.js) into js side.
+- Optional: Add contents of injex.css to fix loading issues caused by adding the patch.
 
 #### How to use (Firefox):
 - I don't have a good recommendation for an extension, just find something that allows JS injects.

@@ -1,0 +1,3 @@
+#kt_drawer_chat.bg-body.drawer.drawer-end:not(.drawer-on) {
+	display: none !important;	
+}
