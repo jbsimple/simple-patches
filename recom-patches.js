@@ -1,6 +1,8 @@
 let version = '...';
 let currentuser = '';
 
+// empty defaults
+let metals = [];
 let pfpPatch = {};
 let rainbowAnnounce = [];
 
