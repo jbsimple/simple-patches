@@ -126,7 +126,7 @@ function injectExtraTheme() {
             // swap icon
             let icon = null;
             if (pfpPatch.hasOwnProperty(currentuser) && pfpPatch[currentuser] && pfpPatch[currentuser].show) { icon = pfpPatch[currentuser].src; }
-            if (icon !== null || icon !== '') {
+            if (icon !== null && icon !== '') {
                 const allImgs = document.querySelectorAll('img');
                 allImgs.forEach(avatar => {
                     const src = avatar.getAttribute('src') || '';

@@ -1,3 +1,6 @@
+let quicklinks = [];
+let randomImages = [];
+
 function initQuickLinks() {
     const content_container = document.getElementById('kt_app_content_container');
 
@@ -9,57 +12,6 @@ function initQuickLinks() {
 
     const quickLinks = document.createElement('div');
     quickLinks.id = 'patches-dashboard-quicklinks';
-
-    const quicklinks = [
-        {
-            "label":"Your Productivity",
-            "href":"/productivity/employee/0",
-            "desc":"Your own productivity statistics.",
-            "class":"green"
-        },
-        {
-            "label":"Team Productivity",
-            "href":"/productivity",
-            "desc":"Listing team productivity statistics.",
-            "class":"green"
-        },
-        {
-            "label":"Items Catalog",
-            "href":"/product/items",
-            "desc":"SKU catalog and search.",
-            "class":"blue"
-        },
-        {
-            "label":"Products Catalog",
-            "href":"/products",
-            "desc":"SID catalog and search.",
-            "class":"blue"
-        },
-        {
-            "label":"New Inventory",
-            "href":"/receiving",
-            "desc":"New inventory search.",
-            "class":"red"
-        },
-        {
-            "label":"Pending Listing",
-            "href":"/receiving/queues/listing",
-            "desc":"Pending Listing queue.",
-            "class":"red"
-        },
-        {
-            "label":"FBA Check",
-            "href":"/receiving/queues/fba-check",
-            "desc":"Queue before pending inventory.",
-            "class":"red"
-        },
-        {
-            "label":"Pending Inventory",
-            "href":"/receiving/queues/inventory",
-            "desc":"IC queue.",
-            "class":"red"
-        }
-    ]
 
     quicklinks.forEach(link => {
         let desc = link.desc;
@@ -91,36 +43,6 @@ function initQuickLinks() {
 function replaceEngagewidget() {
     const kt_app_content_container = document.getElementById('kt_app_content_container');
     const engagewidget = kt_app_content_container.querySelector('.card.bg-primary.card-flush.h-md-50.mb-xl-10');
-    const randomImages = [
-        {
-            "url": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/typing.gif",
-            "title": "typing..."
-        },
-        {
-            "url": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/coding.gif",
-            "title": "typing more..."
-        },
-        {
-            "url": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/hackercat.gif",
-            "title": "hacker cat!!!"
-        },
-        {
-            "url": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/angrycoder.gif",
-            "title": "average programming experience"
-        },
-        {
-            "url": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/peepoHACKERMAN.gif",
-            "title": "peepoHACKERMAN"
-        },
-        {
-            "url": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/peepoSPEEDERS.gif",
-            "title": "peepoSPEEDERS"
-        },
-        {
-            "url": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/cat-jam.gif",
-            "title": "catJAM"
-        }
-    ];
     if (engagewidget) {
         const selectedImage = randomImages[Math.floor(Math.random() * randomImages.length)];
         engagewidget.innerHTML = `<div class="card-body d-flex flex-column">
@@ -148,7 +70,7 @@ function fixStatCards() {
         }
         return theme;
     }
-    
+
     const statcardfix = document.querySelectorAll('.card.card-xl-stretch.mb-xl-8');
     if (statcardfix && statcardfix.length === 3 && getTheme() === 'dark') {
         statcardfix[0].setAttribute('style', `background-color: rgb(65,40,50) !important; color: white !important;`);
@@ -157,7 +79,8 @@ function fixStatCards() {
     }
 }
 
-setTimeout(function () { 
+setTimeout(async function () { 
+    await loadEdgeConfig('dashboard');
     fixStatCards();
     initQuickLinks();
     replaceEngagewidget();
