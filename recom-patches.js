@@ -5,8 +5,25 @@ let currentuser = '';
 let metals = [];
 let pfpPatch = {};
 let rainbowAnnounce = [];
-
 let autoLocationUpdate = true;
+
+async function loadEdgeConfig() {
+    try {
+        const res = await fetch('https://simple-patches.vercel.app/api/json?config');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        const { value } = await res.json();
+
+        if (typeof value === 'object') {
+            autoLocationUpdate = value.autoLocationUpdate ?? autoLocationUpdate;
+            metals = Array.isArray(value.metals) ? value.metals : metals;
+            pfpPatch = typeof value.pfpPatch === 'object' ? value.pfpPatch : pfpPatch;
+            rainbowAnnounce = Array.isArray(value.rainbowAnnounce) ? value.rainbowAnnounce : rainbowAnnounce;
+        }
+    } catch (err) {
+        console.error('Failed to load Edge Config:', err);
+    }
+}
 
 function injectGoods() {
     document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches.css?v=' + Date.now() + '" type="text/css"/>';
@@ -1582,10 +1599,7 @@ function bustUserTracker() {
 }
 
 async function patchInit() {
-    // the logout code has been disabled
-    // so theres no need to bust the tracking
-    // bustUserTracker();
-    
+    loadEdgeConfig();
     injectGoods();
     injectExtraTheme();
     clockTaskVisualRefresh(false);
