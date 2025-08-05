@@ -7,18 +7,19 @@ let pfpPatch = {};
 let rainbowAnnounce = [];
 let autoLocationUpdate = true;
 
-async function loadEdgeConfig() {
+async function loadEdgeConfig(key) {
     try {
-        const res = await fetch('https://simple-patches.vercel.app/api/json?config');
+        const res = await fetch(`https://simple-patches.vercel.app/api/json?${key}`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
         const { value } = await res.json();
 
-        if (typeof value === 'object') {
-            autoLocationUpdate = value.autoLocationUpdate ?? autoLocationUpdate;
-            metals = Array.isArray(value.metals) ? value.metals : metals;
-            pfpPatch = typeof value.pfpPatch === 'object' ? value.pfpPatch : pfpPatch;
-            rainbowAnnounce = Array.isArray(value.rainbowAnnounce) ? value.rainbowAnnounce : rainbowAnnounce;
+        if (typeof value === 'object' && value !== null) {
+            for (const prop in value) {
+                if (Object.prototype.hasOwnProperty.call(globalThis, prop)) {
+                    globalThis[prop] = value[prop];
+                }
+            }
         }
     } catch (err) {
         console.error('Failed to load Edge Config:', err);
@@ -243,29 +244,12 @@ function injectExtraTheme() {
         }
     }
 
-    const statcardfix = document.querySelectorAll('.card.card-xl-stretch.mb-xl-8');
-    if (statcardfix && statcardfix.length === 3 && getTheme() === 'dark') {
-        statcardfix[0].setAttribute('style', `background-color: rgb(65,40,50) !important; color: white !important;`);
-        statcardfix[1].setAttribute('style', `background-color: rgb(15,50,50) !important; color: white !important;`);
-        statcardfix[2].setAttribute('style', `background-color: rgb(50,60,85) !important; color: white !important;`);
-    }
-
     const today = new Date();
-    if (today.getDate() === 30 && today.getMonth() === 9) {
-        rainbowMessage('Happy Birthday Luke!');
-    }
-
-    if (today.getDate() === 29 && today.getMonth() === 9) {
-        rainbowMessage('Happy Early Birthday Luke!');
-    }
-
-    if (today.getDate() === 28 && today.getMonth() === 11) {
-        rainbowMessage('Happy Birthday Nate!');
-    }
-
-    if (today.getDate() === 27 && today.getMonth() === 11) {
-        rainbowMessage('Happy Early Birthday Nate!');
-    }
+    rainbowAnnounce.forEach(announcement => {
+        if (today.getDate() === announcement.day && today.getMonth() === (announcement.month - 1)) {
+            rainbowMessage(announcement.message);
+        }
+    });
 }
 
 function scheduleRun(hour, minute, callback) {
@@ -1601,7 +1585,7 @@ function bustUserTracker() {
 }
 
 async function patchInit() {
-    await loadEdgeConfig(); // oh yeah this is probably going to be fantastic for loading times
+    await loadEdgeConfig('config');
     injectGoods();
     injectExtraTheme();
     clockTaskVisualRefresh(false);

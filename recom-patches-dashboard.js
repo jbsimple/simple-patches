@@ -140,7 +140,17 @@ function replaceEngagewidget() {
     }
 }
 
+function fixStatCards() {
+    const statcardfix = document.querySelectorAll('.card.card-xl-stretch.mb-xl-8');
+    if (statcardfix && statcardfix.length === 3 && getTheme() === 'dark') {
+        statcardfix[0].setAttribute('style', `background-color: rgb(65,40,50) !important; color: white !important;`);
+        statcardfix[1].setAttribute('style', `background-color: rgb(15,50,50) !important; color: white !important;`);
+        statcardfix[2].setAttribute('style', `background-color: rgb(50,60,85) !important; color: white !important;`);
+    }
+}
+
 setTimeout(function () { 
+    fixStatCards();
     initQuickLinks();
     replaceEngagewidget();
 }, 200);
