@@ -1,40 +1,6 @@
 let version = '...';
 let currentuser = '';
-let metals = [
-    {
-        "name": "luke",
-        "warnings": [
-            {"hour": 15,"minute": 50,"message": "It's 3:50PM, get ready to detect METAL."},
-            {"hour": 15,"minute": 55,"message": "It's 3:55PM, Detect the METAL."}
-        ]
-    },
-    {
-        "name": "kurtis",
-        "warnings": [
-            {"hour": 12,"minute": 20,"message": "It's 12:50PM, get ready to detect METAL."},
-            {"hour": 12,"minute": 25,"message": "It's 12:55PM, Detect the METAL."}
-        ]
-    }
-];
 
-let pfpPatch = {
-    "luke": {
-        "show": false,
-        "src": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/abe.gif"
-    },
-    "nate": {
-        "show": false,
-        "src": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/cat-jam.gif"
-    },
-    "kurtis": {
-        "show": false,
-        "src": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/cat-jam.gif"
-    },
-    "jonathan": {
-        "show": true,
-        "src": "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/sounds%20good%20116.jpg"
-    }
-}
 let autoLocationUpdate = true;
 
 function injectGoods() {

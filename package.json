@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/jbsimple/simple-patches#readme",
   "dependencies": {
-    "@vercel/blob": "^1.1.1"
+    "@vercel/blob": "^1.1.1",
+    "@vercel/edge-config": "^1.4.0"
   }
 }
