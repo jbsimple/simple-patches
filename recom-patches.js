@@ -121,16 +121,18 @@ function injectExtraTheme() {
             console.debug('PATCHES - currentuser', currentuser);
             
             // swap icon
-            let icon = "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/cat-jam.gif";
+            let icon = null;
             if (pfpPatch.hasOwnProperty(currentuser) && pfpPatch[currentuser] && pfpPatch[currentuser].show) { icon = pfpPatch[currentuser].src; }
-            const allImgs = document.querySelectorAll('img');
-            allImgs.forEach(avatar => {
-                const src = avatar.getAttribute('src') || '';
-                if (src.includes('assets') && src.includes('avatars')) {
-                    console.debug('PATCHES - Swapping Avatar:', src);
-                    avatar.src = icon;
-                }
-            });
+            if (icon !== null || icon !== '') {
+                const allImgs = document.querySelectorAll('img');
+                allImgs.forEach(avatar => {
+                    const src = avatar.getAttribute('src') || '';
+                    if (src.includes('assets') && src.includes('avatars')) {
+                        console.debug('PATCHES - Swapping Avatar:', src);
+                        avatar.src = icon;
+                    }
+                });
+            }
 
             // new metals warning
             if (name && currentuser) {
