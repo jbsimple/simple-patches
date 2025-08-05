@@ -1,3 +1,5 @@
+import { getEdgeConfigValue } from './json/edgeConfig.js';
+
 let version = '...';
 let currentuser = '';
 
@@ -1576,7 +1578,11 @@ function bustUserTracker() {
     simulateUserActivity();
 }
 
-function patchInit() {
+async function patchInit() {
+    // test json db access
+    const greeting = await getEdgeConfigValue('greeting');
+    console.debug('PATCHES json db test response:', greeting);
+
     // the logout code has been disabled
     // so theres no need to bust the tracking
     // bustUserTracker();
