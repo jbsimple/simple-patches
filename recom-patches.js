@@ -1599,7 +1599,7 @@ function bustUserTracker() {
 }
 
 async function patchInit() {
-    loadEdgeConfig();
+    await loadEdgeConfig(); // oh yeah this is probably going to be fantastic for loading times
     injectGoods();
     injectExtraTheme();
     clockTaskVisualRefresh(false);
