@@ -3,6 +3,9 @@ import { getEdgeConfigValue } from './json/edgeConfig.js';
 let version = '...';
 let currentuser = '';
 
+let pfpPatch = {};
+let rainbowAnnounce = [];
+
 let autoLocationUpdate = true;
 
 function injectGoods() {
