@@ -2,15 +2,28 @@ function prettyLinkSkus() {
     const table = document.getElementById('dtTable');
     if (table) {
         const tds = table.querySelectorAll('td');
-        if (tds) {
-            tds.forEach(td => {
-                if (td.innerHTML.startsWith('SC-') || td.innerHTML.startsWith('RF_SC-')) {
-                    const sku = td.innerHTML;
-                    td.innerHTML = `<a href="/product/items/${sku}" target="_blank">${sku}</a>`;
-                }
-            });
-        }
+        tds.forEach(td => {
+            if (
+                (td.textContent.startsWith('SC-') || td.textContent.startsWith('RF_SC-')) &&
+                !td.querySelector('a')
+            ) {
+                const sku = td.textContent;
+                td.innerHTML = `<a href="/product/items/${sku}" target="_blank">${sku}</a>`;
+            }
+        });
     }
 }
 
-setTimeout(function () { prettyLinkSkus(); }, 500);
+// Run once on initial load
+setTimeout(prettyLinkSkus, 500);
+
+// Observe #dtTable_wrapper for changes
+const wrapper = document.getElementById('dtTable_wrapper');
+if (wrapper) {
+    const observer = new MutationObserver(() => {
+        clearTimeout(observer._debounce);
+        observer._debounce = setTimeout(prettyLinkSkus, 500);
+    });
+
+    observer.observe(wrapper, { childList: true, subtree: true });
+}
