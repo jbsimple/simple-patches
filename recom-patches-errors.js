@@ -3,12 +3,13 @@ function prettyLinkSkus() {
     if (table) {
         const tds = table.querySelectorAll('td');
         tds.forEach(td => {
+            const text = td.textContent;
             if (
-                (td.textContent.startsWith('SC-') || td.textContent.startsWith('RF_SC-')) &&
+                (text.startsWith('SC-') || text.startsWith('RF_SC-')) &&
                 !td.querySelector('a')
             ) {
-                const sku = td.textContent;
-                td.innerHTML = `<a href="/product/items/${sku}" target="_blank">${sku}</a>`;
+                const cleanedSku = text.startsWith('RF_') ? text.replace(/^RF_/, '') : text;
+                td.innerHTML = `<a href="/product/items/${cleanedSku}" target="_blank">${text}</a>`;
             }
         });
     }
