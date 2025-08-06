@@ -5,7 +5,7 @@ function prettyLinkSkus() {
         tds.forEach(td => {
             const text = td.textContent;
             if (
-                (text.startsWith('SC-') || text.startsWith('RF_SC-')) &&
+                (text.startsWith('SC-') || text.startsWith('RF_SC-') || text.startsWith('DF-')) &&
                 !td.querySelector('a')
             ) {
                 const cleanedSku = text.startsWith('RF_') ? text.replace(/^RF_/, '') : text;
