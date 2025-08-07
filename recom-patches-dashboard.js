@@ -81,10 +81,10 @@ function fixStatCards() {
 
 setTimeout(async function () { 
     fixStatCards();
-    loadEdgeConfig('config').then(() => {
+    loadEdgeConfig('dashboard').then(() => {
         console.debug('PATCHES - Dashboard Edge Config Loaded.');
         initQuickLinks();
-        // replaceEngagewidget();
+        replaceEngagewidget();
     }).catch(err => {
         console.error('PATCHES - Dashboard Edge config failed:', err);
     });
