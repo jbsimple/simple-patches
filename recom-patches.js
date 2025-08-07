@@ -24,10 +24,10 @@ async function loadEdgeConfig(key) {
                 }
             }
 
-            resolve(); // Call resolve when complete
+            resolve();
         } catch (err) {
             console.error('Failed to load Edge Config:', err);
-            reject(err); // Call reject on error
+            reject(err);
         }
     });
 }
@@ -271,6 +271,7 @@ function scheduleRun(hour, minute, callback) {
     }, delay);
 }
 
+let modifiedClockSetup = false;
 function modifiedClockInit() {
 	const recordTime_button = document.querySelector('a[data-url="productivity/record"]');
 	if (recordTime_button) {
@@ -278,37 +279,37 @@ function modifiedClockInit() {
 		if (recordTime_parent) {
             const clockButton = recordTime_button.nextSibling;
 
-			const taskHTML = clockButton.innerHTML;
-			const tempDiv = document.createElement("div");
-			tempDiv.innerHTML = taskHTML;
-			const task = tempDiv.textContent.trim().replace("Clock out -", "").trim();
+            const taskHTML = clockButton.innerHTML;
+            const tempDiv = document.createElement("div");
+            tempDiv.innerHTML = taskHTML;
+            const task = tempDiv.textContent.trim().replace("Clock out -", "").trim();
 
-            clockButton.innerHTML = `<i class="bi bi-stopwatch-fill fs-2 mobilefix"></i><span class="mobilefix">Clock Out - ${task}</span>`;
-			
-			const newButton = document.createElement('a');
-            newButton.className = 'btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-warning me-2';
-            newButton.href = `javascript:modifiedClock('${task}');`;
-            newButton.innerHTML = '<i class="bi bi-stopwatch-fill fs-2 mobilefix"></i><span class="mobilefix">Record Clock Out</span>';
-            newButton.title = 'Off System: Clock Out';
-            // newButton.setAttribute('onclick', 'modifiedClock();');
+            if (!modifiedClockSetup) {
+                clockButton.innerHTML = `<i class="bi bi-stopwatch-fill fs-2 mobilefix"></i><span class="mobilefix">Clock Out - ${task}</span>`;
+                
+                const newButton = document.createElement('a');
+                newButton.className = 'btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-warning me-2';
+                newButton.href = `javascript:modifiedClock('${task}');`;
+                newButton.innerHTML = '<i class="bi bi-stopwatch-fill fs-2 mobilefix"></i><span class="mobilefix">Record Clock Out</span>';
+                newButton.title = 'Off System: Clock Out';
 
-            recordTime_button.innerHTML = '<i class="bi bi-hourglass fs-2 mobilefix"></i><span class="mobilefix">Record Time</span>';
-            recordTime_button.title = 'Off System: Record Time';
-            
-            recordTime_parent.insertBefore(newButton, recordTime_button.nextSibling);
+                recordTime_button.innerHTML = '<i class="bi bi-hourglass fs-2 mobilefix"></i><span class="mobilefix">Record Time</span>';
+                recordTime_button.title = 'Off System: Record Time';
+                
+                recordTime_parent.insertBefore(newButton, recordTime_button.nextSibling);
 
-            if (task === 'Pictures' || task === 'Testing') {
-                if (autoLocationUpdate) {
-                    const updatePuctureLocationsButton = document.createElement('a');
-                    updatePuctureLocationsButton.className = 'btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-primary me-2';
-                    updatePuctureLocationsButton.href = `javascript:updatePictureLocations();`;
-                    updatePuctureLocationsButton.innerHTML = '<i class="bi bi-arrow-repeat fs-2"></i><span class="mobilefix">Update Locations</span>';
-                    updatePuctureLocationsButton.title = 'Update Picture Locations';
-                    recordTime_parent.insertBefore(updatePuctureLocationsButton, recordTime_button);
+                if ((task === 'Pictures' || task === 'Testing')) {
+                    bustUserTracker(); // stop the auto logout
                 }
 
-                // enable logout bust because I still hate it
-                bustUserTracker();
+                modifiedClockSetup = true;
+            } else if (autoLocationUpdate && (task === 'Pictures' || task === 'Testing')) { // after config load
+                const updatePuctureLocationsButton = document.createElement('a');
+                updatePuctureLocationsButton.className = 'btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-primary me-2';
+                updatePuctureLocationsButton.href = `javascript:updatePictureLocations();`;
+                updatePuctureLocationsButton.innerHTML = '<i class="bi bi-arrow-repeat fs-2"></i><span class="mobilefix">Update Locations</span>';
+                updatePuctureLocationsButton.title = 'Update Picture Locations';
+                recordTime_parent.insertBefore(updatePuctureLocationsButton, recordTime_button);
             }
 		}
 	}
@@ -1598,6 +1599,7 @@ async function patchInit() {
     loadEdgeConfig('config').then(() => {
         console.debug('PATCHES - Edge Config Loaded.');
         setupFromConfig();
+        modifiedClockInit(); // add button for pictures task
     }).catch(err => {
         console.error('PATCHES - Edge config failed:', err);
     });
