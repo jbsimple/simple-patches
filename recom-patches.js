@@ -1595,7 +1595,6 @@ async function patchInit() {
     checkWeatherAndCreateEffects();
     adjustToolbar();
 
-    await loadEdgeConfig('config');
     loadEdgeConfig('config').then(() => {
         console.debug('PATCHES - Edge Config Loaded.');
         setupFromConfig();

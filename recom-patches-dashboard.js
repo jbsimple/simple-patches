@@ -81,7 +81,6 @@ function fixStatCards() {
 
 setTimeout(async function () { 
     fixStatCards();
-    await loadEdgeConfig('dashboard');
     loadEdgeConfig('config').then(() => {
         console.debug('PATCHES - Dashboard Edge Config Loaded.');
         initQuickLinks();
