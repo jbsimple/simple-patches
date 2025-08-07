@@ -8,23 +8,28 @@ let rainbowAnnounce = [];
 let autoLocationUpdate = true;
 
 async function loadEdgeConfig(key) {
-    try {
-        const res = await fetch(`https://simple-patches.vercel.app/api/json?${key}`);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return new Promise(async (resolve, reject) => {
+        try {
+            const res = await fetch(`https://simple-patches.vercel.app/api/json?${key}`);
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-        const { value } = await res.json();
+            const { value } = await res.json();
 
-        if (typeof value === 'object' && value !== null) {
-            for (const prop in value) {
-                try {
-                    eval(`${prop}`);
-                    eval(`${prop} = ${JSON.stringify(value[prop])}`);
-                } catch (e) {}
+            if (typeof value === 'object' && value !== null) {
+                for (const prop in value) {
+                    try {
+                        eval(`${prop}`);
+                        eval(`${prop} = ${JSON.stringify(value[prop])}`);
+                    } catch (e) {}
+                }
             }
+
+            resolve(); // Call resolve when complete
+        } catch (err) {
+            console.error('Failed to load Edge Config:', err);
+            reject(err); // Call reject on error
         }
-    } catch (err) {
-        console.error('Failed to load Edge Config:', err);
-    }
+    });
 }
 
 
@@ -121,39 +126,14 @@ function injectExtraTheme() {
         if (nav_sidebar_links) {
             const name = nav_sidebar_links.querySelectorAll('.menu-heading')[0];
             currentuser = name.textContent.replace(/^Hi,\s*/, '').toLocaleLowerCase();
-            console.debug('PATCHES - currentuser', currentuser);
-            
-            // swap icon
-            let icon = null;
-            if (pfpPatch.hasOwnProperty(currentuser) && pfpPatch[currentuser] && pfpPatch[currentuser].show) { icon = pfpPatch[currentuser].src; }
-            if (icon !== null && icon !== '') {
-                const allImgs = document.querySelectorAll('img');
-                allImgs.forEach(avatar => {
-                    const src = avatar.getAttribute('src') || '';
-                    if (src.includes('assets') && src.includes('avatars')) {
-                        console.debug('PATCHES - Swapping Avatar:', src);
-                        avatar.src = icon;
-                    }
-                });
-            }
+            console.debug('PATCHES - currentuser', currentuser); 
 
-            // new metals warning
-            if (name && currentuser) {
-                const userMeta = metals.find(m => m.name === currentuser);
-                if (userMeta?.warnings) {
-                    userMeta.warnings.forEach(({ hour, minute, message }) => {
-                        scheduleRun(hour, minute, () => {
-                            fireSwal("CLOCK CHECK!", message);
-                        });
-                    });
-                }
-            }
-
+            // change sidebar name
             if (name && name.textContent.includes('Hi, Luke')) {
                 name.textContent = 'Hi, Psychopath';
             } else if (name && name.textContent.includes('Hi, Nate')) {
                 name.textContent = 'Hi, Nasty Nate';
-            }   
+            }
 
             const links = nav_sidebar_links.querySelectorAll('.menu-link');
             if (links.length > 0) {
@@ -245,6 +225,34 @@ function injectExtraTheme() {
             rainbowMessage(announcement.message);
         }
     });
+}
+
+function setupFromConfig() {
+    if (currentuser && currentuser !== '') {
+        // swap icon
+        let icon = null;
+        if (pfpPatch.hasOwnProperty(currentuser) && pfpPatch[currentuser] && pfpPatch[currentuser].show) { icon = pfpPatch[currentuser].src; }
+        if (icon !== null && icon !== '') {
+            const allImgs = document.querySelectorAll('img');
+            allImgs.forEach(avatar => {
+                const src = avatar.getAttribute('src') || '';
+                if (src.includes('assets') && src.includes('avatars')) {
+                    console.debug('PATCHES - Swapping Avatar:', src);
+                    avatar.src = icon;
+                }
+            });
+        }
+
+        // new metals warning
+        const userMeta = metals.find(m => m.name === currentuser);
+        if (userMeta?.warnings) {
+            userMeta.warnings.forEach(({ hour, minute, message }) => {
+                scheduleRun(hour, minute, () => {
+                    fireSwal("CLOCK CHECK!", message);
+                });
+            });
+        }
+    }
 }
 
 function scheduleRun(hour, minute, callback) {
@@ -1580,7 +1588,6 @@ function bustUserTracker() {
 }
 
 async function patchInit() {
-    await loadEdgeConfig('config');
     injectGoods();
     injectExtraTheme();
     clockTaskVisualRefresh(false);
@@ -1588,7 +1595,15 @@ async function patchInit() {
     checkWeatherAndCreateEffects();
     adjustToolbar();
 
+    await loadEdgeConfig('config');
+    loadEdgeConfig('config').then(() => {
+        console.debug('PATCHES - Edge Config Loaded.');
+        setupFromConfig();
+    }).catch(err => {
+        console.error('PATCHES - Edge config failed:', err);
+    });
+
     setTimeout(hijackAjaxModal, 500);
-    console.log('Patch Loading Complete');
+    console.log('PATCHES - Loading Complete');
 }
 window.onload = patchInit;

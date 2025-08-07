@@ -80,8 +80,13 @@ function fixStatCards() {
 }
 
 setTimeout(async function () { 
-    await loadEdgeConfig('dashboard');
     fixStatCards();
-    initQuickLinks();
-    replaceEngagewidget();
+    await loadEdgeConfig('dashboard');
+    loadEdgeConfig('config').then(() => {
+        console.debug('PATCHES - Dashboard Edge Config Loaded.');
+        initQuickLinks();
+        replaceEngagewidget();
+    }).catch(err => {
+        console.error('PATCHES - Dashboard Edge config failed:', err);
+    });
 }, 200);
