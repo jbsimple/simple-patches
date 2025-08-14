@@ -5,7 +5,7 @@ let currentuser = '';
 let metals = [];
 let pfpPatch = {};
 let rainbowAnnounce = [];
-let autoLocationUpdate = true;
+let autoLocationUpdate = false;
 
 async function loadEdgeConfig(key) {
     return new Promise(async (resolve, reject) => {
