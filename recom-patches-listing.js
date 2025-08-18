@@ -654,6 +654,33 @@ function handlePrefillPictureWarning() {
             console.error('Unable to find condition?', condition);
         }
 
+        // replace 'view default notes' button to just dump the text into the textarea
+        const vewDefaultNotes = form.querySelector('a[href^="javascript:getCondition("]');
+        if (vewDefaultNotes) {
+            const href = vewDefaultNotes.getAttribute('href');
+            const match = href.match(/getCondition\((\d+)\)/);
+            if (match) {
+                const condition_id = match[1];
+                vewDefaultNotes.removeAttribute('href');
+                vewDefaultNotes.textContent = 'Insert Default Notes';
+                vewDefaultNotes.addEventListener('click', (e) => {
+                    e.preventDefault();
+
+                    fetch(`/ajax/actions/Condition/${condition_id}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data && data.success && data.condition && data.condition.notes) {
+                                const textarea = form.querySelector('textarea[name="item[condition_notes]"]');
+                                if (textarea) {
+                                    textarea.value = data.condition.notes;
+                                }
+                            }
+                        })
+                        .catch(err => console.error('Failed to load condition notes:', err));
+                });
+            }
+        }
+
         const submitButton = document.getElementById('rc_ajax_modal_submit');
         let sku = form.querySelector('input[name="item[sku]"]'); //default grab
         if (submitButton && sku) {
