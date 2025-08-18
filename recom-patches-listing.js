@@ -610,7 +610,7 @@ function handlePrefillPictureWarning() {
                 for (let prop of computed) {
                     link.style[prop] = computed.getPropertyValue(prop);
                 }
-
+                link.style.cursor = 'pointer';
                 h1.replaceWith(link);
             } else {
                 console.error('Unable to find h1?', h1);
@@ -627,7 +627,7 @@ function handlePrefillPictureWarning() {
             console.debug('PATCHES - Prefill IMG src:', imgsrc);
 
             if (filename.includes('no-image.png')) {
-                handlePrefillWarning('There is no image on the SID, Please send over for pictures.');
+                handlePrefillWarning('No Image, Please send over for pictures.');
                 return;
             }
 
@@ -637,11 +637,17 @@ function handlePrefillPictureWarning() {
             }
 
             if (filename.includes('stock')) {
-                handlePrefillWarning('This SID has Stock Photos, Please send over for pictures.');
+                handlePrefillWarning('Stock Photos, Please send over for pictures.');
                 return;
             }
 
-            if (!filename.includes('__') || baseName !== baseName.toUpperCase()) {
+            if (!filename.includes('__')) {
+                handlePrefillWarning('Potential bad photo, please verify.');
+                return;
+            }
+
+            const [before, after] = baseName.split('__', 2);
+            if (before !== before.toUpperCase()) {
                 handlePrefillWarning('Potential old photo, please verify.');
                 return;
             }
@@ -651,7 +657,7 @@ function handlePrefillPictureWarning() {
                 const h = img.naturalHeight;
         
                 if (w < 1199 || w > 1201 || h < 1199 || h > 1201) {
-                    handlePrefillWarning(`Image is not 1200x1200 (actual: ${img.naturalWidth}x${img.naturalHeight}), Please send over for pictures.`);
+                    handlePrefillWarning(`Image is not 1200x1200 (actual: ${img.naturalWidth}x${img.naturalHeight}), Please verify.`);
                 }
             };
             
