@@ -641,7 +641,7 @@ function handlePrefillPictureWarning() {
                 img.onload();
             }
         } else {
-            console.error('Unable to find image?', img);
+            console.error('PATCHES -Unable to find image?', img);
         }
 
         const condition = form.querySelector('select[name="item[condition_id]"]');
@@ -651,7 +651,7 @@ function handlePrefillPictureWarning() {
                 handlePrefillWarning('This condition requires custom pictures.');
             }
         } else {
-            console.error('Unable to find condition?', condition);
+            console.error('PATCHES - Unable to find condition?', condition);
         }
 
         // replace 'view default notes' button to just dump the text into the textarea
@@ -674,10 +674,12 @@ function handlePrefillPictureWarning() {
                                 const textarea = form.querySelector('textarea[name="item[condition_notes]"]');
                                 if (textarea && textarea.value.length === 0) {
                                     textarea.value = data.condition.notes;
+                                } else if (textarea) {
+                                    fireSwal('Hold Up!', 'This will clear the notes already typed in there. Clear it out to reset.');
                                 }
                             }
                         })
-                        .catch(err => console.error('Failed to load condition notes:', err));
+                        .catch(err => console.error('PATCHES - Failed to load condition notes:', err));
                 });
             }
         }
@@ -693,7 +695,7 @@ function handlePrefillPictureWarning() {
             });
         }
     } else {
-        console.error('Unable to find form?', form);
+        console.error('PATCHES - Unable to find form?', form);
     }
 }
 
