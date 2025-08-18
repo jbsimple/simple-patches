@@ -595,21 +595,57 @@ function handlePrefillWarning(message) {
 function handlePrefillPictureWarning() {
     const form = document.getElementById('rc_ajax_modal_form');
     if (form) {
+        // this is a prefill, which means there is a product ID
+        const product_id = form.querySelector('input[name="item[product_id]"]');
+        if (product_id) {
+            const h1 = form.querySelector('h1');
+            if (h1) {
+                const link = document.createElement('a');
+                link.href = `/products/${product_id.value}`;
+                link.textContent = h1.textContent;
+                link.target = '_blank';
+
+                // style magic
+                const computed = window.getComputedStyle(h1);
+                for (let prop of computed) {
+                    link.style[prop] = computed.getPropertyValue(prop);
+                }
+
+                h1.replaceWith(link);
+            }
+        }
+
         const img = form.querySelector('.img-thumbnail');
         if (img) {
             const imgsrc = img.getAttribute('src').toLowerCase();
+            const baseName = imgsrc.substring(0, imgsrc.lastIndexOf('.'));
             console.debug('PATCHES - Prefill IMG src:', imgsrc);
 
-            if (imgsrc.includes('no-image.png')) {
+            if (baseName === 'no-image') {
                 handlePrefillWarning('There is no image on the SID, Please send over for pictures.');
+                return;
             }
 
-            if (imgsrc.includes('stock')) {
+            if (baseName === 'deliberate') {
+                handlePrefillWarning('Deliberate no pictures? Please verify.');
+                return;
+            }
+
+            if (baseName.includes('stock')) {
                 handlePrefillWarning('This SID has Stock Photos, Please send over for pictures.');
+                return;
+            }
+
+            if (!baseName.includes('__') || baseName !== baseName.toUpperCase()) {
+                handlePrefillWarning('Potential old photo, please verify.');
+                return;
             }
 
             img.onload = function() {
-                if (!imgsrc.includes('no-image.png') && (img.naturalWidth !== 1200 || img.naturalHeight !== 1200)) {
+                const w = img.naturalWidth;
+                const h = img.naturalHeight;
+        
+                if (w < 1199 || w > 1201 || h < 1199 || h > 1201) {
                     handlePrefillWarning(`Image is not 1200x1200 (actual: ${img.naturalWidth}x${img.naturalHeight}), Please send over for pictures.`);
                 }
             };
@@ -619,6 +655,16 @@ function handlePrefillPictureWarning() {
             }
         } else {
             console.error('Unable to find image?', img);
+        }
+
+        const condition = form.querySelector('select[name="item[condition_id]"]');
+        if (condition) {
+            const conditionId = parseInt(condition.value, 10);
+            if (conditionId === 6 || conditionId === 8 || conditionId === 18) {
+                handlePrefillWarning('This condition requires custom pictures.');
+            }
+        } else {
+            console.error('Unable to find condition?', condition);
         }
     } else {
         console.error('Unable to find form?', form);
