@@ -621,7 +621,7 @@ function handlePrefillPictureWarning() {
 
         const img = form.querySelector('.img-thumbnail');
         if (img) {
-            const imgsrc = img.getAttribute('src').toLowerCase();
+            const imgsrc = img.getAttribute('src');
             const filename = imgsrc.split('/').pop();
             const baseName = filename.substring(0, filename.lastIndexOf('.'));
             console.debug('PATCHES - Prefill IMG src:', imgsrc);
