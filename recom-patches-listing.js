@@ -612,31 +612,36 @@ function handlePrefillPictureWarning() {
                 }
 
                 h1.replaceWith(link);
+            } else {
+                console.error('Unable to find h1?', h1);
             }
+        } else {
+            console.error('Unable to find product id?', product_id);
         }
 
         const img = form.querySelector('.img-thumbnail');
         if (img) {
             const imgsrc = img.getAttribute('src').toLowerCase();
-            const baseName = imgsrc.substring(0, imgsrc.lastIndexOf('.'));
+            const filename = imgsrc.split('/').pop();
+            const baseName = filename.substring(0, filename.lastIndexOf('.'));
             console.debug('PATCHES - Prefill IMG src:', imgsrc);
 
-            if (baseName === 'no-image') {
+            if (filename.includes('no-image.png')) {
                 handlePrefillWarning('There is no image on the SID, Please send over for pictures.');
                 return;
             }
 
-            if (baseName === 'deliberate') {
+            if (filename.includes('deliberate')) {
                 handlePrefillWarning('Deliberate no pictures? Please verify.');
                 return;
             }
 
-            if (baseName.includes('stock')) {
+            if (filename.includes('stock')) {
                 handlePrefillWarning('This SID has Stock Photos, Please send over for pictures.');
                 return;
             }
 
-            if (!baseName.includes('__') || baseName !== baseName.toUpperCase()) {
+            if (!filename.includes('__') || baseName !== baseName.toUpperCase()) {
                 handlePrefillWarning('Potential old photo, please verify.');
                 return;
             }
