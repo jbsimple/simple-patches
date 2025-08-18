@@ -661,7 +661,8 @@ function handlePrefillPictureWarning() {
             const match = href.match(/getCondition\((\d+)\)/);
             if (match) {
                 const condition_id = match[1];
-                vewDefaultNotes.removeAttribute('href');
+                //vewDefaultNotes.removeAttribute('href');
+                vewDefaultNotes.setAttribute('href', 'javascript:console.log(\'PATCHES - Clicked Condition Notes Button.\')');
                 vewDefaultNotes.textContent = 'Insert Default Notes';
                 vewDefaultNotes.addEventListener('click', (e) => {
                     e.preventDefault();
