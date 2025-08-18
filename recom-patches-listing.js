@@ -595,30 +595,6 @@ function handlePrefillWarning(message) {
 function handlePrefillPictureWarning() {
     const form = document.getElementById('rc_ajax_modal_form');
     if (form) {
-        // this is a prefill, which means there is a product ID
-        const product_id = form.querySelector('input[name="item[product_id]"]');
-        if (product_id) {
-            const h1 = form.querySelector('h1');
-            if (h1) {
-                const link = document.createElement('a');
-                link.href = `/products/${product_id.value}`;
-                link.textContent = h1.textContent;
-                link.target = '_blank';
-
-                // style magic
-                const computed = window.getComputedStyle(h1);
-                for (let prop of computed) {
-                    link.style[prop] = computed.getPropertyValue(prop);
-                }
-                link.style.cursor = 'pointer';
-                h1.replaceWith(link);
-            } else {
-                console.error('Unable to find h1?', h1);
-            }
-        } else {
-            console.error('Unable to find product id?', product_id);
-        }
-
         const img = form.querySelector('.img-thumbnail');
         if (img) {
             const imgsrc = img.getAttribute('src');
