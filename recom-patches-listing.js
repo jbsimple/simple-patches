@@ -662,7 +662,7 @@ function handlePrefillPictureWarning() {
             if (match) {
                 const condition_id = match[1];
                 //vewDefaultNotes.removeAttribute('href');
-                vewDefaultNotes.setAttribute('href', 'javascript:console.log(\'PATCHES - Clicked Condition Notes Button.\')');
+                vewDefaultNotes.setAttribute('href', 'javascript:void(0);');
                 vewDefaultNotes.textContent = 'Insert Default Notes';
                 vewDefaultNotes.addEventListener('click', (e) => {
                     e.preventDefault();
