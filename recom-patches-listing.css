@@ -39,3 +39,9 @@
     align-items: center;
     font-weight: 700;
 }
+
+.mw-650px {
+    max-width: 800px !important;
+    width: 90% !important;
+    min-width: 650px !important;
+}
