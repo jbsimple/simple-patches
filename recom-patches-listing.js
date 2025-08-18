@@ -672,7 +672,7 @@ function handlePrefillPictureWarning() {
                         .then(data => {
                             if (data && data.success && data.condition && data.condition.notes) {
                                 const textarea = form.querySelector('textarea[name="item[condition_notes]"]');
-                                if (textarea) {
+                                if (textarea && textarea.value.length === 0) {
                                     textarea.value = data.condition.notes;
                                 }
                             }
