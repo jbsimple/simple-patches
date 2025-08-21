@@ -1587,6 +1587,179 @@ function bustUserTracker() {
     simulateUserActivity();
 }
 
+/* hover to enlarge image */
+function peekAtImages() {
+    const MIN_W = 249;
+    const MIN_H = 249;
+    const HOVER_DELAY_MS = 1000;
+
+    const preview = document.createElement('div');
+    preview.className = 'image-peek';
+    Object.assign(preview.style, {
+        position: 'fixed',
+        zIndex: '99999',
+        display: 'none',
+        padding: '6px',
+        background: 'rgba(0,0,0,0.8)',
+        borderRadius: '8px',
+        boxShadow: '0 8px 24px rgba(0,0,0,0.35)',
+        pointerEvents: 'auto'
+    });
+
+    const previewImg = document.createElement('img');
+    Object.assign(previewImg.style, {
+        display: 'block',
+        maxWidth: '512px',
+        maxHeight: '512px',
+        objectFit: 'contain'
+    });
+    preview.appendChild(previewImg);
+    document.body.appendChild(preview);
+
+    let activeImg = null;
+    let hoverTimer = null;
+    let lastMouse = { x: 0, y: 0 };
+
+    function positionPreview(x, y) {
+        const margin = 16;
+        const { innerWidth: vw, innerHeight: vh } = window;
+        preview.style.left = Math.min(x + margin, vw - preview.offsetWidth - 8) + 'px';
+        preview.style.top = Math.min(y + margin, vh - preview.offsetHeight - 8) + 'px';
+    }
+
+    function showPreviewFor(img) {
+        if (!img) return;
+        previewImg.src = img.currentSrc || img.src || '';
+        preview.style.display = 'block';
+        if (previewImg.complete) {
+            positionPreview(lastMouse.x, lastMouse.y);
+        } else {
+            previewImg.onload = () => positionPreview(lastMouse.x, lastMouse.y);
+        }
+    }
+
+    function hidePreview() {
+        preview.style.display = 'none';
+        previewImg.removeAttribute('src');
+        activeImg = null;
+    }
+
+    function clearHoverTimer() {
+        if (hoverTimer) {
+            clearTimeout(hoverTimer);
+            hoverTimer = null;
+        }
+    }
+
+    preview.addEventListener('mouseenter', () => {
+        clearHoverTimer();
+    });
+    preview.addEventListener('mousemove', (e) => {
+        lastMouse = { x: e.clientX, y: e.clientY };
+        positionPreview(lastMouse.x, lastMouse.y);
+    });
+    preview.addEventListener('mouseleave', (e) => {
+        if (activeImg && e.relatedTarget === activeImg) return;
+        hidePreview();
+    });
+
+    const tracked = new Set();
+    const cleanupMap = new WeakMap();
+
+    function attachToImage(img) {
+        if (tracked.has(img)) return;
+        tracked.add(img);
+
+        let wantsPeek = false;
+        const eligible = () => {
+            const rect = img.getBoundingClientRect();
+            return rect.width < MIN_W || rect.height < MIN_H;
+        };
+
+        const onEnter = (e) => {
+            lastMouse = { x: e.clientX, y: e.clientY };
+            wantsPeek = eligible();
+            if (!wantsPeek) return;
+            clearHoverTimer();
+            hoverTimer = setTimeout(() => {
+                activeImg = img;
+                showPreviewFor(img);
+            }, HOVER_DELAY_MS);
+        };
+
+        const onMove = (e) => {
+            lastMouse = { x: e.clientX, y: e.clientY };
+            if (preview.style.display === 'block') {
+                positionPreview(lastMouse.x, lastMouse.y);
+            }
+        };
+
+        const onLeave = (e) => {
+            const toPreview = e.relatedTarget && (e.relatedTarget === preview || preview.contains(e.relatedTarget));
+            clearHoverTimer();
+            if (!toPreview) hidePreview();
+        };
+
+        const ro = new ResizeObserver(() => {
+            if (activeImg === img && !eligible()) hidePreview();
+        });
+        ro.observe(img);
+
+        img.addEventListener('mouseenter', onEnter);
+        img.addEventListener('mousemove', onMove);
+        img.addEventListener('mouseleave', onLeave);
+
+        cleanupMap.set(img, () => {
+            try { ro.disconnect(); } catch {}
+            img.removeEventListener('mouseenter', onEnter);
+            img.removeEventListener('mousemove', onMove);
+            img.removeEventListener('mouseleave', onLeave);
+            if (activeImg === img) hidePreview();
+            tracked.delete(img);
+        });
+    }
+
+    function detachFromImage(img) {
+        const fn = cleanupMap.get(img);
+        if (fn) fn();
+    }
+
+    function scanAndAttach(root) {
+        if (!root) return;
+        if (root.matches && (root.matches('img') || root.matches('image'))) {
+            attachToImage(root);
+        }
+        if (root.querySelectorAll) {
+            root.querySelectorAll('img, image').forEach(attachToImage);
+        }
+    }
+
+    function scanAndDetach(root) {
+        if (!root) return;
+        if (tracked.has(root)) detachFromImage(root);
+        if (root.querySelectorAll) {
+            root.querySelectorAll('img, image').forEach((img) => {
+                if (tracked.has(img)) detachFromImage(img);
+            });
+        }
+    }
+    // only do images in main app page, not top bar or sidebar :D
+    document.getElementById('kt_app_main').querySelectorAll('img, image').forEach(attachToImage);
+    const mo = new MutationObserver((mutations) => {
+        for (const m of mutations) {
+            m.addedNodes && m.addedNodes.forEach((node) => scanAndAttach(node));
+            m.removedNodes && m.removedNodes.forEach((node) => scanAndDetach(node));
+        }
+    });
+    mo.observe(document.documentElement, { childList: true, subtree: true });
+    return function cleanup() {
+        hidePreview();
+        mo.disconnect();
+        Array.from(tracked).forEach(detachFromImage);
+        preview.remove();
+    };
+}
+
 async function patchInit() {
     injectGoods();
     injectExtraTheme();
@@ -1594,6 +1767,7 @@ async function patchInit() {
     modifiedClockInit();
     checkWeatherAndCreateEffects();
     adjustToolbar();
+    peekAtImages();
 
     loadEdgeConfig('config').then(() => {
         console.debug('PATCHES - Edge Config Loaded.');

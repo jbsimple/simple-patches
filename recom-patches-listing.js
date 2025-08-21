@@ -690,7 +690,9 @@ function handlePrefillPictureWarning() {
             submitButton.addEventListener('click', async function() {
                 sku = form.querySelector('input[name="item[sku]"]'); //regrab
                 if (sku && sku.value !== '' && sku.value.length > 0) {
-                    window.open(`${window.location.origin}/product/items/${sku.value}`, '_blank');
+                    setTimeout(() => {
+                        window.open(`${window.location.origin}/product/items/${sku.value}`, '_blank');
+                    }, 500); // trying 500ms for now
                 }
             });
         }
