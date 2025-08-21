@@ -233,7 +233,7 @@ function setupFromConfig() {
         let icon = null;
         if (pfpPatch.hasOwnProperty(currentuser) && pfpPatch[currentuser] && pfpPatch[currentuser].show) { icon = pfpPatch[currentuser].src; }
         if (icon !== null && icon !== '') {
-            const allImgs = document.querySelectorAll('img');
+            const allImgs = document.getElementById('kt_app_header_container').querySelectorAll('img');
             allImgs.forEach(avatar => {
                 const src = avatar.getAttribute('src') || '';
                 if (src.includes('assets') && src.includes('avatars')) {
