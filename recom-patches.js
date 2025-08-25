@@ -697,6 +697,8 @@ async function updatePictureLocations() {
                                 fetchJsonWithTimeout(fba),
                                 fetchJsonWithTimeout(pi)
                             ]);
+                            console.debug('Results from FBA Queue:', fbaRes);
+                            console.debug('Results from Pending Inventory Queue:', piRes);
 
                             const fbaOk = fbaRes.status === 'fulfilled' && fbaRes.value.ok && Array.isArray(fbaRes.value.data?.data);
                             const piOk  = piRes.status === 'fulfilled' && piRes.value.ok && Array.isArray(piRes.value.data?.data);
@@ -739,7 +741,7 @@ async function updatePictureLocations() {
                                         const href = a.getAttribute('href') || '';
 
                                         // Match only hrefs that contain updateSortingLocation and PICTURES
-                                        if (href.includes("quickCreate(") && href.includes("updateSortingLocation") && a.textContent.toUpperCase().includes("PICTURES")) {
+                                        if (href.includes("ajax/actions/updateSortingLocation/") && a.textContent.toUpperCase().includes("PICTURES")) {
                                             const locationName = a.textContent.trim().replace(/PICTURES/gi, changeLocation).trimEnd();
 
                                             const eventMatch = href.match(/updateSortingLocation\/(\d+)/);
