@@ -427,81 +427,131 @@ function fixSimilarProduct() {
 
 async function updateLocation(sku, eventID) {
     const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
-    if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
-        const csrfToken = csrfMeta.getAttribute('content');
+    if (!(csrfMeta && csrfMeta.getAttribute('content').length > 0)) {
+        return { success: false, message: "Missing CSRF token" };
+    }
+    const csrfToken = csrfMeta.getAttribute('content');
 
+    eventID = parseInt(eventID, 10);
+    if (!Number.isInteger(eventID)) {
+        return { success: false, message: "Invalid Event ID" };
+    }
 
-        eventID = parseInt(eventID, 10);
-        if (!Number.isInteger(eventID)) { return { success: false, message: "Invalid Event ID" }; }
+    const fba = `/datatables/FbaInventoryQueue?draw=1&columns%5B0%5D%5Bdata%5D=0&columns%5B0%5D%5Bname%5D=&columns%5B0%5D%5Bsearchable%5D=true&columns%5B0%5D%5Borderable%5D=true&columns%5B0%5D%5Bsearch%5D%5Bvalue%5D=${sku}&columns%5B0%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B1%5D%5Bdata%5D=1&columns%5B1%5D%5Bname%5D=&columns%5B1%5D%5Bsearchable%5D=true&columns%5B1%5D%5Borderable%5D=true&columns%5B1%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B1%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B2%5D%5Bdata%5D=2&columns%5B2%5D%5Bname%5D=&columns%5B2%5D%5Bsearchable%5D=true&columns%5B2%5D%5Borderable%5D=true&columns%5B2%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B2%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B3%5D%5Bdata%5D=3&columns%5B3%5D%5Bname%5D=&columns%5B3%5D%5Bsearchable%5D=true&columns%5B3%5D%5Borderable%5D=true&columns%5B3%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B3%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B4%5D%5Bdata%5D=4&columns%5B4%5D%5Bname%5D=&columns%5B4%5D%5Bsearchable%5D=true&columns%5B4%5D%5Borderable%5D=true&columns%5B4%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B4%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B5%5D%5Bdata%5D=5&columns%5B5%5D%5Bname%5D=&columns%5B5%5D%5Bsearchable%5D=true&columns%5B5%5D%5Borderable%5D=true&columns%5B5%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B5%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B6%5D%5Bdata%5D=6&columns%5B6%5D%5Bname%5D=&columns%5B6%5D%5Bsearchable%5D=true&columns%5B6%5D%5Borderable%5D=true&columns%5B6%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B6%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B7%5D%5Bdata%5D=7&columns%5B7%5D%5Bname%5D=&columns%5B7%5D%5Bsearchable%5D=true&columns%5B7%5D%5Borderable%5D=true&columns%5B7%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B7%5D%5Bsearch%5D%5Bregex%5D=false&start=0&length=20&search%5Bvalue%5D=&search%5Bregex%5D=false&reset_table=true&_=${Date.now()}`
+    const pi = `/datatables/inventoryqueue?draw=1&columns%5B0%5D%5Bdata%5D=0&columns%5B0%5D%5Bname%5D=&columns%5B0%5D%5Bsearchable%5D=true&columns%5B0%5D%5Borderable%5D=true&columns%5B0%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B0%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B1%5D%5Bdata%5D=1&columns%5B1%5D%5Bname%5D=&columns%5B1%5D%5Bsearchable%5D=true&columns%5B1%5D%5Borderable%5D=true&columns%5B1%5D%5Bsearch%5D%5Bvalue%5D=${sku}&columns%5B1%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B2%5D%5Bdata%5D=2&columns%5B2%5D%5Bname%5D=&columns%5B2%5D%5Bsearchable%5D=true&columns%5B2%5D%5Borderable%5D=true&columns%5B2%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B2%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B3%5D%5Bdata%5D=3&columns%5B3%5D%5Bname%5D=&columns%5B3%5D%5Bsearchable%5D=true&columns%5B3%5D%5Borderable%5D=true&columns%5B3%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B3%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B4%5D%5Bdata%5D=4&columns%5B4%5D%5Bname%5D=&columns%5B4%5D%5Bsearchable%5D=true&columns%5B4%5D%5Borderable%5D=true&columns%5B4%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B4%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B5%5D%5Bdata%5D=5&columns%5B5%5D%5Bname%5D=&columns%5B5%5D%5Bsearchable%5D=true&columns%5B5%5D%5Borderable%5D=true&columns%5B5%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B5%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B6%5D%5Bdata%5D=6&columns%5B6%5D%5Bname%5D=&columns%5B6%5D%5Bsearchable%5D=true&columns%5B6%5D%5Borderable%5D=true&columns%5B6%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B6%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B7%5D%5Bdata%5D=7&columns%5B7%5D%5Bname%5D=&columns%5B7%5D%5Bsearchable%5D=true&columns%5B7%5D%5Borderable%5D=true&columns%5B7%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B7%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B8%5D%5Bdata%5D=8&columns%5B8%5D%5Bname%5D=&columns%5B8%5D%5Bsearchable%5D=true&columns%5B8%5D%5Borderable%5D=true&columns%5B8%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B8%5D%5Bsearch%5D%5Bregex%5D=false&start=0&length=20&search%5Bvalue%5D=&search%5Bregex%5D=false&_=${Date.now()}`
 
-        const fba = `/datatables/FbaInventoryQueue?draw=1&columns%5B0%5D%5Bdata%5D=0&columns%5B0%5D%5Bname%5D=&columns%5B0%5D%5Bsearchable%5D=true&columns%5B0%5D%5Borderable%5D=true&columns%5B0%5D%5Bsearch%5D%5Bvalue%5D=${sku}&columns%5B0%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B1%5D%5Bdata%5D=1&columns%5B1%5D%5Bname%5D=&columns%5B1%5D%5Bsearchable%5D=true&columns%5B1%5D%5Borderable%5D=true&columns%5B1%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B1%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B2%5D%5Bdata%5D=2&columns%5B2%5D%5Bname%5D=&columns%5B2%5D%5Bsearchable%5D=true&columns%5B2%5D%5Borderable%5D=true&columns%5B2%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B2%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B3%5D%5Bdata%5D=3&columns%5B3%5D%5Bname%5D=&columns%5B3%5D%5Bsearchable%5D=true&columns%5B3%5D%5Borderable%5D=true&columns%5B3%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B3%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B4%5D%5Bdata%5D=4&columns%5B4%5D%5Bname%5D=&columns%5B4%5D%5Bsearchable%5D=true&columns%5B4%5D%5Borderable%5D=true&columns%5B4%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B4%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B5%5D%5Bdata%5D=5&columns%5B5%5D%5Bname%5D=&columns%5B5%5D%5Bsearchable%5D=true&columns%5B5%5D%5Borderable%5D=true&columns%5B5%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B5%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B6%5D%5Bdata%5D=6&columns%5B6%5D%5Bname%5D=&columns%5B6%5D%5Bsearchable%5D=true&columns%5B6%5D%5Borderable%5D=true&columns%5B6%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B6%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B7%5D%5Bdata%5D=7&columns%5B7%5D%5Bname%5D=&columns%5B7%5D%5Bsearchable%5D=true&columns%5B7%5D%5Borderable%5D=true&columns%5B7%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B7%5D%5Bsearch%5D%5Bregex%5D=false&start=0&length=20&search%5Bvalue%5D=&search%5Bregex%5D=false&reset_table=true&_=${Date.now()}`
-        const pi = `/datatables/inventoryqueue?draw=1&columns%5B0%5D%5Bdata%5D=0&columns%5B0%5D%5Bname%5D=&columns%5B0%5D%5Bsearchable%5D=true&columns%5B0%5D%5Borderable%5D=true&columns%5B0%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B0%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B1%5D%5Bdata%5D=1&columns%5B1%5D%5Bname%5D=&columns%5B1%5D%5Bsearchable%5D=true&columns%5B1%5D%5Borderable%5D=true&columns%5B1%5D%5Bsearch%5D%5Bvalue%5D=${sku}&columns%5B1%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B2%5D%5Bdata%5D=2&columns%5B2%5D%5Bname%5D=&columns%5B2%5D%5Bsearchable%5D=true&columns%5B2%5D%5Borderable%5D=true&columns%5B2%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B2%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B3%5D%5Bdata%5D=3&columns%5B3%5D%5Bname%5D=&columns%5B3%5D%5Bsearchable%5D=true&columns%5B3%5D%5Borderable%5D=true&columns%5B3%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B3%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B4%5D%5Bdata%5D=4&columns%5B4%5D%5Bname%5D=&columns%5B4%5D%5Bsearchable%5D=true&columns%5B4%5D%5Borderable%5D=true&columns%5B4%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B4%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B5%5D%5Bdata%5D=5&columns%5B5%5D%5Bname%5D=&columns%5B5%5D%5Bsearchable%5D=true&columns%5B5%5D%5Borderable%5D=true&columns%5B5%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B5%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B6%5D%5Bdata%5D=6&columns%5B6%5D%5Bname%5D=&columns%5B6%5D%5Bsearchable%5D=true&columns%5B6%5D%5Borderable%5D=true&columns%5B6%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B6%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B7%5D%5Bdata%5D=7&columns%5B7%5D%5Bname%5D=&columns%5B7%5D%5Bsearchable%5D=true&columns%5B7%5D%5Borderable%5D=true&columns%5B7%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B7%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B8%5D%5Bdata%5D=8&columns%5B8%5D%5Bname%5D=&columns%5B8%5D%5Bsearchable%5D=true&columns%5B8%5D%5Borderable%5D=true&columns%5B8%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B8%5D%5Bsearch%5D%5Bregex%5D=false&start=0&length=20&search%5Bvalue%5D=&search%5Bregex%5D=false&_=${Date.now()}`
-        try {
-            // Fetch both endpoints in parallel
-            const [fbaRes, piRes] = await Promise.all([
-                fetch(fba),
-                fetch(pi)
-            ]);
+    /* new timeout handler */
+    const TIMEOUT_MS = 5000;
+    const MAX_RETRIES = 3;
+    const RETRY_BACKOFF_BASE = 500;
+    function sleep(ms) { return new Promise(res => setTimeout(res, ms)); }
 
-            const [fbaData, piData] = await Promise.all([
-                fbaRes.json(),
-                piRes.json()
-            ]);
+    const haveHelper = (typeof fetchJsonWithTimeout === 'function');
+    async function localFetchJsonWithTimeout(url, options = {}, { timeoutMs = TIMEOUT_MS, retries = MAX_RETRIES } = {}) {
+        let attempt = 0, lastErr = null;
+        while (attempt <= retries) {
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), timeoutMs);
+            try {
+                const res = await fetch(url, { ...options, signal: controller.signal });
+                clearTimeout(timer);
 
-            const allData = [
-                ...(Array.isArray(fbaData.data) ? fbaData.data : []),
-                ...(Array.isArray(piData.data) ? piData.data : [])
-            ];
-
-            if (allData.length === 0) {
-                return { success: false, message: "No data available from either source", 'allData': allData};
+                if (res.status === 429 || (res.status >= 500 && res.status <= 599)) {
+                    lastErr = new Error(`HTTP ${res.status}`);
+                } else if (!res.ok) {
+                    const text = await res.text().catch(() => '');
+                    return { ok: false, timedOut: false, status: res.status, data: null, error: new Error(`HTTP ${res.status}${text ? `: ${text.slice(0, 200)}` : ''}`) };
+                } else {
+                    try {
+                        const data = await res.json();
+                        return { ok: true, timedOut: false, status: res.status, data, error: null };
+                    } catch (e) {
+                        return { ok: false, timedOut: false, status: res.status, data: null, error: new Error(`Invalid JSON from ${url}: ${e.message}`) };
+                    }
+                }
+            } catch (e) {
+                clearTimeout(timer);
+                lastErr = (e.name === 'AbortError') ? Object.assign(new Error(`Request timed out after ${timeoutMs} ms`), { timedOut: true }) : e;
             }
 
-            const parser = new DOMParser();
+            if (attempt < retries) {
+                const backoff = Math.round(RETRY_BACKOFF_BASE * Math.pow(2, attempt) + Math.random() * 250);
+                await sleep(backoff);
+                attempt++;
+            } else {
+                const timedOut = !!lastErr?.timedOut;
+                return { ok: false, timedOut, status: null, data: null, error: lastErr || new Error('Unknown fetch error') };
+            }
+        }
+        return { ok: false, timedOut: false, status: null, data: null, error: new Error('Unexpected fetch loop exit') };
+    }
+    const fetcher = haveHelper ? fetchJsonWithTimeout : localFetchJsonWithTimeout;
 
-            for (const row of allData) {
-                for (const cell of row) {
-                    const doc = parser.parseFromString(cell, 'text/html');
-                    const anchors = doc.querySelectorAll('a');
+    try {
+        const [fbaRes, piRes] = await Promise.allSettled([
+            fetcher(fba),
+            fetcher(pi)
+        ]);
 
-                    for (const a of anchors) {
-                        const href = a.getAttribute('href') || '';
-                        if (href.includes("quickCreate(") && href.includes("'Update Sorting Location'") && href.includes(`/updateSortingLocation/${eventID}`)) {
-                            const locationName = ('PICTURES ' + (a.textContent.trim() || '')).trimEnd();
+        const fbaOk = fbaRes.status === 'fulfilled' && fbaRes.value.ok && Array.isArray(fbaRes.value.data?.data);
+        const piOk  = piRes.status === 'fulfilled' && piRes.value.ok && Array.isArray(piRes.value.data?.data);
 
-                            const formData = new FormData();
-                            formData.append('name', locationName);
+        if (!fbaOk && !piOk) {
+            const fbaMsg = fbaRes.status === 'fulfilled'
+                ? (fbaRes.value.timedOut ? `FBA timed out after ${TIMEOUT_MS} ms` : `FBA failed: ${fbaRes.value.error?.message || 'Unknown error'}`)
+                : `FBA failed: ${fbaRes.reason?.message || 'Unknown error'}`;
+            const piMsg = piRes.status === 'fulfilled'
+                ? (piRes.value.timedOut ? `PI timed out after ${TIMEOUT_MS} ms` : `PI failed: ${piRes.value.error?.message || 'Unknown error'}`)
+                : `PI failed: ${piRes.reason?.message || 'Unknown error'}`;
+            return { success: false, message: `${fbaMsg} | ${piMsg}` };
+        }
 
-                            try {
-                                const postRes = await fetch(`/ajax/actions/updateSortingLocation/${eventID}`, {
-                                    method: 'POST',
-                                    headers: {
-                                        'x-csrf-token': csrfToken
-                                    },
-                                    body: formData
-                                });
+        const allData = [
+            ...(fbaOk ? fbaRes.value.data.data : []),
+            ...(piOk  ? piRes.value.data.data  : [])
+        ];
 
-                                const result = await postRes.json();
+        if (allData.length === 0) {
+            return { success: false, message: "No data available from either source", allData };
+        }
 
-                                if (result?.success) {
-                                    return { success: true, message: "Location Updated" };
-                                } else {
-                                    return { success: false, message: result?.message || "Update failed" };
-                                }
+        const parser = new DOMParser();
 
-                            } catch (err) {
-                                return { success: false, message: "POST failed: " + err.message };
-                            }
+        for (const row of allData) {
+            for (const cell of row) {
+                const doc = parser.parseFromString(cell, 'text/html');
+                const anchors = doc.querySelectorAll('a');
+
+                for (const a of anchors) {
+                    const href = a.getAttribute('href') || '';
+                    if (href.includes("quickCreate(") && href.includes("'Update Sorting Location'") && href.includes(`/updateSortingLocation/${eventID}`)) {
+                        const locationName = ('PICTURES ' + (a.textContent.trim() || '')).trimEnd();
+
+                        const formData = new FormData();
+                        formData.append('name', locationName);
+
+                        const postRes = await fetcher(
+                            `/ajax/actions/updateSortingLocation/${eventID}`,
+                            { method: 'POST', headers: { 'x-csrf-token': csrfToken }, body: formData }
+                        );
+
+                        if (postRes.ok && postRes.data?.success) {
+                            return { success: true, message: "Location Updated" };
+                        } else {
+                            const msg = postRes.timedOut
+                                ? `POST timed out after ${TIMEOUT_MS} ms`
+                                : (postRes.data?.message || postRes.error?.message || "Update failed");
+                            return { success: false, message: msg };
                         }
                     }
                 }
             }
-
-            return { success: false, message: "Matching link not found for event ID" };
-
-        } catch (err) {
-            return { success: false, message: "Fetch failed: " + err.message };
         }
+
+        return { success: false, message: "Matching link not found for event ID" };
+
+    } catch (err) {
+        return { success: false, message: "Fetch failed: " + err.message };
     }
 }
 

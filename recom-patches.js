@@ -598,17 +598,72 @@ async function updatePictureLocations() {
         rcAjaxModal.parentNode.insertBefore(modalContainer, rcAjaxModal);
         //rcAjaxModal.parentNode.insertBefore(modalContainer.firstElementChild, rcAjaxModal);
 
+        /* new handler for timeouts and stuff */
         const submit = document.getElementById('patch_picloc_submit');
         if (submit) {
             submit.onclick = async function() {
+                /* handler for timeouts and fails */
                 submit.textContent = 'Loading...';
                 submit.setAttribute('style', 'background-color: gray !important;');
                 submit.disabled = true;
 
-                // prevent navigation away
                 window.addEventListener('beforeunload', unloadWarning);
                 isRunning = true;
-                
+
+                const TIMEOUT_MS = 5000;
+                const MAX_RETRIES = 3;
+                const RETRY_BACKOFF_BASE = 500;
+
+                function sleep(ms) { return new Promise(res => setTimeout(res, ms)); }
+
+                async function fetchJsonWithTimeout(url, options = {}, { timeoutMs = TIMEOUT_MS, retries = MAX_RETRIES } = {}) {
+                    let attempt = 0;
+                    let lastErr = null;
+
+                    while (attempt <= retries) {
+                        const controller = new AbortController();
+                        const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+                        try {
+                            const res = await fetch(url, { ...options, signal: controller.signal });
+                            clearTimeout(timer);
+
+                            if (res.status === 429 || (res.status >= 500 && res.status <= 599)) {
+                                lastErr = new Error(`HTTP ${res.status}`);
+                            } else if (!res.ok) {
+                                const text = await res.text().catch(() => '');
+                                return {
+                                    ok: false, timedOut: false, status: res.status, data: null,
+                                    error: new Error(`HTTP ${res.status}${text ? `: ${text.slice(0, 200)}` : ''}`)
+                                };
+                            } else {
+                                try {
+                                    const data = await res.json();
+                                    return { ok: true, timedOut: false, status: res.status, data, error: null };
+                                } catch (e) {
+                                    return { ok: false, timedOut: false, status: res.status, data: null, error: new Error(`Invalid JSON from ${url}: ${e.message}`) };
+                                }
+                            }
+                        } catch (e) {
+                            clearTimeout(timer);
+                            lastErr = (e.name === 'AbortError')
+                                ? Object.assign(new Error(`Request timed out after ${timeoutMs} ms`), { timedOut: true })
+                                : e;
+                        }
+
+                        if (attempt < retries) {
+                            const backoff = Math.round(RETRY_BACKOFF_BASE * Math.pow(2, attempt) + Math.random() * 250);
+                            await sleep(backoff);
+                            attempt++;
+                        } else {
+                            const timedOut = !!lastErr?.timedOut;
+                            return { ok: false, timedOut, status: null, data: null, error: lastErr || new Error('Unknown fetch error') };
+                        }
+                    }
+                    return { ok: false, timedOut: false, status: null, data: null, error: new Error('Unexpected fetch loop exit') };
+                }
+
+                /* back to normal */
                 const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
                 if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
                     const csrfToken = csrfMeta.getAttribute('content');
@@ -629,33 +684,47 @@ async function updatePictureLocations() {
                     }
                     console.debug('Patches - Parsed List:', values);
                     const log = [];
+
                     for (let index = 0; index < values.length; index++) {
-                        //updateProgress(index, values.length);
                         const item = values[index];
                         const draw = index + 1;
+
                         let fba = `/datatables/FbaInventoryQueue?draw=${draw}&columns%5B0%5D%5Bdata%5D=0&columns%5B0%5D%5Bname%5D=&columns%5B0%5D%5Bsearchable%5D=true&columns%5B0%5D%5Borderable%5D=true&columns%5B0%5D%5Bsearch%5D%5Bvalue%5D=${item}&columns%5B0%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B1%5D%5Bdata%5D=1&columns%5B1%5D%5Bname%5D=&columns%5B1%5D%5Bsearchable%5D=true&columns%5B1%5D%5Borderable%5D=true&columns%5B1%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B1%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B2%5D%5Bdata%5D=2&columns%5B2%5D%5Bname%5D=&columns%5B2%5D%5Bsearchable%5D=true&columns%5B2%5D%5Borderable%5D=true&columns%5B2%5D%5Bsearch%5D%5Bvalue%5D=PICTURES&columns%5B2%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B3%5D%5Bdata%5D=3&columns%5B3%5D%5Bname%5D=&columns%5B3%5D%5Bsearchable%5D=true&columns%5B3%5D%5Borderable%5D=true&columns%5B3%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B3%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B4%5D%5Bdata%5D=4&columns%5B4%5D%5Bname%5D=&columns%5B4%5D%5Bsearchable%5D=true&columns%5B4%5D%5Borderable%5D=true&columns%5B4%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B4%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B5%5D%5Bdata%5D=5&columns%5B5%5D%5Bname%5D=&columns%5B5%5D%5Bsearchable%5D=true&columns%5B5%5D%5Borderable%5D=true&columns%5B5%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B5%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B6%5D%5Bdata%5D=6&columns%5B6%5D%5Bname%5D=&columns%5B6%5D%5Bsearchable%5D=true&columns%5B6%5D%5Borderable%5D=true&columns%5B6%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B6%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B7%5D%5Bdata%5D=7&columns%5B7%5D%5Bname%5D=&columns%5B7%5D%5Bsearchable%5D=true&columns%5B7%5D%5Borderable%5D=true&columns%5B7%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B7%5D%5Bsearch%5D%5Bregex%5D=false&start=0&length=20&search%5Bvalue%5D=&search%5Bregex%5D=false&_=${Date.now()}`
                         let pi = `/datatables/inventoryqueue?draw=${draw}&columns%5B0%5D%5Bdata%5D=0&columns%5B0%5D%5Bname%5D=&columns%5B0%5D%5Bsearchable%5D=true&columns%5B0%5D%5Borderable%5D=true&columns%5B0%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B0%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B1%5D%5Bdata%5D=1&columns%5B1%5D%5Bname%5D=&columns%5B1%5D%5Bsearchable%5D=true&columns%5B1%5D%5Borderable%5D=true&columns%5B1%5D%5Bsearch%5D%5Bvalue%5D=${item}&columns%5B1%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B2%5D%5Bdata%5D=2&columns%5B2%5D%5Bname%5D=&columns%5B2%5D%5Bsearchable%5D=true&columns%5B2%5D%5Borderable%5D=true&columns%5B2%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B2%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B3%5D%5Bdata%5D=3&columns%5B3%5D%5Bname%5D=&columns%5B3%5D%5Bsearchable%5D=true&columns%5B3%5D%5Borderable%5D=true&columns%5B3%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B3%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B4%5D%5Bdata%5D=4&columns%5B4%5D%5Bname%5D=&columns%5B4%5D%5Bsearchable%5D=true&columns%5B4%5D%5Borderable%5D=true&columns%5B4%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B4%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B5%5D%5Bdata%5D=5&columns%5B5%5D%5Bname%5D=&columns%5B5%5D%5Bsearchable%5D=true&columns%5B5%5D%5Borderable%5D=true&columns%5B5%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B5%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B6%5D%5Bdata%5D=6&columns%5B6%5D%5Bname%5D=&columns%5B6%5D%5Bsearchable%5D=true&columns%5B6%5D%5Borderable%5D=true&columns%5B6%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B6%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B7%5D%5Bdata%5D=7&columns%5B7%5D%5Bname%5D=&columns%5B7%5D%5Bsearchable%5D=true&columns%5B7%5D%5Borderable%5D=true&columns%5B7%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B7%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B8%5D%5Bdata%5D=8&columns%5B8%5D%5Bname%5D=&columns%5B8%5D%5Bsearchable%5D=true&columns%5B8%5D%5Borderable%5D=true&columns%5B8%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B8%5D%5Bsearch%5D%5Bregex%5D=false&start=0&length=20&search%5Bvalue%5D=&search%5Bregex%5D=false&_=${Date.now()}`
+                        
                         try {
-                            // Fetch both endpoints in parallel
-                            const [fbaRes, piRes] = await Promise.all([
-                                fetch(fba),
-                                fetch(pi)
+                            const [fbaRes, piRes] = await Promise.allSettled([
+                                fetchJsonWithTimeout(fba),
+                                fetchJsonWithTimeout(pi)
                             ]);
 
-                            const [fbaData, piData] = await Promise.all([
-                                fbaRes.json(),
-                                piRes.json()
-                            ]);
+                            const fbaOk = fbaRes.status === 'fulfilled' && fbaRes.value.ok && Array.isArray(fbaRes.value.data?.data);
+                            const piOk  = piRes.status === 'fulfilled' && piRes.value.ok && Array.isArray(piRes.value.data?.data);
 
                             const allData = [
-                                ...(Array.isArray(fbaData.data) ? fbaData.data : []),
-                                ...(Array.isArray(piData.data) ? piData.data : [])
+                                ...(fbaOk ? fbaRes.value.data.data : []),
+                                ...(piOk  ? piRes.value.data.data  : [])
                             ];
+
+                            if (!fbaOk && !piOk) {
+                                const fbaMsg = fbaRes.status === 'fulfilled'
+                                    ? (fbaRes.value.timedOut ? `FBA timed out after ${TIMEOUT_MS} ms` : `FBA failed: ${fbaRes.value.error?.message || 'Unknown error'}`)
+                                    : `FBA failed: ${fbaRes.reason?.message || 'Unknown error'}`;
+
+                                const piMsg = piRes.status === 'fulfilled'
+                                    ? (piRes.value.timedOut ? `PI timed out after ${TIMEOUT_MS} ms` : `PI failed: ${piRes.value.error?.message || 'Unknown error'}`)
+                                    : `PI failed: ${piRes.reason?.message || 'Unknown error'}`;
+
+                                const newLog = { item, eventID: null, success: false, message: `${fbaMsg} | ${piMsg}` };
+                                log.push(newLog);
+                                printLog(newLog, index, values.length);
+                                continue;
+                            }
 
                             if (allData.length === 0) {
                                 const newLog = { item, eventID: null, success: false, message: "No data available from either source" };
                                 log.push(newLog);
-                                printLog(newLog);
+                                printLog(newLog, index, values.length);
                                 continue;
                             }
 
@@ -678,7 +747,7 @@ async function updatePictureLocations() {
                                             if (!eventID) {
                                                 const newLog = { item, eventID: null, success: false, message: 'Invalid eventID extracted from href' };
                                                 log.push(newLog);
-                                                printLog(newLog);
+                                                printLog(newLog, index, values.length);
                                                 continue;
                                             }
 
@@ -686,24 +755,24 @@ async function updatePictureLocations() {
                                             formData.append('name', locationName);
 
                                             try {
-                                                const postRes = await fetch(`/ajax/actions/updateSortingLocation/${eventID}`, {
-                                                    method: 'POST',
-                                                    headers: {
-                                                        'x-csrf-token': csrfToken
-                                                    },
-                                                    body: formData
-                                                });
+                                                const postRes = await fetchJsonWithTimeout(
+                                                    `/ajax/actions/updateSortingLocation/${eventID}`,
+                                                    {
+                                                        method: 'POST',
+                                                        headers: { 'x-csrf-token': csrfToken },
+                                                        body: formData
+                                                    }
+                                                );
 
-                                                const result = await postRes.json();
-
+                                                const ok = postRes.ok && (postRes.data?.success === true);
                                                 const newLog = {
                                                     eventID,
                                                     item,
-                                                    success: result?.success === true,
-                                                    message: result?.message || (result?.success ? (`Successful`) : (`Fail`))
+                                                    success: ok,
+                                                    message: postRes.data?.message || (ok ? 'Successful' : (postRes.timedOut ? `POST timed out after ${TIMEOUT_MS} ms` : (postRes.error?.message || 'Fail')))
                                                 };
                                                 log.push(newLog);
-                                                printLog(newLog);
+                                                printLog(newLog, index, values.length);
 
                                             } catch (err) {
                                                 const newLog = {
@@ -713,8 +782,7 @@ async function updatePictureLocations() {
                                                     message: `POST failed: ${err.message}`
                                                 };
                                                 log.push(newLog);
-                                                printLog(newLog);
-
+                                                printLog(newLog, index, values.length);
                                             }
                                         }
                                     }
@@ -729,9 +797,10 @@ async function updatePictureLocations() {
                                 message: `Fetch failed: ${err.message}`
                             };
                             log.push(newLog);
-                            printLog(newLog);
+                            printLog(newLog, index, values.length);
                         }
                     }
+
                     console.debug('PATCHES - Location LOG Update:', log);
                     resetSubmitButton();
                 }
@@ -739,20 +808,20 @@ async function updatePictureLocations() {
                 function printLog(entry, index, length) {
                     updateProgress((index + 1), length, entry.success); // plus one
                     const resultPrintout = document.getElementById('patch_picloc_result');
-                    patch_picloc_result.style.display = 'flex';
-                    const status = entry.success ? '<span style="color: var(--bs-primary);">GOOD</span>' : '<span style="color: var(--bs-danger);">ERROR</span>';
-                    const event = entry.eventID ? `<span>[(Event ID: ${entry.eventID})]</span>` : '';
-                    resultPrintout.innerHTML += `<p style="display: inline-flex; flex-direction: row; gap: 0.25rem; margin: 0;">
-                        <strong>${status}</strong>
-                        <span>=><span>
-                        <a href="/receiving/queues/inventory?column=1&keyword=${encodeURIComponent(entry.item)}" target="_blank">${entry.item}</a>
-                        ${event}
-                        <span>:</span>
-                        <span>${entry.message}</span>
-                    </p>`;
-                    setTimeout(() => {
-                        resultPrintout.scrollTop = resultPrintout.scrollHeight;
-                    }, 0);
+                    if (resultPrintout) {
+                        resultPrintout.style.display = 'flex';
+                        const status = entry.success ? '<span style="color: var(--bs-primary);">GOOD</span>' : '<span style="color: var(--bs-danger);">ERROR</span>';
+                        const event = entry.eventID ? `<span>[(Event ID: ${entry.eventID})]</span>` : '';
+                        resultPrintout.innerHTML += `<p style="display: inline-flex; flex-direction: row; gap: 0.25rem; margin: 0;">
+                            <strong>${status}</strong>
+                            <span>=><span>
+                            <a href="/receiving/queues/inventory?column=1&keyword=${encodeURIComponent(entry.item)}" target="_blank">${entry.item}</a>
+                            ${event}
+                            <span>:</span>
+                            <span>${entry.message}</span>
+                        </p>`;
+                        setTimeout(() => { resultPrintout.scrollTop = resultPrintout.scrollHeight; }, 0);
+                    }
                 }
 
                 function updateProgress(num, den, good) {
@@ -775,11 +844,7 @@ async function updatePictureLocations() {
 
                         let successCount = parseInt(success.textContent) || 0;
                         let failCount = parseInt(fail.textContent) || 0;
-                        if (good) {
-                            successCount++;
-                        } else {
-                            failCount++;
-                        }
+                        if (good) successCount++; else failCount++;
 
                         success.textContent = successCount;
                         fail.textContent = failCount;
@@ -794,13 +859,13 @@ async function updatePictureLocations() {
                                             <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
                                         </span>`;
                     submit.style.backgroundColor = '';
-                    
+
                     const resultPrintout = document.getElementById('patch_picloc_result');
-                    patch_picloc_result.style.display = 'flex';
-                    resultPrintout.innerHTML += `<p style="text-align: center; font-weight: 700;">List Finished.</p>`;
-                    setTimeout(() => {
-                        resultPrintout.scrollTop = resultPrintout.scrollHeight;
-                    }, 0);
+                    if (resultPrintout) {
+                        resultPrintout.style.display = 'flex';
+                        resultPrintout.innerHTML += `<p style="text-align: center; font-weight: 700;">List Finished.</p>`;
+                        setTimeout(() => { resultPrintout.scrollTop = resultPrintout.scrollHeight; }, 0);
+                    }
 
                     window.removeEventListener('beforeunload', unloadWarning);
                     isRunning = false;
