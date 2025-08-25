@@ -1585,23 +1585,38 @@ function adjustToolbar() {
 }
 
 // epic search of the datalist
+// to be used when assembling auto reports
 async function searchDataList(type, value) {
+    type = String(type || '').toLowerCase();
+
     let results = [];
     let url = '/ajax/datalist/';
     let page = 1;
 
     switch (type) {
-        case 'po':
-        case 'PurchaseOrders':
+        case 'purchaseorders':
             url += 'PurchaseOrders';
             break;
-        case 'user':
-        case 'users':
-        case 'UsersProfiles':
+        case 'usersprofiles':
             url += 'UsersProfiles';
             break;
+        case 'departments':
+            url += 'departments';
+            break;
+        case 'clockintasks':
+            url += 'ClockInTasks';
+            break;
+        case 'conditions':
+            url += 'Conditions';
+            break;
+        case 'categories':
+            url += 'categories';
+            break;
+        case 'brands':
+            url += 'brands';
+            break;
         default:
-            console.error('PATCHES - Invalid Datalist Search Term');
+            console.error('PATCHES - Invalid datalist type:', type);
             return results;
     }
 
