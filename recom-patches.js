@@ -1584,6 +1584,47 @@ function adjustToolbar() {
     }
 }
 
+// epic search of the datalist
+async function searchDataList(type, value) {
+    let results = [];
+    let url = '/ajax/datalist/';
+    let page = 1;
+
+    switch (type) {
+        case 'po':
+        case 'PurchaseOrders':
+            url += 'PurchaseOrders';
+            break;
+        default:
+            console.error('PATCHES - Invalid Datalist Search Term');
+            return results;
+    }
+
+    let hasMore = true;
+
+    do {
+        const fullUrl = `${url}?term=${encodeURIComponent(value)}&_type=query&q=${encodeURIComponent(value)}&page=${page}`;
+
+        try {
+            const response = await fetch(fullUrl);
+            const data = await response.json();
+
+            if (Array.isArray(data.results)) {
+                results.push(...data.results);
+            }
+
+            hasMore = data.pagination && data.pagination.more === true;
+            page++;
+        } catch (error) {
+            console.error('PATCHES - Failed to fetch datalist:', error);
+            hasMore = false;
+        }
+
+    } while (hasMore);
+
+    return results;
+}
+
 // bust attempt 1
 window.trackUserActivity = function () {
     console.debug("PATCHES - trackUserActivity disabled.");
