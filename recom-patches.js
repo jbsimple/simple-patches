@@ -1595,18 +1595,25 @@ async function searchDataList(type, value) {
         case 'PurchaseOrders':
             url += 'PurchaseOrders';
             break;
+        case 'user':
+        case 'users':
+        case 'UsersProfiles':
+            url += 'UsersProfiles';
         default:
             console.error('PATCHES - Invalid Datalist Search Term');
             return results;
     }
 
+    url += `?_type=query`;
+    if (value !== '') {
+        url += `&term=${encodeURIComponent(value)}&q=${encodeURIComponent(value)}`;
+    }
+
     let hasMore = true;
 
     do {
-        const fullUrl = `${url}?term=${encodeURIComponent(value)}&_type=query&q=${encodeURIComponent(value)}&page=${page}`;
-
         try {
-            const response = await fetch(fullUrl);
+            const response = await fetch(`${url}&page=${page}`);
             const data = await response.json();
 
             if (Array.isArray(data.results)) {
