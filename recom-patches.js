@@ -1599,6 +1599,7 @@ async function searchDataList(type, value) {
         case 'users':
         case 'UsersProfiles':
             url += 'UsersProfiles';
+            break;
         default:
             console.error('PATCHES - Invalid Datalist Search Term');
             return results;
