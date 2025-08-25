@@ -610,7 +610,7 @@ async function updatePictureLocations() {
                 window.addEventListener('beforeunload', unloadWarning);
                 isRunning = true;
 
-                const TIMEOUT_MS = 5000;
+                const TIMEOUT_MS = 8000;
                 const MAX_RETRIES = 3;
                 const RETRY_BACKOFF_BASE = 500;
 
