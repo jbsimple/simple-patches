@@ -859,7 +859,7 @@ async function recentPictureCheckInit() {
 		loading.innerHTML = `
 		    <div class="d-flex align-items-center px-30 pb-5 gap-3">
 		        <div class="spinner-border text-primary" role="status"></div>
-		        <strong class="fs-4 text-gray-700">Loading recent pictures...</strong>
+		        <strong class="fs-4 text-gray-700">Loading...</strong>
 		    </div>`;
     kt_app_content.appendChild(loading);
     
@@ -1313,10 +1313,10 @@ async function injectOverview() {
         injectDateSelect('recentPictureCheckInit', content);
         recentPictureCheckInit();
 
-        document.title = document.title.replace('Productivity', 'Recent Pictures - Productivity');
+        document.title = document.title.replace('Productivity', 'Created Items - Productivity');
 
         if (heading) {
-            heading.textContent = 'Recent Pictures';
+            heading.textContent = 'Created Items';
         }
     } else if (content && typeof injectOverview === 'function' && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board') && params.has('overview') && !params.has('recentpics')) {
         injectOverview();

@@ -151,7 +151,7 @@ function injectExtraTheme() {
                             newItem.innerHTML = `
                                 <a class="menu-link" href="productivity?recentpics">
                                     <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-                                    <span class="menu-title">Recent Pictures</span>
+                                    <span class="menu-title">Created Items</span>
                                 </a>
                             `;
                             parentItem.insertAdjacentElement('afterend', newItem);
