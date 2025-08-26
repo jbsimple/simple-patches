@@ -318,6 +318,40 @@ function initCopyPasteButton() {
 }
 waitForElement('#kt_app_content_container', initCopyPasteButton);
 
+function initAddItemsButton() {
+    const productAdvanced = document.getElementById('kt_ecommerce_add_product_advanced');
+    if (!productAdvanced) return;
+
+    const cardTitle = productAdvanced.querySelector('.card-title');
+    if (!cardTitle) return;
+
+    const toolbar = document.createElement('div');
+    toolbar.className = 'card-toolbar';
+    toolbar.setAttribute('style', 'display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1rem;');
+    toolbar.innerHTML = `
+        <button type="button" class="btn btn-sm btn-light ajax-modal" 
+            data-url="/product/items/new?product_id=${fetchProductId()}">
+            Add Item
+        </button>
+    `;
+
+    cardTitle.insertAdjacentElement('afterend', toolbar);
+
+    function fetchProductId() {
+        const container = document.getElementById('kt_app_content_container');
+        if (!container) return null;
+
+        for (const el of container.querySelectorAll('.mb-5')) {
+            if (el.textContent.includes('Product# ')) {
+                const productIdEl = el.querySelector('.text-info');
+                return productIdEl ? productIdEl.textContent.trim() : null;
+            }
+        }
+        return null;
+    }
+}
+waitForElement('#kt_ecommerce_add_product_advanced', initAddItemsButton);
+
 function modifyColorAttribute() {
     const form_groups = document.querySelectorAll('.form-group');
 
