@@ -981,14 +981,14 @@ async function recentPictureCheckInit() {
         const pendinginv = `<a class="btn btn-icon btn-success btn-sm my-sm-1 ms-1" data-bs-toggle="tooltip" aria-label="View in Pending Inventory" data-bs-original-title="View in Pending Inventory" data-kt-initialized="1" href="/receiving/queues/inventory?column=1&amp;keyword=${entry.SKU}" target="_blank"><i class="fas fa-boxes"></i></a>`;
         const box = document.createElement('div');
         box.classList = 'card';
-        box.setAttribute('data-sku', entry.SKU);
-        box.setAttribute('data-sid', entry.SID);
-        box.setAttribute('data-gtin', entry.GTIN_UPC);
-        box.setAttribute('data-asin', entry.ASIN);
-        box.setAttribute('data-brand', entry.Brand);
-        box.setAttribute('data-category', entry.Category);
-        box.setAttribute('data-condition', entry.Condition);
-        box.setAttribute('data-name', entry.Product_Name);
+        box.setAttribute('data-sku', entry.SKU ?? '');
+        box.setAttribute('data-sid', entry.SID?? '');
+        box.setAttribute('data-gtin', entry.GTIN_UPC?? '');
+        box.setAttribute('data-asin', entry.ASIN?? '');
+        box.setAttribute('data-brand', entry.Brand?? '');
+        box.setAttribute('data-category', entry.Category ?? '');
+        box.setAttribute('data-condition', entry.Condition ?? '');
+        box.setAttribute('data-name', entry.Product_Name ?? '');
 
         let color = '';
         if (
