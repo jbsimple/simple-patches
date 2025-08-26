@@ -957,16 +957,24 @@ async function recentPictureCheckInit() {
 
     /* search filter logic */
     searchInput.addEventListener('input', function () {
-        const query = this.value.toLowerCase();
+        const query = this.value.toLowerCase().trim();
         const cards = wrap.querySelectorAll('.card');
+
         cards.forEach(card => {
-            const sku = card.querySelector('.card-header a')?.textContent.toLowerCase() || '';
-            const productName = card.querySelector('.fw-bold.text-gray-800')?.textContent.toLowerCase() || '';
-            if (sku.includes(query) || productName.includes(query)) {
-                card.style.display = '';
-            } else {
-                card.style.display = 'none';
-            }
+            const searchable = [
+                card.dataset.sku,
+                card.dataset.sid,
+                card.dataset.gtin,
+                card.dataset.asin,
+                card.dataset.brand,
+                card.dataset.category,
+                card.dataset.condition,
+                card.dataset.name
+            ].filter(Boolean).map(val => val.toLowerCase());
+            
+            const match = searchable.some(val => val.includes(query));
+
+            card.style.display = match || query === '' ? '' : 'none';
         });
     });
     
