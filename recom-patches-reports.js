@@ -1593,11 +1593,6 @@ async function report_attributesColorCheck() {
     
     product_items_report = await report_getSpecial(request);
 
-    let allowed_colors = [
-        "Beige", "Black", "Blue", "Brown", "Clear", "Gold", "Gray", "Green",
-        "Multicolor", "Orange", "Pink", "Purple", "Red", "Silver", "White", "Yellow"
-    ];
-
     const seenSIDs = new Set();
     let list = [];
 
