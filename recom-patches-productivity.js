@@ -848,26 +848,38 @@ async function recentPictureCheckInit() {
             }
         });
     }
-    
+
     /* heading css */
     const heading_css = 'padding: 0.5rem 30px; display: flex; justify-content: center; align-items: center;';
-    
+
+    /* search bar */
+    const searchWrap = document.createElement('div');
+    searchWrap.setAttribute('style', 'padding: 1rem 30px; display: flex; justify-content: center;');
+    const searchInput = document.createElement('input');
+    searchInput.type = 'text';
+    searchInput.placeholder = 'Search SKUs or Product Name...';
+    searchInput.className = 'form-control';
+    searchInput.style.maxWidth = '400px';
+    searchWrap.appendChild(searchInput);
+
+    content.appendChild(searchWrap);
+
     /* spinner */
     const loading = document.createElement('div');
-		loading.id = 'patches-loading-indicator';
-		loading.setAttribute('style', heading_css);
-		loading.innerHTML = `
-		    <div class="d-flex align-items-center px-30 pb-5 gap-3">
-		        <div class="spinner-border text-primary" role="status"></div>
-		        <strong class="fs-4 text-gray-700">Loading...</strong>
-		    </div>`;
-    kt_app_content.appendChild(loading);
-    
+    loading.id = 'patches-loading-indicator';
+    loading.setAttribute('style', heading_css);
+    loading.innerHTML = `
+        <div class="d-flex align-items-center px-30 pb-5 gap-3">
+            <div class="spinner-border text-primary" role="status"></div>
+            <strong class="fs-4 text-gray-700">Loading...</strong>
+        </div>`;
+    content.appendChild(loading);
+
     /* main wrap */
     const wrap = document.createElement('div');
     wrap.setAttribute('style', 'display: flex; padding: 30px; flex-wrap: wrap; gap: 1rem;');
     wrap.id = 'patches-productivity-recentPicsWrap';
-    kt_app_content.appendChild(wrap);
+    content.appendChild(wrap);
 
     let report = await getReport('team');
     let uniqueData = parseData(report, true, false, true);
@@ -889,9 +901,9 @@ async function recentPictureCheckInit() {
             const doc = parser.parseFromString(html, 'text/html');
 
             const aTag = doc.querySelector('a[data-fslightbox="gallery"][data-type="image"]');
-						const img = aTag?.querySelector('img');
-						const imgSrc = img?.getAttribute('src') || aTag?.getAttribute('href') || null;
-            
+            const img = aTag?.querySelector('img');
+            const imgSrc = img?.getAttribute('src') || aTag?.getAttribute('href') || null;
+
             const eyeballBtn = doc.querySelector('a.ajax-modal[data-url^="ajax/modals/productitems/"]');
             const eyeball = eyeballBtn ? eyeballBtn.outerHTML : '';
 
@@ -901,43 +913,51 @@ async function recentPictureCheckInit() {
             console.warn(`Failed to fetch image for SKU ${sku}:`, err);
         }
     }
-    
-    /* if it is here, loading is done */
+
+    /* finish loading */
     const loadingEl = document.getElementById('patches-loading-indicator');
-		if (loadingEl) {
-            /* heading */
-                const today = new Date();
-                const today_mm = String(today.getMonth() + 1).padStart(2, '0');
-                const today_dd = String(today.getDate()).padStart(2, '0');
-                const today_yyyy = today.getFullYear();
-                const todayFormatted = `${today_mm}/${today_dd}/${today_yyyy}`;
+    if (loadingEl) {
+        const today = new Date();
+        const todayFormatted = `${String(today.getMonth() + 1).padStart(2, '0')}/${String(today.getDate()).padStart(2, '0')}/${today.getFullYear()}`;
 
-                let date = todayFormatted;
-                const dateInput = document.getElementById('patches-productivity-dateInput');
-                if (dateInput) {
-                    const rawValue = dateInput.value;
-                    if (rawValue) {
-                        const [yyyy, mm, dd] = rawValue.split('-');
-                        date = `${mm}/${dd}/${yyyy}`;
-                    }
-                }
-                const heading = document.createElement('h2');
-                heading.textContent = `The ${counter} SKUS Created on ${date}:`;
-                heading.setAttribute('style', heading_css);
+        let date = todayFormatted;
+        const dateInput = document.getElementById('patches-productivity-dateInput');
+        if (dateInput && dateInput.value) {
+            const [yyyy, mm, dd] = dateInput.value.split('-');
+            date = `${mm}/${dd}/${yyyy}`;
+        }
+        const heading = document.createElement('h2');
+        heading.textContent = `The ${counter} SKUS Created on ${date}:`;
+        heading.setAttribute('style', heading_css);
 
-				loadingEl.replaceWith(heading);
-		}
-    
-    if (wrap.innerHTML === '') {
-    		wrap.innerHTML += `<div class="card p-5">
-                <div class="card-body d-flex flex-center flex-column pt-12 p-9">
-                    <div type="button" class="btn btn-clear d-flex flex-column flex-center" data-index="0" data-id="0" data-catalog="0">
-                        <img src="assets/media/illustrations/dozzy-1/4.png" alt="" class="mw-100 mh-300px mb-7">
-                        <h1 class="fs-1 text-center pt-5 pb-10 text-muted">No Listings?</h1>
-                    </div>
-                </div>
-            </div>`;
+        loadingEl.replaceWith(heading);
     }
+
+    if (wrap.innerHTML === '') {
+        wrap.innerHTML += `<div class="card p-5">
+            <div class="card-body d-flex flex-center flex-column pt-12 p-9">
+                <div type="button" class="btn btn-clear d-flex flex-column flex-center">
+                    <img src="assets/media/illustrations/dozzy-1/4.png" alt="" class="mw-100 mh-300px mb-7">
+                    <h1 class="fs-1 text-center pt-5 pb-10 text-muted">No Listings?</h1>
+                </div>
+            </div>
+        </div>`;
+    }
+
+    /* search filter logic */
+    searchInput.addEventListener('input', function () {
+        const query = this.value.toLowerCase();
+        const cards = wrap.querySelectorAll('.card');
+        cards.forEach(card => {
+            const sku = card.querySelector('.card-header a')?.textContent.toLowerCase() || '';
+            const productName = card.querySelector('.fw-bold.text-gray-800')?.textContent.toLowerCase() || '';
+            if (sku.includes(query) || productName.includes(query)) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
     
     function printResult(wrap, entry, eyeball, imgSrc) {
         console.debug('PATCHES - Result', {
