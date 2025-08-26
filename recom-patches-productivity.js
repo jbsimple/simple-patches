@@ -21,7 +21,7 @@ async function getUserID() {
     }
 }
 
-async function getReport(type, overview = false) {
+async function getReport(type, overview = false, searchStuff = false) {
     const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
     if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
         const csrfToken = csrfMeta.getAttribute('content');
@@ -59,6 +59,43 @@ async function getReport(type, overview = false) {
             start = date;
             end = date;
         }
+
+        let report_columns = [
+            "user_profile.user_id",
+            "user_profile.department_id",
+            "user_clocks.task_id",
+            "purchase_orders.id",
+            "user_clock_activity.activity_id",
+            "user_clock_activity.activity_code",
+            "user_clock_activity.notes",
+            "user_clock_activity.units",
+            "user_clock_activity.created_at",
+            "user_clock_activity.time_spent",
+            "user_clocks.time_in",
+            "user_clocks.time_out",
+            "user_clocks.user_id",
+            "user_clocks.clock_date",
+            "products.sid",
+            "products.name",
+            "product_items.sku",
+            "product_items.condition_id",
+            "products.category_id"
+        ];
+        if (searchStuff) {
+            report_columns = [
+                "user_clocks.clock_date",
+                "products.sid",
+                "products.name",
+                "product_items.sku",
+                "product_items.condition_id",
+                "products.category_id",
+                "categories.type",
+                "products.brand_id",
+                "products.mpn",
+                "products.gtin",
+                "products.asin"
+            ];
+        }
         
         let request = null;
         if (type === 'self') {
@@ -66,27 +103,7 @@ async function getReport(type, overview = false) {
             request = {
                 report: {
                     type: "user_clock",
-                    columns: [
-                        "user_profile.user_id",
-                        "user_profile.department_id",
-                        "user_clocks.task_id",
-                        "purchase_orders.id",
-                        "user_clock_activity.activity_id",
-                        "user_clock_activity.activity_code",
-                        "user_clock_activity.notes",
-                        "user_clock_activity.units",
-                        "user_clock_activity.created_at",
-                        "user_clock_activity.time_spent",
-                        "user_clocks.time_in",
-                        "user_clocks.time_out",
-                        "user_clocks.user_id",
-                        "user_clocks.clock_date",
-                        "products.sid",
-                        "products.name",
-                        "product_items.sku",
-                        "product_items.condition_id",
-                        "products.category_id"
-                    ],
+                    columns: report_columns,
                     filters: [{
                             column: "user_profile.user_id",
                             opr: "{0} = '{1}'",
@@ -105,27 +122,7 @@ async function getReport(type, overview = false) {
             request = {
                 report: {
                     type: "user_clock",
-                    columns: [
-                        "user_profile.user_id",
-                        "user_profile.department_id",
-                        "user_clocks.task_id",
-                        "purchase_orders.id",
-                        "user_clock_activity.activity_id",
-                        "user_clock_activity.activity_code",
-                        "user_clock_activity.notes",
-                        "user_clock_activity.units",
-                        "user_clock_activity.created_at",
-                        "user_clock_activity.time_spent",
-                        "user_clocks.time_in",
-                        "user_clocks.time_out",
-                        "user_clocks.user_id",
-                        "user_clocks.clock_date",
-                        "products.sid",
-                        "products.name",
-                        "product_items.sku",
-                        "product_items.condition_id",
-                        "products.category_id"
-                    ],
+                    columns: report_columns,
                     filters: [{
                             column: "user_profile.department_id",
                             opr: "{0} IN {1}",
@@ -858,8 +855,8 @@ async function recentPictureCheckInit() {
     const searchInput = document.createElement('input');
     searchInput.type = 'text';
     searchInput.placeholder = 'Search SKUs or Product Name...';
-    searchInput.className = 'form-control';
-    searchInput.style.maxWidth = '400px';
+    searchInput.classList.add('form-control', 'form-control-solid', 'form-control-lg', 'ps-13', 'fs-2', 'h-60px')
+    searchInput.style.width = '90%';
     searchWrap.appendChild(searchInput);
 
     content.appendChild(searchWrap);
@@ -881,11 +878,12 @@ async function recentPictureCheckInit() {
     wrap.id = 'patches-productivity-recentPicsWrap';
     content.appendChild(wrap);
 
-    let report = await getReport('team');
+    let report = await getReport('team', false, true);
     let uniqueData = parseData(report, true, false, true);
     uniqueData = uniqueData.filter(row => row.Event_Code === "Inventory Listing");
 
     const entries = uniqueData.filter(entry => entry.SKU !== null && typeof entry.SKU !== 'undefined');
+    console.debug('PATCHES - Data for Items Created Overview', entries);
     let counter = 0;
 
     for (const entry of entries) {
