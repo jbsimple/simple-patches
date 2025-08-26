@@ -329,7 +329,7 @@ function initAddItemsButton() {
     toolbar.className = 'card-toolbar';
     toolbar.setAttribute('style', 'display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1rem;');
     toolbar.innerHTML = `
-        <button type="button" class="btn btn-sm btn-light ajax-modal" 
+        <button type="button" class="btn btn-sm btn-light btn-light-success ajax-modal" 
             data-url="/product/items/new?product_id=${fetchProductId()}">
             Add Item
         </button>
