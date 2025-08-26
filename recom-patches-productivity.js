@@ -83,6 +83,19 @@ async function getReport(type, overview = false, searchStuff = false) {
         ];
         if (searchStuff) {
             report_columns = [
+                "user_profile.user_id",
+                "user_profile.department_id",
+                "user_clocks.task_id",
+                "purchase_orders.id",
+                "user_clock_activity.activity_id",
+                "user_clock_activity.activity_code",
+                "user_clock_activity.notes",
+                "user_clock_activity.units",
+                "user_clock_activity.created_at",
+                "user_clock_activity.time_spent",
+                "user_clocks.time_in",
+                "user_clocks.time_out",
+                "user_clocks.user_id",
                 "user_clocks.clock_date",
                 "products.sid",
                 "products.name",
@@ -878,7 +891,7 @@ async function recentPictureCheckInit() {
     wrap.id = 'patches-productivity-recentPicsWrap';
     content.appendChild(wrap);
 
-    let report = await getReport('team', false, true);
+    let report = await getReport('team', false);
     let uniqueData = parseData(report, true, false, true);
     uniqueData = uniqueData.filter(row => row.Event_Code === "Inventory Listing");
 
