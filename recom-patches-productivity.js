@@ -891,7 +891,7 @@ async function recentPictureCheckInit() {
     wrap.id = 'patches-productivity-recentPicsWrap';
     content.appendChild(wrap);
 
-    let report = await getReport('team', false);
+    let report = await getReport('team', false, true);
     let uniqueData = parseData(report, true, false, true);
     uniqueData = uniqueData.filter(row => row.Event_Code === "Inventory Listing");
 
