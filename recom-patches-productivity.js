@@ -867,7 +867,7 @@ async function recentPictureCheckInit() {
     searchWrap.setAttribute('style', 'padding: 1rem 30px; display: flex; justify-content: center;');
     const searchInput = document.createElement('input');
     searchInput.type = 'text';
-    searchInput.placeholder = 'Search SKUs or Product Name...';
+    searchInput.placeholder = 'Enter Keyword or UPC, MPN, ASIN, SKU';
     searchInput.classList.add('form-control', 'form-control-solid', 'form-control-lg', 'ps-13', 'fs-2', 'h-60px')
     searchInput.style.width = '90%';
     searchWrap.appendChild(searchInput);
@@ -971,7 +971,7 @@ async function recentPictureCheckInit() {
                 card.dataset.condition,
                 card.dataset.name
             ].filter(Boolean).map(val => val.toLowerCase());
-            
+
             const match = searchable.some(val => val.includes(query));
 
             card.style.display = match || query === '' ? '' : 'none';
