@@ -320,10 +320,6 @@ waitForElement('#kt_app_content_container', initCopyPasteButton);
 
 function modifyColorAttribute() {
     const form_groups = document.querySelectorAll('.form-group');
-    const allowed_colors = [
-        "Beige", "Black", "Blue", "Brown", "Clear", "Gold", "Gray", "Green", "Iridescent",
-        "Multicolor", "Orange", "Pink", "Purple", "Red", "Silver", "White", "Yellow"
-    ];
 
     function randomID(length = 4) {
         const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';

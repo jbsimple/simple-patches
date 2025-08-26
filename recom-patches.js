@@ -6,6 +6,7 @@ let metals = [];
 let pfpPatch = {};
 let rainbowAnnounce = [];
 let autoLocationUpdate = true;
+let allowed_colors = [];
 
 async function loadEdgeConfig(key) {
     return new Promise(async (resolve, reject) => {
