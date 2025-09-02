@@ -20,6 +20,8 @@ async function prettyLinkSkus() {
 
     const rows = table.querySelectorAll('tbody tr');
     for (const row of rows) {
+        if (row.querySelector('td.in-stock-col')) continue;
+
         const cells = row.querySelectorAll('td');
         const skuCell = cells[3];
         const text = skuCell.textContent.trim();
@@ -51,7 +53,9 @@ async function prettyLinkSkus() {
             }
         }
 
+        // Create the new cell only once
         const inStockCell = document.createElement('td');
+        inStockCell.classList.add('in-stock-col');
         inStockCell.textContent = in_stock ? in_stock : "";
         row.insertBefore(inStockCell, cells[4]);
     }
