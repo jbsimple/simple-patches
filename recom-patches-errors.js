@@ -86,4 +86,4 @@ function initExport() {
     toolbar.insertBefore(button, toolbar.firstChild);
 }
 
-setTimeout(initExport, 500);
+setTimeout(initExport, 50);
