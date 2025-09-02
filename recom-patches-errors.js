@@ -58,7 +58,7 @@ function exportTable() {
     let page = '0';
     const dtTable_wrapper = document.getElementById('dtTable_wrapper');
     if (dtTable_wrapper) {
-        const pageEl = table.querySelector('.page-item.active');
+        const pageEl = dtTable_wrapper.querySelector('.page-item.active');
         page = pageEl ? pageEl.textContent.trim() : "all";
     }
     
