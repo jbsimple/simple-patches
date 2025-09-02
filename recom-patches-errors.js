@@ -12,7 +12,7 @@ async function prettyLinkSkus() {
             const cleanedSku = text.startsWith('RF_') ? text.replace(/^RF_/, '') : text;
             const href = `/product/items/${cleanedSku}`;
 
-            let in_stock = "";
+            let in_stock = 0;
 
             try {
                 const res = await fetch(href);
@@ -37,7 +37,7 @@ async function prettyLinkSkus() {
             td.innerHTML = `
                 <div style="display: flex; flex-direction: column; align-items: flex-start;">
                     <a href="${href}" target="_blank">${text}</a>
-                    <span>${in_stock}</span>
+                    <span>In Stock: ${in_stock}</span>
                 </div>
             `;
         }
