@@ -28,3 +28,39 @@ if (wrapper) {
 
     observer.observe(wrapper, { childList: true, subtree: true });
 }
+
+function exportTable() {
+    const table = document.getElementById('dtTable');
+    if (!table) return;
+
+    let rows = [];
+
+    table.querySelectorAll("thead tr, tbody tr").forEach(tr => {
+        let cells = [];
+        tr.querySelectorAll("th, td").forEach(td => {
+            let text = td.innerText.trim();
+
+            const link = td.querySelector("a");
+            if (link) text = link.textContent.trim();
+
+            if (text.includes(",") || text.includes("\"")) {
+                text = `"${text.replace(/"/g, '""')}"`;
+            }
+            cells.push(text);
+        });
+        rows.push(cells.join(","));
+    });
+
+    const csvContent = rows.join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "table_export.csv";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
