@@ -1,18 +1,35 @@
 function prettyLinkSkus() {
     const table = document.getElementById('dtTable');
-    if (table) {
-        const tds = table.querySelectorAll('td');
-        tds.forEach(td => {
-            const text = td.textContent;
-            if (
-                (text.startsWith('SC-') || text.startsWith('RF_SC-') || text.startsWith('DF-')) &&
-                !td.querySelector('a')
-            ) {
-                const cleanedSku = text.startsWith('RF_') ? text.replace(/^RF_/, '') : text;
-                td.innerHTML = `<a href="/product/items/${cleanedSku}" target="_blank">${text}</a>`;
+    if (!table) return;
+
+    const tds = table.querySelectorAll('td');
+    tds.forEach(td => {
+        const text = td.textContent.trim();
+        if (
+            (text.startsWith('SC-') || text.startsWith('RF_SC-') || text.startsWith('DF-')) &&
+            !td.querySelector('a')
+        ) {
+            const cleanedSku = text.startsWith('RF_') ? text.replace(/^RF_/, '') : text;
+            const href = `/product/items/${cleanedSku}`;
+
+            let in_stock = "";
+            const invLink = document.getElementById('getTotalInventoryBreakdown');
+
+            if (invLink) {
+                const parent = invLink.parentElement;
+                if (parent && parent.nextElementSibling) {
+                    in_stock = parent.nextElementSibling.textContent.trim();
+                }
             }
-        });
-    }
+
+            td.innerHTML = `
+                <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                    <a href="${href}" target="_blank">${text}</a>
+                    <span>${in_stock}</span>
+                </div>
+            `;
+        }
+    });
 }
 
 // Run once on initial load
