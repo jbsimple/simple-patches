@@ -53,14 +53,37 @@ function exportTable() {
 
     const csvContent = rows.join("\n");
 
+    const timestamp = Math.floor(Date.now() / 1000);
+
+    const pageEl = table.querySelector('.page-item.active');
+    const page = pageEl ? pageEl.textContent.trim() : "all";
+
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = "table_export.csv";
+    a.download = `integrationLog_${timestamp}_${page}`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 }
+
+// add button
+function initExport() {
+    const kt_app_content_container = document.getElementById('kt_app_content_container');
+    if (!kt_app_content_container) return;
+
+    const toolbar = kt_app_content_container.querySelector('.card-toolbar.flex-row-fluid.justify-content-end.gap-5');
+    if (!toolbar) return;
+
+    const button = document.createElement('a');
+    button.classList.add('btn', 'btn-info', 'btn-sm');
+    button.textContent = "Export CSV";
+    button.onclick = exportTable;
+
+    toolbar.insertBefore(button, toolbar.firstChild);
+}
+
+setTimeout(initExport, 500);
