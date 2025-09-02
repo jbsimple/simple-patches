@@ -1,9 +1,9 @@
-function prettyLinkSkus() {
+async function prettyLinkSkus() {
     const table = document.getElementById('dtTable');
     if (!table) return;
 
     const tds = table.querySelectorAll('td');
-    tds.forEach(td => {
+    tds.forEach(td => async function() {
         const text = td.textContent.trim();
         if (
             (text.startsWith('SC-') || text.startsWith('RF_SC-') || text.startsWith('DF-')) &&
@@ -15,11 +15,25 @@ function prettyLinkSkus() {
             let in_stock = "";
             const invLink = document.getElementById('getTotalInventoryBreakdown');
 
-            if (invLink) {
-                const parent = invLink.parentElement;
-                if (parent && parent.nextElementSibling) {
-                    in_stock = parent.nextElementSibling.textContent.trim();
+            
+            try {
+                const res = await fetch(href);
+                if (res.ok) {
+                    const html = await res.text();
+
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, "text/html");
+
+                    const invLink = doc.getElementById('getTotalInventoryBreakdown');
+                    if (invLink) {
+                        const parent = invLink.parentElement;
+                        if (parent && parent.nextElementSibling) {
+                            in_stock = parent.nextElementSibling.textContent.trim();
+                        }
+                    }
                 }
+            } catch (err) {
+                console.error("Error fetching", href, err);
             }
 
             td.innerHTML = `
