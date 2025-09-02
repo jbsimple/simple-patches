@@ -9,13 +9,13 @@ async function prettyLinkSkus() {
         const th = document.createElement('th');
         th.textContent = "In Stock";
         th.classList.add('in-stock-col', 'min-w-100px');
-        headerRow.insertBefore(th, headerRow.children[5]);
+        headerRow.insertBefore(th, headerRow.children[4]);
     }
 
     if (footerRow && !footerRow.querySelector('th.in-stock-col')) {
         const th = document.createElement('th');
         th.classList.add('in-stock-col');
-        footerRow.insertBefore(th, footerRow.children[5]);
+        footerRow.insertBefore(th, footerRow.children[4]);
     }
 
     const rows = table.querySelectorAll('tbody tr');
