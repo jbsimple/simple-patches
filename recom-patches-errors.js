@@ -55,9 +55,13 @@ function exportTable() {
 
     const timestamp = Math.floor(Date.now() / 1000);
 
-    const pageEl = table.querySelector('.page-item.active');
-    const page = pageEl ? pageEl.textContent.trim() : "all";
-
+    let page = '0';
+    const dtTable_wrapper = document.getElementById('dtTable_wrapper');
+    if (dtTable_wrapper) {
+        const pageEl = table.querySelector('.page-item.active');
+        page = pageEl ? pageEl.textContent.trim() : "all";
+    }
+    
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
 
