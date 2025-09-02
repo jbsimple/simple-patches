@@ -3,7 +3,7 @@ async function prettyLinkSkus() {
     if (!table) return;
 
     const tds = table.querySelectorAll('td');
-    tds.forEach(td => async function() {
+    for (const td of tds) {
         const text = td.textContent.trim();
         if (
             (text.startsWith('SC-') || text.startsWith('RF_SC-') || text.startsWith('DF-')) &&
@@ -13,9 +13,7 @@ async function prettyLinkSkus() {
             const href = `/product/items/${cleanedSku}`;
 
             let in_stock = "";
-            const invLink = document.getElementById('getTotalInventoryBreakdown');
 
-            
             try {
                 const res = await fetch(href);
                 if (res.ok) {
@@ -43,7 +41,7 @@ async function prettyLinkSkus() {
                 </div>
             `;
         }
-    });
+    }
 }
 
 // Run once on initial load
