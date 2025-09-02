@@ -2,23 +2,39 @@ async function prettyLinkSkus() {
     const table = document.getElementById('dtTable');
     if (!table) return;
 
-    const tds = table.querySelectorAll('td');
-    for (const td of tds) {
-        const text = td.textContent.trim();
-        if (
-            (text.startsWith('SC-') || text.startsWith('RF_SC-') || text.startsWith('DF-')) &&
-            !td.querySelector('a')
-        ) {
+    const headerRow = table.querySelector('thead tr');
+    const footerRow = table.querySelector('tfoot tr');
+
+    if (!headerRow.querySelector('th.in-stock-col')) {
+        const th = document.createElement('th');
+        th.textContent = "In Stock";
+        th.classList.add('in-stock-col', 'min-w-100px');
+        headerRow.insertBefore(th, headerRow.children[5]);
+    }
+
+    if (footerRow && !footerRow.querySelector('th.in-stock-col')) {
+        const th = document.createElement('th');
+        th.classList.add('in-stock-col');
+        footerRow.insertBefore(th, footerRow.children[5]);
+    }
+
+    const rows = table.querySelectorAll('tbody tr');
+    for (const row of rows) {
+        const cells = row.querySelectorAll('td');
+        const skuCell = cells[3];
+        const text = skuCell.textContent.trim();
+
+        let in_stock = "";
+        if (text.startsWith('SC-') || text.startsWith('RF_SC-') || text.startsWith('DF-')) {
             const cleanedSku = text.startsWith('RF_') ? text.replace(/^RF_/, '') : text;
             const href = `/product/items/${cleanedSku}`;
 
-            let in_stock = 0;
+            skuCell.innerHTML = `<a href="${href}" target="_blank">${text}</a>`;
 
             try {
                 const res = await fetch(href);
                 if (res.ok) {
                     const html = await res.text();
-
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(html, "text/html");
 
@@ -33,14 +49,11 @@ async function prettyLinkSkus() {
             } catch (err) {
                 console.error("Error fetching", href, err);
             }
-
-            td.innerHTML = `
-                <div style="display: flex; flex-direction: column; align-items: flex-start;">
-                    <a href="${href}" target="_blank">${text}</a>
-                    <span>In Stock: ${in_stock}</span>
-                </div>
-            `;
         }
+
+        const inStockCell = document.createElement('td');
+        inStockCell.textContent = in_stock ? in_stock : "";
+        row.insertBefore(inStockCell, cells[4]);
     }
 }
 
