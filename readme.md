@@ -104,7 +104,7 @@ No temporary patches at the moment.
   - Now links to search in pending inventory can be used throughout the patch.
 
 #### Reports Page Patches:
-- Aafter submitting to generate a new report, the report displays under the original card.
+- After submitting to generate a new report, the report displays under the original card.
   - If the file is larger than 1MB, the printing is disabled to save performance.
   - Links for products and items are automatically added into the report preview for convenience.
 - Aadded a card to generate a preset report.
@@ -120,6 +120,11 @@ No temporary patches at the moment.
   - Added a list of products that have incorrect color attributes.
 - Added a css fix to correct the resize on narrow screens happening too late.
 - Added css rule to flip the order of recents and main reporting tool because recents aren't THAT important.
+
+#### Intergations Errors Page:
+- Added a button to download the table into a csv (it's not working properly, will fix in the future).
+- Added a new column for In Stock SKUs
+  - Will load the SKU page to get the in stock for that SKU and adds a new column with that number.
 
 #### Other Page Patches:
 - On Dashboard; Added quick link buttons to commonly used functions in the system (that are usually hidden behind a cascade menu).
