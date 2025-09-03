@@ -409,7 +409,8 @@ function modifyColorAttribute() {
         }
     });
 }
-waitForElement('#el_product_form', modifyColorAttribute);
+//waitForElement('#el_product_form', modifyColorAttribute);
+// disabling this because somehing happened in the backend which broke this and I don't feel like fixing it right now until we need it.
 
 /* photo stuff */
 function modifyMediaTable() {
