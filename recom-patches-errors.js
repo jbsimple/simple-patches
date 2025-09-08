@@ -21,7 +21,7 @@ async function prettyLinkSkus() {
     const rows = table.querySelectorAll('tbody tr');
 
     const parser = new DOMParser();
-    
+
     for (const row of rows) {
         if (row.querySelector('td.in-stock-col')) continue;
 
@@ -96,8 +96,8 @@ async function prettyLinkSkus() {
         row.insertBefore(inStockCell, cells[4]);
 
         if (wm_feedID) {
-            cells[3].title = cells[3].textContent.trim();
-            cells[3].textContent = wm_feedID;
+            cells[2].title = cells[2].textContent.trim();
+            cells[2].textContent = wm_feedID;
         }
     }
 }
