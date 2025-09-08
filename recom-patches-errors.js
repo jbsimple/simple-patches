@@ -26,11 +26,8 @@ async function prettyLinkSkus() {
         const skuCell = cells[3];
         const text = skuCell.textContent.trim();
 
-        const marketplaceCell = cells[1];
-        const marketplace = marketplaceCell.textContent.trim();
-
         let in_stock = "";
-        let wm_feedID = "";
+        let item_id = "";
         if (text.startsWith('SC-') || text.startsWith('RF_SC-') || text.startsWith('DF-')) {
             const cleanedSku = text.startsWith('RF_') ? text.replace(/^RF_/, '') : text;
             const href = `/product/items/${cleanedSku}`;
@@ -52,34 +49,44 @@ async function prettyLinkSkus() {
                         }
                     }
 
-                    if (marketplace === 'Walmart US') {
-                        const marketplaceTab = doc.getElementById('rc_product_listing_tab');
-                        if (marketplaceTab) {
-                            const marketplaceTbody = marketplaceTab.querySelector('tbody');
-                            if (marketplaceTbody) {
-                                const marketplaceRows = marketplaceTbody.querySelectorAll('tr');
-                                console.debug('PATCHES - marketplaceRows:', marketplaceRows);
-                                marketplaceRows.forEach(marketplaceRow => {
-                                    const marketplaceColumns = marketplaceRow.querySelectorAll('td');
-                                    if (marketplaceColumns[0] && marketplaceColumns[0].textContent.trim() === 'Walmart US') {
-                                        wm_feedID = marketplaceColumns[3] ? marketplaceColumns[3].textContent.trim() : "";
-                                    }
-                                });
-                            } else {
-                                console.debug('PATCHES - Unable to find .tbody');
+                    const itemLabelDiv = [...doc.querySelectorAll('div')].find(div => div.textContent.trim() === 'Item #');
+                    if (itemLabelDiv) {
+                        const parent = itemLabelDiv.parentElement;
+                        if (parent) {
+                            const idDiv = parent.querySelector('.fs-5.text-info.fw-bolder.lh-1');
+                            if (idDiv) {
+                                item_id = idDiv.textContent.trim();
                             }
-                        } else {
-                            console.debug('PATCHES - Unable to find #rc_product_listing_tab');
                         }
                     }
 
-                    // console.debug(`PATCHES - Result from fetch:`, {'skuCell':text, 'marketplace':marketplace, 'in_stock':in_stock, 'wm_feed':wm_feedID});
                 }
             } catch (err) {
                 console.error("Error fetching", href, err);
             }
         }
 
+        const marketplaceCell = cells[1];
+        const marketplace = marketplaceCell.textContent.trim();
+        let wm_feedID = ""; 
+        if (marketplace === 'Walmart US' && item_id) {
+            try {
+                const feedRes = await fetch(`/integrations/stores/listing/item/${item_id}`);
+                if (feedRes.ok) {
+                    const feedHtml = await feedRes.text();
+                    const feedDoc = parser.parseFromString(feedHtml, "text/html");
+
+                    const wmRow = [...feedDoc.querySelectorAll('tbody tr')].find(row => row.querySelector('td')?.textContent.trim() === 'Walmart US');
+
+                    if (wmRow) {
+                        const cols = wmRow.querySelectorAll('td');
+                        wm_feedID = cols[2]?.textContent.trim() || "";
+                    }
+                }
+            } catch (err) {
+                console.error("Error fetching feed ID", err);
+            }
+        }
         // Create the new cell only once
         const inStockCell = document.createElement('td');
         inStockCell.classList.add('in-stock-col');
