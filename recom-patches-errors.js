@@ -67,6 +67,8 @@ async function prettyLinkSkus() {
                             }
                         }
                     }
+
+                    console.debug(`PATCHES - Result from fetch:`, {'skuCell':text, 'marketplace':marketplace, 'in_stock':in_stock, 'wm_feed':wm_feedID});
                 }
             } catch (err) {
                 console.error("Error fetching", href, err);
