@@ -19,6 +19,9 @@ async function prettyLinkSkus() {
     }
 
     const rows = table.querySelectorAll('tbody tr');
+
+    const parser = new DOMParser();
+    
     for (const row of rows) {
         if (row.querySelector('td.in-stock-col')) continue;
 
@@ -38,7 +41,6 @@ async function prettyLinkSkus() {
                 const res = await fetch(href);
                 if (res.ok) {
                     const html = await res.text();
-                    const parser = new DOMParser();
                     const doc = parser.parseFromString(html, "text/html");
 
                     const invLink = doc.getElementById('getTotalInventoryBreakdown');
