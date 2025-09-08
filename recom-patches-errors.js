@@ -26,7 +26,11 @@ async function prettyLinkSkus() {
         const skuCell = cells[3];
         const text = skuCell.textContent.trim();
 
+        const marketplaceCell = cells[1];
+        const marketplace = marketplaceCell.textContent.trim();
+
         let in_stock = "";
+        let wm_feedID = "";
         if (text.startsWith('SC-') || text.startsWith('RF_SC-') || text.startsWith('DF-')) {
             const cleanedSku = text.startsWith('RF_') ? text.replace(/^RF_/, '') : text;
             const href = `/product/items/${cleanedSku}`;
@@ -47,6 +51,22 @@ async function prettyLinkSkus() {
                             in_stock = parent.nextElementSibling.textContent.trim();
                         }
                     }
+
+                    if (marketplace === 'Walmart US') {
+                        const marketplaceTab = doc.getElementById('rc_product_listing_tab');
+                        if (marketplaceTab) {
+                            const marketplaceTbody = marketplaceTab.querySelector('tbody');
+                            if (marketplaceTbody) {
+                                const marketplaceRows = marketplaceTbody.querySelectorAll('tr');
+                                marketplaceRows.forEach(marketplaceRow => {
+                                    const marketplaceColumns = marketplaceRow.querySelectorAll('td');
+                                    if (marketplaceColumns[0] && marketplaceColumns[0].textContent.trim() === 'Walmart US') {
+                                        wm_feedID = marketplaceColumns[3] ? marketplaceColumns[3].textContent.trim() : "";
+                                    }
+                                })
+                            }
+                        }
+                    }
                 }
             } catch (err) {
                 console.error("Error fetching", href, err);
@@ -58,6 +78,11 @@ async function prettyLinkSkus() {
         inStockCell.classList.add('in-stock-col');
         inStockCell.textContent = in_stock ? in_stock : "";
         row.insertBefore(inStockCell, cells[4]);
+
+        if (wm_feedID) {
+            cells[3].title = cells[3].textContent.trim();
+            cells[3].textContent = wm_feedID;
+        }
     }
 }
 
@@ -93,7 +118,7 @@ function exportTable() {
             if (span && span.getAttribute("title")) { text = span.getAttribute("title").trim(); }
 
             if (text.includes(",") || text.includes("\"")) { text = `"${text.replace(/"/g, '""')}"`; }
-            
+
             cells.push(text);
         });
         rows.push(cells.join(","));
