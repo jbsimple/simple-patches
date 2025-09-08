@@ -87,11 +87,13 @@ function exportTable() {
             let text = td.innerText.trim();
 
             const link = td.querySelector("a");
-            if (link) text = link.textContent.trim();
+            if (link) { text = link.textContent.trim(); }
 
-            if (text.includes(",") || text.includes("\"")) {
-                text = `"${text.replace(/"/g, '""')}"`;
-            }
+            const span = td.querySelector("span[title]");
+            if (span && span.getAttribute("title")) { text = span.getAttribute("title").trim(); }
+
+            if (text.includes(",") || text.includes("\"")) { text = `"${text.replace(/"/g, '""')}"`; }
+            
             cells.push(text);
         });
         rows.push(cells.join(","));
@@ -113,7 +115,7 @@ function exportTable() {
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = `integrationLog_${timestamp}_${page}`;
+    a.download = `integrationLog_${timestamp}_${page}.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
