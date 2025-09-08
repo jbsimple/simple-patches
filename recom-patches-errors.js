@@ -58,17 +58,22 @@ async function prettyLinkSkus() {
                             const marketplaceTbody = marketplaceTab.querySelector('tbody');
                             if (marketplaceTbody) {
                                 const marketplaceRows = marketplaceTbody.querySelectorAll('tr');
+                                console.debug('PATCHES - marketplaceRows:', marketplaceRows);
                                 marketplaceRows.forEach(marketplaceRow => {
                                     const marketplaceColumns = marketplaceRow.querySelectorAll('td');
                                     if (marketplaceColumns[0] && marketplaceColumns[0].textContent.trim() === 'Walmart US') {
                                         wm_feedID = marketplaceColumns[3] ? marketplaceColumns[3].textContent.trim() : "";
                                     }
-                                })
+                                });
+                            } else {
+                                console.debug('PATCHES - Unable to find .tbody');
                             }
+                        } else {
+                            console.debug('PATCHES - Unable to find #rc_product_listing_tab');
                         }
                     }
 
-                    console.debug(`PATCHES - Result from fetch:`, {'skuCell':text, 'marketplace':marketplace, 'in_stock':in_stock, 'wm_feed':wm_feedID});
+                    // console.debug(`PATCHES - Result from fetch:`, {'skuCell':text, 'marketplace':marketplace, 'in_stock':in_stock, 'wm_feed':wm_feedID});
                 }
             } catch (err) {
                 console.error("Error fetching", href, err);
