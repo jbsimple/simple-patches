@@ -429,7 +429,7 @@ div.dataTables_wrapper div.dataTables_processing {
     75%  { transform: translateX(6px); }
     90%  { transform: translateX(-6px); }
     100% { transform: translateX(0); }
-}}
+}
 
 @keyframes wave {
     0%   { transform: translateY(0) rotate(0deg); }
