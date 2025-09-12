@@ -446,6 +446,13 @@ div.dataTables_wrapper div.dataTables_processing {
     75% { transform: skewX(-15deg) scaleY(0.7); }
 }
 
+@keyframes flip {
+    0%   { transform: perspective(400px) rotateY(0deg); }
+    40%  { transform: perspective(400px) rotateY(180deg); }
+    60%  { transform: perspective(400px) rotateY(180deg); }
+    100% { transform: perspective(400px) rotateY(360deg); }
+}
+
 #kt_app_sidebar .app-sidebar-logo {
     display: inline-block;
     transform-origin: center;

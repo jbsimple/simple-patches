@@ -234,12 +234,12 @@ function injectExtraTheme() {
         let animation;
         switch (day) {
             case 0: animation = "ripple-wave 1s ease-in-out infinite"; break;
-            case 1: animation = "ripple-wave 1s ease-in-out infinite"; break; // ripple monday
+            case 1: animation = "wave 1s ease-in-out infinite"; break; // ripple monday
             case 2: animation = "twist 0.5s ease"; break; // twist tuesday
             case 3: animation = "wiggle 0.6s ease"; break; // wiggle wednesday
             case 4: animation = "thrust 0.5s ease"; break; // thrust thursday
-            case 5: animation = "wave 1s ease-in-out infinite"; break;
-            case 6: animation = "wave 1s ease-in-out infinite"; break;
+            case 5: animation = "flip 2s ease-in-out infinite"; break; // flip friday
+            case 6: animation = "ripple-wave 1s ease-in-out infinite"; break;
         }
         logo.style.setProperty("--logo-animation", animation);
     }
