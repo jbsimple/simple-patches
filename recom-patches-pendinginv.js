@@ -128,7 +128,6 @@ async function keywordSearch() {
                 const data = await fetchReport(params);
                 console.debug('PATCHES - report data:', data);
 
-                // now it is time to HIDE #dtTable
                 const kt_app_content = document.getElementById('kt_app_content');
                 if (kt_app_content) {
                     const oldcard = kt_app_content.querySelector('#kt_app_content_container > .card.card-flush');
@@ -136,7 +135,7 @@ async function keywordSearch() {
                     if (kt_app_content_container && oldcard) {
                         oldcard.style.display = 'none';
                         const newcard = document.createElement('div');
-                        newcard.classList.add('card' , 'card-flush');
+                        newcard.classList.add('card');
                         newcard.innerHTML = `<div class="card-header ribbon ribbon-top" style="padding: 1.25rem 2.15rem; padding-bottom: 0;">
                             <div class="card-title">
                                 <h2>Keyword Search Results:</h2>
@@ -145,11 +144,16 @@ async function keywordSearch() {
                                 <a href="/receiving/queues/inventory" class="btn btn-lg btn-primary">Back to Pending Inventory</a>
                             </div>
                         </div>`;
+                        
+                        const tableWrapper = document.createElement('div');
+                        tableWrapper.classList.add('card-body');
+                        tableWrapper.innerHTML = buildResultsTable(data.data);
+
+                        newcard.appendChild(tableWrapper);
                         kt_app_content_container.appendChild(newcard);
                     }
                 }
 
-                // create new table wow
             } catch (err) {
                 console.error('PATCHES - fetchReport failed:', err);
                 fireSwal('Fetching Error', 'Error while fetching data.', 'error');
@@ -246,5 +250,28 @@ async function keywordSearch() {
         } else {
             return null;
         }
+    }
+
+    function buildResultsTable(rows) {
+        if (!rows || rows.length === 0) {
+            return `<p class="text-muted">No results found.</p>`;
+        }
+
+        const cols = ["Keyword", "SID", "Product_Name", "Condition", "Quantity", "PO_Number"];
+
+        let html = `<table class="table table-striped table-bordered align-middle">
+            <thead><tr>${cols.map(c => `<th>${c}</th>`).join('')}</tr></thead>
+            <tbody>`;
+
+        rows.forEach(row => {
+            html += "<tr>";
+            cols.forEach(col => {
+                html += `<td>${row[col] ?? ""}</td>`;
+            });
+            html += "</tr>";
+        });
+
+        html += "</tbody></table>";
+        return html;
     }
 }
