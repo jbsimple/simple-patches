@@ -129,7 +129,17 @@ async function keywordSearch() {
                 console.debug('PATCHES - report data:', data);
 
                 // now it is time to HIDE #dtTable
-                dtTable.style.display = 'none';
+                const kt_app_content = document.getElementById('kt_app_content');
+                if (kt_app_content) {
+                    const oldcard = kt_app_content.querySelector('#kt_app_content_container > .card.card-flush');
+                    const kt_app_content_container = document.getElementById('kt_app_content_container');
+                    if (kt_app_content_container && oldcard) {
+                        oldcard.style.display = 'none';
+                        const newcard = document.createElement('div');
+                        newcard.classList.add('card' , 'card-flush');
+                        kt_app_content_container.appendChild(newcard);
+                    }
+                }
 
                 // create new table wow
             } catch (err) {
