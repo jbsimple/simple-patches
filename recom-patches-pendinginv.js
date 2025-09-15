@@ -99,7 +99,7 @@ function checkPicsInit() {
 checkPicsInit();
 
 // a button should be added somewhere to trigger
-function keywordSearch() {
+async function keywordSearch() {
     const dtfoot = document.getElementById('dtfoot');
     const dtTable = document.getElementById('dtTable');
     if (dtfoot && dtTable) {
@@ -114,6 +114,17 @@ function keywordSearch() {
             }
         });
         console.debug('PATCHES - dtfoot params:', params);
+    }
+
+    if (Object.keys(params).length > 0) {
+        try {
+            const data = await fetchReport(params);
+            console.debug('PATCHES - report data:', data);
+        } catch (err) {
+            console.error('PATCHES - fetchReport failed:', err);
+        }
+    } else {
+        console.debug('PATCHES - no params provided, skipping fetchReport.');
     }
 
     function fetchFieldValues(field) {
@@ -135,5 +146,74 @@ function keywordSearch() {
         if (el.tagName === "SELECT") return el.value;
         if (el.type === "checkbox" || el.type === "radio") return el.checked;
         return el.value;
+    }
+
+    async function fetchReport(params) {
+        // time to build a report
+        const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
+        
+        var request = {
+            report: {
+                type: "pending_inventory",
+                columns: [
+                    "purchase_orders.id",
+                    "inventory_receiving.keyword",
+                    "inventory_receiving.quantity",
+                    "queue_inventory.quantity_approved",
+                    "inventory_receiving.created_at",
+                    "products.sid",
+                    "products.name",
+                    "product_items.location",
+                    "inventory_receiving.condition_id",
+                    "products.category_id",
+                    "products.mpn",
+                    "products.gtin",
+                    "products.asin"
+                ],
+                filters: [
+                    {
+                        column: "purchase_orders.id",
+                        opr: "{0} IN {1}",
+                        value: params['PO #']?.value || null
+                    },
+                    {
+                        column: "inventory_receiving.keyword",
+                        opr: "({0} IS NULL OR {0} = '')",
+                        value: params['Product']?.['Product Name or SKU'] || null
+                    },
+                    {
+                        column: "inventory_receiving.quantity",
+                        opr: "BETWEEN {0} AND {1}",
+                        value: [
+                            params['Quantity']?.['From'] || 0,
+                            params['Quantity']?.['To'] || 999999
+                        ]
+                    }
+                ]
+            },
+            csrf_recom: csrfToken
+        };
+
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: "/reports/create",
+                data: request,
+            }).done(function(data) {
+                if (data.success && data.results.results && Array.isArray(data.results.results)) {
+                    resolve({
+                        data: data.results.results,
+                        download: `/renderfile/download?folder=reports&path=${data.results.filename}`,
+                        filename: data.results.filename
+                    });
+                } else {
+                    resolve(null);
+                }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error("Request failed: " + textStatus + ", " + errorThrown);
+                reject(new Error("Request failed: " + textStatus + ", " + errorThrown));
+            });
+        });
     }
 }
