@@ -300,7 +300,7 @@ function keywordSearchInit() {
         cursor: pointer;
         border-radius: 5px;
     `;
-    checkImgButton.onclick = keywordSearch;
+    keywordSearchButton.onclick = keywordSearch;
 
     const openAllImagesBtn = document.getElementById('patch_openAllImages');
     if (openAllImagesBtn && openAllImagesBtn.parentNode) {
