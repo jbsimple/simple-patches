@@ -161,10 +161,10 @@ async function keywordSearch() {
                         "inventory_receiving.keyword",
                         "inventory_receiving.quantity",
                         "queue_inventory.quantity_approved",
+                        "inventory_receiving.location",
                         "inventory_receiving.created_at",
                         "products.sid",
                         "products.name",
-                        "product_items.location",
                         "inventory_receiving.condition_id",
                         "products.category_id",
                         "products.mpn",
@@ -186,6 +186,8 @@ async function keywordSearch() {
                 },
                 csrf_recom: csrfToken
             };
+
+            console.debug('PATCHES - Fetching report:', request);
 
             return new Promise((resolve, reject) => {
                 $.ajax({
