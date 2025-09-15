@@ -107,7 +107,7 @@ function keywordSearch() {
         const fields = dtfoot.querySelectorAll('th');
         const params = {};
         fields.forEach((field, index) => {
-            const key = indexes[index] ?? index;
+            const key = indexes[index].textContent.trim() ?? index;
             const values = fetchFieldValues(field);
             if (values && Object.keys(values).length > 0) {
                 params[key] = values;
