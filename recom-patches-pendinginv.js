@@ -137,6 +137,14 @@ async function keywordSearch() {
                         oldcard.style.display = 'none';
                         const newcard = document.createElement('div');
                         newcard.classList.add('card' , 'card-flush');
+                        newcard.innerHTML = `<div class="card-header ribbon ribbon-top" style="padding: 1.25rem 2.15rem; padding-bottom: 0;">
+                            <div class="card-title">
+                                <h2>Keyword Search Results:</h2>
+                            </div>
+                            <div class="card-toolbar" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1rem;">
+                                <a href="/receiving/queues/inventory" class="btn btn-lg btn-primary">Back to Pending Inventory</a>
+                            </div>
+                        </div>`;
                         kt_app_content_container.appendChild(newcard);
                     }
                 }
