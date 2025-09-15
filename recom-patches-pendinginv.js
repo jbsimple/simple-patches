@@ -175,7 +175,7 @@ async function keywordSearch() {
                         {
                             column: "purchase_orders.id",
                             opr: "{0} IN {1}",
-                            value: params['PO #']?.value || null
+                            value: [params['PO #']?.value || null]
                         },
                         {
                             column: "inventory_receiving.keyword",
