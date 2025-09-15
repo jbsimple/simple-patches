@@ -179,7 +179,7 @@ async function keywordSearch() {
                         },
                         {
                             column: "inventory_receiving.keyword",
-                            opr: "({0} IS NULL OR {0} = '')",
+                            opr: "{0} LIKE '%{1}%'",
                             value: params['Product']?.['Product Name or SKU'] || null
                         }
                     ]
