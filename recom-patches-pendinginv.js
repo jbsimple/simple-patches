@@ -266,7 +266,11 @@ async function keywordSearch() {
         rows.forEach(row => {
             html += "<tr>";
             cols.forEach(col => {
-                html += `<td>${row[col] ?? ""}</td>`;
+                let value = row[col] ?? "";
+                if (col === "SID" && value) {
+                    value = `<a href="/products/${encodeURIComponent(value)}" target="_blank">${value}</a>`;
+                }
+                html += `<td>${value}</td>`;
             });
             html += "</tr>";
         });
