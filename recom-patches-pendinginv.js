@@ -149,70 +149,75 @@ async function keywordSearch() {
 
     async function fetchReport(params) {
         // time to build a report
-        const csrfToken = csrfMeta.getAttribute('content');
-        
-        var request = {
-            report: {
-                type: "pending_inventory",
-                columns: [
-                    "purchase_orders.id",
-                    "inventory_receiving.keyword",
-                    "inventory_receiving.quantity",
-                    "queue_inventory.quantity_approved",
-                    "inventory_receiving.created_at",
-                    "products.sid",
-                    "products.name",
-                    "product_items.location",
-                    "inventory_receiving.condition_id",
-                    "products.category_id",
-                    "products.mpn",
-                    "products.gtin",
-                    "products.asin"
-                ],
-                filters: [
-                    {
-                        column: "purchase_orders.id",
-                        opr: "{0} IN {1}",
-                        value: params['PO #']?.value || null
-                    },
-                    {
-                        column: "inventory_receiving.keyword",
-                        opr: "({0} IS NULL OR {0} = '')",
-                        value: params['Product']?.['Product Name or SKU'] || null
-                    },
-                    {
-                        column: "inventory_receiving.quantity",
-                        opr: "BETWEEN {0} AND {1}",
-                        value: [
-                            params['Quantity']?.['From'] || 0,
-                            params['Quantity']?.['To'] || 999999
-                        ]
-                    }
-                ]
-            },
-            csrf_recom: csrfToken
-        };
+        const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
+        if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
+            const csrfToken = csrfMeta.getAttribute('content');
+            
+            var request = {
+                report: {
+                    type: "pending_inventory",
+                    columns: [
+                        "purchase_orders.id",
+                        "inventory_receiving.keyword",
+                        "inventory_receiving.quantity",
+                        "queue_inventory.quantity_approved",
+                        "inventory_receiving.created_at",
+                        "products.sid",
+                        "products.name",
+                        "product_items.location",
+                        "inventory_receiving.condition_id",
+                        "products.category_id",
+                        "products.mpn",
+                        "products.gtin",
+                        "products.asin"
+                    ],
+                    filters: [
+                        {
+                            column: "purchase_orders.id",
+                            opr: "{0} IN {1}",
+                            value: params['PO #']?.value || null
+                        },
+                        {
+                            column: "inventory_receiving.keyword",
+                            opr: "({0} IS NULL OR {0} = '')",
+                            value: params['Product']?.['Product Name or SKU'] || null
+                        },
+                        {
+                            column: "inventory_receiving.quantity",
+                            opr: "BETWEEN {0} AND {1}",
+                            value: [
+                                params['Quantity']?.['From'] || 0,
+                                params['Quantity']?.['To'] || 999999
+                            ]
+                        }
+                    ]
+                },
+                csrf_recom: csrfToken
+            };
 
-        return new Promise((resolve, reject) => {
-            $.ajax({
-                type: "POST",
-                dataType: "json",
-                url: "/reports/create",
-                data: request,
-            }).done(function(data) {
-                if (data.success && data.results.results && Array.isArray(data.results.results)) {
-                    resolve({
-                        data: data.results.results,
-                        download: `/renderfile/download?folder=reports&path=${data.results.filename}`,
-                        filename: data.results.filename
-                    });
-                } else {
-                    resolve(null);
-                }
-            }).fail(function(jqXHR, textStatus, errorThrown) {
-                console.error("Request failed: " + textStatus + ", " + errorThrown);
-                reject(new Error("Request failed: " + textStatus + ", " + errorThrown));
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: "/reports/create",
+                    data: request,
+                }).done(function(data) {
+                    if (data.success && data.results.results && Array.isArray(data.results.results)) {
+                        resolve({
+                            data: data.results.results,
+                            download: `/renderfile/download?folder=reports&path=${data.results.filename}`,
+                            filename: data.results.filename
+                        });
+                    } else {
+                        resolve(null);
+                    }
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    console.error("Request failed: " + textStatus + ", " + errorThrown);
+                    reject(new Error("Request failed: " + textStatus + ", " + errorThrown));
+                });
             });
-        });
+        } else {
+            return null;
+        }
     }
 }
