@@ -103,14 +103,14 @@ function keywordSearch() {
     const dtfoot = document.getElementById('dtfoot');
     if (dtfoot) {
         const fields = dtfoot.querySelectorAll('th');
-        const values = {};
+        const params = {};
         fields.forEach((field, index) => {
             const values = fetchFieldValues(field);
             if (values && Object.keys(values).length > 0) {
-                values[index] = values;
+                params[index] = values;
             }
         });
-        console.debug('PATCHES - dtfoot Values:', values);
+        console.debug('PATCHES - dtfoot params:', params);
     }
 
     function fetchFieldValues(field) {
