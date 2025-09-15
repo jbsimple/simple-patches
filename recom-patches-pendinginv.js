@@ -181,14 +181,6 @@ async function keywordSearch() {
                             column: "inventory_receiving.keyword",
                             opr: "({0} IS NULL OR {0} = '')",
                             value: params['Product']?.['Product Name or SKU'] || null
-                        },
-                        {
-                            column: "inventory_receiving.quantity",
-                            opr: "BETWEEN {0} AND {1}",
-                            value: [
-                                params['Quantity']?.['From'] || 0,
-                                params['Quantity']?.['To'] || 999999
-                            ]
                         }
                     ]
                 },
