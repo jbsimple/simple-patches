@@ -101,13 +101,16 @@ checkPicsInit();
 // a button should be added somewhere to trigger
 function keywordSearch() {
     const dtfoot = document.getElementById('dtfoot');
-    if (dtfoot) {
+    const dtTable = document.getElementById('dtTable');
+    if (dtfoot && dtTable) {
+        const indexes = dtTable.querySelector('thead')?.querySelectorAll('th');
         const fields = dtfoot.querySelectorAll('th');
         const params = {};
         fields.forEach((field, index) => {
+            const key = indexes[index] ?? index;
             const values = fetchFieldValues(field);
             if (values && Object.keys(values).length > 0) {
-                params[index] = values;
+                params[key] = values;
             }
         });
         console.debug('PATCHES - dtfoot params:', params);
