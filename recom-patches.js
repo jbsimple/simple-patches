@@ -346,7 +346,7 @@ function fireSwal(title, message, icon = 'warning', refresh = false) {
         title: title,
         html: htmlMessage,
         icon: icon,
-        showCancelButton: true,
+        showCancelButton: refresh,
         confirmButtonText: (refresh ? 'Refresh' : 'Gocha'),
         cancelButtonText: "Close",
         customClass: {

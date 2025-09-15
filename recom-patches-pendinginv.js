@@ -35,87 +35,6 @@ async function checkPics() {
 	}
 }
 
-function checkPicsInit() {
-    const picontainer = document.getElementById('kt_app_content_container');
-    if (!picontainer) return;
-
-    const checkImgButton = document.createElement('button');
-    checkImgButton.classList.add('btn', 'btn-info');
-    checkImgButton.id = 'patch_openAllImages';
-    checkImgButton.textContent = 'Check Images';
-    checkImgButton.disabled = true;
-    checkImgButton.title = "Loads image icons in queue.";
-    checkImgButton.style.cssText = `
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        cursor: pointer;
-        border-radius: 5px;
-    `;
-    checkImgButton.onclick = checkPics;
-
-    const keywordSearchButton = document.createElement('button');
-    keywordSearchButton.classList.add('btn', 'btn-primary');
-    keywordSearchButton.id = 'patch_openAllImages';
-    keywordSearchButton.textContent = 'Search Keywords';
-    keywordSearchButton.disabled = true;
-    keywordSearchButton.title = "Searches by listing keywords.";
-    keywordSearchButton.style.cssText = `
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        cursor: pointer;
-        border-radius: 5px;
-    `;
-    keywordSearchButton.onclick = keywordSearch;
-
-    const toolbar = picontainer.querySelector('.card-toolbar.flex-row-fluid.justify-content-end');
-    if (toolbar && toolbar.classList.contains('justify-content-end')) {
-        toolbar.classList.remove('flex-row-fluid', 'justify-content-end');
-        toolbar.setAttribute('style', 'flex-direction: row; width: 100%;');
-
-        const spacer = document.createElement('div');
-        spacer.style.flex = '1';
-        toolbar.prepend(spacer);
-        toolbar.prepend(keywordSearchButton);
-        toolbar.prepend(checkImgButton);
-    }
-    
-    let styleObserver = null;
-
-    function updateButtonState() {
-        const wrapper = document.getElementById('dtTable_wrapper');
-        const processing = document.getElementById('dtTable_processing');
-        const isReady = wrapper && (!processing || processing.style.display === 'none');
-        checkImgButton.disabled = !isReady;
-        keywordSearchButton.disabled = !isReady;
-    }
-
-    function observeProcessing() {
-        const processing = document.getElementById('dtTable_processing');
-        if (processing) {
-            if (styleObserver) styleObserver.disconnect();
-            styleObserver = new MutationObserver(updateButtonState);
-            styleObserver.observe(processing, {
-                attributes: true,
-                attributeFilter: ['style']
-            });
-        }
-    }
-
-    const globalObserver = new MutationObserver(() => {
-        updateButtonState();
-        observeProcessing();
-    });
-
-    globalObserver.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
-}
-checkPicsInit();
-
-// a button should be added somewhere to trigger
 async function keywordSearch() {
     const dtfoot = document.getElementById('dtfoot');
     const dtTable = document.getElementById('dtTable');
@@ -296,3 +215,83 @@ async function keywordSearch() {
         return html;
     }
 }
+
+function initToolbarButtons() {
+    const picontainer = document.getElementById('kt_app_content_container');
+    if (!picontainer) return;
+
+    const checkImgButton = document.createElement('button');
+    checkImgButton.classList.add('btn', 'btn-info');
+    checkImgButton.id = 'patch_openAllImages';
+    checkImgButton.textContent = 'Check Images';
+    checkImgButton.disabled = true;
+    checkImgButton.title = "Loads image icons in queue.";
+    checkImgButton.style.cssText = `
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 5px;
+    `;
+    checkImgButton.onclick = checkPics;
+
+    const keywordSearchButton = document.createElement('button');
+    keywordSearchButton.classList.add('btn', 'btn-primary');
+    keywordSearchButton.id = 'patch_openAllImages';
+    keywordSearchButton.textContent = 'Search Keywords';
+    keywordSearchButton.disabled = true;
+    keywordSearchButton.title = "Searches by listing keywords.";
+    keywordSearchButton.style.cssText = `
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 5px;
+    `;
+    keywordSearchButton.onclick = keywordSearch;
+
+    const toolbar = picontainer.querySelector('.card-toolbar.flex-row-fluid.justify-content-end');
+    if (toolbar && toolbar.classList.contains('justify-content-end')) {
+        toolbar.classList.remove('flex-row-fluid', 'justify-content-end');
+        toolbar.setAttribute('style', 'flex-direction: row; width: 100%;');
+
+        const spacer = document.createElement('div');
+        spacer.style.flex = '1';
+        toolbar.prepend(spacer);
+        toolbar.prepend(keywordSearchButton);
+        toolbar.prepend(checkImgButton);
+    }
+    
+    let styleObserver = null;
+
+    function updateButtonState() {
+        const wrapper = document.getElementById('dtTable_wrapper');
+        const processing = document.getElementById('dtTable_processing');
+        const isReady = wrapper && (!processing || processing.style.display === 'none');
+        checkImgButton.disabled = !isReady;
+        keywordSearchButton.disabled = !isReady;
+    }
+
+    function observeProcessing() {
+        const processing = document.getElementById('dtTable_processing');
+        if (processing) {
+            if (styleObserver) styleObserver.disconnect();
+            styleObserver = new MutationObserver(updateButtonState);
+            styleObserver.observe(processing, {
+                attributes: true,
+                attributeFilter: ['style']
+            });
+        }
+    }
+
+    const globalObserver = new MutationObserver(() => {
+        updateButtonState();
+        observeProcessing();
+    });
+
+    globalObserver.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+}
+initToolbarButtons();
