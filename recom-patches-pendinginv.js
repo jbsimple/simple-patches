@@ -65,6 +65,11 @@ function checkPicsInit() {
         toolbar.prepend(checkImgButton);
     }
 
+    // adding checkpicsinit here
+    if (typeof keywordSearchInit === "function") {
+        keywordSearchInit();
+    }
+
     let styleObserver = null;
 
     function updateButtonState() {
@@ -277,5 +282,28 @@ async function keywordSearch() {
 
         html += "</tbody></table>";
         return html;
+    }
+}
+
+// add the button but only when checkPicsInit is done.
+function keywordSearchInit() {
+    const keywordSearchButton = document.createElement('button');
+    keywordSearchButton.classList.add('btn', 'btn-info');
+    keywordSearchButton.id = 'patch_openAllImages';
+    keywordSearchButton.textContent = 'Search Keywords';
+    keywordSearchButton.disabled = true;
+    keywordSearchButton.title = "Searches by listing keywords.";
+    keywordSearchButton.style.cssText = `
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 5px;
+    `;
+    checkImgButton.onclick = keywordSearch;
+
+    const openAllImagesBtn = document.getElementById('patch_openAllImages');
+    if (openAllImagesBtn && openAllImagesBtn.parentNode) {
+        openAllImagesBtn.parentNode.insertBefore(keywordSearchButton, openAllImagesBtn.nextSibling);
     }
 }
