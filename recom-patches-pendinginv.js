@@ -113,17 +113,32 @@ async function keywordSearch() {
                 params[key] = values;
             }
         });
-    }
-    console.debug('PATCHES - dtfoot params:', params);
-    if (Object.keys(params).length > 0) {
-        try {
-            const data = await fetchReport(params);
-            console.debug('PATCHES - report data:', data);
-        } catch (err) {
-            console.error('PATCHES - fetchReport failed:', err);
+
+        console.debug('PATCHES - dtfoot params:', params);
+
+        const poVal = params['PO #']?.value || params['PO #']?.['PO #'] || "";
+        if (!poVal || poVal.trim() === "") {
+            console.error("PATCHES - PO # is required.");
+            fireSwal('Missing PO #', 'In order to do a keyword search, you need to provide a PO #.', 'error');
+            return;
         }
-    } else {
-        console.debug('PATCHES - no params provided, skipping fetchReport.');
+
+        if (Object.keys(params).length > 0) {
+            try {
+                const data = await fetchReport(params);
+                console.debug('PATCHES - report data:', data);
+
+                // now it is time to HIDE #dtTable
+                dtTable.style.display = 'none';
+
+                // create new table wow
+            } catch (err) {
+                console.error('PATCHES - fetchReport failed:', err);
+                fireSwal('Fetching Error', 'Error while fetching data.', 'error');
+            }
+        } else {
+            fireSwal('Missing Params', 'Unable to fetch parameter values for keyword pending inventory search.', 'error');
+        }
     }
 
     function fetchFieldValues(field) {
