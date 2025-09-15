@@ -149,7 +149,7 @@ async function keywordSearch() {
 
     async function fetchReport(params) {
         // time to build a report
-        const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
+        const csrfToken = csrfMeta.getAttribute('content');
         
         var request = {
             report: {
