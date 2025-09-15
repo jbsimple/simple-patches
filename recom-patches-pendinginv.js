@@ -102,10 +102,10 @@ checkPicsInit();
 async function keywordSearch() {
     const dtfoot = document.getElementById('dtfoot');
     const dtTable = document.getElementById('dtTable');
+    const params = {};
     if (dtfoot && dtTable) {
         const indexes = dtTable.querySelector('thead')?.querySelectorAll('th');
         const fields = dtfoot.querySelectorAll('th');
-        const params = {};
         fields.forEach((field, index) => {
             const key = indexes[index].textContent.trim() ?? index;
             const values = fetchFieldValues(field);
@@ -113,9 +113,8 @@ async function keywordSearch() {
                 params[key] = values;
             }
         });
-        console.debug('PATCHES - dtfoot params:', params);
     }
-
+    console.debug('PATCHES - dtfoot params:', params);
     if (Object.keys(params).length > 0) {
         try {
             const data = await fetchReport(params);
