@@ -96,5 +96,41 @@ function checkPicsInit() {
         subtree: true
     });
 }
-
 checkPicsInit();
+
+// a button should be added somewhere to trigger
+function keywordSearch() {
+    const dtfoot = document.getElementById('dtfoot');
+    if (dtfoot) {
+        const fields = dtfoot.querySelectorAll('th');
+        const values = {};
+        fields.forEach((field, index) => {
+            const values = fetchFieldValues(field);
+            if (values && Object.keys(values).length > 0) {
+                values[index] = values;
+            }
+        });
+        console.debug('PATCHES - dtfoot Values:', values);
+    }
+
+    function fetchFieldValues(field) {
+        const inputs = field.querySelectorAll('input, select, textarea');
+        if (!inputs.length) return null;
+
+        const values = {};
+        inputs.forEach(el => {
+            let key = el.getAttribute("placeholder")?.trim();
+            if (!key) key = el.getAttribute("name")?.trim();
+            if (!key) key = "value";
+
+            values[key] = getValue(el);
+        });
+        return values;
+    }
+
+    function getValue(el) {
+        if (el.tagName === "SELECT") return el.value;
+        if (el.type === "checkbox" || el.type === "radio") return el.checked;
+        return el.value;
+    }
+}
