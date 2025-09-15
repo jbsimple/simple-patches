@@ -54,6 +54,21 @@ function checkPicsInit() {
     `;
     checkImgButton.onclick = checkPics;
 
+    const keywordSearchButton = document.createElement('button');
+    keywordSearchButton.classList.add('btn', 'btn-primary');
+    keywordSearchButton.id = 'patch_openAllImages';
+    keywordSearchButton.textContent = 'Search Keywords';
+    keywordSearchButton.disabled = true;
+    keywordSearchButton.title = "Searches by listing keywords.";
+    keywordSearchButton.style.cssText = `
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 5px;
+    `;
+    keywordSearchButton.onclick = keywordSearch;
+
     const toolbar = picontainer.querySelector('.card-toolbar.flex-row-fluid.justify-content-end');
     if (toolbar && toolbar.classList.contains('justify-content-end')) {
         toolbar.classList.remove('flex-row-fluid', 'justify-content-end');
@@ -62,14 +77,10 @@ function checkPicsInit() {
         const spacer = document.createElement('div');
         spacer.style.flex = '1';
         toolbar.prepend(spacer);
+        toolbar.prepend(keywordSearchButton);
         toolbar.prepend(checkImgButton);
     }
-
-    // adding checkpicsinit here
-    if (typeof keywordSearchInit === "function") {
-        keywordSearchInit();
-    }
-
+    
     let styleObserver = null;
 
     function updateButtonState() {
@@ -77,6 +88,7 @@ function checkPicsInit() {
         const processing = document.getElementById('dtTable_processing');
         const isReady = wrapper && (!processing || processing.style.display === 'none');
         checkImgButton.disabled = !isReady;
+        keywordSearchButton.disabled = !isReady;
     }
 
     function observeProcessing() {
@@ -282,28 +294,5 @@ async function keywordSearch() {
 
         html += "</tbody></table>";
         return html;
-    }
-}
-
-// add the button but only when checkPicsInit is done.
-function keywordSearchInit() {
-    const keywordSearchButton = document.createElement('button');
-    keywordSearchButton.classList.add('btn', 'btn-info');
-    keywordSearchButton.id = 'patch_openAllImages';
-    keywordSearchButton.textContent = 'Search Keywords';
-    keywordSearchButton.disabled = true;
-    keywordSearchButton.title = "Searches by listing keywords.";
-    keywordSearchButton.style.cssText = `
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        cursor: pointer;
-        border-radius: 5px;
-    `;
-    keywordSearchButton.onclick = keywordSearch;
-
-    const openAllImagesBtn = document.getElementById('patch_openAllImages');
-    if (openAllImagesBtn && openAllImagesBtn.parentNode) {
-        openAllImagesBtn.parentNode.insertBefore(keywordSearchButton, openAllImagesBtn.nextSibling);
     }
 }
