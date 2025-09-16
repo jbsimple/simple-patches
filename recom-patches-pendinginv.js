@@ -35,6 +35,22 @@ async function checkPics() {
 	}
 }
 
+/* helper function */
+function fetchFieldValues(field) {
+    const inputs = field.querySelectorAll('input, select, textarea');
+    if (!inputs.length) return null;
+
+    const values = {};
+    inputs.forEach(el => {
+        let key = el.getAttribute("placeholder")?.trim();
+        if (!key) key = el.getAttribute("name")?.trim();
+        if (!key) key = "value";
+
+        values[key] = getValue(el);
+    });
+    return values;
+}
+
 async function keywordSearch() {
     const dtfoot = document.getElementById('dtfoot');
     const dtTable = document.getElementById('dtTable');
@@ -97,21 +113,6 @@ async function keywordSearch() {
         } else {
             fireSwal('Missing Params', 'Unable to fetch parameter values for keyword pending inventory search.', 'error');
         }
-    }
-
-    function fetchFieldValues(field) {
-        const inputs = field.querySelectorAll('input, select, textarea');
-        if (!inputs.length) return null;
-
-        const values = {};
-        inputs.forEach(el => {
-            let key = el.getAttribute("placeholder")?.trim();
-            if (!key) key = el.getAttribute("name")?.trim();
-            if (!key) key = "value";
-
-            values[key] = getValue(el);
-        });
-        return values;
     }
 
     function getValue(el) {
@@ -213,6 +214,23 @@ async function keywordSearch() {
 
         html += "</tbody></table>";
         return html;
+    }
+}
+
+function bulkUpdatePicToPutLoc() {
+    const dtfoot = document.getElementById('dtfoot');
+    const dtTable = document.getElementById('dtTable');
+    const params = {};
+    if (autoLocationUpdate && dtfoot && dtTable) {
+        const indexes = dtTable.querySelector('thead')?.querySelectorAll('th');
+        const fields = dtfoot.querySelectorAll('th');
+        fields.forEach((field, index) => {
+            const key = indexes[index].textContent.trim() ?? index;
+            const values = fetchFieldValues(field);
+            if (values && Object.keys(values).length > 0) {
+                params[key] = values;
+            }
+        });
     }
 }
 
