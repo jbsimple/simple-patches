@@ -70,7 +70,8 @@ function injectGoods() {
 
     } else if (location.pathname.includes('/users/show')) {
 
-        loadPatchStyle('recom-patches-userShow.css');
+        loadPatchStyle('recom-patches-users.css');
+        loadPatchScript('recom-patches-users.js');
 
     } else if (location.pathname.includes('/integrations/store/logs')) {
 
