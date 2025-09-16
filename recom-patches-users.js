@@ -89,7 +89,7 @@ function downloadUserLogsInit() {
                     border-radius: 5px;
                 `;
                 downloadLogButton.onclick = () => downloadUserLog(3);
-                card_toolbar.appendChild(donloadLogButton);
+                card_toolbar.appendChild(downloadLogButton);
 
                 card_title.insertAdjacentElement('afterend', card_toolbar);
             }
