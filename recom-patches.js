@@ -40,6 +40,9 @@ function injectGoods() {
     script_patch.name = 'n/a';
     script_patch.onload = function() { console.debug('Patch Loaded:', script_patch.name); };
 
+    // new modal handler
+    loadPatchScript('recom-patches-modal.js');
+
     if (location.pathname.includes('/receiving/queues/listing') || location.pathname.includes('/products/new')) {
 
         loadPatchStyle('recom-patches-listing.css');
