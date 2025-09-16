@@ -22,23 +22,20 @@ function openPatchesModal(opts = {}) {
             #${id} .modal-content {
                 transform: translateY(-15vh) !important;
                 opacity: 0.25 !important;
-                transition: all 0.1s ease !important;
+                transition: transform .18s ease, opacity .18s ease !important;
             }
             #${id}.show .modal-content {
                 transform: unset !important;
-                opacity: 1.0 !important;
+                opacity: 1 !important;
             }
         </style>
     `;
 
     const closeIcon = `
         <span class="svg-icon svg-icon-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                    viewBox="0 0 24 24" fill="none">
-                <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1"
-                        transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
-                <rect x="7.41422" y="6" width="16" height="2" rx="1"
-                        transform="rotate(45 7.41422 6)" fill="currentColor"></rect>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
+                <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="currentColor"></rect>
             </svg>
         </span>
     `;
@@ -66,15 +63,22 @@ function openPatchesModal(opts = {}) {
     anchorEl.parentNode.insertBefore(container, anchorEl);
 
     const modalEl = container.querySelector('#' + id);
+    const contentEl = container.querySelector('.modal-content');
 
     const tryClose = () => {
         if (!canClose()) return;
-        modalEl.classList.remove('show');
-        document.removeEventListener('keydown', onKeydown);
-        setTimeout(() => {
+
+        const onEnd = (e) => {
+            if (e && e.target !== contentEl) return;
+            modalEl.removeEventListener('transitionend', onEnd);
+            document.removeEventListener('keydown', onKeydown);
             container.remove();
             if (typeof onClose === 'function') onClose();
-        }, 200);
+        };
+
+        modalEl.classList.remove('show'); 
+        modalEl.addEventListener('transitionend', onEnd);
+        setTimeout(onEnd, 400);
     };
 
     container.addEventListener('click', (e) => {
@@ -94,13 +98,17 @@ function openPatchesModal(opts = {}) {
     modalEl.style.display = 'block';
     modalEl.removeAttribute('aria-hidden');
     modalEl.setAttribute('aria-modal', 'true');
-    setTimeout(() => {
+    modalEl.classList.remove('show');
+
+    if (contentEl) void contentEl.offsetWidth;
+
+    requestAnimationFrame(() => {
         modalEl.classList.add('show');
         if (focus) {
             const f = container.querySelector(focus);
             if (f) f.focus({ preventScroll: true });
         }
-    }, 0);
+    });
 
     return {
         el: modalEl,
@@ -543,6 +551,6 @@ async function updatePictureLocations() {
             e.returnValue = '';
         }
     };
-    
+
 }
     
