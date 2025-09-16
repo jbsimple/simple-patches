@@ -43,7 +43,7 @@ async function downloadUserLog(interval) {
             const entryDate = new Date(entry.date);
             if (entryDate >= cutoffDate) { allLogs.push(entry); } else { return false; }
         }
-        if (json.pagination && json.pagination.more) { return fetchPage(json.pagination.page); }
+        if (json.pagination && json.pagination.more) { return fetchPage(page + 1); }
         return true;
     }
 
