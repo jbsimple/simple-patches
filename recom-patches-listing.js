@@ -110,7 +110,7 @@ function inWrongTaskCheck() {
     if (window.location.href.includes('/receiving/queues/listing/')) {
         const afterListing = window.location.href.split('/receiving/queues/listing/')[1];
         if (afterListing && afterListing.trim() !== '' && currentTask !== 'clock out - listing') {
-            fireSwal('TASK CHECK?', ["You're about to list without being in the listing task.", "Are you sure you want to continue?", "* Gotacha to reload, Close to just proceed."], true);
+            fireSwal('TASK CHECK?', ["You're about to list without being in the listing task.", "Are you sure you want to continue?", "* Gotacha ro."], true);
         }
     } else if (currentTask !== 'clock out - listing') {
         const thecontent = document.getElementById('kt_app_content_container');

@@ -351,7 +351,7 @@ function fireSwal(title, message, icon = 'warning', refresh = false) {
         html: htmlMessage,
         icon: icon,
         showCancelButton: refresh,
-        confirmButtonText: (refresh ? 'Refresh' : 'Gocha'),
+        confirmButtonText: (refresh ? 'Refresh' : 'Gotcha'),
         cancelButtonText: "Close",
         customClass: {
             confirmButton: 'btn btn-primary',
