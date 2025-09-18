@@ -357,12 +357,14 @@ async function updatePictureLocations() {
             const fbaQueue = fbaRes.value.data.data ?? [];
             fbaQueue.forEach(line => {
                 let entry = {};
+                
                 const details = parser.parseFromString(line[0], "text/html");
-                const detailLinks = details.querySelectorAll("a");
-                detailLinks.forEach(a => {
-                    const href = a.getAttribute("href") || "";
-                    if (href.includes("product/items/")) { entry.sku = a.textContent.trim(); }
-                    if (href.includes("ajax/modals/productitems/")) { entry.title = a.textContent.trim(); }
+                details.querySelectorAll("a").forEach(async (a) => {
+                    if (a.getAttribute("href")?.includes("product/items/")) { entry.sku = a.textContent.trim(); }
+                    if (a.hasAttribute("data-url") && a.getAttribute("data-url")?.includes("ajax/modals/productitems/")) {
+                        entry.title = a.textContent.trim();
+                        entry.sid = await fetchSID(a.getAttribute("data-url"));
+                    }
                 });
                 
                 const locations = parser.parseFromString(line[2], "text/html");
@@ -381,7 +383,6 @@ async function updatePictureLocations() {
                         entry.locations.push(locationentry);
                     }
                 });
-
                 parsedAll.push(entry);
             });
 
@@ -389,11 +390,13 @@ async function updatePictureLocations() {
             piQueue.forEach(line => {
                 let entry = {};
 
-                const details = parser.parseFromString(line[1], "text/html");
-                details.querySelectorAll("a").forEach(a => {
-                    const href = a.getAttribute("href") || "";
-                    if (href.includes("product/items/")) { entry.sku = a.textContent.trim(); }
-                    if (href.includes("ajax/modals/productitems/")) { entry.title = a.textContent.trim(); }
+                const details = parser.parseFromString(line[0], "text/html");
+                details.querySelectorAll("a").forEach(async (a) => {
+                    if (a.getAttribute("href")?.includes("product/items/")) { entry.sku = a.textContent.trim(); }
+                    if (a.hasAttribute("data-url") && a.getAttribute("data-url")?.includes("ajax/modals/productitems/")) {
+                        entry.title = a.textContent.trim();
+                        entry.sid = await fetchSID(a.getAttribute("data-url"));
+                    }
                 });
 
                 entry.locations = [];
@@ -415,6 +418,19 @@ async function updatePictureLocations() {
             });
 
             return parsedAll;
+
+            async function fetchSID(ajax) {
+                try {
+                    const response = await fetch(ajax, { credentials: "include" });
+                    const html = await response.text();
+                    const doc = parser.parseFromString(html, "text/html");
+                    const targetDiv = doc.querySelector("div.d-flex.flex-wrap.fw-bold.mb-4.fs-5.text-gray-400");
+                    return targetDiv ? targetDiv.textContent.trim() : null;
+                } catch (err) {
+                    console.error("PATCHES - fetchSID error:", err);
+                    return null;
+                }
+            }
         }
 
         const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
