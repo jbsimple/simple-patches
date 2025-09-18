@@ -367,7 +367,7 @@ async function updatePictureLocations() {
                 
                 const locations = parser.parseFromString(line[2], "text/html");
                 const locationsLinks = locations.querySelectorAll("a");
-                line.locations = [];
+                entry.locations = [];
                 locationsLinks.forEach(a => {
                     const text = a.textContent.trim();
                     const href = a.getAttribute("href") || "";
@@ -389,7 +389,7 @@ async function updatePictureLocations() {
             piQueue.forEach(line => {
                 let entry = {};
 
-                const details = parser.parseFromString(raw[1], "text/html");
+                const details = parser.parseFromString(line[1], "text/html");
                 details.querySelectorAll("a").forEach(a => {
                     const href = a.getAttribute("href") || "";
                     if (href.includes("product/items/")) { entry.sku = a.textContent.trim(); }
@@ -397,7 +397,7 @@ async function updatePictureLocations() {
                 });
 
                 entry.locations = [];
-                const locations = parser.parseFromString(raw[5], "text/html");
+                const locations = parser.parseFromString(line[5], "text/html");
                 locations.querySelectorAll("a").forEach(a => {
                     const text = a.textContent.trim();
                     const href = a.getAttribute("href") || "";
