@@ -350,13 +350,77 @@ async function updatePictureLocations() {
             const fbaOk = fbaRes.status === 'fulfilled' && fbaRes.value.ok && Array.isArray(fbaRes.value.data?.data);
             const piOk  = piRes.status === 'fulfilled' && piRes.value.ok && Array.isArray(piRes.value.data?.data);
 
-            return [
-                ...(fbaOk ? fbaRes.value.data.data : []),
-                ...(piOk  ? piRes.value.data.data  : [])
-            ];
+            const parsedAll = [];
+
+            const parser = new DOMParser();
+
+            const fbaQueue = fbaRes.value.data.data ?? [];
+            fbaQueue.forEach(line => {
+                let line = {};
+                const details = parser.parseFromString(line[0], "text/html");
+                const detailLinks = details.querySelectorAll("a");
+                detailLinks.forEach(a => {
+                    const href = a.getAttribute("href") || "";
+                    if (href.includes("product/items/")) { line.sku = a.textContent.trim(); }
+                    if (href.includes("ajax/modals/productitems/")) { line.title = a.textContent.trim(); }
+                });
+                
+                const locations = parser.parseFromString(line[2], "text/html");
+                const locationsLinks = locations.querySelectorAll("a");
+                line.locations = [];
+                locationsLinks.forEach(a => {
+                    const text = a.textContent.trim();
+                    const href = a.getAttribute("href") || "";
+                    if (text.includes("PICTURES")) {
+                        let locationentry = {};
+                        locationentry.location = text;
+                        const match = href.match(/updateSortingLocation\/(\d+)/);
+                        if (match) {
+                            locationentry.ajax = match[1];
+                        }
+                        line.locations.push(locationentry);
+                    }
+                });
+
+                parsedAll.push(line);
+            });
+
+            const piQueue = piRes.value.data.data ?? [];
+            piQueue.forEach(line => {
+                let line = {};
+
+                const details = parser.parseFromString(raw[1], "text/html");
+                details.querySelectorAll("a").forEach(a => {
+                    const href = a.getAttribute("href") || "";
+                    if (href.includes("product/items/")) {
+                        line.sku = a.textContent.trim();
+                    }
+                    if (href.includes("ajax/modals/productitems/")) {
+                        line.title = a.textContent.trim();
+                    }
+                });
+
+                line.locations = [];
+                const locations = parser.parseFromString(raw[5], "text/html");
+                locations.querySelectorAll("a").forEach(a => {
+                    const text = a.textContent.trim();
+                    const href = a.getAttribute("href") || "";
+                    if (text.includes("PICTURES")) {
+                        let locationentry = { location: text };
+                        const match = href.match(/updateSortingLocation\/(\d+)/);
+                        if (match) {
+                            locationentry.ajax = match[1];
+                        }
+                        line.locations.push(locationentry);
+                    }
+                });
+
+                parsedAll.push(line);
+            });
+
+            return parsedAll;
         }
 
-        /* back to normal */
         const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
         if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
             const csrfToken = csrfMeta.getAttribute('content');
