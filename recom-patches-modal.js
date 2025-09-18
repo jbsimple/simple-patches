@@ -458,6 +458,7 @@ async function updatePictureLocations() {
 
             const log = [];
             for (let index = 0; index < values.length; index++) {
+                const item = values[index];
                 const search = searchForItem(values[index], queueData);
                 if (search !== null && Array.isArray(search)) {
                     search.forEach(async (location) => {
