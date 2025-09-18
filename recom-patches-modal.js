@@ -517,8 +517,11 @@ async function updatePictureLocations() {
 
         function searchForItem(item, queueData) {
             for (const entry of queueData) {
-                const sidMatch = entry.sid && entry.sid.includes(item);
-                const skuMatch = entry.sku && entry.sku.includes(item);
+                const needle = String(item).trim();
+                console.debug('PATESH - please find this.', JSON.stringify(needle));
+                const sidMatch = entry.sid && String(entry.sid).includes(needle);
+                const skuMatch = entry.sku && String(entry.sku).includes(needle);
+
 
                 if (sidMatch || skuMatch) {
                     console.debug(`PATCHES - Searching for ${item}, FOUND:`, entry.locations);
