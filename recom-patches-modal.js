@@ -355,69 +355,52 @@ async function updatePictureLocations() {
             const parser = new DOMParser();
 
             const fbaQueue = fbaRes.value.data.data ?? [];
-            fbaQueue.forEach(line => {
-                let entry = {};
-                
-                const details = parser.parseFromString(line[0], "text/html");
-                details.querySelectorAll("a").forEach(async (a) => {
-                    if (a.getAttribute("href")?.includes("product/items/")) { entry.sku = a.textContent.trim(); }
-                    if (a.hasAttribute("data-url") && a.getAttribute("data-url")?.includes("ajax/modals/productitems/")) {
-                        entry.title = a.textContent.trim();
-                        entry.sid = await fetchSID(a.getAttribute("data-url"));
-                    }
-                });
-                
-                const locations = parser.parseFromString(line[2], "text/html");
-                const locationsLinks = locations.querySelectorAll("a");
-                entry.locations = [];
-                locationsLinks.forEach(a => {
-                    const text = a.textContent.trim();
-                    const href = a.getAttribute("href") || "";
-                    if (text.includes("PICTURES")) {
-                        let locationentry = {};
-                        locationentry.location = text;
-                        const match = href.match(/updateSortingLocation\/(\d+)/);
-                        if (match) {
-                            locationentry.ajax = match[1];
-                        }
-                        entry.locations.push(locationentry);
-                    }
-                });
-                parsedAll.push(entry);
-            });
+            const fbaParsed = await parseQueue(fbaQueue, 0, 2);
 
             const piQueue = piRes.value.data.data ?? [];
-            piQueue.forEach(line => {
-                let entry = {};
+            const piParsed  = await parseQueue(piQueue, 1, 5);
 
-                const details = parser.parseFromString(line[1], "text/html");
-                details.querySelectorAll("a").forEach(async (a) => {
-                    if (a.getAttribute("href")?.includes("product/items/")) { entry.sku = a.textContent.trim(); }
-                    if (a.hasAttribute("data-url") && a.getAttribute("data-url")?.includes("ajax/modals/productitems/")) {
-                        entry.title = a.textContent.trim();
-                        entry.sid = await fetchSID(a.getAttribute("data-url"));
-                    }
-                });
+            return [...fbaParsed, ...piParsed];
 
-                entry.locations = [];
-                const locations = parser.parseFromString(line[5], "text/html");
-                locations.querySelectorAll("a").forEach(a => {
-                    const text = a.textContent.trim();
-                    const href = a.getAttribute("href") || "";
-                    if (text.includes("PICTURES")) {
-                        let locationentry = { location: text };
-                        const match = href.match(/updateSortingLocation\/(\d+)/);
-                        if (match) {
-                            locationentry.ajax = match[1];
+            async function parseQueue(queue, detailIndex, locationIndex) {
+                const parsed = [];
+
+                for (const line of queue) {
+                    let entry = {};
+
+                    const details = parser.parseFromString(line[detailIndex], "text/html");
+                    const detailLinks = details.querySelectorAll("a");
+                    for (const a of detailLinks) {
+                        const href = a.getAttribute("href") || "";
+                        if (href.includes("product/items/")) {
+                            entry.sku = a.textContent.trim();
                         }
-                        entry.locations.push(locationentry);
+                        if (a.hasAttribute("data-url") && a.getAttribute("data-url").includes("ajax/modals/productitems/")) {
+                            entry.title = a.textContent.trim();
+                            entry.sid = await fetchSID(a.getAttribute("data-url")); // ✅ works now
+                        }
                     }
-                });
 
-                parsedAll.push(entry);
-            });
+                    entry.locations = [];
+                    const locations = parser.parseFromString(line[locationIndex], "text/html");
+                    for (const a of locations.querySelectorAll("a")) {
+                        const text = a.textContent.trim();
+                        const href = a.getAttribute("href") || "";
+                        if (text.includes("PICTURES")) {
+                            let locationentry = { location: text };
+                            const match = href.match(/updateSortingLocation\/(\d+)/);
+                            if (match) {
+                                locationentry.ajax = match[1];
+                            }
+                            entry.locations.push(locationentry);
+                        }
+                    }
 
-            return parsedAll;
+                    parsed.push(entry);
+                }
+
+                return parsed;
+            }
 
             async function fetchSID(ajax) {
                 try {
@@ -515,31 +498,25 @@ async function updatePictureLocations() {
             resetSubmitButton();
         }
 
-        /* okay I officially hate this search */
         function searchForItem(item, queueData) {
-            const needle = String(item || "").trim().toLowerCase();
+            const needle = String(item).trim().toLowerCase();
 
             for (const entry of queueData) {
-                const sid = String(entry.sid || "").trim().toLowerCase();
-                const sku = String(entry.sku || "").trim().toLowerCase();
+                const sid = entry.sid ? String(entry.sid).trim().toLowerCase() : "";
+                const sku = entry.sku ? String(entry.sku).trim().toLowerCase() : "";
 
-                console.debug("Comparing needle:", needle, "with sid:", sid, "and sku:", sku);
+                const sidMatch = sid.includes(needle);
+                const skuMatch = sku.includes(needle);
 
-                if (sid === needle || sku === needle) {
-                    console.debug(`PATCHES - Exact match for "${item}", FOUND:`, entry.locations);
-                    return entry.locations;
-                }
-
-                if (sid.includes(needle) || sku.includes(needle)) {
-                    console.debug(`PATCHES - Partial match for "${item}", FOUND:`, entry.locations);
+                if (sidMatch || skuMatch) {
+                    console.debug(`PATCHES - Searching for "${item}", FOUND:`, entry.locations);
                     return entry.locations;
                 }
             }
 
-            console.debug(`PATCHES - Searching for "${item}", NOT FOUND!`);
+            console.debug(`PATCHES - Searching for "${item}", NOT FOUND! queueData:`, queueData);
             return null;
         }
-
 
         function printLog(entry, index, length) {
             updateProgress((index + 1), length, entry.success); // plus one
