@@ -356,13 +356,13 @@ async function updatePictureLocations() {
 
             const fbaQueue = fbaRes.value.data.data ?? [];
             fbaQueue.forEach(line => {
-                let line = {};
+                let entry = {};
                 const details = parser.parseFromString(line[0], "text/html");
                 const detailLinks = details.querySelectorAll("a");
                 detailLinks.forEach(a => {
                     const href = a.getAttribute("href") || "";
-                    if (href.includes("product/items/")) { line.sku = a.textContent.trim(); }
-                    if (href.includes("ajax/modals/productitems/")) { line.title = a.textContent.trim(); }
+                    if (href.includes("product/items/")) { entry.sku = a.textContent.trim(); }
+                    if (href.includes("ajax/modals/productitems/")) { entry.title = a.textContent.trim(); }
                 });
                 
                 const locations = parser.parseFromString(line[2], "text/html");
@@ -378,29 +378,25 @@ async function updatePictureLocations() {
                         if (match) {
                             locationentry.ajax = match[1];
                         }
-                        line.locations.push(locationentry);
+                        entry.locations.push(locationentry);
                     }
                 });
 
-                parsedAll.push(line);
+                parsedAll.push(entry);
             });
 
             const piQueue = piRes.value.data.data ?? [];
             piQueue.forEach(line => {
-                let line = {};
+                let entry = {};
 
                 const details = parser.parseFromString(raw[1], "text/html");
                 details.querySelectorAll("a").forEach(a => {
                     const href = a.getAttribute("href") || "";
-                    if (href.includes("product/items/")) {
-                        line.sku = a.textContent.trim();
-                    }
-                    if (href.includes("ajax/modals/productitems/")) {
-                        line.title = a.textContent.trim();
-                    }
+                    if (href.includes("product/items/")) { entry.sku = a.textContent.trim(); }
+                    if (href.includes("ajax/modals/productitems/")) { entry.title = a.textContent.trim(); }
                 });
 
-                line.locations = [];
+                entry.locations = [];
                 const locations = parser.parseFromString(raw[5], "text/html");
                 locations.querySelectorAll("a").forEach(a => {
                     const text = a.textContent.trim();
@@ -411,11 +407,11 @@ async function updatePictureLocations() {
                         if (match) {
                             locationentry.ajax = match[1];
                         }
-                        line.locations.push(locationentry);
+                        entry.locations.push(locationentry);
                     }
                 });
 
-                parsedAll.push(line);
+                parsedAll.push(entry);
             });
 
             return parsedAll;
