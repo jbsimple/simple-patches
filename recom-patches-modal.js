@@ -454,15 +454,70 @@ async function updatePictureLocations() {
             console.debug('Patches - Parsed List:', values);
 
             const queueData = await fetchQueues();
-            console.debug('Patches - Parsed List:', queueData);
+            console.debug('Patches - Parsed Queue:', queueData);
 
             const log = [];
             for (let index = 0; index < values.length; index++) {
+                const search = searchForItem(values[index]);
+                if (search !== null && Array.isArray(search)) {
+                    search.forEach(async (location) => {
+                        let value = location.location.trim().replace(/PICTURES/gi, changeLocation).trimEnd();
+                        let ajax = `/ajax/actions/updateSortingLocation/${location.ajax}`;
+                        const formData = new FormData();
+                        formData.append('name', value);
+                        try {
+                            const postRes = await fetchJsonWithTimeout(ajax,
+                                {
+                                    method: 'POST',
+                                    headers: { 'x-csrf-token': csrfToken },
+                                    body: formData
+                                }
+                            );
 
+                            const ok = postRes.ok && (postRes.data?.success === true);
+                            const newLog = {
+                                eventID,
+                                item,
+                                success: ok,
+                                message: postRes.data?.message || (ok ? 'Successful' : (postRes.timedOut ? `POST timed out after ${TIMEOUT_MS} ms` : (postRes.error?.message || 'Fail')))
+                            };
+                            log.push(newLog);
+                            printLog(newLog, index, values.length);
+
+                        } catch (err) {
+                            const newLog = {
+                                eventID,
+                                item,
+                                success: false,
+                                message: `POST failed: ${err.message}`
+                            };
+                            log.push(newLog);
+                            printLog(newLog, index, values.length);
+                        }
+                    });
+                } else {
+                    const newLog = {
+                        eventID,
+                        item,
+                        success: false,
+                        message: `Item not found in either queue.`
+                    };
+                    log.push(newLog);
+                    printLog(newLog, index, values.length);
+                }
+                
             }
 
             console.debug('PATCHES - Location LOG Update:', log);
             resetSubmitButton();
+        }
+
+        function searchForItem(item, queueData) {
+            queueData.forEach(entry => {
+                if (entry.sid.includes(item) || entry.sku.includes(item)) {
+                    return entry.locations;
+                }
+            })
         }
 
         function printLog(entry, index, length) {
