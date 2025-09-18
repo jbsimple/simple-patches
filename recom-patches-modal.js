@@ -513,11 +513,15 @@ async function updatePictureLocations() {
         }
 
         function searchForItem(item, queueData) {
-            queueData.forEach(entry => {
-                if (entry.sid.includes(item) || entry.sku.includes(item)) {
+            for (const entry of queueData) {
+                const sidMatch = entry.sid && entry.sid.includes(item);
+                const skuMatch = entry.sku && entry.sku.includes(item);
+
+                if (sidMatch || skuMatch) {
                     return entry.locations;
                 }
-            })
+            }
+            return null;
         }
 
         function printLog(entry, index, length) {
