@@ -355,63 +355,53 @@ async function updatePictureLocations() {
             const parser = new DOMParser();
 
             const fbaQueue = fbaRes.value.data.data ?? [];
-            for (const raw of fbaQueue) {
+            fbaQueue.forEach(line => {
                 let entry = {};
-
-                const details = parser.parseFromString(raw[0], "text/html");
-                const anchors = details.querySelectorAll("a");
-
-                for (const a of anchors) {
-                    const href = a.getAttribute("href") || "";
-                    if (href.includes("product/items/")) {
-                        entry.sku = a.textContent.trim();
-                    }
-                    if (a.hasAttribute("data-url") && a.getAttribute("data-url").includes("ajax/modals/productitems/")) {
+                
+                const details = parser.parseFromString(line[0], "text/html");
+                details.querySelectorAll("a").forEach(async (a) => {
+                    if (a.getAttribute("href")?.includes("product/items/")) { entry.sku = a.textContent.trim(); }
+                    if (a.hasAttribute("data-url") && a.getAttribute("data-url")?.includes("ajax/modals/productitems/")) {
                         entry.title = a.textContent.trim();
                         entry.sid = await fetchSID(a.getAttribute("data-url"));
                     }
-                }
-
+                });
+                
+                const locations = parser.parseFromString(line[2], "text/html");
+                const locationsLinks = locations.querySelectorAll("a");
                 entry.locations = [];
-                const locations = parser.parseFromString(raw[2], "text/html");
-                for (const a of locations.querySelectorAll("a")) {
+                locationsLinks.forEach(a => {
                     const text = a.textContent.trim();
                     const href = a.getAttribute("href") || "";
                     if (text.includes("PICTURES")) {
-                        let locationentry = { location: text };
+                        let locationentry = {};
+                        locationentry.location = text;
                         const match = href.match(/updateSortingLocation\/(\d+)/);
                         if (match) {
                             locationentry.ajax = match[1];
                         }
                         entry.locations.push(locationentry);
                     }
-                }
-
+                });
                 parsedAll.push(entry);
-            }
-
+            });
 
             const piQueue = piRes.value.data.data ?? [];
-            for (const raw of fbaQueue) {
+            piQueue.forEach(line => {
                 let entry = {};
 
-                const details = parser.parseFromString(raw[1], "text/html");
-                const anchors = details.querySelectorAll("a");
-
-                for (const a of anchors) {
-                    const href = a.getAttribute("href") || "";
-                    if (href.includes("product/items/")) {
-                        entry.sku = a.textContent.trim();
-                    }
-                    if (a.hasAttribute("data-url") && a.getAttribute("data-url").includes("ajax/modals/productitems/")) {
+                const details = parser.parseFromString(line[1], "text/html");
+                details.querySelectorAll("a").forEach(async (a) => {
+                    if (a.getAttribute("href")?.includes("product/items/")) { entry.sku = a.textContent.trim(); }
+                    if (a.hasAttribute("data-url") && a.getAttribute("data-url")?.includes("ajax/modals/productitems/")) {
                         entry.title = a.textContent.trim();
                         entry.sid = await fetchSID(a.getAttribute("data-url"));
                     }
-                }
+                });
 
                 entry.locations = [];
-                const locations = parser.parseFromString(raw[5], "text/html");
-                for (const a of locations.querySelectorAll("a")) {
+                const locations = parser.parseFromString(line[5], "text/html");
+                locations.querySelectorAll("a").forEach(a => {
                     const text = a.textContent.trim();
                     const href = a.getAttribute("href") || "";
                     if (text.includes("PICTURES")) {
@@ -422,10 +412,10 @@ async function updatePictureLocations() {
                         }
                         entry.locations.push(locationentry);
                     }
-                }
+                });
 
                 parsedAll.push(entry);
-            }
+            });
 
             return parsedAll;
 
