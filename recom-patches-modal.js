@@ -518,9 +518,11 @@ async function updatePictureLocations() {
                 const skuMatch = entry.sku && entry.sku.includes(item);
 
                 if (sidMatch || skuMatch) {
+                    console.debug(`PATCHES - Searching for ${item}, FOUND:`, entry.locations);
                     return entry.locations;
                 }
             }
+            console.debug(`PATCHES - Searching for ${item}, NOT FOUND! queueData:`, queueData);
             return null;
         }
 
