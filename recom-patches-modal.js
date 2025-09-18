@@ -512,7 +512,7 @@ async function updatePictureLocations() {
             resetSubmitButton();
         }
 
-        function searchForItem(item) {
+        function searchForItem(item, queueData) {
             queueData.forEach(entry => {
                 if (entry.sid.includes(item) || entry.sku.includes(item)) {
                     return entry.locations;
