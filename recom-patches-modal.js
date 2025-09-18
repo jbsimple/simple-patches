@@ -463,6 +463,7 @@ async function updatePictureLocations() {
                     search.forEach(async (location) => {
                         let value = location.location.trim().replace(/PICTURES/gi, changeLocation).trimEnd();
                         let ajax = `/ajax/actions/updateSortingLocation/${location.ajax}`;
+                        const eventID = location.ajax; // for log I guess
                         const formData = new FormData();
                         formData.append('name', value);
                         try {
