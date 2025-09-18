@@ -347,6 +347,7 @@ async function updatePictureLocations() {
             console.debug('Results from FBA Queue:', fbaRes);
             console.debug('Results from Pending Inventory Queue:', piRes);
 
+            // please vercel
             const fbaOk = fbaRes.status === 'fulfilled' && fbaRes.value.ok && Array.isArray(fbaRes.value.data?.data);
             const piOk  = piRes.status === 'fulfilled' && piRes.value.ok && Array.isArray(piRes.value.data?.data);
 
