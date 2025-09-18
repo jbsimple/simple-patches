@@ -515,22 +515,31 @@ async function updatePictureLocations() {
             resetSubmitButton();
         }
 
+        /* okay I officially hate this search */
         function searchForItem(item, queueData) {
+            const needle = String(item || "").trim().toLowerCase();
+
             for (const entry of queueData) {
-                const needle = String(item).trim();
-                console.debug('PATESH - please find this.', JSON.stringify(needle));
-                const sidMatch = entry.sid && String(entry.sid).includes(needle);
-                const skuMatch = entry.sku && String(entry.sku).includes(needle);
+                const sid = String(entry.sid || "").trim().toLowerCase();
+                const sku = String(entry.sku || "").trim().toLowerCase();
 
+                console.debug("Comparing needle:", needle, "with sid:", sid, "and sku:", sku);
 
-                if (sidMatch || skuMatch) {
-                    console.debug(`PATCHES - Searching for ${item}, FOUND:`, entry.locations);
+                if (sid === needle || sku === needle) {
+                    console.debug(`PATCHES - Exact match for "${item}", FOUND:`, entry.locations);
+                    return entry.locations;
+                }
+
+                if (sid.includes(needle) || sku.includes(needle)) {
+                    console.debug(`PATCHES - Partial match for "${item}", FOUND:`, entry.locations);
                     return entry.locations;
                 }
             }
-            console.debug(`PATCHES - Searching for ${item}, NOT FOUND! queueData:`, queueData);
+
+            console.debug(`PATCHES - Searching for "${item}", NOT FOUND!`);
             return null;
         }
+
 
         function printLog(entry, index, length) {
             updateProgress((index + 1), length, entry.success); // plus one
