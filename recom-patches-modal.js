@@ -287,6 +287,9 @@ async function updatePictureLocations() {
         const MAX_RETRIES = 3;
         const RETRY_BACKOFF_BASE = 500;
 
+        // gonna globalize this
+        let queueData = [];
+
         function sleep(ms) { return new Promise(res => setTimeout(res, ms)); }
 
         async function fetchJsonWithTimeout(url, options = {}, { timeoutMs = TIMEOUT_MS, retries = MAX_RETRIES } = {}) {
@@ -453,7 +456,7 @@ async function updatePictureLocations() {
             }
             console.debug('Patches - Parsed List:', values);
 
-            const queueData = await fetchQueues();
+            queueData = await fetchQueues();
             console.debug('Patches - Parsed Queue:', queueData);
 
             const log = [];
@@ -512,7 +515,7 @@ async function updatePictureLocations() {
             resetSubmitButton();
         }
 
-        function searchForItem(item, queueData) {
+        function searchForItem(item) {
             queueData.forEach(entry => {
                 if (entry.sid.includes(item) || entry.sku.includes(item)) {
                     return entry.locations;
