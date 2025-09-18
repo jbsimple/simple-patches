@@ -497,6 +497,7 @@ async function updatePictureLocations() {
                         }
                     });
                 } else {
+                    let eventID = null;
                     const newLog = {
                         eventID,
                         item,
