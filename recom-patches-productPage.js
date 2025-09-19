@@ -414,7 +414,7 @@ function modifyColorAttribute() {
 
 function initBulkResubmitFamily() {
     // marketplace to bulk resubmit for
-    
+
     const marketplace = 'Walmart US';
     const parser = new DOMParser();
     let log = [];
@@ -534,13 +534,13 @@ function initBulkResubmitFamily() {
 
                 const footer = `
                     <div class="text-center">
-                        <button type="button" class="btn btn-light me-3" data-modal-close>Cool!</button>
+                        <button type="button" class="btn btn-primary me-3" data-modal-close>Okay</button>
                     </div>
                 `;
 
                 const api = openPatchesModal({
-                    id: 'patch_clockout_fullModal',
-                    title: 'Record Clock Out',
+                    id: 'patch-bulkresubmitresponses',
+                    title: 'Bulk Resubmit',
                     body,
                     footer,
                     focus: '#patch-bulkresubmitresponses',
