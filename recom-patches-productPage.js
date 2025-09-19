@@ -413,6 +413,7 @@ function modifyColorAttribute() {
 // disabling this because somehing happened in the backend which broke this and I don't feel like fixing it right now until we need it.
 
 function initBulkResubmitFamily() {
+    return; // not yet
     // marketplace to bulk resubmit for
     const marketplace = 'Walmart US';
     const parser = new DOMParser();
