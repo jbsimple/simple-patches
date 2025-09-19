@@ -518,13 +518,22 @@ function initBulkResubmitFamily() {
                         <p class="fs-6 fw-bold">Here are the results from the bulk resubmit.</p>
                 `;
 
-                log.forEach(entry => {
+                if (log.length > 0) {
+                    log.forEach(entry => {
+                        body += `
+                            <p class="fs-6 fw-semibold form-label mb-2">
+                                <a href="/product/items/${entry.sku}" target="_blank" style="font-weight: 700;">${entry.sku}</b> [${entry.storeName}]: ${JSON.stringify(entry.response)}
+                            </p>
+                        `;
+                    });
+                } else {
                     body += `
                         <p class="fs-6 fw-semibold form-label mb-2">
-                            <a href="/product/items/${entry.sku}" target="_blank" style="font-weight: 700;">${entry.sku}</b> [${entry.storeName}]: ${JSON.stringify(entry.response)}
+                            <span>Nothing was resubmitted.</span>
                         </p>
                     `;
-                });
+                }
+                
 
                 body += `
                     </div>
