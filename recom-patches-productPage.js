@@ -482,8 +482,15 @@ function initBulkResubmitFamily() {
                                         if (resubmit && resubmit.hasAttribute('data-id')) {
                                             const resubmitId = resubmit.getAttribute('data-id');
                                             const resubmitURL = `/integrations/stores/listing/resubmit/${resubmitId}`;
-                                            console.debug('PATCHES - Running,', resubmitURL);
-                                            fetch(resubmitURL, { credentials: "include" })
+                                            console.debug('PATCHES - Running POST,', resubmitURL);
+
+                                            const formData = new FormData();
+                                            formData.append("store", "{}"); 
+                                            fetch(resubmitURL, {
+                                                method: "POST",
+                                                credentials: "include",
+                                                body: formData
+                                            })
                                                 .then(r => r.json())
                                                 .then(json => {
                                                     console.debug(`PATCHES - Resubmitted ${item.sku} [${storeName}]:`, json);
@@ -498,9 +505,14 @@ function initBulkResubmitFamily() {
                                                     log.push({
                                                         "sku": item.sku,
                                                         "storeName": storeName,
-                                                        "response": {"success":false,"message":"Failed to resubmit.","err":err}
+                                                        "response": {
+                                                            success: false,
+                                                            message: "Failed to resubmit.",
+                                                            err: err.toString()
+                                                        }
                                                     });
                                                 });
+
                                         }
                                     }
                                 }
