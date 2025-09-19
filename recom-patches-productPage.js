@@ -413,8 +413,8 @@ function modifyColorAttribute() {
 // disabling this because somehing happened in the backend which broke this and I don't feel like fixing it right now until we need it.
 
 function initBulkResubmitFamily() {
-    return; // not yet
     // marketplace to bulk resubmit for
+    
     const marketplace = 'Walmart US';
     const parser = new DOMParser();
     let log = [];
@@ -483,6 +483,12 @@ function initBulkResubmitFamily() {
                                             const resubmitId = resubmit.getAttribute('data-id');
                                             const resubmitURL = `/integrations/stores/listing/resubmit/${resubmitId}`;
                                             console.debug('PATCHES - Running,', resubmitURL);
+                                            log.push({
+                                                "sku": item.sku,
+                                                "storeName": storeName,
+                                                "response": {"success":true}
+                                            });
+                                            /*
                                             fetch(resubmitURL, { credentials: "include" })
                                                 .then(r => r.json())
                                                 .then(json => {
@@ -496,6 +502,7 @@ function initBulkResubmitFamily() {
                                                 .catch(err => {
                                                     console.error(`PATCHES - Failed resubmitting ${item.sku}`, err);
                                                 });
+                                            */
                                         }
                                     }
                                 }
