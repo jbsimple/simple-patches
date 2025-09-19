@@ -473,6 +473,7 @@ function initBulkResubmitFamily() {
                             const secondRows = doc2.querySelectorAll("table tbody tr");
                             secondRows.forEach(integrationRow => {
                                 const cols = integrationRow.querySelectorAll('td');
+                                console.debug('Integration row cells:', Array.from(cols).map(td => td.textContent.trim()));
                                 if (cols.length >= 7) {
                                     const storeName = cols[0].textContent.trim();
                                     if (storeName === marketplace) {
