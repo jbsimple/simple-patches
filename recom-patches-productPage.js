@@ -416,6 +416,7 @@ function initBulkResubmitFamily() {
     // marketplace to bulk resubmit for
     const marketplace = 'Walmart US';
     const parser = new DOMParser();
+    let log = [];
 
     const reload_aspects = document.getElementById('reload_aspects');
     if (reload_aspects) {
@@ -473,7 +474,6 @@ function initBulkResubmitFamily() {
                             const secondRows = doc2.querySelectorAll("table tbody tr");
                             secondRows.forEach(integrationRow => {
                                 const cols = integrationRow.querySelectorAll('td');
-                                console.debug('Integration row cells:', Array.from(cols).map(td => td.textContent.trim()));
                                 if (cols.length >= 7) {
                                     const storeName = cols[0].textContent.trim();
                                     if (storeName === marketplace) {
@@ -482,16 +482,19 @@ function initBulkResubmitFamily() {
                                             const resubmitId = resubmit.getAttribute('data-id');
                                             const resubmitURL = `/integrations/stores/listing/resubmit/${resubmitId}`;
                                             console.debug('PATCHES - Running,', resubmitURL);
-                                            /*
                                             fetch(resubmitURL, { credentials: "include" })
                                                 .then(r => r.json())
                                                 .then(json => {
                                                     console.log(`PATCHES - Resubmitted ${item.sku} [${storeName}]:`, json);
+                                                    log.push({
+                                                        "sku": item.sku,
+                                                        "storeName": storeName,
+                                                        "response": json
+                                                    });
                                                 })
                                                 .catch(err => {
                                                     console.error(`PATCHES - Failed resubmitting ${item.sku}`, err);
                                                 });
-                                            */
                                         }
                                     }
                                 }
@@ -501,6 +504,41 @@ function initBulkResubmitFamily() {
                         }
                     }
                 }
+
+                // output printing
+                let body = `
+                    <div class="d-flex flex-column mb-8">
+                        <p class="fs-6 fw-bold">Here are the results from the bulk resubmit.</p>
+                `;
+
+                log.forEach(entry => {
+                    body += `
+                        <p class="fs-6 fw-semibold form-label mb-2">
+                            <b>${entry.sku}</b> [${entry.storeName}]: ${JSON.stringify(entry.response)}
+                        </p>
+                    `;
+                });
+
+                body += `
+                    </div>
+                    <div class="separator my-10"></div>
+                `;
+
+                const footer = `
+                    <div class="text-center">
+                        <button type="button" class="btn btn-light me-3" data-modal-close>Cool!</button>
+                    </div>
+                `;
+
+                const api = openPatchesModal({
+                    id: 'patch_clockout_fullModal',
+                    title: 'Record Clock Out',
+                    body,
+                    footer,
+                    focus: '#patch-bulkresubmitresponses',
+                    escapeBlockedWhen: null
+                });
+
             } catch (err) {
                 fireSwal('UHOH!', 'Unable to fetch the SID modal?', 'error');
                 console.error("PATCHES - Failed to fetch SID Modal Content:", err);
