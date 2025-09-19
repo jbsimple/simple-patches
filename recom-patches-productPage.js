@@ -473,11 +473,13 @@ function initBulkResubmitFamily() {
                             const doc2 = parser.parseFromString(html2, "text/html");
 
                             const secondRows = doc2.querySelectorAll("table tbody tr");
+                            let marketplacePresent = false;
                             secondRows.forEach(integrationRow => {
                                 const cols = integrationRow.querySelectorAll('td');
                                 if (cols.length >= 7) {
                                     const storeName = cols[0].textContent.trim();
                                     if (storeName === marketplace) {
+                                        marketplacePresent = true;
                                         const resubmit = cols[6].querySelector('a[title="Re-Submit"]');
                                         if (resubmit && resubmit.hasAttribute('data-id')) {
                                             const resubmitId = resubmit.getAttribute('data-id');
@@ -517,6 +519,17 @@ function initBulkResubmitFamily() {
                                     }
                                 }
                             });
+
+                            if (!marketplacePresent) {
+                                log.push({
+                                    "sku": item.sku,
+                                    "marketplace": marketplace,
+                                    "response": {
+                                        success: false,
+                                        message: "Marketplace not present, resubmit all.",
+                                    }
+                                });
+                            }
                         } catch (err) {
                             fireSwal('UHOH!', 'Failed to get Integrations data.', 'error');
                             console.error(`PATCHES - Failed fetching integrations for ${item.sku}`, err);
