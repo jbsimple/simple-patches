@@ -483,16 +483,10 @@ function initBulkResubmitFamily() {
                                             const resubmitId = resubmit.getAttribute('data-id');
                                             const resubmitURL = `/integrations/stores/listing/resubmit/${resubmitId}`;
                                             console.debug('PATCHES - Running,', resubmitURL);
-                                            log.push({
-                                                "sku": item.sku,
-                                                "storeName": storeName,
-                                                "response": {"success":true}
-                                            });
-                                            /*
                                             fetch(resubmitURL, { credentials: "include" })
                                                 .then(r => r.json())
                                                 .then(json => {
-                                                    console.log(`PATCHES - Resubmitted ${item.sku} [${storeName}]:`, json);
+                                                    console.debug(`PATCHES - Resubmitted ${item.sku} [${storeName}]:`, json);
                                                     log.push({
                                                         "sku": item.sku,
                                                         "storeName": storeName,
@@ -501,13 +495,18 @@ function initBulkResubmitFamily() {
                                                 })
                                                 .catch(err => {
                                                     console.error(`PATCHES - Failed resubmitting ${item.sku}`, err);
+                                                    log.push({
+                                                        "sku": item.sku,
+                                                        "storeName": storeName,
+                                                        "response": {"success":false,"message":"Failed to resubmit.","err":err}
+                                                    });
                                                 });
-                                            */
                                         }
                                     }
                                 }
                             });
                         } catch (err) {
+                            fireSwal('UHOH!', 'Failed to get Integrations data.', 'error');
                             console.error(`PATCHES - Failed fetching integrations for ${item.sku}`, err);
                         }
                     }
@@ -522,7 +521,7 @@ function initBulkResubmitFamily() {
                 log.forEach(entry => {
                     body += `
                         <p class="fs-6 fw-semibold form-label mb-2">
-                            <b>${entry.sku}</b> [${entry.storeName}]: ${JSON.stringify(entry.response)}
+                            <a href="/product/items/${entry.sku}" target="_blank" style="font-weight: 700;">${entry.sku}</b> [${entry.storeName}]: ${JSON.stringify(entry.response)}
                         </p>
                     `;
                 });
