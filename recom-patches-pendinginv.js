@@ -272,9 +272,10 @@ function initToolbarButtons() {
 
         if (!document.getElementById('patch_searchKeywordEntries')) {
             const keywordSearchButton = document.createElement('button');
-            keywordSearchButton.classList.add('btn', 'btn-success');
+            keywordSearchButton.classList.add('btn', 'btn-success', 'btn-sm');
+            keywordSearchButton.setAttribute('style', 'margin-left: 0.5rem;');
             keywordSearchButton.id = 'patch_searchKeywordEntries';
-            keywordSearchButton.textContent = 'Search Keywords';
+            keywordSearchButton.innerHTML = '<span><i class="la la-search"></i><span>Keywords</span></span>';
             keywordSearchButton.disabled = true;
             keywordSearchButton.title = "Searches by listing keywords.";
             keywordSearchButton.style.cssText = `
@@ -286,6 +287,7 @@ function initToolbarButtons() {
             `;
             keywordSearchButton.onclick = keywordSearch;
 
+            btnContainer.setAttribute('style', 'display: table-cell !important;');
             btnContainer.appendChild(document.createElement('br'));
             btnContainer.appendChild(keywordSearchButton);
         }
