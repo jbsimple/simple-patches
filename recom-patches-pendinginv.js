@@ -49,6 +49,12 @@ function fetchFieldValues(field) {
         values[key] = getValue(el);
     });
     return values;
+
+    function getValue(el) {
+        if (el.tagName === "SELECT") return el.value;
+        if (el.type === "checkbox" || el.type === "radio") return el.checked;
+        return el.value;
+    }
 }
 
 async function keywordSearch() {
@@ -113,12 +119,6 @@ async function keywordSearch() {
         } else {
             fireSwal('Missing Params', 'Unable to fetch parameter values for keyword pending inventory search.', 'error');
         }
-    }
-
-    function getValue(el) {
-        if (el.tagName === "SELECT") return el.value;
-        if (el.type === "checkbox" || el.type === "radio") return el.checked;
-        return el.value;
     }
 
     async function fetchReport(params) {
