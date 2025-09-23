@@ -266,9 +266,11 @@ function initToolbarButtons() {
     
     let styleObserver = null;
 
-    function initKeywordSearch() {
+    function initKeywordSearch(isReady) {
         const btnContainer = document.getElementById('dtsearchbtns');
         if (!btnContainer) return;
+
+        if (!isReady) return;
 
         if (!document.getElementById('patch_searchKeywordEntries')) {
             const keywordSearchButton = document.createElement('button');
@@ -302,6 +304,8 @@ function initToolbarButtons() {
 
         const keywordBtn = document.getElementById('patch_searchKeywordEntries');
         if (keywordBtn) keywordBtn.disabled = !isReady;
+
+        return isReady;
     }
 
     function observeProcessing() {
@@ -317,9 +321,8 @@ function initToolbarButtons() {
     }
 
     const globalObserver = new MutationObserver(() => {
-        updateButtonState();
+        initKeywordSearch(updateButtonState());
         observeProcessing();
-        initKeywordSearch();
     });
 
     globalObserver.observe(document.body, {
