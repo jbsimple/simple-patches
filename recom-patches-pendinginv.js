@@ -273,7 +273,6 @@ function initToolbarButtons() {
         if (!document.getElementById('patch_searchKeywordEntries')) {
             const keywordSearchButton = document.createElement('button');
             keywordSearchButton.classList.add('btn', 'btn-success', 'btn-sm');
-            keywordSearchButton.setAttribute('style', 'margin-top: 0.5rem;');
             keywordSearchButton.id = 'patch_searchKeywordEntries';
             keywordSearchButton.innerHTML = '<span><i class="la la-search" style="margin-right: 0.25rem;"></i><span>Keywords</span></span>';
             keywordSearchButton.disabled = true;
@@ -284,6 +283,7 @@ function initToolbarButtons() {
                 padding: 10px 20px;
                 cursor: pointer;
                 border-radius: 5px;
+                margin-top: 0.5rem;
             `;
             keywordSearchButton.onclick = keywordSearch;
 
