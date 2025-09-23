@@ -317,9 +317,9 @@ function initToolbarButtons() {
     }
 
     const globalObserver = new MutationObserver(() => {
-        initKeywordSearch();
         updateButtonState();
         observeProcessing();
+        initKeywordSearch();
     });
 
     globalObserver.observe(document.body, {
