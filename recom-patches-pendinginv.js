@@ -99,7 +99,7 @@ async function keywordSearch() {
                                 <h2>Keyword Search Results:</h2>
                             </div>
                             <div class="card-toolbar" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1rem;">
-                                <a href="/receiving/queues/inventory" class="btn btn-lg btn-primary">Back to Pending Inventory</a>
+                                <a href="/receiving/queues/inventory" class="btn btn-sm btn-primary">Back to Pending Inventory</a>
                             </div>
                         </div>`;
                         
