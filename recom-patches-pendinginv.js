@@ -253,21 +253,6 @@ function initToolbarButtons() {
     `;
     checkImgButton.onclick = checkPics;
 
-    const keywordSearchButton = document.createElement('button');
-    keywordSearchButton.classList.add('btn', 'btn-primary');
-    keywordSearchButton.id = 'patch_openAllImages';
-    keywordSearchButton.textContent = 'Search Keywords';
-    keywordSearchButton.disabled = true;
-    keywordSearchButton.title = "Searches by listing keywords.";
-    keywordSearchButton.style.cssText = `
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        cursor: pointer;
-        border-radius: 5px;
-    `;
-    keywordSearchButton.onclick = keywordSearch;
-
     const toolbar = picontainer.querySelector('.card-toolbar.flex-row-fluid.justify-content-end');
     if (toolbar && toolbar.classList.contains('justify-content-end')) {
         toolbar.classList.remove('flex-row-fluid', 'justify-content-end');
@@ -276,18 +261,43 @@ function initToolbarButtons() {
         const spacer = document.createElement('div');
         spacer.style.flex = '1';
         toolbar.prepend(spacer);
-        toolbar.prepend(keywordSearchButton);
         toolbar.prepend(checkImgButton);
     }
     
     let styleObserver = null;
 
+    function initKeywordSearch() {
+        const btnContainer = document.getElementById('dtsearchbtns');
+        if (!btnContainer) return;
+
+        if (!document.getElementById('patch_searchKeywordEntries')) {
+            const keywordSearchButton = document.createElement('button');
+            keywordSearchButton.classList.add('btn', 'btn-success');
+            keywordSearchButton.id = 'patch_searchKeywordEntries';
+            keywordSearchButton.textContent = 'Search Keywords';
+            keywordSearchButton.disabled = true;
+            keywordSearchButton.title = "Searches by listing keywords.";
+            keywordSearchButton.style.cssText = `
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                cursor: pointer;
+                border-radius: 5px;
+            `;
+            keywordSearchButton.onclick = keywordSearch;
+            document.getElementById('dtsearchbtns').appendChild(keywordSearchButton);
+        }
+    }
+
     function updateButtonState() {
         const wrapper = document.getElementById('dtTable_wrapper');
         const processing = document.getElementById('dtTable_processing');
         const isReady = wrapper && (!processing || processing.style.display === 'none');
+
         checkImgButton.disabled = !isReady;
-        keywordSearchButton.disabled = !isReady;
+
+        const keywordBtn = document.getElementById('patch_searchKeywordEntries');
+        if (keywordBtn) keywordBtn.disabled = !isReady;
     }
 
     function observeProcessing() {
@@ -303,6 +313,7 @@ function initToolbarButtons() {
     }
 
     const globalObserver = new MutationObserver(() => {
+        initKeywordSearch();
         updateButtonState();
         observeProcessing();
     });
