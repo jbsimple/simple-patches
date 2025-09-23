@@ -285,7 +285,9 @@ function initToolbarButtons() {
                 border-radius: 5px;
             `;
             keywordSearchButton.onclick = keywordSearch;
-            document.getElementById('dtsearchbtns').appendChild(keywordSearchButton);
+
+            btnContainer.appendChild(document.createElement('br'));
+            btnContainer.appendChild(keywordSearchButton);
         }
     }
 
