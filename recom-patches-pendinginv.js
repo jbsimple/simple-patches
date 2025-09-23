@@ -273,9 +273,9 @@ function initToolbarButtons() {
         if (!document.getElementById('patch_searchKeywordEntries')) {
             const keywordSearchButton = document.createElement('button');
             keywordSearchButton.classList.add('btn', 'btn-success', 'btn-sm');
-            keywordSearchButton.setAttribute('style', 'margin-left: 0.5rem;');
+            keywordSearchButton.setAttribute('style', 'margin-top: 0.5rem;');
             keywordSearchButton.id = 'patch_searchKeywordEntries';
-            keywordSearchButton.innerHTML = '<span><i class="la la-search"></i><span>Keywords</span></span>';
+            keywordSearchButton.innerHTML = '<span><i class="la la-search" style="margin-right: 0.25rem;"></i><span>Keywords</span></span>';
             keywordSearchButton.disabled = true;
             keywordSearchButton.title = "Searches by listing keywords.";
             keywordSearchButton.style.cssText = `
