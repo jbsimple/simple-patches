@@ -1223,8 +1223,8 @@ async function injectOverview() {
                     <th style="min-width: 150px;">SKU</th>
                     <th style="min-width: 150px;">SID</th>
                     <th style="width: 100%">Product Title</th>
-                    <th style="min-width: 150px;">Condition</th>
-                    <th style="min-width: 150px;">Category</th>
+                    <th style="min-width: 200px;">Condition</th>
+                    <th style="min-width: 300px;">Category</th>
                 </tr>
             `;
             table.appendChild(thead);
