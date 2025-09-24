@@ -484,7 +484,7 @@ function initBulkResubmitFamily() {
                                         if (resubmit && resubmit.hasAttribute('data-id')) {
                                             const resubmitId = resubmit.getAttribute('data-id');
                                             const resubmitURL = `/integrations/stores/listing/resubmit/${resubmitId}`;
-                                            console.debug('PATCHES - Running POST,', resubmitURL);
+                                            console.debug(`PATCHES - Running POST for ${item.sku}:`, resubmitURL);
 
                                             const formData = new FormData();
                                             formData.append("store", "{}"); 
