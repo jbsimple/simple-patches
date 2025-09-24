@@ -1219,12 +1219,12 @@ async function injectOverview() {
             const thead = document.createElement('thead');
             thead.innerHTML = `
                 <tr>
-                    <th style="min-width: 100px;">Date</th>
-                    <th style="min-width: 150px;">SKU</th>
-                    <th style="min-width: 150px;">SID</th>
-                    <th style="width: 100%">Product Title</th>
-                    <th style="min-width: 200px;">Condition</th>
-                    <th style="min-width: 300px;">Category</th>
+                    <th style="width: 10%;">Date</th>
+                    <th style="width: 10%;">SKU</th>
+                    <th style="width: 10%;">SID</th>
+                    <th style="width: 40%;">Product Title</th>
+                    <th style="width: 15%;">Condition</th>
+                    <th style="width: 15%;">Category</th>
                 </tr>
             `;
             table.appendChild(thead);
