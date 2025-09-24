@@ -486,35 +486,38 @@ function initBulkResubmitFamily() {
                                             const resubmitURL = `/integrations/stores/listing/resubmit/${resubmitId}`;
                                             console.debug(`PATCHES - Running POST for ${item.sku}:`, resubmitURL);
 
-                                            const formData = new FormData();
-                                            formData.append("store", "{}"); 
+                                            const body = new URLSearchParams();
+                                            body.append("store", "");
+
                                             fetch(resubmitURL, {
                                                 method: "POST",
                                                 credentials: "include",
-                                                body: formData
+                                                headers: {
+                                                    "Content-Type": "application/x-www-form-urlencoded"
+                                                },
+                                                body: body.toString()
                                             })
                                                 .then(r => r.json())
                                                 .then(json => {
                                                     console.debug(`PATCHES - Resubmitted ${item.sku} [${storeName}]:`, json);
                                                     log.push({
-                                                        "sku": item.sku,
-                                                        "storeName": storeName,
-                                                        "response": json
+                                                        sku: item.sku,
+                                                        storeName,
+                                                        response: json
                                                     });
                                                 })
                                                 .catch(err => {
                                                     console.error(`PATCHES - Failed resubmitting ${item.sku}`, err);
                                                     log.push({
-                                                        "sku": item.sku,
-                                                        "storeName": storeName,
-                                                        "response": {
+                                                        sku: item.sku,
+                                                        storeName,
+                                                        response: {
                                                             success: false,
                                                             message: "Failed to resubmit.",
                                                             err: err.toString()
                                                         }
                                                     });
                                                 });
-
                                         }
                                     }
                                 }
