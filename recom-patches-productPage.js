@@ -419,177 +419,183 @@ function initBulkResubmitFamily() {
     const parser = new DOMParser();
     let log = [];
 
-    const reload_aspects = document.getElementById('reload_aspects');
-    if (reload_aspects) {
-        const bulkButton = document.createElement('button');
-        bulkButton.classList.add('btn', 'btn-sm', 'btn-primary');
-        bulkButton.title = `Bulk Resubmit all In-Stock for ${marketplace}`;
-        bulkButton.type = "button";
-        bulkButton.id = "patches_bulkResubmit";
-        bulkButton.textContent = `Bulk Resubmit ${marketplace}`;
-        bulkButton.onclick = bulkResubmitFamily;
-        reload_aspects.parentNode.insertBefore(bulkButton, reload_aspects);
-    }
+    const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
+    if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
+        const csrfToken = csrfMeta.getAttribute('content'); // this is needed in header as "x-csrf-token"
+        const reload_aspects = document.getElementById('reload_aspects');
+        if (reload_aspects) {
+            const bulkButton = document.createElement('button');
+            bulkButton.classList.add('btn', 'btn-sm', 'btn-primary');
+            bulkButton.title = `Bulk Resubmit all In-Stock for ${marketplace}`;
+            bulkButton.type = "button";
+            bulkButton.id = "patches_bulkResubmit";
+            bulkButton.textContent = `Bulk Resubmit ${marketplace}`;
+            bulkButton.onclick = bulkResubmitFamily;
+            reload_aspects.parentNode.insertBefore(bulkButton, reload_aspects);
+        }
 
-    async function bulkResubmitFamily() {
-        const sidModal = document.querySelector('a[aria-label="View SID"]');
-        if (sidModal && sidModal.hasAttribute('data-url')) {
-            const url = sidModal.getAttribute('data-url');
-            try {
-                const res = await fetch(url, { credentials: "include" });
-                const htmlText = await res.text();
-                const doc = parser.parseFromString(htmlText, "text/html");
+        async function bulkResubmitFamily() {
+            const sidModal = document.querySelector('a[aria-label="View SID"]');
+            if (sidModal && sidModal.hasAttribute('data-url')) {
+                const url = sidModal.getAttribute('data-url');
+                try {
+                    const res = await fetch(url, { credentials: "include" });
+                    const htmlText = await res.text();
+                    const doc = parser.parseFromString(htmlText, "text/html");
 
-                let items = [];
-                const rows = doc.querySelectorAll("table tbody tr");
-                rows.forEach(row => {
-                    const cols = row.querySelectorAll('td');
-                    if (cols.length >= 6) {
-                        const link = cols[0].querySelector('a');
-                        let item_id = "";
-                        if (link && link.href) {
-                            item_id = link.href.split("/").pop();
+                    let items = [];
+                    const rows = doc.querySelectorAll("table tbody tr");
+                    rows.forEach(row => {
+                        const cols = row.querySelectorAll('td');
+                        if (cols.length >= 6) {
+                            const link = cols[0].querySelector('a');
+                            let item_id = "";
+                            if (link && link.href) {
+                                item_id = link.href.split("/").pop();
+                            }
+
+                            let item = {
+                                item_id,
+                                sku: cols[0].textContent.trim(),
+                                in_stock: parseInt(cols[3].textContent.trim(), 10) || 0,
+                                available: parseInt(cols[4].textContent.trim(), 10) || 0,
+                                price: cols[5].textContent.trim()
+                            };
+                            items.push(item);
                         }
+                    });
 
-                        let item = {
-                            item_id,
-                            sku: cols[0].textContent.trim(),
-                            in_stock: parseInt(cols[3].textContent.trim(), 10) || 0,
-                            available: parseInt(cols[4].textContent.trim(), 10) || 0,
-                            price: cols[5].textContent.trim()
-                        };
-                        items.push(item);
-                    }
-                });
+                    console.debug('PATCHES - Modal Info:', items);
 
-                console.debug('PATCHES - Modal Info:', items);
+                    for (const item of items) {
+                        if (item.in_stock > 0 && item.item_id) {
+                            const integrationsURL = `/integrations/stores/listing/item/${item.item_id}`;
+                            try {
+                                const res2 = await fetch(integrationsURL, { credentials: "include" });
+                                const html2 = await res2.text();
+                                const doc2 = parser.parseFromString(html2, "text/html");
 
-                for (const item of items) {
-                    if (item.in_stock > 0 && item.item_id) {
-                        const integrationsURL = `/integrations/stores/listing/item/${item.item_id}`;
-                        try {
-                            const res2 = await fetch(integrationsURL, { credentials: "include" });
-                            const html2 = await res2.text();
-                            const doc2 = parser.parseFromString(html2, "text/html");
+                                const secondRows = doc2.querySelectorAll("table tbody tr");
+                                let marketplacePresent = false;
+                                secondRows.forEach(integrationRow => {
+                                    const cols = integrationRow.querySelectorAll('td');
+                                    if (cols.length >= 7) {
+                                        const storeName = cols[0].textContent.trim();
+                                        if (storeName === marketplace) {
+                                            marketplacePresent = true;
+                                            const resubmit = cols[6].querySelector('a[title="Re-Submit"]');
+                                            if (resubmit && resubmit.hasAttribute('data-id')) {
+                                                const resubmitId = resubmit.getAttribute('data-id');
+                                                const resubmitURL = `/integrations/stores/listing/resubmit/${resubmitId}`;
+                                                console.debug(`PATCHES - Running POST for ${item.sku}:`, resubmitURL);
 
-                            const secondRows = doc2.querySelectorAll("table tbody tr");
-                            let marketplacePresent = false;
-                            secondRows.forEach(integrationRow => {
-                                const cols = integrationRow.querySelectorAll('td');
-                                if (cols.length >= 7) {
-                                    const storeName = cols[0].textContent.trim();
-                                    if (storeName === marketplace) {
-                                        marketplacePresent = true;
-                                        const resubmit = cols[6].querySelector('a[title="Re-Submit"]');
-                                        if (resubmit && resubmit.hasAttribute('data-id')) {
-                                            const resubmitId = resubmit.getAttribute('data-id');
-                                            const resubmitURL = `/integrations/stores/listing/resubmit/${resubmitId}`;
-                                            console.debug(`PATCHES - Running POST for ${item.sku}:`, resubmitURL);
+                                                const body = new URLSearchParams();
+                                                body.append("store", "");
 
-                                            const body = new URLSearchParams();
-                                            body.append("store", "");
-
-                                            fetch(resubmitURL, {
-                                                method: "POST",
-                                                credentials: "include",
-                                                headers: {
-                                                    "Content-Type": "application/x-www-form-urlencoded"
-                                                },
-                                                body: body.toString()
-                                            })
-                                                .then(r => r.json())
-                                                .then(json => {
-                                                    console.debug(`PATCHES - Resubmitted ${item.sku} [${storeName}]:`, json);
-                                                    log.push({
-                                                        sku: item.sku,
-                                                        storeName,
-                                                        response: json
-                                                    });
+                                                fetch(resubmitURL, {
+                                                    method: "POST",
+                                                    credentials: "include",
+                                                    headers: {
+                                                        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                                                        "x-csrf-token": csrfToken,
+                                                        "x-requested-with": "XMLHttpRequest"
+                                                    },
+                                                    body: body.toString()
                                                 })
-                                                .catch(err => {
-                                                    console.error(`PATCHES - Failed resubmitting ${item.sku}`, err);
-                                                    log.push({
-                                                        sku: item.sku,
-                                                        storeName,
-                                                        response: {
-                                                            success: false,
-                                                            message: "Failed to resubmit.",
-                                                            err: err.toString()
-                                                        }
+                                                    .then(r => r.json())
+                                                    .then(json => {
+                                                        console.debug(`PATCHES - Resubmitted ${item.sku} [${storeName}]:`, json);
+                                                        log.push({
+                                                            sku: item.sku,
+                                                            storeName,
+                                                            response: json
+                                                        });
+                                                    })
+                                                    .catch(err => {
+                                                        console.error(`PATCHES - Failed resubmitting ${item.sku}`, err);
+                                                        log.push({
+                                                            sku: item.sku,
+                                                            storeName,
+                                                            response: {
+                                                                success: false,
+                                                                message: "Failed to resubmit.",
+                                                                err: err.toString()
+                                                            }
+                                                        });
                                                     });
-                                                });
+                                            }
                                         }
                                     }
-                                }
-                            });
-
-                            if (!marketplacePresent) {
-                                log.push({
-                                    "sku": item.sku,
-                                    "marketplace": marketplace,
-                                    "response": {
-                                        success: false,
-                                        message: "Marketplace not present, resubmit all.",
-                                    }
                                 });
+
+                                if (!marketplacePresent) {
+                                    log.push({
+                                        "sku": item.sku,
+                                        "marketplace": marketplace,
+                                        "response": {
+                                            success: false,
+                                            message: "Marketplace not present, resubmit all.",
+                                        }
+                                    });
+                                }
+                            } catch (err) {
+                                fireSwal('UHOH!', 'Failed to get Integrations data.', 'error');
+                                console.error(`PATCHES - Failed fetching integrations for ${item.sku}`, err);
                             }
-                        } catch (err) {
-                            fireSwal('UHOH!', 'Failed to get Integrations data.', 'error');
-                            console.error(`PATCHES - Failed fetching integrations for ${item.sku}`, err);
                         }
                     }
-                }
 
-                // output printing
-                let body = `
-                    <div class="d-flex flex-column mb-8">
-                        <p class="fs-6 fw-bold">Here are the results from the bulk resubmit.</p>
-                `;
+                    // output printing
+                    let body = `
+                        <div class="d-flex flex-column mb-8">
+                            <p class="fs-6 fw-bold">Here are the results from the bulk resubmit.</p>
+                    `;
 
-                if (log.length > 0) {
-                    log.forEach(entry => {
+                    if (log.length > 0) {
+                        log.forEach(entry => {
+                            body += `
+                                <p class="fs-6 fw-semibold form-label mb-2">
+                                    <a href="/product/items/${entry.sku}" target="_blank" style="font-weight: 700;">${entry.sku}</b> [${entry.storeName}]: ${JSON.stringify(entry.response)}
+                                </p>
+                            `;
+                        });
+                    } else {
                         body += `
                             <p class="fs-6 fw-semibold form-label mb-2">
-                                <a href="/product/items/${entry.sku}" target="_blank" style="font-weight: 700;">${entry.sku}</b> [${entry.storeName}]: ${JSON.stringify(entry.response)}
+                                <span>Nothing was resubmitted.</span>
                             </p>
                         `;
-                    });
-                } else {
+                    }
+                    
+
                     body += `
-                        <p class="fs-6 fw-semibold form-label mb-2">
-                            <span>Nothing was resubmitted.</span>
-                        </p>
+                        </div>
+                        <div class="separator my-10"></div>
                     `;
+
+                    const footer = `
+                        <div class="text-center">
+                            <button type="button" class="btn btn-primary me-3" data-modal-close>Okay</button>
+                        </div>
+                    `;
+
+                    const api = openPatchesModal({
+                        id: 'patch-bulkresubmitresponses',
+                        title: 'Bulk Resubmit',
+                        body,
+                        footer,
+                        focus: '#patch-bulkresubmitresponses',
+                        escapeBlockedWhen: null
+                    });
+
+                } catch (err) {
+                    fireSwal('UHOH!', 'Unable to fetch the SID modal?', 'error');
+                    console.error("PATCHES - Failed to fetch SID Modal Content:", err);
                 }
-                
-
-                body += `
-                    </div>
-                    <div class="separator my-10"></div>
-                `;
-
-                const footer = `
-                    <div class="text-center">
-                        <button type="button" class="btn btn-primary me-3" data-modal-close>Okay</button>
-                    </div>
-                `;
-
-                const api = openPatchesModal({
-                    id: 'patch-bulkresubmitresponses',
-                    title: 'Bulk Resubmit',
-                    body,
-                    footer,
-                    focus: '#patch-bulkresubmitresponses',
-                    escapeBlockedWhen: null
-                });
-
-            } catch (err) {
-                fireSwal('UHOH!', 'Unable to fetch the SID modal?', 'error');
-                console.error("PATCHES - Failed to fetch SID Modal Content:", err);
+            } else {
+                fireSwal('UHOH!', 'Unable to find the SID modal? How?', 'error');
+                console.error('PATCHES - Unable to find SID Modal Button:', sidModal);
             }
-        } else {
-            fireSwal('UHOH!', 'Unable to find the SID modal? How?', 'error');
-            console.error('PATCHES - Unable to find SID Modal Button:', sidModal);
         }
     }
 }
