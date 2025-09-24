@@ -1,3 +1,4 @@
+const getWMFeed = false;
 async function prettyLinkSkus() {
     const table = document.getElementById('dtTable');
     if (!table) return;
@@ -68,36 +69,38 @@ async function prettyLinkSkus() {
             }
         }
 
-        const marketplaceCell = cells[1];
-        const marketplace = marketplaceCell.textContent.trim();
-        let wm_feedID = ""; 
-        if (marketplace === 'Walmart US' && item_id) {
-            try {
-                const feedRes = await fetch(`/integrations/stores/listing/item/${item_id}`);
-                if (feedRes.ok) {
-                    const feedHtml = await feedRes.text();
-                    const feedDoc = parser.parseFromString(feedHtml, "text/html");
+        if (getWMFeed) {
+            const marketplaceCell = cells[1];
+            const marketplace = marketplaceCell.textContent.trim();
+            let wm_feedID = ""; 
+            if (marketplace === 'Walmart US' && item_id) {
+                try {
+                    const feedRes = await fetch(`/integrations/stores/listing/item/${item_id}`);
+                    if (feedRes.ok) {
+                        const feedHtml = await feedRes.text();
+                        const feedDoc = parser.parseFromString(feedHtml, "text/html");
 
-                    const wmRow = [...feedDoc.querySelectorAll('tbody tr')].find(row => row.querySelector('td')?.textContent.trim() === 'Walmart US');
+                        const wmRow = [...feedDoc.querySelectorAll('tbody tr')].find(row => row.querySelector('td')?.textContent.trim() === 'Walmart US');
 
-                    if (wmRow) {
-                        const cols = wmRow.querySelectorAll('td');
-                        wm_feedID = cols[2]?.textContent.trim() || "";
+                        if (wmRow) {
+                            const cols = wmRow.querySelectorAll('td');
+                            wm_feedID = cols[2]?.textContent.trim() || "";
+                        }
                     }
+                } catch (err) {
+                    console.error("Error fetching feed ID", err);
                 }
-            } catch (err) {
-                console.error("Error fetching feed ID", err);
             }
-        }
-        // Create the new cell only once
-        const inStockCell = document.createElement('td');
-        inStockCell.classList.add('in-stock-col');
-        inStockCell.textContent = in_stock ? in_stock : "";
-        row.insertBefore(inStockCell, cells[4]);
+            // Create the new cell only once
+            const inStockCell = document.createElement('td');
+            inStockCell.classList.add('in-stock-col');
+            inStockCell.textContent = in_stock ? in_stock : "";
+            row.insertBefore(inStockCell, cells[4]);
 
-        if (wm_feedID) {
-            cells[2].title = cells[2].textContent.trim();
-            cells[2].textContent = wm_feedID;
+            if (wm_feedID) {
+                cells[2].title = cells[2].textContent.trim();
+                cells[2].textContent = wm_feedID;
+            }
         }
     }
 }
