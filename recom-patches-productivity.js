@@ -1222,7 +1222,7 @@ async function injectOverview() {
                     <th style="min-width: 150px;">Date</th>
                     <th style="min-width: 175px;">SKU</th>
                     <th style="min-width: 175px;">SID</th>
-                    <th style="width: 100%">Product Title</th>
+                    <th style="width: 100%; min-width: 600px;">Product Title</th>
                     <th style="min-width: 175px;">Condition</th>
                     <th style="min-width: 250px;">Category</th>
                 </tr>
