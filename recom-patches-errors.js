@@ -69,6 +69,12 @@ async function prettyLinkSkus() {
             }
         }
 
+        // Create the new cell only once
+            const inStockCell = document.createElement('td');
+            inStockCell.classList.add('in-stock-col');
+            inStockCell.textContent = in_stock ? in_stock : "";
+            row.insertBefore(inStockCell, cells[4]);
+
         if (getWMFeed) {
             const marketplaceCell = cells[1];
             const marketplace = marketplaceCell.textContent.trim();
@@ -91,11 +97,6 @@ async function prettyLinkSkus() {
                     console.error("Error fetching feed ID", err);
                 }
             }
-            // Create the new cell only once
-            const inStockCell = document.createElement('td');
-            inStockCell.classList.add('in-stock-col');
-            inStockCell.textContent = in_stock ? in_stock : "";
-            row.insertBefore(inStockCell, cells[4]);
 
             if (wm_feedID) {
                 cells[2].title = cells[2].textContent.trim();
