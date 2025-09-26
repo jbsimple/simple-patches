@@ -125,6 +125,7 @@ function initSearchSelect() {
 
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
+            checkbox.classList.add('form-check-input');
             checkbox.id = 'patch-autoSelect';
             checkbox.style.cssText = 'width: 1.5rem; height: 1.5rem;';
 
