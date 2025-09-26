@@ -117,7 +117,7 @@ function initSearchSelect() {
             wrapper.classList.add('col-md-1');
             wrapper.style.cssText = 'padding-left: 0; padding-right: 0;';
             wrapper.innerHTML = `
-            <div class="h-60px input-group-text" style="display: flex; flex-direction: row; gap 0.25rem; align-items: center; justify-content: center;"
+            <div class="h-60px input-group-text" style="display: flex; flex-direction: row; gap 0.25rem; align-items: center; justify-content: center;">
                 <div class="form-check" title="The search field is automatically selected for quick scanner.">
                     <input class="form-check-input" type="checkbox" id="patch-autoSelect">
                     <label class="form-check-label" for="patch-autoSelect">
