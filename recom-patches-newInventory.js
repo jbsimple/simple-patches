@@ -114,23 +114,16 @@ function initSearchSelect() {
 
         if (!document.getElementById('patch-autoSelect')) {
             const wrapper = document.createElement('div');
-            wrapper.classList.add('h-60px');
-            wrapper.style.cssText = 'width: unset; flex-shrink: 0; display: flex; flex-direction: column; gap: 0.5rem; align-items: center; justify-content: center;';
-            
-            const label = document.createElement('label');
-            label.htmlFor = 'patch-autoSelect';
-            label.textContent = 'Quick Scan';
-            label.style.cssText = 'font-size: 1.35rem; color: var(--bs-gray-700);';
-            label.title = 'The search field is automatically selected for quick scanner use.';
-
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.classList.add('form-check-input');
-            checkbox.id = 'patch-autoSelect';
-            checkbox.style.cssText = 'width: 1.5rem; height: 1.5rem;';
-
-            wrapper.appendChild(label);
-            wrapper.appendChild(checkbox);
+            wrapper.classList.add('h-60px', 'input-group-text');
+            wrapper.style.cssText = 'padding-left: 0; padding-right: 0;';
+            wrapper.innerHTML `
+            <div class="form-check" title="The search field is automatically selected for quick scanner.">
+                <input class="form-check-input" type="checkbox" id="patch-autoSelect">
+                <label class="form-check-label" for="patch-autoSelect">
+                    Auto Create
+                </label>
+            </div>
+            `;
             searchFormRow.appendChild(wrapper);
         }
     }
