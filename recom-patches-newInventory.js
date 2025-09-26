@@ -116,11 +116,11 @@ function initSearchSelect() {
             const wrapper = document.createElement('div');
             wrapper.classList.add('h-60px', 'input-group-text');
             wrapper.style.cssText = 'padding-left: 0; padding-right: 0;';
-            wrapper.innerHTML `
+            wrapper.innerHTML = `
             <div class="form-check" title="The search field is automatically selected for quick scanner.">
                 <input class="form-check-input" type="checkbox" id="patch-autoSelect">
                 <label class="form-check-label" for="patch-autoSelect">
-                    Auto Create
+                    Auto Select
                 </label>
             </div>
             `;
