@@ -115,7 +115,7 @@ function initSearchSelect() {
         if (!document.getElementById('patch-autoSelect')) {
             const wrapper = document.createElement('div');
             wrapper.classList.add('h-60px', 'input-group-text');
-            wrapper.style.cssText = 'padding-left: 0; padding-right: 0;';
+            wrapper.style.cssText = 'padding-left: 0; padding-right: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;';
             wrapper.innerHTML = `
             <div class="form-check" title="The search field is automatically selected for quick scanner.">
                 <input class="form-check-input" type="checkbox" id="patch-autoSelect">
