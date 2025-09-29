@@ -212,8 +212,22 @@ function injectExtraTheme() {
         }
     }
 
-    /* theme stuff */
+    const kt_drawer_chat_toggle = document.getElementById('kt_drawer_chat_toggle');
+    if (kt_drawer_chat_toggle) {
+        const newbutton = `<a class="btn btn-icon btn-custom btn-color-gray-600 btn-active-light btn-active-color-primary w-35px h-35px w-md-40px h-md-40px" id="patches_settings" href="#">
+            <i class="fas fa-gear fs-2"></i>
+        </a>`;
+        kt_drawer_chat_toggle.insertAdjacentHTML("beforebegin", newbutton);
+        const patches_settings = document.getElementById("patches_settings");
+        if (patches_settings) {
+            patches_settings.addEventListener("click", function (e) {
+                e.preventDefault();
+                console.log("Settings button clicked!");
+            });
+        }
+    }
 
+    /* theme stuff */
     function rainbowMessage(message) {
         const mainelem = document.getElementById('rc_header_search').parentElement;
         if (mainelem) {
