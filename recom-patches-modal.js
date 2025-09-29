@@ -591,4 +591,46 @@ async function updatePictureLocations() {
     };
 
 }
+
+function patchesSettingsModal() {
+    const body = `
+        <div class="d-flex flex-column mb-8">
+            <p class="fs-6 fw-bold">You are about to clock out! Quickly record time below.</p>
+            <p class="fs-6 fw-semibold form-label mb-2"><b>Actvitiy/Event</b>: Use if needing to tack multiple things in same task.</p>
+            <p class="fs-6 fw-semibold form-label mb-2"><b>Notes</b>: Provide extra notes if needed.</p>
+            <p class="fs-6 fw-semibold form-label mb-2"><i>* Please Note: Actvity defaults to task name, notes default to placeholder value when left blank.</i></p>
+        </div>
+        <div class="d-flex flex-column mb-8">
+            <label class="fs-6 fw-bold mb-2" for="patch-clockout-text-task">Activity/Event:</label>
+            <input type="text" class="form-control form-control-solid" name="task" id="patch-clockout-text-task" placeholder="Enter Activity/Event" value="${task ?? ''}" spellcheck="false">
+        </div>
+        <div class="d-flex flex-column mb-8">
+            <label class="fs-6 fw-bold mb-2" for="patch-clockout-textarea-notes">Notes:</label>
+            <textarea style="max-height: 50vh;" class="form-control form-control-solid" rows="3" name="notes" id="patch-clockout-textarea-notes" placeholder="Provide some notes if any" spellcheck="false"></textarea>
+        </div>
+        <div class="separator my-10"></div>
+    `;
+
+    const footer = `
+        <div class="text-center">
+            <button type="button" class="btn btn-light me-3" data-modal-close>Cancel</button>
+            <button type="button" id="patches_clockout_submit" class="btn btn-primary">
+                <span class="indicator-label">Submit</span>
+                <span class="indicator-progress" style="display: none;">Please wait...
+                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                </span>
+            </button>
+        </div>
+    `;
+
+    const api = openPatchesModal({
+        id: 'patch_settings_fullModal',
+        title: 'Patches Settings',
+        body,
+        footer,
+        focus: null,
+        escapeBlockedWhen: (ae) => ae
+    });
     
+    if (!api) return;
+}
