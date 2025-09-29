@@ -222,7 +222,7 @@ function injectExtraTheme() {
         if (patches_settings) {
             patches_settings.addEventListener("click", function (e) {
                 e.preventDefault();
-                console.log("Settings button clicked!");
+                patchesSettingsModal();
             });
         }
     }
