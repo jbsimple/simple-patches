@@ -595,8 +595,9 @@ async function updatePictureLocations() {
 function patchesSettingsModal() {
     const body = `
         <div class="d-flex flex-column mb-8">
-            <p class="fs-6 fw-bold">Patches Settings:</p>
+            <p class="fs-6 fw-bold">Modify various patch settings:</p>
         </div>
+        
         <div class="separator my-10"></div>
     `;
 
