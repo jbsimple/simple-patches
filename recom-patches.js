@@ -243,9 +243,6 @@ function injectExtraTheme() {
             return;
         }
 
-        const modal = document.getElementById('patch_settings_fullModal');
-        if (!modal) return;
-
         Object.entries(loadSettings).forEach(([name, value]) => {
             const input = modal.querySelector(`[name="${name}"]`);
             if (input) {
