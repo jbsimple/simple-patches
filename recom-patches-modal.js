@@ -628,7 +628,7 @@ function patchesSettingsModal() {
 
     if (!api) return;
 
-    const submit = api.find('#patch_picloc_submit');
+    const submit = api.find('#patches_settings_submit');
     if (!submit) return;
 
     submit.onclick = async function() {
