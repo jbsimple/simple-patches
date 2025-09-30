@@ -216,6 +216,7 @@ function injectExtraTheme() {
     // setting stuff
     settings = loadPatchSettings();
     console.debug('PATCHES - Loaded Patch Settings', settings);
+    setupFromSettings();
 
     const kt_drawer_chat_toggle = document.getElementById('kt_drawer_chat_toggle');
     if (kt_drawer_chat_toggle) {
@@ -241,6 +242,47 @@ function injectExtraTheme() {
         } catch (e) {
             console.error("Invalid patch_settings JSON:", e);
             return {};
+        }
+    }
+
+    function setupFromSettings() {
+        const icon = (settings && settings.pfpurl && settings.pfpurl !== '') ? settings.pfpurl.trim() : null;
+        if (icon !== null && icon !== '') {
+            const allImgs = document.getElementById('kt_app_header_container').querySelectorAll('img');
+            allImgs.forEach(avatar => {
+                const src = avatar.getAttribute('src') || '';
+                if (src.includes('assets') && src.includes('avatars')) {
+                    console.debug('PATCHES - Swapping Avatar:', src);
+                    avatar.src = icon;
+                }
+            });
+        }
+
+        const bgsrc = (settings && settings.bgurl && settings.bgurl !== '') ? settings.bgurl.trim() : null;
+        if (bgsrc !== null && bgsrc !== '') {
+            const bgImg = document.createElement("img");
+            bgImg.src = bgsrc;
+
+            Object.assign(bgImg.style, {
+                position: "fixed",
+                top: "0",
+                left: "0",
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                zIndex: "-1",
+                opacity: "0",
+                transition: "opacity 2s ease",
+                filter: "invert(1) brightness(0.75) contrast(1.5)",
+                mixBlendMode: "multiply",
+                pointerEvents: "none"
+            });
+
+            document.body.appendChild(bgImg);
+
+            requestAnimationFrame(() => {
+                bgImg.style.opacity = "0.8";
+            });
         }
     }
 
@@ -282,20 +324,6 @@ function injectExtraTheme() {
 
 function setupFromConfig() {
     if (currentuser && currentuser !== '') {
-        // swap icon
-        let icon = null;
-        if (pfpPatch.hasOwnProperty(currentuser) && pfpPatch[currentuser] && pfpPatch[currentuser].show) { icon = pfpPatch[currentuser].src; }
-        if (icon !== null && icon !== '') {
-            const allImgs = document.getElementById('kt_app_header_container').querySelectorAll('img');
-            allImgs.forEach(avatar => {
-                const src = avatar.getAttribute('src') || '';
-                if (src.includes('assets') && src.includes('avatars')) {
-                    console.debug('PATCHES - Swapping Avatar:', src);
-                    avatar.src = icon;
-                }
-            });
-        }
-
         // new metals warning
         const userMeta = metals.find(m => m.name === currentuser);
         if (userMeta?.warnings) {
