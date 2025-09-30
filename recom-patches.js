@@ -1,5 +1,6 @@
 let version = '...';
 let currentuser = '';
+let settings = {};
 
 // empty defaults
 let metals = [];
@@ -212,6 +213,9 @@ function injectExtraTheme() {
         }
     }
 
+    // setting stuff
+    settings = loadPatchSettings();
+
     const kt_drawer_chat_toggle = document.getElementById('kt_drawer_chat_toggle');
     if (kt_drawer_chat_toggle) {
         const newbutton = `<a class="btn btn-icon btn-custom btn-color-gray-600 btn-active-light btn-active-color-primary w-35px h-35px w-md-40px h-md-40px" id="patches_settings" href="#">
@@ -225,6 +229,31 @@ function injectExtraTheme() {
                 patchesSettingsModal();
             });
         }
+    }
+
+    function loadPatchSettings() {
+        const saved = localStorage.getItem('patch_settings');
+        if (!saved) return;
+
+        let loadSettings;
+        try {
+            loadSettings = JSON.parse(saved);
+        } catch (e) {
+            console.error("Invalid patch_settings JSON:", e);
+            return;
+        }
+
+        const modal = document.getElementById('patch_settings_fullModal');
+        if (!modal) return;
+
+        Object.entries(loadSettings).forEach(([name, value]) => {
+            const input = modal.querySelector(`[name="${name}"]`);
+            if (input) {
+                input.value = value;
+            }
+        });
+        console.debug('PATCHES - Loaded Settings:', loadSettings);
+        return loadSettings || {};
     }
 
     /* theme stuff */

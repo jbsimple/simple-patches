@@ -597,7 +597,11 @@ function patchesSettingsModal() {
         <div class="d-flex flex-column mb-8">
             <p class="fs-6 fw-bold">Modify various patch settings:</p>
         </div>
-        
+        <div class="d-flex flex-column mb-8">
+            <label class="fs-6 fw-bold mb-2" for="patch_setting_bgurl">Custom Background URL:</label>
+            <p class="fs-6 fw-semibold form-label mb-2">If you want to add a custom background to each page.</p>
+            <input type="text" class="form-control form-control-solid" name="bgurl" id="patch_setting_bgurl" placeholder="Enter URL" value="" spellcheck="false">
+        </div>
         <div class="separator my-10"></div>
     `;
 
@@ -623,4 +627,25 @@ function patchesSettingsModal() {
     });
 
     if (!api) return;
+
+    const submit = api.find('#patch_picloc_submit');
+    if (!submit) return;
+
+    submit.onclick = async function() {
+        const modal = document.getElementById('patch_settings_fullModal');
+        if (!modal) return;
+
+        const inputs = modal.querySelectorAll('input, select, textarea');
+        const newSettings = {};
+
+        inputs.forEach(input => {
+            newSettings[input.name] = input.value;
+        });
+
+        localStorage.setItem('patch_settings', JSON.stringify(newSettings));
+
+        fireSwal('Settings Saved', 'Your new settings have been saved. Reload to take effect.', success, true);
+        console.debug('PATCHES - Saved settings:', newSettings);
+
+    }
 }
