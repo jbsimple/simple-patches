@@ -594,8 +594,11 @@ async function updatePictureLocations() {
 
 function patchesSettingsModal() {
     const body = `
+        <p class="fs-6 fw-bold">Modify various patch settings:</p>
         <div class="d-flex flex-column mb-8">
-            <p class="fs-6 fw-bold">Modify various patch settings:</p>
+            <label class="fs-6 fw-bold mb-2" for="patch_setting_pfpurl">Custom PFP URL:</label>
+            <p class="fs-6 fw-semibold form-label mb-2">If you want to add a custom profile picture for the top bar.</p>
+            <input type="text" class="form-control form-control-solid" name="pfpurl" id="patch_setting_pfpurl" placeholder="Enter URL" value="" spellcheck="false">
         </div>
         <div class="d-flex flex-column mb-8">
             <label class="fs-6 fw-bold mb-2" for="patch_setting_bgurl">Custom Background URL:</label>
