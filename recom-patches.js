@@ -4,7 +4,6 @@ let settings = {};
 
 // empty defaults
 let metals = [];
-let pfpPatch = {};
 let rainbowAnnounce = [];
 let autoLocationUpdate = true;
 let allowed_colors = [];

@@ -633,9 +633,15 @@ function patchesSettingsModal() {
 
     // Prefill inputs from global settings
     if (settings && typeof settings === 'object') {
-        const bgurlInput = api.find('#patch_setting_bgurl');
-        if (bgurlInput && settings.bgurl) {
-            bgurlInput.value = settings.bgurl;
+        const modal = document.getElementById('patch_settings_fullModal');
+        if (modal) {
+            const inputs = modal.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                if (settings.hasOwnProperty(input.name) && settings[input.name] !== undefined) {
+                    input.value = settings[input.name];
+                    console.debug(`PATCHES - Prefilled ${input.name} =`, settings[input.name]);
+                }
+            });
         }
     }
 
