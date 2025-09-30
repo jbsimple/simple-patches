@@ -628,6 +628,15 @@ function patchesSettingsModal() {
 
     if (!api) return;
 
+    // Prefill inputs from global settings
+    if (settings && typeof settings === 'object') {
+        const bgurlInput = api.find('#patch_setting_bgurl');
+        if (bgurlInput && settings.bgurl) {
+            bgurlInput.value = settings.bgurl;
+        }
+    }
+
+    // Save new settings, replace old
     const submit = api.find('#patches_settings_submit');
     if (!submit) return;
 
