@@ -644,7 +644,7 @@ function patchesSettingsModal() {
 
         localStorage.setItem('patch_settings', JSON.stringify(newSettings));
 
-        fireSwal('Settings Saved', 'Your new settings have been saved. Reload to take effect.', success, true);
+        fireSwal('Settings Saved', 'Your new settings have been saved. Reload to take effect.', 'success', true);
         console.debug('PATCHES - Saved settings:', newSettings);
 
     }
