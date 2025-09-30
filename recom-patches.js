@@ -215,6 +215,7 @@ function injectExtraTheme() {
 
     // setting stuff
     settings = loadPatchSettings();
+    console.debug('PATCHES - Loaded Patch Settings', settings);
 
     const kt_drawer_chat_toggle = document.getElementById('kt_drawer_chat_toggle');
     if (kt_drawer_chat_toggle) {
@@ -233,24 +234,14 @@ function injectExtraTheme() {
 
     function loadPatchSettings() {
         const saved = localStorage.getItem('patch_settings');
-        if (!saved) return;
+        if (!saved) return {};
 
-        let loadSettings;
         try {
-            loadSettings = JSON.parse(saved);
+            return JSON.parse(saved) || {};
         } catch (e) {
             console.error("Invalid patch_settings JSON:", e);
-            return;
+            return {};
         }
-
-        Object.entries(loadSettings).forEach(([name, value]) => {
-            const input = modal.querySelector(`[name="${name}"]`);
-            if (input) {
-                input.value = value;
-            }
-        });
-        console.debug('PATCHES - Loaded Settings:', loadSettings);
-        return loadSettings || {};
     }
 
     /* theme stuff */
