@@ -425,7 +425,7 @@ function initBulkResubmitFamily() {
         if (reload_aspects) {
             const bulkButton = document.createElement('button');
             bulkButton.classList.add('btn', 'btn-sm', 'btn-primary');
-            bulkButton.title = `Bulk Resubmit all In-Stock for ${marketplace}`;
+            bulkButton.title = `Bulk Resubmit all In-Stock`;
             bulkButton.type = "button";
             bulkButton.id = "patches_bulkResubmit";
             bulkButton.textContent = `Bulk Resubmit`;
