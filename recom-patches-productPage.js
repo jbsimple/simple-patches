@@ -415,7 +415,6 @@ function modifyColorAttribute() {
 function initBulkResubmitFamily() {
     // marketplace to bulk resubmit for
 
-    const marketplace = 'Walmart US';
     const parser = new DOMParser();
     let log = [];
 
@@ -429,7 +428,7 @@ function initBulkResubmitFamily() {
             bulkButton.title = `Bulk Resubmit all In-Stock for ${marketplace}`;
             bulkButton.type = "button";
             bulkButton.id = "patches_bulkResubmit";
-            bulkButton.textContent = `Bulk Resubmit ${marketplace}`;
+            bulkButton.textContent = `Bulk Resubmit`;
             bulkButton.onclick = bulkResubmitFamily;
             reload_aspects.parentNode.insertBefore(bulkButton, reload_aspects);
         }
@@ -469,79 +468,42 @@ function initBulkResubmitFamily() {
 
                     for (const item of items) {
                         if (item.in_stock > 0 && item.item_id) {
-                            const integrationsURL = `/integrations/stores/listing/item/${item.item_id}`;
-                            try {
-                                const res2 = await fetch(integrationsURL, { credentials: "include" });
-                                const html2 = await res2.text();
-                                const doc2 = parser.parseFromString(html2, "text/html");
 
-                                const secondRows = doc2.querySelectorAll("table tbody tr");
-                                let marketplacePresent = false;
-                                secondRows.forEach(integrationRow => {
-                                    const cols = integrationRow.querySelectorAll('td');
-                                    if (cols.length >= 7) {
-                                        const storeName = cols[0].textContent.trim();
-                                        if (storeName === marketplace) {
-                                            marketplacePresent = true;
-                                            const resubmit = cols[6].querySelector('a[title="Re-Submit"]');
-                                            if (resubmit && resubmit.hasAttribute('data-id')) {
-                                                const resubmitId = resubmit.getAttribute('data-id');
-                                                const resubmitURL = `/integrations/stores/listing/resubmit/${resubmitId}`;
-                                                console.debug(`PATCHES - Running POST for ${item.sku}:`, resubmitURL);
+                            const body = new URLSearchParams();
+                            body.append("store", "all");
 
-                                                const body = new URLSearchParams();
-                                                body.append("store", "");
-
-                                                fetch(resubmitURL, {
-                                                    method: "POST",
-                                                    credentials: "include",
-                                                    headers: {
-                                                        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                                                        "x-csrf-token": csrfToken,
-                                                        "x-requested-with": "XMLHttpRequest"
-                                                    },
-                                                    body: body.toString()
-                                                })
-                                                    .then(r => r.json())
-                                                    .then(json => {
-                                                        console.debug(`PATCHES - Resubmitted ${item.sku} [${storeName}]:`, json);
-                                                        log.push({
-                                                            sku: item.sku,
-                                                            storeName,
-                                                            response: json
-                                                        });
-                                                    })
-                                                    .catch(err => {
-                                                        console.error(`PATCHES - Failed resubmitting ${item.sku}`, err);
-                                                        log.push({
-                                                            sku: item.sku,
-                                                            storeName,
-                                                            response: {
-                                                                success: false,
-                                                                message: "Failed to resubmit.",
-                                                                err: err.toString()
-                                                            }
-                                                        });
-                                                    });
-                                            }
-                                        }
-                                    }
-                                });
-
-                                if (!marketplacePresent) {
+                            const integrationsURL = `/integrations/stores/listing/resubmit/${item.item_id}`;
+                            fetch(integrationsURL, {
+                                method: "POST",
+                                credentials: "include",
+                                headers: {
+                                    "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                                    "x-csrf-token": csrfToken,
+                                    "x-requested-with": "XMLHttpRequest"
+                                },
+                                body: body.toString()
+                            })
+                                .then(r => r.json())
+                                .then(json => {
+                                    console.debug(`PATCHES - Resubmitted ${item.sku}:`, json);
                                     log.push({
-                                        "sku": item.sku,
-                                        "marketplace": marketplace,
-                                        "response": {
+                                        sku: item.sku,
+                                        storeName,
+                                        response: json
+                                    });
+                                })
+                                .catch(err => {
+                                    console.error(`PATCHES - Failed resubmitting ${item.sku}:`, err);
+                                    log.push({
+                                        sku: item.sku,
+                                        storeName,
+                                        response: {
                                             success: false,
-                                            message: "Marketplace not present, resubmit all.",
+                                            message: "Failed to resubmit.",
+                                            err: err.toString()
                                         }
                                     });
-                                }
-                            } catch (err) {
-                                fireSwal('UHOH!', 'Failed to get Integrations data.', 'error');
-                                console.error(`PATCHES - Failed fetching integrations for ${item.sku}`, err);
-                            }
+                                });
                         }
                     }
 
@@ -555,7 +517,7 @@ function initBulkResubmitFamily() {
                         log.forEach(entry => {
                             body += `
                                 <p class="fs-6 fw-semibold form-label mb-2">
-                                    <a href="/product/items/${entry.sku}" target="_blank" style="font-weight: 700;">${entry.sku}</b> [${entry.storeName}]: ${JSON.stringify(entry.response)}</a>
+                                    <a href="/product/items/${entry.sku}" target="_blank" style="font-weight: 700;">${entry.sku}</b>: ${JSON.stringify(entry.response)}</a>
                                 </p>
                             `;
                         });
