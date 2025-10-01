@@ -211,14 +211,15 @@ function initPreset() {
     
     card_body.appendChild(report_preset('listing_productivity'));
     //card_body.appendChild(report_preset('marketing_productivity'));
+    card_body.appendChild(report_preset('product_stockandvalue'));
+    card_body.appendChild(report_preset('product_highQty'));
     card_body.appendChild(report_preset('items_createdRecent'));
     card_body.appendChild(report_preset('picture_missingFull'));
     card_body.appendChild(report_preset('picture_missingSpecial'));
-    card_body.appendChild(report_preset('product_highQty'));
     card_body.appendChild(report_preset('productivity_eventSIDLookup'));
     card_body.appendChild(report_preset('productivity_eventSKULookup'));
     card_body.appendChild(report_preset('productivity_eventIDLookup'));
-    card_body.appendChild(report_preset('attributes_color'));
+    //card_body.appendChild(report_preset('attributes_color'));
     
     const nextStepButton = document.getElementById('rc_reports_new_wizard').querySelectorAll('button[data-kt-stepper-action="next"]');
     const patchesPresentsDiv = document.getElementById('patches-presents');
@@ -228,7 +229,6 @@ function initPreset() {
             patchesPresentsDiv.style.display = 'none';
         });
     }
-    
 }
 
 function goToLastStep() {
@@ -446,6 +446,14 @@ function report_preset(name) {
         details.func = `report_attributesColorCheck();`;
         details.desc = "Invalid color value in attributes special report.<br>Only includes in stock.";
         details.title = "Color Attribute Check";
+        return report_initHTML(details);
+    } else if (name === 'product_stockandvalue') {
+        var details = {};
+        details.id = `patches-reports-sidTotalQuantityAndValue`;
+        details.name = `patches-reports-sidTotalQuantityAndValue`;
+        details.func = `report_sidTotalQuantityAndValue();`;
+        details.desc = "Products with Total Inventory and Total Value.";
+        details.title = "Special Products Report";
         return report_initHTML(details);
     } else {
         return null;
@@ -1552,6 +1560,57 @@ async function report_pictureURLSComplete_init(checkResolution = false) {
         console.debug('final list', list);
         generateReportTableFromList(list, 'items-images-completeList');
     }
+}
+
+async function report_sidTotalQuantityAndValue() {
+    const createButton = document.querySelector(`button[data-id="patches-reports-sidTotalQuantityAndValue"]`);
+    if (createButton) {
+        createButton.textContent = 'Loading...';
+        createButton.setAttribute('style', 'background-color: gray !important;');
+    }
+    
+    const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
+
+    // get all in stock
+    let items_report = await report_getSpecial({
+        report: {
+            type: "active_inventory",
+            columns: [
+                "products.sid",
+                "product_items.sku",
+                "product_items.condition_id",
+                "product_items.in_stock",
+                "product_items.price",
+                "product_items.in_stock"
+            ],
+            filters: [
+                {
+                    column: "product_items.in_stock",
+                    opr: "{0} >= {1}",
+                    value: 1
+                }
+            ]
+        },
+        csrf_recom: csrfToken
+    });
+    console.debug('PATCHES - items_report:', items_report)
+
+    // get every product ever
+    let catalog_report = await report_getSpecial(request = {
+        report: {
+            type: "catalog_report",
+            columns: [
+                "products.sid",
+                "products.name",
+                "products.brand_id",
+                "products.category_id"
+            ],
+            filters: []
+        },
+        csrf_recom: csrfToken
+    });
+    console.debug('PATCHES - catalog_report:', catalog_report);
+
 }
 
 async function report_attributesColorCheck() {
