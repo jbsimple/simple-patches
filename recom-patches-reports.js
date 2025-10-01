@@ -1642,7 +1642,9 @@ async function report_sidTotalQuantityAndValue() {
     );
 
     console.debug("PATCHES - mergedReport:", mergedReport);
-    generateReportTableFromList(mergedReport, 'products-totalStockAndValue');
+
+    // this is a big report, should just prompt to download instead of trying to render it.
+    generateDwnloadFromTable(mergedReport, 'products-totalStockAndValue');
 }
 
 async function report_attributesColorCheck() {
@@ -1722,9 +1724,56 @@ async function report_attributesColorCheck() {
     });
 
     console.debug('PATCHES - Final Color List', list);
+    generateDwnloadFromTable(list, 'product-attributes-colors');
+}
 
-    generateReportTableFromList(list, 'product-attributes-colors');
+function generateDwnloadFromTable(list, name) {
+    goToLastStep();
 
+    const button = document.getElementById('report_download');
+    button.removeAttribute('href');  
+    button.classList.remove('d-none');
+
+    button.onclick = function (event) {
+        event.preventDefault();
+
+        if (!Array.isArray(list) || list.length === 0) {
+            console.error("List is empty or not an array");
+            return;
+        }
+
+        const keys = Object.keys(list[0]);
+
+        const rows = [];
+        rows.push(keys.join(","));
+
+        for (const obj of list) {
+            const values = keys.map(k => {
+                let val = obj[k] ?? "";
+                if (typeof val === "string") {
+                    val = `"${val.replace(/"/g, '""')}"`;
+                }
+                return val;
+            });
+            rows.push(values.join(","));
+        }
+
+        const csvContent = rows.join("\n");
+
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = name.endsWith(".csv") ? name : `${name}.csv`;
+        a.style.display = "none";
+
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        URL.revokeObjectURL(url);
+    };
 }
 
 function generateReportTableFromList(list, name) {
