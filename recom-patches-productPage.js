@@ -435,130 +435,120 @@ function initBulkResubmitFamily() {
 
         async function bulkResubmitFamily() {
             const sidModal = document.querySelector('a[aria-label="View SID"]');
-            if (sidModal && sidModal.hasAttribute('data-url')) {
-                const url = sidModal.getAttribute('data-url');
-                try {
-                    const res = await fetch(url, { credentials: "include" });
-                    const htmlText = await res.text();
-                    const doc = parser.parseFromString(htmlText, "text/html");
-
-                    let items = [];
-                    const rows = doc.querySelectorAll("table tbody tr");
-                    rows.forEach(row => {
-                        const cols = row.querySelectorAll('td');
-                        if (cols.length >= 6) {
-                            const link = cols[0].querySelector('a');
-                            let item_id = "";
-                            if (link && link.href) {
-                                item_id = link.href.split("/").pop();
-                            }
-
-                            let item = {
-                                item_id,
-                                sku: cols[0].textContent.trim(),
-                                in_stock: parseInt(cols[3].textContent.trim(), 10) || 0,
-                                available: parseInt(cols[4].textContent.trim(), 10) || 0,
-                                price: cols[5].textContent.trim()
-                            };
-                            items.push(item);
-                        }
-                    });
-
-                    console.debug('PATCHES - Modal Info:', items);
-
-                    for (const item of items) {
-                        if (item.in_stock > 0 && item.item_id) {
-
-                            const body = new URLSearchParams();
-                            body.append("store", "all");
-
-                            const integrationsURL = `/integrations/stores/listing/resubmit/${item.item_id}`;
-                            fetch(integrationsURL, {
-                                method: "POST",
-                                credentials: "include",
-                                headers: {
-                                    "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                                    "x-csrf-token": csrfToken,
-                                    "x-requested-with": "XMLHttpRequest"
-                                },
-                                body: body.toString()
-                            })
-                                .then(r => r.json())
-                                .then(json => {
-                                    console.debug(`PATCHES - Resubmitted ${item.sku}:`, json);
-                                    log.push({
-                                        sku: item.sku,
-                                        storeName,
-                                        response: json
-                                    });
-                                })
-                                .catch(err => {
-                                    console.error(`PATCHES - Failed resubmitting ${item.sku}:`, err);
-                                    log.push({
-                                        sku: item.sku,
-                                        storeName,
-                                        response: {
-                                            success: false,
-                                            message: "Failed to resubmit.",
-                                            err: err.toString()
-                                        }
-                                    });
-                                });
-                        }
-                    }
-
-                    // output printing
-                    let body = `
-                        <div class="d-flex flex-column mb-8">
-                            <p class="fs-6 fw-bold">Here are the results from the bulk resubmit.</p>
-                    `;
-
-                    if (log.length > 0) {
-                        log.forEach(entry => {
-                            body += `
-                                <p class="fs-6 fw-semibold form-label mb-2">
-                                    <a href="/product/items/${entry.sku}" target="_blank" style="font-weight: 700;">${entry.sku}</b>: ${JSON.stringify(entry.response)}</a>
-                                </p>
-                            `;
-                        });
-                    } else {
-                        body += `
-                            <p class="fs-6 fw-semibold form-label mb-2">
-                                <span>Nothing was resubmitted.</span>
-                            </p>
-                        `;
-                    }
-                    
-
-                    body += `
-                        </div>
-                        <div class="separator my-10"></div>
-                    `;
-
-                    const footer = `
-                        <div class="text-center">
-                            <button type="button" class="btn btn-primary me-3" data-modal-close>Okay</button>
-                        </div>
-                    `;
-
-                    const api = openPatchesModal({
-                        id: 'patch-bulkresubmitresponses',
-                        title: 'Bulk Resubmit',
-                        body,
-                        footer,
-                        focus: '#patch-bulkresubmitresponses',
-                        escapeBlockedWhen: null
-                    });
-
-                } catch (err) {
-                    fireSwal('UHOH!', 'Unable to fetch the SID modal?', 'error');
-                    console.error("PATCHES - Failed to fetch SID Modal Content:", err);
-                }
-            } else {
+            if (!sidModal || !sidModal.hasAttribute('data-url')) {
                 fireSwal('UHOH!', 'Unable to find the SID modal? How?', 'error');
                 console.error('PATCHES - Unable to find SID Modal Button:', sidModal);
+                return;
+            }
+
+            const url = sidModal.getAttribute('data-url');
+            try {
+                const res = await fetch(url, { credentials: "include" });
+                const htmlText = await res.text();
+                const doc = parser.parseFromString(htmlText, "text/html");
+
+                let items = [];
+                const rows = doc.querySelectorAll("table tbody tr");
+                rows.forEach(row => {
+                    const cols = row.querySelectorAll('td');
+                    if (cols.length >= 6) {
+                        const link = cols[0].querySelector('a');
+                        let item_id = "";
+                        if (link && link.href) {
+                            item_id = link.href.split("/").pop();
+                        }
+
+                        items.push({
+                            item_id,
+                            sku: cols[0].textContent.trim(),
+                            in_stock: parseInt(cols[3].textContent.trim(), 10) || 0,
+                            available: parseInt(cols[4].textContent.trim(), 10) || 0,
+                            price: cols[5].textContent.trim()
+                        });
+                    }
+                });
+
+                console.debug('PATCHES - Modal Info:', items);
+
+                const log = [];
+
+                // collect promises
+                const tasks = items.map(item => {
+                    if (item.in_stock > 0 && item.item_id) {
+                        const body = new URLSearchParams();
+                        body.append("store", "all");
+
+                        const integrationsURL = `/integrations/stores/listing/resubmit/${item.item_id}`;
+                        return fetch(integrationsURL, {
+                            method: "POST",
+                            credentials: "include",
+                            headers: {
+                                "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                                "x-csrf-token": csrfToken,
+                                "x-requested-with": "XMLHttpRequest"
+                            },
+                            body: body.toString()
+                        })
+                            .then(r => r.json())
+                            .then(json => {
+                                console.debug(`PATCHES - Resubmitted ${item.sku}:`, json);
+                                log.push({ sku: item.sku, response: json });
+                            })
+                            .catch(err => {
+                                console.error(`PATCHES - Failed resubmitting ${item.sku}:`, err);
+                                log.push({
+                                    sku: item.sku,
+                                    response: { success: false, message: "Failed to resubmit.", err: err.toString() }
+                                });
+                            });
+                    }
+                });
+
+                await Promise.all(tasks);
+
+                // build the response messages better now
+                let body = `
+                    <div class="d-flex flex-column mb-8">
+                        <p class="fs-6 fw-bold">Here are the results from the bulk resubmit.</p>
+                `;
+
+                if (log.length > 0) {
+                    log.forEach(entry => {
+                        body += `
+                            <p class="fs-6 fw-semibold form-label mb-2">
+                                <a href="/product/items/${entry.sku}" target="_blank" style="font-weight: 700;">
+                                    ${entry.sku}
+                                </a>: ${JSON.stringify(entry.response)}
+                            </p>
+                        `;
+                    });
+                } else {
+                    body += `<p class="fs-6 fw-semibold form-label mb-2"><span>Nothing was resubmitted.</span></p>`;
+                }
+
+                body += `</div><div class="separator my-10"></div>`;
+
+                const footer = `
+                    <div class="text-center">
+                        <button type="button" class="btn btn-primary me-3" data-modal-close>Okay</button>
+                    </div>
+                `;
+
+                openPatchesModal({
+                    id: 'patch-bulkresubmitresponses',
+                    title: 'Bulk Resubmit',
+                    body,
+                    footer,
+                    focus: '#patch-bulkresubmitresponses',
+                    escapeBlockedWhen: null
+                });
+
+            } catch (err) {
+                fireSwal('UHOH!', 'Unable to fetch the SID modal?', 'error');
+                console.error("PATCHES - Failed to fetch SID Modal Content:", err);
             }
         }
+
     }
 }
 waitForElement('#reload_aspects', initBulkResubmitFamily);
