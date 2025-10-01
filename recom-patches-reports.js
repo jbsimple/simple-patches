@@ -1642,7 +1642,7 @@ async function report_sidTotalQuantityAndValue() {
     );
 
     console.debug("PATCHES - mergedReport:", mergedReport);
-    generateReportTableFromList(list, 'products-totalStockAndValue');
+    generateReportTableFromList(mergedReport, 'products-totalStockAndValue');
 }
 
 async function report_attributesColorCheck() {
