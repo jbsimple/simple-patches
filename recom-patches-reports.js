@@ -1611,6 +1611,38 @@ async function report_sidTotalQuantityAndValue() {
     });
     console.debug('PATCHES - catalog_report:', catalog_report);
 
+    const catalogBySid = {};
+    for (const c of catalog_report) {
+        catalogBySid[c.SID] = { 
+            ...c, 
+            Total_Stock: 0, 
+            Total_Value: 0 
+        };
+    }
+
+    for (const item of items_report) {
+        const sid = item.SID;
+        const qty = parseInt(item.MAIN_Qty, 10) || 0;
+        const price = parseFloat(item.Price) || 0;
+
+        if (!catalogBySid[sid]) {
+            catalogBySid[sid] = { 
+                ...item, 
+                Total_Stock: 0, 
+                Total_Value: 0 
+            };
+        }
+
+        catalogBySid[sid].Total_Stock += qty;
+        catalogBySid[sid].Total_Value += qty * price;
+    }
+
+    const mergedReport = Object.values(catalogBySid).sort(
+        (a, b) => (b.Total_Value || 0) - (a.Total_Value || 0)
+    );
+
+    console.debug("PATCHES - mergedReport:", mergedReport);
+
 }
 
 async function report_attributesColorCheck() {
