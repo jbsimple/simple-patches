@@ -1634,7 +1634,7 @@ async function report_sidTotalQuantityAndValue() {
         }
 
         catalogBySid[sid].Total_Stock += qty;
-        catalogBySid[sid].Total_Value += Math.floor((qty * price) * 100) / 100;
+        catalogBySid[sid].Total_Value = Math.floor((catalogBySid[sid].Total_Value + (qty * price)) * 100) / 100;
     }
 
     const mergedReport = Object.values(catalogBySid).sort(
