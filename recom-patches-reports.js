@@ -1634,7 +1634,7 @@ async function report_sidTotalQuantityAndValue() {
         }
 
         catalogBySid[sid].Total_Stock += qty;
-        catalogBySid[sid].Total_Value += qty * price;
+        catalogBySid[sid].Total_Value += Math.floor((qty * price) * 100) / 100;
     }
 
     const mergedReport = Object.values(catalogBySid).sort(
@@ -1765,7 +1765,7 @@ function generateDwnloadFromTable(list, name) {
 
         const a = document.createElement("a");
         a.href = url;
-        a.download = name.endsWith(".csv") ? name : `${name}.csv`;
+        a.download = name.endsWith(".csv") ? name : `${name}-${Math.floor(Date.now() / 1000)}.csv`;
         a.style.display = "none";
 
         document.body.appendChild(a);
