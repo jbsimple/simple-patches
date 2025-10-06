@@ -608,7 +608,7 @@ function patchesSettingsModal() {
         <div class="d-flex flex-column mb-8">
             <label class="fs-6 fw-bold mb-2" for="patch_setting_customcss">Custom Global CSS Rules:</label>
             <p class="fs-6 fw-semibold form-label mb-2">If you want to add custom css rules that applies to all pages.</p>
-            <textarea style="max-height: 50vh;" class="form-control form-control-solid" rows="3" name="customcss" id="patch_setting_customcss" placeholder="Enter CSS Code Here" spellcheck="false"></textarea>
+            <textarea style="max-height: 30vh;" class="form-control form-control-solid" rows="3" name="customcss" id="patch_setting_customcss" placeholder="Enter CSS Code Here" spellcheck="false"></textarea>
         </div>
         <div class="separator my-10"></div>
     `;
