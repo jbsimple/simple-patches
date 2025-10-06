@@ -283,6 +283,17 @@ function injectExtraTheme() {
                 bgImg.style.opacity = "0.8";
             });
         }
+
+        let customcss = (settings && settings.customcss && settings.customcss !== '') ? settings.customcss.trim() : null;
+        if (customcss !== null && customcss !== '') {
+            const customcss_id = 'patches_settings_customcss';
+            const oldTag = document.getElementById(customcss_id);
+            if (oldTag) oldTag.remove();
+            const styleTag = document.createElement('style');
+            styleTag.id = customcss_id;
+            styleTag.textContent = customcss;
+            document.head.appendChild(styleTag);
+        }
     }
 
     /* theme stuff */

@@ -605,6 +605,11 @@ function patchesSettingsModal() {
             <p class="fs-6 fw-semibold form-label mb-2">If you want to add a custom background to each page.</p>
             <input type="text" class="form-control form-control-solid" name="bgurl" id="patch_setting_bgurl" placeholder="Enter URL" value="" spellcheck="false">
         </div>
+        <div class="d-flex flex-column mb-8">
+            <label class="fs-6 fw-bold mb-2" for="patch_setting_customcss">Custom Global CSS Rules:</label>
+            <p class="fs-6 fw-semibold form-label mb-2">If you want to add a custom background to each page.</p>
+            <textarea style="max-height: 50vh;" class="form-control form-control-solid" rows="3" name="customcss" id="patch_setting_customcss" placeholder="Enter CSS Code Here" spellcheck="false"></textarea>
+        </div>
         <div class="separator my-10"></div>
     `;
 
