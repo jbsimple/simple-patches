@@ -136,7 +136,7 @@ function modifiedClock(task) {
         </div>
         <div class="d-flex flex-column mb-8">
             <label class="fs-6 fw-bold mb-2" for="patch-clockout-text-task">Activity/Event:</label>
-            <input type="text" class="form-control form-control-solid" name="task" id="patch-clockout-text-task" ${datalisthtml !== '' ? 'list="patch-clockout-text-task-list"' : ''} placeholder="Enter Activity/Event" value="${task ?? ''}" spellcheck="false">
+            <input type="text" class="form-control form-control-solid" name="task" id="patch-clockout-text-task" ${datalisthtml !== '' ? 'list="patch-clockout-text-task-list" autocomplete="off"' : ''} placeholder="Enter Activity/Event" value="${task ?? ''}" spellcheck="false">
             ${datalisthtml}
         </div>
         <div class="d-flex flex-column mb-8">
