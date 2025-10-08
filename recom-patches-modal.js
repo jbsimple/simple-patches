@@ -122,7 +122,7 @@ function modifiedClock(task) {
     let datalisthtml = '';
     if (settings && settings.activitylist && Array.isArray(settings.activitylist) && settings.activitylist.length > 0) {
         settings.activitylist.forEach(option => {
-            datalisthtml += `<option value="">${option}</option>`;
+            datalisthtml += `<option value="${option}"></option>`;
         })
         datalisthtml = `<datalist id="patch-clockout-text-task-list">${datalisthtml}</datalist>`;
     }
