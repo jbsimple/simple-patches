@@ -51,7 +51,10 @@ function replaceEngagewidget() {
                     You have the Patches!<br>
                     <span class="fw-bolder">See all the changes made!</span>
                 </h1>
-                <div title="${selectedImage.title}" class="flex-grow-1 bgi-no-repeat bgi-size-contain bgi-position-x-center card-rounded-bottom h-100px mh-200px my-5" style="background-image:url('${selectedImage.url}')"></div>
+                <img src="${selectedImage.url}" 
+                    title="${selectedImage.title}" 
+                    class="flex-grow-1 card-rounded-bottom h-100px mh-200px my-5" 
+                    style="object-fit: contain; object-position: center; width: 100%; height: 100%;">
             </div>
             <div class="text-center">
                 <a title="Opens External Page" class="btn btn-sm bg-white btn-color-gray-800 me-2" target="_blank" href="https://simple-patches.vercel.app/">Read More</a>
