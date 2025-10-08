@@ -294,6 +294,16 @@ function injectExtraTheme() {
             styleTag.textContent = customcss;
             document.head.appendChild(styleTag);
         }
+
+        //activitylist
+        let activitylist = (settings && settings.activitylist && settings.activitylist !== '') ? settings.activitylist.trim() : null;
+        if (activitylist !== null && activitylist !== '') {
+            const listArray = activitylist
+                .split(',')
+                .map(item => item.trim())
+                .filter(item => item.length > 0);
+            settings.activitylist = listArray;
+        }
     }
 
     /* theme stuff */

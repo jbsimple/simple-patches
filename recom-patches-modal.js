@@ -119,6 +119,14 @@ function openPatchesModal(opts = {}) {
 }
 
 function modifiedClock(task) {
+    let datalisthtml = '';
+    if (settings && settings.activitylist && Array.isArray(settings.activitylist) && settings.activitylist.length > 0) {
+        settings.activitylist.forEach(option => {
+            datalisthtml += `<option value="">${option}</option>`;
+        })
+        datalisthtml = `<datalist id="patch-clockout-text-task-list">${datalisthtml}</datalist>`;
+    }
+
     const body = `
         <div class="d-flex flex-column mb-8">
             <p class="fs-6 fw-bold">You are about to clock out! Quickly record time below.</p>
@@ -128,7 +136,8 @@ function modifiedClock(task) {
         </div>
         <div class="d-flex flex-column mb-8">
             <label class="fs-6 fw-bold mb-2" for="patch-clockout-text-task">Activity/Event:</label>
-            <input type="text" class="form-control form-control-solid" name="task" id="patch-clockout-text-task" placeholder="Enter Activity/Event" value="${task ?? ''}" spellcheck="false">
+            <input type="text" class="form-control form-control-solid" name="task" id="patch-clockout-text-task" ${datalisthtml !== '' ? 'list="patch-clockout-text-task-list"' : ''} placeholder="Enter Activity/Event" value="${task ?? ''}" spellcheck="false">
+            ${datalisthtml}
         </div>
         <div class="d-flex flex-column mb-8">
             <label class="fs-6 fw-bold mb-2" for="patch-clockout-textarea-notes">Notes:</label>
@@ -595,6 +604,11 @@ async function updatePictureLocations() {
 function patchesSettingsModal() {
     const body = `
         <p class="fs-6 fw-bold">Modify various patch settings:</p>
+        <div class="d-flex flex-column mb-8">
+            <label class="fs-6 fw-bold mb-2" for="patch_setting_activitylist">Activity Clock-Out List:</label>
+            <p class="fs-6 fw-semibold form-label mb-2">If you want to have a list of commonky used activities for uniformity.</p>
+            <textarea style="max-height: 20vh;" class="form-control form-control-solid" rows="2" name="activitylist" id="patch_setting_activitylist" placeholder="Enter comma-separated list here." spellcheck="false"></textarea>
+        </div>
         <div class="d-flex flex-column mb-8">
             <label class="fs-6 fw-bold mb-2" for="patch_setting_pfpurl">Custom PFP URL:</label>
             <p class="fs-6 fw-semibold form-label mb-2">If you want to add a custom profile picture for the top bar.</p>
