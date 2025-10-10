@@ -415,6 +415,59 @@ function modifiedClockInit() {
 	}
 }
 
+const TIMEOUT_MS = 15000;
+const MAX_RETRIES = 3;
+const RETRY_BACKOFF_BASE = 500;
+
+function sleep(ms) { return new Promise(res => setTimeout(res, ms)); }
+
+async function fetchJsonWithTimeout(url, options = {}, { timeoutMs = TIMEOUT_MS, retries = MAX_RETRIES } = {}) {
+    let attempt = 0;
+    let lastErr = null;
+
+    while (attempt <= retries) {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+        try {
+            const res = await fetch(url, { ...options, signal: controller.signal });
+            clearTimeout(timer);
+
+            if (res.status === 429 || (res.status >= 500 && res.status <= 599)) {
+                lastErr = new Error(`HTTP ${res.status}`);
+            } else if (!res.ok) {
+                const text = await res.text().catch(() => '');
+                return {
+                    ok: false, timedOut: false, status: res.status, data: null,
+                    error: new Error(`HTTP ${res.status}${text ? `: ${text.slice(0, 200)}` : ''}`)
+                };
+            } else {
+                try {
+                    const data = await res.json();
+                    return { ok: true, timedOut: false, status: res.status, data, error: null };
+                } catch (e) {
+                    return { ok: false, timedOut: false, status: res.status, data: null, error: new Error(`Invalid JSON from ${url}: ${e.message}`) };
+                }
+            }
+        } catch (e) {
+            clearTimeout(timer);
+            lastErr = (e.name === 'AbortError')
+                ? Object.assign(new Error(`Request timed out after ${timeoutMs} ms`), { timedOut: true })
+                : e;
+        }
+
+        if (attempt < retries) {
+            const backoff = Math.round(RETRY_BACKOFF_BASE * Math.pow(2, attempt) + Math.random() * 250);
+            await sleep(backoff);
+            attempt++;
+        } else {
+            const timedOut = !!lastErr?.timedOut;
+            return { ok: false, timedOut, status: null, data: null, error: lastErr || new Error('Unknown fetch error') };
+        }
+    }
+    return { ok: false, timedOut: false, status: null, data: null, error: new Error('Unexpected fetch loop exit') };
+}
+
 function fireSwal(title, message, icon = 'warning', refresh = false) {
     const isArray = Array.isArray(message);
     const htmlMessage = isArray ? message.join('<br>') : message;
