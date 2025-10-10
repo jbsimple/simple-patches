@@ -41,16 +41,51 @@ async function updateLocations() {
         return false;
     }
     const locations = table.querySelectorAll('[href^="javascript:quickCreate(\'Update Sorting Location\',\'ajax/actions/updateSortingLocation/"]');
+    const log = [];
     for (const location of locations) {
-        const currentLocation = location.textContent;
+        const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
         const href = location.getAttribute('href');
         const match = href.match(/updateSortingLocation\/(\d+)/);
-        if (match) {
+        if (match && csrfMeta && csrfMeta.getAttribute('content').length > 0) {
+            const csrfToken = csrfMeta.getAttribute('content');
             const id = match[1];
             const currentLocation = location.textContent.trim();
-            console.debug('PATCHES - ID:', id, '| Current Location:', currentLocation);
+
+            let value = currentLocation.replace(/PICTURES/gi, 'PUTAWAYS').trimEnd();
+            let ajax = `/ajax/actions/updateSortingLocation/${id}`;
+            const formData = new FormData();
+            formData.append('name', value);
+
+            try {
+                const postRes = await fetchJsonWithTimeout(ajax,
+                    {
+                        method: 'POST',
+                        headers: { 'x-csrf-token': csrfToken },
+                        body: formData
+                    }
+                );
+
+                const ok = postRes.ok && (postRes.data?.success === true);
+                const newLog = {
+                    id,
+                    item,
+                    success: ok,
+                    message: postRes.data?.message || (ok ? 'Successful' : (postRes.timedOut ? `POST timed out after ${TIMEOUT_MS} ms` : (postRes.error?.message || 'Fail')))
+                };
+                log.push(newLog);
+
+            } catch (err) {
+                const newLog = {
+                    id,
+                    item,
+                    success: false,
+                    message: `POST failed: ${err.message}`
+                };
+                log.push(newLog);
+            }
         }
     }
+    console.debug('PATCHES - Log:', log);
 }
 
 /* helper function */
