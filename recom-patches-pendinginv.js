@@ -68,7 +68,6 @@ async function updateLocations() {
                 const ok = postRes.ok && (postRes.data?.success === true);
                 const newLog = {
                     id,
-                    item,
                     success: ok,
                     message: postRes.data?.message || (ok ? 'Successful' : (postRes.timedOut ? `POST timed out after ${TIMEOUT_MS} ms` : (postRes.error?.message || 'Fail')))
                 };
@@ -77,7 +76,6 @@ async function updateLocations() {
             } catch (err) {
                 const newLog = {
                     id,
-                    item,
                     success: false,
                     message: `POST failed: ${err.message}`
                 };
