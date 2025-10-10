@@ -35,6 +35,18 @@ async function checkPics() {
 	}
 }
 
+async function updateLocations() {
+    const table = document.getElementById('dtTable_wrapper');
+    if (!table) {
+        return false;
+    }
+    const locations = table.querySelectorAll('[href^="javascript:quickCreate(\'Update Sorting Location\',\'ajax/actions/updateSortingLocation/"]');
+    for (const location of locations) {
+        const currentLocation = location.textContent;
+        console.debug('PATCHES - Current Location:', currentLocation);
+    }
+}
+
 /* helper function */
 function fetchFieldValues(field) {
     const inputs = field.querySelectorAll('input, select, textarea');
@@ -253,6 +265,21 @@ function initToolbarButtons() {
     `;
     checkImgButton.onclick = checkPics;
 
+    const updatePictureLocationButton = document.createElement('button');
+    updatePictureLocationButton.classList.add('btn', 'btn-primary');
+    updatePictureLocationButton.id = 'patch_adjustPictureLocation';
+    updatePictureLocationButton.textContent = 'Picture Location';
+    updatePictureLocationButton.disabled = true;
+    updatePictureLocationButton.title = "Update Entries with Picture Location.";
+    updatePictureLocationButton.style.cssText = `
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 5px;
+    `;
+    updatePictureLocationButton.onclick = updateLocations;
+
     const toolbar = picontainer.querySelector('.card-toolbar.flex-row-fluid.justify-content-end');
     if (toolbar && toolbar.classList.contains('justify-content-end')) {
         toolbar.classList.remove('flex-row-fluid', 'justify-content-end');
@@ -261,6 +288,7 @@ function initToolbarButtons() {
         const spacer = document.createElement('div');
         spacer.style.flex = '1';
         toolbar.prepend(spacer);
+        toolbar.prepend(updatePictureLocationButton);
         toolbar.prepend(checkImgButton);
     }
     
