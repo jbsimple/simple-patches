@@ -329,6 +329,7 @@ function initToolbarButtons() {
         const isReady = wrapper && (!processing || processing.style.display === 'none');
 
         checkImgButton.disabled = !isReady;
+        updatePictureLocationButton.disabled = !isReady;
 
         const keywordBtn = document.getElementById('patch_searchKeywordEntries');
         if (keywordBtn) keywordBtn.disabled = !isReady;
