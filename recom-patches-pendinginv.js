@@ -84,6 +84,7 @@ async function updateLocations() {
         }
     }
     console.debug('PATCHES - Log:', log);
+    fireSwal('Update Done', `Successfully Updated ${log.length} to PUTAWAYS.`, 'success', true);
 }
 
 /* helper function */
