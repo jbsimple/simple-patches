@@ -43,7 +43,13 @@ async function updateLocations() {
     const locations = table.querySelectorAll('[href^="javascript:quickCreate(\'Update Sorting Location\',\'ajax/actions/updateSortingLocation/"]');
     for (const location of locations) {
         const currentLocation = location.textContent;
-        console.debug('PATCHES - Current Location:', currentLocation);
+        const href = location.getAttribute('href');
+        const match = href.match(/updateSortingLocation\/(\d+)/);
+        if (match) {
+            const id = match[1];
+            const currentLocation = location.textContent.trim();
+            console.debug('PATCHES - ID:', id, '| Current Location:', currentLocation);
+        }
     }
 }
 
