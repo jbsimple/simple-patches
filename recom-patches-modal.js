@@ -553,7 +553,7 @@ function patchesSettingsModal() {
         <p class="fs-6 fw-bold">Modify various patch settings:</p>
         <div class="d-flex flex-column mb-8">
             <label class="fs-6 fw-bold mb-2" for="patch_setting_activitylist">Activity Clock-Out List:</label>
-            <p class="fs-6 fw-semibold form-label mb-2">If you want to have a list of commonky used activities for uniformity.</p>
+            <p class="fs-6 fw-semibold form-label mb-2">If you want to have a list of commonly used activities for uniformity.</p>
             <textarea style="max-height: 20vh;" class="form-control form-control-solid" rows="2" name="activitylist" id="patch_setting_activitylist" placeholder="Enter comma-separated list here." spellcheck="false"></textarea>
         </div>
         <div class="d-flex flex-column mb-8">
