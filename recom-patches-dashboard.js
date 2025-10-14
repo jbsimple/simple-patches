@@ -43,6 +43,8 @@ function initQuickLinks() {
 function replaceEngagewidget() {
     const kt_app_content_container = document.getElementById('kt_app_content_container');
     const engagewidget = kt_app_content_container.querySelector('.card.bg-primary.card-flush.h-md-50.mb-xl-10');
+    engagewidget.classList = '';
+    engagewidget.classList.add('card', 'card-flush', 'h-md-50', 'mb-5', 'mb-xl-10', 'blockui');
     if (engagewidget) {
         const selectedImage = randomImages[Math.floor(Math.random() * randomImages.length)];
         engagewidget.innerHTML = `<div class="card-body d-flex flex-column">
