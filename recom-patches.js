@@ -1194,6 +1194,8 @@ function adjustToolbar() {
     const text = toolbar.querySelector('h1.page-heading').textContent;
     if (text === 'Dashboard') {
         toolbar.style.display = 'none';
+    } else {
+        toolbar.classList.add('card');
     }
 }
 

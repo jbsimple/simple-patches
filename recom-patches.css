@@ -192,7 +192,7 @@ div.dataTables_wrapper div.dataTables_processing {
 }
 
 #kt_app_toolbar {
-    background-color: var(--bs-body-bg) !important;
+    --bs-card-bg: var(--bs-body-bg) !important;
     padding: 1.25rem 0 !important;
     margin: 2rem 30px !important;
     margin-bottom: 0 !important;
