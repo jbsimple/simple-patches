@@ -566,7 +566,7 @@ function patchesSettingsModal() {
             }
 
         </style>
-        <p class="fs-6 fw-bold">Modify various patch settings:</p>
+        <p class="fs-6 fw-semibold form-label mb-2">Change various settings to customize your patching experience.</p>
         <div class="d-flex flex-column mb-8">
             <label class="fs-6 fw-bold mb-2" for="patch_setting_activitylist">Activity Clock-Out List:</label>
             <p class="fs-6 fw-semibold form-label mb-2">If you want to have a list of commonly used activities for uniformity.</p>
@@ -574,19 +574,19 @@ function patchesSettingsModal() {
         </div>
         <div class="d-flex mb-8 patches-twowrap">
             <div class="d-flex flex-column mb-8">
-                <label class="fs-6 fw-bold mb-2" for="patch_setting_pfpurl">Custom PFP URL:</label>
+                <label class="fs-6 fw-bold mb-2" for="patch_setting_pfpurl">User Icon URL:</label>
                 <p class="fs-6 fw-semibold form-label mb-2">If you want to add a custom profile picture for the top bar.</p>
                 <input type="text" class="form-control form-control-solid" name="pfpurl" id="patch_setting_pfpurl" placeholder="Enter URL" value="" spellcheck="false">
             </div>
             <div class="d-flex flex-column mb-8">
-                <label class="fs-6 fw-bold mb-2" for="patch_setting_bgurl">Custom Background Image URL:</label>
+                <label class="fs-6 fw-bold mb-2" for="patch_setting_bgurl">Background Image URL:</label>
                 <p class="fs-6 fw-semibold form-label mb-2">If you want to add a custom background to each page.</p>
                 <input type="text" class="form-control form-control-solid" name="bgurl" id="patch_setting_bgurl" placeholder="Enter URL" value="" spellcheck="false">
             </div>
         </div>
         <div class="d-flex mb-8 patches-threewrap">
             <div class="d-flex flex-column mb-8">
-                <label class="fs-6 fw-bold mb-2" for="patch_setting_bgpos">Custom Background Image Object Position:</label>
+                <label class="fs-6 fw-bold mb-2" for="patch_setting_bgpos">Background Image Object Position:</label>
                 <p class="fs-6 fw-semibold form-label mb-2">Optional: Anchor the background image.</p>
                 <select class="form-select form-select-solid" name="bgpos" id="patch_setting_bgpos">
                     <option value="">None / Default</option>
@@ -602,7 +602,7 @@ function patchesSettingsModal() {
                 </select>
             </div>
             <div class="d-flex flex-column mb-8">
-                <label class="fs-6 fw-bold mb-2" for="patch_setting_bgobf">Custom Background Image Object Fit:</label>
+                <label class="fs-6 fw-bold mb-2" for="patch_setting_bgobf">Background Image Object Fit:</label>
                 <p class="fs-6 fw-semibold form-label mb-2">Optional: Resize the background image.</p>
                 <select class="form-select form-select-solid" name="bgobf" id="patch_setting_bgobf">
                     <option value="">None / Default</option>
@@ -614,13 +614,13 @@ function patchesSettingsModal() {
                 </select>
             </div>
             <div class="d-flex flex-column mb-8">
-                <label class="fs-6 fw-bold mb-2" for="patch_setting_bgopa">Custom Background Image Opacity:</label>
+                <label class="fs-6 fw-bold mb-2" for="patch_setting_bgopa">Background Image Opacity:</label>
                 <p class="fs-6 fw-semibold form-label mb-2">Optional: Transparency of the background image.</p>
                 <input type="number" class="form-control form-control-solid" name="bgopa" id="patch_setting_bgopa" placeholder="Enter a value between 0 and 1" value="" min="0" max="1" step="0.01">
             </div>
         </div>
         <div class="d-flex flex-column mb-8">
-            <label class="fs-6 fw-bold mb-2" for="patch_setting_customcss">Custom Global CSS Rules:</label>
+            <label class="fs-6 fw-bold mb-2" for="patch_setting_customcss">Global CSS Rules:</label>
             <p class="fs-6 fw-semibold form-label mb-2">If you want to add custom css rules that applies to all pages.</p>
             <textarea style="max-height: 30vh;" class="form-control form-control-solid" rows="3" name="customcss" id="patch_setting_customcss" placeholder="Enter CSS Code Here" spellcheck="false"></textarea>
         </div>
