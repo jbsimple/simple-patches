@@ -1208,6 +1208,7 @@ function adjustToolbar() {
         toolbar.style.display = 'none';
     } else {
         toolbar.classList.add('card');
+        toolbar.classList.remove('app-toolbar');
     }
 }
 
