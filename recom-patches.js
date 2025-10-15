@@ -259,6 +259,8 @@ function injectExtraTheme() {
 
         const bgsrc = (settings && settings.bgurl && settings.bgurl !== '') ? settings.bgurl.trim() : null;
         if (bgsrc !== null && bgsrc !== '') {
+            const sidebar = document.getElementById("kt_app_sidebar");
+
             const bgImg = document.createElement("img");
             bgImg.src = bgsrc;
             bgImg.className = "dynamic-bgimg";
@@ -295,11 +297,25 @@ function injectExtraTheme() {
                 `;
                 document.head.appendChild(styleTag);
 
+                if (sidebar) {
+                    updateLeftPadding();
+                    const resizeObserver = new ResizeObserver(() => {
+                        updateLeftPadding();
+                    });
+                    resizeObserver.observe(sidebar);
+                }
+
                 bgImg.addEventListener('load', () => {
                     requestAnimationFrame(() => {
                         bgImg.style.opacity = "0.8";
                     });
                 });
+
+                function updateLeftPadding() {
+                    if (!sidebar) return;
+                    const sidebarWidth = sidebar.offsetWidth;
+                    bgImg.style.paddingLeft = `${sidebarWidth}px`;
+                }
             }
         }
 
