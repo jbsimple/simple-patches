@@ -46,6 +46,11 @@ function replaceEngagewidget() {
     engagewidget.classList = '';
     engagewidget.classList.add('card' ,'overflow-hidden' ,'card-flush' ,'h-md-50' ,'mb-5' ,'mb-xl-10');
     if (engagewidget) {
+        const previous = engagewidget.previousElementSibling;
+        if (previous) {
+            previous.classList.add('mb-5');
+        }
+        
         const selectedImage = randomImages[Math.floor(Math.random() * randomImages.length)];
         engagewidget.innerHTML = `<div class="card-body d-flex flex-column">
             <div class="m-0">
