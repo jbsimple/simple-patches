@@ -562,12 +562,12 @@ function patchesSettingsModal() {
             <input type="text" class="form-control form-control-solid" name="pfpurl" id="patch_setting_pfpurl" placeholder="Enter URL" value="" spellcheck="false">
         </div>
         <div class="d-flex flex-column mb-8">
-            <label class="fs-6 fw-bold mb-2" for="patch_setting_bgurl">Custom Background URL:</label>
+            <label class="fs-6 fw-bold mb-2" for="patch_setting_bgurl">Custom Background Image URL:</label>
             <p class="fs-6 fw-semibold form-label mb-2">If you want to add a custom background to each page.</p>
             <input type="text" class="form-control form-control-solid" name="bgurl" id="patch_setting_bgurl" placeholder="Enter URL" value="" spellcheck="false">
         </div>
         <div class="d-flex flex-column mb-8">
-            <label class="fs-6 fw-bold mb-2" for="patch_setting_bgpos">Background Image Object Position:</label>
+            <label class="fs-6 fw-bold mb-2" for="patch_setting_bgpos">Custom Background Image Object Position:</label>
             <p class="fs-6 fw-semibold form-label mb-2">Optional: Set an "anchor point" for how the background image covers.</p>
             <select class="form-select form-select-solid" name="bgpos" id="patch_setting_bgpos">
                 <option value="">None / Default</option>
@@ -590,6 +590,11 @@ function patchesSettingsModal() {
                     <option value="center">center</option>
                 </optgroup>
             </select>
+        </div>
+        <div class="d-flex flex-column mb-8">
+            <label class="fs-6 fw-bold mb-2" for="patch_setting_bgopa">Custom Background Image Opacity:</label>
+            <p class="fs-6 fw-semibold form-label mb-2">Set the opacity of the image against the regular background.</p>
+            <input type="number" class="form-control form-control-solid" name="bgopa" id="patch_setting_bgopa" placeholder="Enter a value between 0 and 1" value="" min="0" max="1" step="0.01">
         </div>
         <div class="d-flex flex-column mb-8">
             <label class="fs-6 fw-bold mb-2" for="patch_setting_customcss">Custom Global CSS Rules:</label>

@@ -259,6 +259,7 @@ function injectExtraTheme() {
 
         const bgsrc = (settings && settings.bgurl && settings.bgurl !== '') ? settings.bgurl.trim() : null;
         const bgpos = (settings && settings.bgpos && settings.bgpos !== '') ? settings.bgpos.trim() : null;
+        const bgopa = (settings && settings.bgopa && settings.bgopa !== '') ? settings.bgopa.trim() : null;
         if (bgsrc !== null && bgsrc !== '') {
             const sidebar = document.getElementById("kt_app_sidebar");
             const header = document.getElementById("kt_app_header_navbar");
@@ -266,9 +267,20 @@ function injectExtraTheme() {
             if (container) {
                 const bgImg = document.createElement("img");
                 bgImg.src = bgsrc;
-                if (bgpos !== null && bgpos !== '') {
-                    bgImg.style.objectPosition = bgpos;
+                if (bgpos !== null && bgpos !== '') { bgImg.style.objectPosition = bgpos; }
+
+                let bgImgOpa = "0.8";
+                if (bgopa !== null && bgopa !== '') {
+                    if (typeof bgopa === 'number') {
+                        bgImgOpa = Math.min(Math.max(bgopa, 0), 1).toFixed(2);
+                    } else if (!isNaN(parseFloat(bgopa))) {
+                        const num = parseFloat(bgopa);
+                        bgImgOpa = Math.min(Math.max(num, 0), 1).toFixed(2).toString();
+                    } else {
+                        bgImgOpa = String(bgopa);
+                    }
                 }
+
                 bgImg.className = "dynamic-bgimg";
 
                 const computedStyle = window.getComputedStyle(container);
@@ -306,7 +318,7 @@ function injectExtraTheme() {
 
                 bgImg.addEventListener('load', () => {
                     requestAnimationFrame(() => {
-                        bgImg.style.opacity = "0.8";
+                        bgImg.style.opacity = bgImgOpa;
                     });
                 });
 
