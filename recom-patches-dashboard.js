@@ -82,6 +82,10 @@ function fixStatCards() {
 
     const statcardfix = document.querySelectorAll('.card.card-xl-stretch.mb-xl-8');
     if (statcardfix && statcardfix.length === 3 && getTheme() === 'dark') {
+        const statcardParent = statcardfix[0].parentElement;
+        if (statcardParent) {
+            statcardParent.setAttribute('style', `margin-bottom: calc(-1 * var(--bs-gutter-y));`);
+        }
         statcardfix[0].setAttribute('style', `--bs-card-bg: rgb(65,40,50); color: white !important;`);
         statcardfix[1].setAttribute('style', `--bs-card-bg: rgb(15,50,50); color: white !important;`);
         statcardfix[2].setAttribute('style', `--bs-card-bg: rgb(50,60,85); color: white !important;`);
