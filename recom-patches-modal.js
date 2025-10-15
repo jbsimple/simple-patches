@@ -558,6 +558,10 @@ function patchesSettingsModal() {
                 gap: 1rem;
                 justify-content: space-between;
             }
+            .patches-twowrap .mb-8,
+            .patches-threewrap .mb-8 {
+                margin-bottom: 0px !important;
+            }
             .patches-twowrap > div {
                 width: calc(50% - 1rem);
             }
