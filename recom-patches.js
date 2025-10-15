@@ -262,21 +262,6 @@ function injectExtraTheme() {
             const bgImg = document.createElement("img");
             bgImg.src = bgsrc;
             bgImg.className = "dynamic-bgimg";
-
-            Object.assign(bgImg.style, {
-                position: "fixed",
-                top: "0",
-                left: "0",
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                zIndex: "-1",
-                opacity: "0",
-                transition: "opacity 2s ease",
-                pointerEvents: "none",
-                paddingTop: "90px"
-            });
-
             const container = document.getElementById("kt_app_main");
             if (container) {
                 const computedStyle = window.getComputedStyle(container);
@@ -286,7 +271,22 @@ function injectExtraTheme() {
 
                 container.appendChild(bgImg);
                 const styleTag = document.createElement("style");
+                styleTag.id = 'dynamic-bgimg-style';
                 styleTag.textContent = `
+                    #kt_app_main > .dynamic-bgimg {
+                        position: fixed;
+                        top: 0px;
+                        left: 0px;
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                        z-index: -1;
+                        opacity: 0;
+                        transition: opacity 2s ease;
+                        pointer-events: none;
+                        padding-top: 90px;
+                    }
+
                     @media (max-width: 1199.98px) {
                         #kt_app_main > .dynamic-bgimg {
                             padding-top: 60px !important;
@@ -295,8 +295,10 @@ function injectExtraTheme() {
                 `;
                 document.head.appendChild(styleTag);
 
-                requestAnimationFrame(() => {
-                    bgImg.style.opacity = "0.8";
+                bgImg.addEventListener('load', () => {
+                    requestAnimationFrame(() => {
+                        bgImg.style.opacity = "0.8";
+                    });
                 });
             }
         }
