@@ -277,9 +277,18 @@ function injectExtraTheme() {
 
             document.body.appendChild(bgImg);
 
-            requestAnimationFrame(() => {
-                bgImg.style.opacity = "0.8";
-            });
+            if (container) {
+                const computedStyle = window.getComputedStyle(container);
+                if (computedStyle.position === "static") {
+                    container.style.position = "relative";
+                }
+
+                container.appendChild(bgImg);
+
+                requestAnimationFrame(() => {
+                    bgImg.style.opacity = "0.8";
+                });
+            }
         }
 
         let customcss = (settings && settings.customcss && settings.customcss !== '') ? settings.customcss.trim() : null;
