@@ -32,6 +32,17 @@ Below is a detailed list of all the pages made to the site. Everything that is m
 #### Temporary Patches:
 No temporary patches at the moment.
 
+#### Settings Patches:
+These are patches added to a special settings box the user can edit.
+- Patch to add a list of custom activity codes to be added as prefill options when recording clock out.
+- Patch to replace the user's icon with a custom image from a url.
+- Patch to add a background image globally.
+  - Option to set the object position, anchoring the image.
+  - Option to set the object fit, changing how it fills and covers the background.
+  - Option to set the image opacity, so it better blends in the background/keep text readable.
+  - Also adjusts card background to be slightly transparent to blend better.
+- Option to set extra global css rules.
+
 #### Global Patches:
 - When the user is clocked into the Pictures task, an extra button and window is added for bulk location updates.
   - Textarea to drop a list of SKUs or SIDs to be updated; comma, space or new line separated is accepted.
@@ -80,6 +91,8 @@ No temporary patches at the moment.
 - On all ASIN inputs, a link is generated under the input field to go to the ASIN on Amazon.
 - Added approved drop down options to existing color attribute field.
 - CSS change to increase the maximum height of the inventory table.
+- Added a button in the tools to open the product/item in FBA check or Pending Inventory, using GET parameters patch.
+- Added a new button above the attributes form to bulk resubmit all channels for in stock skus under the sid.
 
 #### Listing Patches:
 - Custom feature to prepend "PICTURES" to all newly-created SKUs Locations.
@@ -100,8 +113,9 @@ No temporary patches at the moment.
 - Added a button to load icons of product images into the table.
   - There is no way to get a reduced sized image from the image cdn.
   - The process is resource heavy so it has to be a button so it can be used when it is needed.
-- Patch added to allow GET parameters to auto-do a search.
+- Added GET parameters to auto-do a search.
   - Now links to search in pending inventory can be used throughout the patch.
+- Added a keywords search button to search by listing keywords/PO.
 
 #### Reports Page Patches:
 - After submitting to generate a new report, the report displays under the original card.
@@ -114,6 +128,7 @@ No temporary patches at the moment.
   - Added Missing Picture report for Defective, Incomplete and Imaging Issues (Created last 30 days).
   - Added a Complete Missing Picture report for all items and products in the system.
   - Added a Product Items list of products over QTY 50 with ASIN column.
+  - Added a report that gets total inventory stock by SID.
   - Added a tool to look up the history of a sid's skus.
   - Added a tool to look up the history of a sku.
   - Added a tool to look up the history of an event id.
@@ -122,7 +137,7 @@ No temporary patches at the moment.
 - Added css rule to flip the order of recents and main reporting tool because recents aren't THAT important.
 
 #### Intergations Errors Page:
-- Added a button to download the table into a csv (it's not working properly, will fix in the future).
+- Added a button to download the table into a csv.
 - Added a new column for In Stock SKUs
   - Will load the SKU page to get the in stock for that SKU and adds a new column with that number.
 
