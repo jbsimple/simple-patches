@@ -4,7 +4,7 @@ function openPatchesModal(opts = {}) {
         title = '',
         body = '',
         footer = '',
-        widthClass = 'mw-650px',
+        width = '650px',
         anchor = '#rc_ajax_modal',
         backdropStatic = true,
         focus = null,
@@ -43,7 +43,7 @@ function openPatchesModal(opts = {}) {
     const html = `
         ${styleBlock}
         <div class="modal fade" id="${id}" ${backdropStatic ? 'data-bs-backdrop="static"' : ''} tabindex="-1" aria-hidden="true" role="dialog" style="display: none; background: rgba(0, 0, 0, .4) !important;">
-            <div class="modal-dialog modal-dialog-centered ${widthClass}">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: ${width} !important;">
                 <div class="modal-content rounded">
                     <div class="modal-header">
                         <h2 class="fw-bolder">${title}</h2>
@@ -550,6 +550,18 @@ async function updatePictureLocations() {
 
 function patchesSettingsModal() {
     const body = `
+        <style>
+            .patches-threewrap {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 1rem;
+                justify-content: space-between;
+            }
+            .patches-threewrap > div {
+                width: calc(100% - 1rem);
+            }
+
+        </style>
         <p class="fs-6 fw-bold">Modify various patch settings:</p>
         <div class="d-flex flex-column mb-8">
             <label class="fs-6 fw-bold mb-2" for="patch_setting_activitylist">Activity Clock-Out List:</label>
@@ -566,38 +578,40 @@ function patchesSettingsModal() {
             <p class="fs-6 fw-semibold form-label mb-2">If you want to add a custom background to each page.</p>
             <input type="text" class="form-control form-control-solid" name="bgurl" id="patch_setting_bgurl" placeholder="Enter URL" value="" spellcheck="false">
         </div>
-        <div class="d-flex flex-column mb-8">
-            <label class="fs-6 fw-bold mb-2" for="patch_setting_bgpos">Custom Background Image Object Position:</label>
-            <p class="fs-6 fw-semibold form-label mb-2">Optional: Set an "anchor point" for how the background image covers.</p>
-            <select class="form-select form-select-solid" name="bgpos" id="patch_setting_bgpos">
-                <option value="">None / Default</option>
-                <option value="center center">center center</option>
-                <option value="top left">top left</option>
-                <option value="top center">top center</option>
-                <option value="top right">top right</option>
-                <option value="center left">center left</option>
-                <option value="center right">center right</option>
-                <option value="bottom left">bottom left</option>
-                <option value="bottom center">bottom center</option>
-                <option value="bottom right">bottom right</option>
-            </select>
-        </div>
-        <div class="d-flex flex-column mb-8">
-            <label class="fs-6 fw-bold mb-2" for="patch_setting_bgobf">Custom Background Image Object Fit:</label>
-            <p class="fs-6 fw-semibold form-label mb-2">Define how the background image should be resized within its container.</p>
-            <select class="form-select form-select-solid" name="bgobf" id="patch_setting_bgobf">
-                <option value="">None / Default</option>
-                <option value="fill">fill (stretch to fill the container)</option>
-                <option value="contain">contain (fit within container, keep aspect ratio)</option>
-                <option value="cover">cover (fill container, cropping as needed)</option>
-                <option value="none">none (use image's original size)</option>
-                <option value="scale-down">scale-down (smaller of none or contain)</option>
-            </select>
-        </div>
-        <div class="d-flex flex-column mb-8">
-            <label class="fs-6 fw-bold mb-2" for="patch_setting_bgopa">Custom Background Image Opacity:</label>
-            <p class="fs-6 fw-semibold form-label mb-2">Set the opacity of the image against the regular background.</p>
-            <input type="number" class="form-control form-control-solid" name="bgopa" id="patch_setting_bgopa" placeholder="Enter a value between 0 and 1" value="" min="0" max="1" step="0.01">
+        <div class="d-flex mb-8 patches-threewrap">
+            <div class="d-flex flex-column mb-8">
+                <label class="fs-6 fw-bold mb-2" for="patch_setting_bgpos">Custom Background Image Object Position:</label>
+                <p class="fs-6 fw-semibold form-label mb-2">Optional: Set an "anchor point" for how the background image covers.</p>
+                <select class="form-select form-select-solid" name="bgpos" id="patch_setting_bgpos">
+                    <option value="">None / Default</option>
+                    <option value="center center">center center</option>
+                    <option value="top left">top left</option>
+                    <option value="top center">top center</option>
+                    <option value="top right">top right</option>
+                    <option value="center left">center left</option>
+                    <option value="center right">center right</option>
+                    <option value="bottom left">bottom left</option>
+                    <option value="bottom center">bottom center</option>
+                    <option value="bottom right">bottom right</option>
+                </select>
+            </div>
+            <div class="d-flex flex-column mb-8">
+                <label class="fs-6 fw-bold mb-2" for="patch_setting_bgobf">Custom Background Image Object Fit:</label>
+                <p class="fs-6 fw-semibold form-label mb-2">Define how the background image should be resized within its container.</p>
+                <select class="form-select form-select-solid" name="bgobf" id="patch_setting_bgobf">
+                    <option value="">None / Default</option>
+                    <option value="fill">fill (stretch to fill the container)</option>
+                    <option value="contain">contain (fit within container, keep aspect ratio)</option>
+                    <option value="cover">cover (fill container, cropping as needed)</option>
+                    <option value="none">none (use image's original size)</option>
+                    <option value="scale-down">scale-down (smaller of none or contain)</option>
+                </select>
+            </div>
+            <div class="d-flex flex-column mb-8">
+                <label class="fs-6 fw-bold mb-2" for="patch_setting_bgopa">Custom Background Image Opacity:</label>
+                <p class="fs-6 fw-semibold form-label mb-2">Set the opacity of the image against the regular background.</p>
+                <input type="number" class="form-control form-control-solid" name="bgopa" id="patch_setting_bgopa" placeholder="Enter a value between 0 and 1" value="" min="0" max="1" step="0.01">
+            </div>
         </div>
         <div class="d-flex flex-column mb-8">
             <label class="fs-6 fw-bold mb-2" for="patch_setting_customcss">Custom Global CSS Rules:</label>
@@ -624,6 +638,7 @@ function patchesSettingsModal() {
         title: 'Patches Settings',
         body,
         footer,
+        width: '800px',
         focus: null,
         escapeBlockedWhen: (ae) => ae
     });
