@@ -261,6 +261,7 @@ function injectExtraTheme() {
         if (bgsrc !== null && bgsrc !== '') {
             const bgImg = document.createElement("img");
             bgImg.src = bgsrc;
+            bgImg.className = "dynamic-bgimg";
 
             Object.assign(bgImg.style, {
                 position: "fixed",
@@ -284,6 +285,15 @@ function injectExtraTheme() {
                 }
 
                 container.appendChild(bgImg);
+                const styleTag = document.createElement("style");
+                styleTag.textContent = `
+                    @media (max-width: 1199.98px) {
+                        #kt_app_main > .dynamic-bgimg {
+                            padding-top: 60px !important;
+                        }
+                    }
+                `;
+                document.head.appendChild(styleTag);
 
                 requestAnimationFrame(() => {
                     bgImg.style.opacity = "0.8";
