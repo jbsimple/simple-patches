@@ -114,7 +114,7 @@ function initSearchSelect() {
 
         if (!document.getElementById('patch-autoSelect')) {
             const wrapper = document.createElement('div');
-            wrapper.classList.add('col-md-1');
+            wrapper.classList.add('col-md-2');
             wrapper.style.cssText = 'padding-left: 0; padding-right: 0;';
             wrapper.innerHTML = `
             <div class="h-60px input-group-text" style="display: flex; flex-direction: row; gap 0.25rem; align-items: center; justify-content: center; min-width: 150px;">
