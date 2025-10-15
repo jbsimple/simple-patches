@@ -261,15 +261,16 @@ function injectExtraTheme() {
         const bgpos = (settings && settings.bgpos && settings.bgpos !== '') ? settings.bgpos.trim() : null;
         if (bgsrc !== null && bgsrc !== '') {
             const sidebar = document.getElementById("kt_app_sidebar");
-
-            const bgImg = document.createElement("img");
-            bgImg.src = bgsrc;
-            if (bgpos !== null && bgpos !== '') {
-                bgImg.style.objectPosition = bgpos;
-            }
-            bgImg.className = "dynamic-bgimg";
+            const header = document.getElementById("kt_app_header_navbar");
             const container = document.getElementById("kt_app_main");
             if (container) {
+                const bgImg = document.createElement("img");
+                bgImg.src = bgsrc;
+                if (bgpos !== null && bgpos !== '') {
+                    bgImg.style.objectPosition = bgpos;
+                }
+                bgImg.className = "dynamic-bgimg";
+
                 const computedStyle = window.getComputedStyle(container);
                 if (computedStyle.position === "static") {
                     container.style.position = "relative";
@@ -288,26 +289,16 @@ function injectExtraTheme() {
                         object-fit: cover;
                         z-index: -1;
                         opacity: 0;
-                        transition: opacity 2s ease;
+                        transition: opacity 1s ease, padding 0.3s ease;
                         pointer-events: none;
-                        padding-top: 90px;
-                    }
-
-                    @media (max-width: 1199.98px) {
-                        #kt_app_main > .dynamic-bgimg {
-                            padding-top: 60px !important;
-                        }
                     }
                 `;
                 document.head.appendChild(styleTag);
 
-                if (sidebar) {
-                    updateLeftPadding();
-                    const resizeObserver = new ResizeObserver(() => {
-                        updateLeftPadding();
-                    });
-                    resizeObserver.observe(sidebar);
-                }
+                updatePadding();
+                const resizeObserver = new ResizeObserver(() => updatePadding());
+                if (sidebar) resizeObserver.observe(sidebar);
+                if (header) resizeObserver.observe(header);
 
                 bgImg.addEventListener('load', () => {
                     requestAnimationFrame(() => {
@@ -315,10 +306,11 @@ function injectExtraTheme() {
                     });
                 });
 
-                function updateLeftPadding() {
-                    if (!sidebar) return;
-                    const sidebarWidth = sidebar.offsetWidth;
+                function updatePadding() {
+                    const sidebarWidth = sidebar ? sidebar.offsetWidth : 0;
+                    const headerHeight = header ? header.offsetHeight : 0;
                     bgImg.style.paddingLeft = `${sidebarWidth}px`;
+                    bgImg.style.paddingTop = `${headerHeight}px`;
                 }
             }
         }
