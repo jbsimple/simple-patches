@@ -277,6 +277,7 @@ function injectExtraTheme() {
 
             document.body.appendChild(bgImg);
 
+            const container = document.getElementById("kt_app_main");
             if (container) {
                 const computedStyle = window.getComputedStyle(container);
                 if (computedStyle.position === "static") {
