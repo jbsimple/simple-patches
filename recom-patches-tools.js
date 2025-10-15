@@ -66,7 +66,7 @@ function addButtonCard(title, bullets, href) {
 
     // fix the card sizing omg
     const replacedTools = toolContainer.querySelectorAll('.card.card-flush');
-    replacedTools.forEach(tool => { tool.setAttribute('style', 'width: calc(33% - 2rem); height: unset !important;'); })
+    replacedTools.forEach(tool => { tool.setAttribute('style', 'width: calc(33% - 1rem); height: unset !important;'); })
 
     toolContainer.setAttribute('style', 'display: flex; flex-wrap: wrap; gap: 2rem; justify-content: space-between;');
 }
