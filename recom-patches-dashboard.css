@@ -28,8 +28,8 @@
 #patches-dashboard-quicklinks .item.green { --bs-card-bg: rgba(15,50,50); }
 #patches-dashboard-quicklinks .item.green:hover { --bs-card-bg: rgba(25,60,60); }
 
-#patches-dashboard-quicklinks .item.blue { --bs-card-bg:: rgba(50,60,85); }
-#patches-dashboard-quicklinks .item.blue:hover { --bs-card-bg:: rgba(60,70,90); }
+#patches-dashboard-quicklinks .item.blue { --bs-card-bg: rgba(50,60,85); }
+#patches-dashboard-quicklinks .item.blue:hover { --bs-card-bg: rgba(60,70,90); }
 
-#patches-dashboard-quicklinks .item.red { --bs-card-bg:: rgba(65,40,50); }
-#patches-dashboard-quicklinks .item.red:hover { --bs-card-bg:: rgba(90,50,60); }
+#patches-dashboard-quicklinks .item.red { --bs-card-bg: rgba(65,40,50); }
+#patches-dashboard-quicklinks .item.red:hover { --bs-card-bg: rgba(90,50,60); }
