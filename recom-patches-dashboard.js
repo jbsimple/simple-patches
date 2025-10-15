@@ -82,7 +82,7 @@ function fixStatCards() {
 
     const statcardfix = document.querySelectorAll('.card.card-xl-stretch.mb-xl-8');
     if (statcardfix && statcardfix.length === 3 && getTheme() === 'dark') {
-        const statcardParent = statcardfix[0].parentElement;
+        const statcardParent = statcardfix[0].parentElement?.parentElement;
         if (statcardParent) {
             statcardParent.setAttribute('style', `margin-bottom: calc(-1 * var(--bs-gutter-y));`);
         }
