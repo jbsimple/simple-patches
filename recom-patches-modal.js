@@ -570,7 +570,7 @@ function patchesSettingsModal() {
             }
 
         </style>
-        <p class="fs-6 fw-semibold form-label mb-2">Change various settings to customize your patching experience.</p>
+        <p class="fs-6 fw-semibold form-label mb-2">Change various settings to customize your patching experience.<br></p>
         <div class="d-flex flex-column mb-8">
             <label class="fs-6 fw-bold mb-2" for="patch_setting_activitylist">Activity Clock-Out List:</label>
             <p class="fs-6 fw-semibold form-label mb-2">If you want to have a list of commonly used activities for uniformity.</p>
@@ -619,7 +619,7 @@ function patchesSettingsModal() {
             </div>
             <div class="d-flex flex-column mb-8">
                 <label class="fs-6 fw-bold mb-2" for="patch_setting_bgopa">Background Image Opacity:</label>
-                <p class="fs-6 fw-semibold form-label mb-2">Optional: Adjust opacity of the background image .</p>
+                <p class="fs-6 fw-semibold form-label mb-2">Optional: Adjust opacity of the background image.</p>
                 <input type="number" class="form-control form-control-solid" name="bgopa" id="patch_setting_bgopa" placeholder="Enter a value between 0 and 1" value="" min="0" max="1" step="0.01">
             </div>
         </div>
