@@ -292,6 +292,10 @@ function injectExtraTheme() {
                         transition: opacity 1s ease, padding 0.3s ease;
                         pointer-events: none;
                     }
+
+                    .card {
+                        background-color: color-mix(in srgb, var(--bs-card-bg) 85%, transparent 15%) !important;
+                    }
                 `;
                 document.head.appendChild(styleTag);
 
