@@ -44,12 +44,12 @@ function replaceEngagewidget() {
     const kt_app_content_container = document.getElementById('kt_app_content_container');
     const engagewidget = kt_app_content_container.querySelector('.card.bg-primary.card-flush.h-md-50.mb-xl-10');
     engagewidget.classList = '';
-    engagewidget.classList.add('card', 'card-flush', 'h-md-50', 'mb-5', 'mb-xl-10', 'blockui');
+    engagewidget.classList.add('card' ,'overflow-hidden' ,'card-flush' ,'h-md-50' ,'mb-5' ,'mb-xl-10');
     if (engagewidget) {
         const selectedImage = randomImages[Math.floor(Math.random() * randomImages.length)];
         engagewidget.innerHTML = `<div class="card-body d-flex flex-column">
             <div class="m-0">
-                <h1 class="fw-semibold text-white text-center lh-lg mb-9">
+                <h1 class="fw-semibold text-white text-center lh-lg">
                     You have the Patches!<br>
                     <span class="fw-bolder">See all the changes made!</span>
                 </h1>
@@ -63,7 +63,6 @@ function replaceEngagewidget() {
             </div>
         </div>`;
         engagewidget.classList.remove('bg-primary');
-        engagewidget.setAttribute('style', "background-color: black !important;");
     }
 }
 
