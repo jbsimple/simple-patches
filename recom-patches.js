@@ -259,6 +259,7 @@ function injectExtraTheme() {
 
         const bgsrc = (settings && settings.bgurl && settings.bgurl !== '') ? settings.bgurl.trim() : null;
         const bgpos = (settings && settings.bgpos && settings.bgpos !== '') ? settings.bgpos.trim() : null;
+        const bgobf = (settings && settings.bgobf && settings.bgobf !== '') ? settings.bgobf.trim() : null;
         const bgopa = (settings && settings.bgopa && settings.bgopa !== '') ? settings.bgopa.trim() : null;
         if (bgsrc !== null && bgsrc !== '') {
             const sidebar = document.getElementById("kt_app_sidebar");
@@ -267,7 +268,8 @@ function injectExtraTheme() {
             if (container) {
                 const bgImg = document.createElement("img");
                 bgImg.src = bgsrc;
-                if (bgpos !== null && bgpos !== '') { bgImg.style.objectPosition = bgpos; }
+                if (bgpos !== null && bgpos !== '') { bgImg.style.objectPosition = bgpos; } else { bgImg.style.objectPosition = 'center center'; }
+                if (bgobf !== null && bgobf !== '') { bgImg.style.objectFit = bgobf; } else { bgImg.style.objectFit = 'cover'; }
 
                 let bgImgOpa = "0.8";
                 if (bgopa !== null && bgopa !== '') {
