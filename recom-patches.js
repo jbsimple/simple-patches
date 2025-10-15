@@ -258,11 +258,15 @@ function injectExtraTheme() {
         }
 
         const bgsrc = (settings && settings.bgurl && settings.bgurl !== '') ? settings.bgurl.trim() : null;
+        const bgpos = (settings && settings.bgpos && settings.bgpos !== '') ? settings.bgpos.trim() : null;
         if (bgsrc !== null && bgsrc !== '') {
             const sidebar = document.getElementById("kt_app_sidebar");
 
             const bgImg = document.createElement("img");
             bgImg.src = bgsrc;
+            if (bgpos !== null && bgpos !== '') {
+                bgImg.style.objectPosition = bgpos;
+            }
             bgImg.className = "dynamic-bgimg";
             const container = document.getElementById("kt_app_main");
             if (container) {
@@ -270,7 +274,7 @@ function injectExtraTheme() {
                 if (computedStyle.position === "static") {
                     container.style.position = "relative";
                 }
-
+                
                 container.appendChild(bgImg);
                 const styleTag = document.createElement("style");
                 styleTag.id = 'dynamic-bgimg-style';

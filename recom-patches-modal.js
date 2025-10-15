@@ -567,6 +567,31 @@ function patchesSettingsModal() {
             <input type="text" class="form-control form-control-solid" name="bgurl" id="patch_setting_bgurl" placeholder="Enter URL" value="" spellcheck="false">
         </div>
         <div class="d-flex flex-column mb-8">
+            <label class="fs-6 fw-bold mb-2" for="patch_setting_bgpos">Background Image Object Position:</label>
+            <p class="fs-6 fw-semibold form-label mb-2">Optional: Set an "anchor point" for how the background image covers.</p>
+            <select class="form-select form-select-solid" name="bgpos" id="patch_setting_bgpos">
+                <option value="">None / Default</option>
+                <optgroup label="Keyword Positions">
+                    <option value="center center">center center</option>
+                    <option value="top left">top left</option>
+                    <option value="top center">top center</option>
+                    <option value="top right">top right</option>
+                    <option value="center left">center left</option>
+                    <option value="center right">center right</option>
+                    <option value="bottom left">bottom left</option>
+                    <option value="bottom center">bottom center</option>
+                    <option value="bottom right">bottom right</option>
+                </optgroup>
+                <optgroup label="Single Keywords">
+                    <option value="top">top</option>
+                    <option value="bottom">bottom</option>
+                    <option value="left">left</option>
+                    <option value="right">right</option>
+                    <option value="center">center</option>
+                </optgroup>
+            </select>
+        </div>
+        <div class="d-flex flex-column mb-8">
             <label class="fs-6 fw-bold mb-2" for="patch_setting_customcss">Custom Global CSS Rules:</label>
             <p class="fs-6 fw-semibold form-label mb-2">If you want to add custom css rules that applies to all pages.</p>
             <textarea style="max-height: 30vh;" class="form-control form-control-solid" rows="3" name="customcss" id="patch_setting_customcss" placeholder="Enter CSS Code Here" spellcheck="false"></textarea>
