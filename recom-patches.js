@@ -272,8 +272,6 @@ function injectExtraTheme() {
                 zIndex: "-1",
                 opacity: "0",
                 transition: "opacity 2s ease",
-                filter: "invert(1) brightness(0.75) contrast(1.5)",
-                mixBlendMode: "multiply",
                 pointerEvents: "none"
             });
 
