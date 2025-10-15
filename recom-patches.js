@@ -272,10 +272,9 @@ function injectExtraTheme() {
                 zIndex: "-1",
                 opacity: "0",
                 transition: "opacity 2s ease",
-                pointerEvents: "none"
+                pointerEvents: "none",
+                paddingTop: "90px"
             });
-
-            document.body.appendChild(bgImg);
 
             const container = document.getElementById("kt_app_main");
             if (container) {
