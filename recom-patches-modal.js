@@ -558,7 +558,7 @@ function patchesSettingsModal() {
                 justify-content: space-between;
             }
             .patches-threewrap > div {
-                width: calc(100% - 1rem);
+                width: calc(33% - 1rem);
             }
 
         </style>
@@ -581,7 +581,7 @@ function patchesSettingsModal() {
         <div class="d-flex mb-8 patches-threewrap">
             <div class="d-flex flex-column mb-8">
                 <label class="fs-6 fw-bold mb-2" for="patch_setting_bgpos">Custom Background Image Object Position:</label>
-                <p class="fs-6 fw-semibold form-label mb-2">Optional: Set an "anchor point" for how the background image covers.</p>
+                <p class="fs-6 fw-semibold form-label mb-2">Optional: Anchor the background image.</p>
                 <select class="form-select form-select-solid" name="bgpos" id="patch_setting_bgpos">
                     <option value="">None / Default</option>
                     <option value="center center">center center</option>
@@ -597,7 +597,7 @@ function patchesSettingsModal() {
             </div>
             <div class="d-flex flex-column mb-8">
                 <label class="fs-6 fw-bold mb-2" for="patch_setting_bgobf">Custom Background Image Object Fit:</label>
-                <p class="fs-6 fw-semibold form-label mb-2">Define how the background image should be resized within its container.</p>
+                <p class="fs-6 fw-semibold form-label mb-2">Optional: Resize the background image.</p>
                 <select class="form-select form-select-solid" name="bgobf" id="patch_setting_bgobf">
                     <option value="">None / Default</option>
                     <option value="fill">fill (stretch to fill the container)</option>
@@ -609,7 +609,7 @@ function patchesSettingsModal() {
             </div>
             <div class="d-flex flex-column mb-8">
                 <label class="fs-6 fw-bold mb-2" for="patch_setting_bgopa">Custom Background Image Opacity:</label>
-                <p class="fs-6 fw-semibold form-label mb-2">Set the opacity of the image against the regular background.</p>
+                <p class="fs-6 fw-semibold form-label mb-2">Optional: Transparency of the background image.</p>
                 <input type="number" class="form-control form-control-solid" name="bgopa" id="patch_setting_bgopa" placeholder="Enter a value between 0 and 1" value="" min="0" max="1" step="0.01">
             </div>
         </div>
