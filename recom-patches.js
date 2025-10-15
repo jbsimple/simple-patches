@@ -305,6 +305,7 @@ function injectExtraTheme() {
                         opacity: 0;
                         transition: opacity 1s ease, padding 0.3s ease;
                         pointer-events: none;
+                        user-select: none;
                     }
 
                     .card {
