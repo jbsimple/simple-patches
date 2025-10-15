@@ -50,7 +50,7 @@ function replaceEngagewidget() {
         if (previous) {
             previous.classList.add('mb-5');
         }
-        
+
         const selectedImage = randomImages[Math.floor(Math.random() * randomImages.length)];
         engagewidget.innerHTML = `<div class="card-body d-flex flex-column">
             <div class="m-0">
@@ -82,9 +82,9 @@ function fixStatCards() {
 
     const statcardfix = document.querySelectorAll('.card.card-xl-stretch.mb-xl-8');
     if (statcardfix && statcardfix.length === 3 && getTheme() === 'dark') {
-        statcardfix[0].setAttribute('style', `background-color: rgb(65,40,50) !important; color: white !important;`);
-        statcardfix[1].setAttribute('style', `background-color: rgb(15,50,50) !important; color: white !important;`);
-        statcardfix[2].setAttribute('style', `background-color: rgb(50,60,85) !important; color: white !important;`);
+        statcardfix[0].setAttribute('style', `--bs-card-bg: rgb(65,40,50); color: white !important;`);
+        statcardfix[1].setAttribute('style', `--bs-card-bg: rgb(15,50,50); color: white !important;`);
+        statcardfix[2].setAttribute('style', `--bs-card-bg: rgb(50,60,85); color: white !important;`);
     }
 }
 
