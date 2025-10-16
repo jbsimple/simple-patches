@@ -308,6 +308,12 @@ function injectExtraTheme() {
                         user-select: none;
                     }
 
+                    @media (max-width: 1199.98px) {
+                        #kt_app_main > .dynamic-bgimg {
+                            padding-left: 0px !important;
+                        }
+                    }
+
                     .card {
                         background-color: color-mix(in srgb, var(--bs-card-bg) 85%, transparent 15%) !important;
                     }
