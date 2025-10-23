@@ -39,7 +39,7 @@ function replaceEngagewidget() {
     const engagewidget = kt_app_content_container.querySelector('.card.bg-primary.card-flush.h-md-50.mb-xl-10');
     engagewidget.classList = '';
     engagewidget.classList.add('card' ,'overflow-hidden' ,'card-flush' ,'h-md-50' ,'mb-5' ,'mb-xl-10');
-    engagewidget.setAttribute('style', 'background-color: #1e1e2d !important; border: 1px solid #2B2B40 !important;');
+    engagewidget.removeAttribute('data-bs-theme');
     if (engagewidget) {
         const previous = engagewidget.previousElementSibling;
         if (previous) {
