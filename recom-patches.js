@@ -114,11 +114,14 @@ function injectGoods() {
     darkreaderFetch.onload = async function() { 
         console.debug('PATCHES - Loaded Dark Reader');
         const css = await DarkReader.exportGeneratedCSS();
-            style.textContent = `
+
+        const style = document.createElement('style');
+        style.textContent = `
             svg, svg * {
                 filter: invert(1) hue-rotate(180deg) !important;
             }
         `;
+        
         document.head.appendChild(style);
         };
     document.body.appendChild(darkreaderFetch);
