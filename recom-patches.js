@@ -111,27 +111,59 @@ function injectGoods() {
 
     let darkreaderFetch = document.createElement('script');
     darkreaderFetch.src = "https://cdn.jsdelivr.net/npm/darkreader@4.9.112/darkreader.min.js";
-    darkreaderFetch.onload = function() {
+    darkreaderFetch.onload = async function() {
         console.debug('PATCHES - Loaded Dark Reader');
 
-        const svgElements = document.querySelectorAll('svg');
+        await DarkReader.enable({ brightness: 100, contrast: 100, sepia: 0 });
+        DarkReader.disable();
 
-        svgElements.forEach(originalSVG => {
-            const wrapper = document.createElement('div');
-            const shadow = wrapper.attachShadow({ mode: 'open' });
-            shadow.appendChild(originalSVG.cloneNode(true));
+        const svg = document.querySelector('svg.apexcharts-svg');
+        if (!svg) return;
 
-            originalSVG.replaceWith(wrapper);
-            DarkReader.enable(
-                {
-                    brightness: 100,
-                    contrast: 100,
-                    sepia: 0
-                },
-                { shadowRoot: shadow }
-            );
+        const transformColor = (val) => {
+            try {
+                return DarkReader.getFilteredColor({
+                    r: parseInt(val.slice(1, 3), 16),
+                    g: parseInt(val.slice(3, 5), 16),
+                    b: parseInt(val.slice(5, 7), 16),
+                });
+            } catch {
+                return val;
+            }
+        };
+
+        svg.querySelectorAll('[fill], [stroke], stop[stop-color]').forEach(el => {
+            if (el.hasAttribute('fill')) {
+                const val = el.getAttribute('fill');
+                if (val && val.startsWith('#')) {
+                    el.setAttribute('fill', transformColor(val));
+                }
+            }
+            if (el.hasAttribute('stroke')) {
+                const val = el.getAttribute('stroke');
+                if (val && val.startsWith('#')) {
+                    el.setAttribute('stroke', transformColor(val));
+                }
+            }
+            if (el.tagName === 'stop' && el.hasAttribute('stop-color')) {
+                const val = el.getAttribute('stop-color');
+                if (val && val.startsWith('rgb')) {
+                    // convert rgb(...) to hex first
+                    const match = val.match(/\d+/g);
+                    if (match) {
+                        const [r, g, b] = match.map(Number);
+                        const color = DarkReader.modifyColor({ r, g, b });
+                        el.setAttribute('stop-color', `rgb(${color.r},${color.g},${color.b})`);
+                    }
+                } else if (val && val.startsWith('#')) {
+                    el.setAttribute('stop-color', transformColor(val));
+                }
+            }
         });
+
+        console.debug('PATCHES - Applied DarkReader dark transform to SVG only');
     };
+    document.body.appendChild(darkreaderFetch);
 
 }
 
