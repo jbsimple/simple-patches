@@ -220,57 +220,31 @@ function injectExtraTheme() {
         svgs.forEach(svg => {
             const adjustColor = (color) => {
                 if (!color) return color;
-                let r, g, b;
+                const m = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+                if (!m) return color;
+                let [r, g, b] = m.slice(1).map(Number);
 
-                if (color.startsWith('#')) {
-                    // parse hex
-                    const hex = color.replace('#', '');
-                    if (hex.length === 3) {
-                        r = parseInt(hex[0] + hex[0], 16);
-                        g = parseInt(hex[1] + hex[1], 16);
-                        b = parseInt(hex[2] + hex[2], 16);
-                    } else {
-                        r = parseInt(hex.substr(0, 2), 16);
-                        g = parseInt(hex.substr(2, 2), 16);
-                        b = parseInt(hex.substr(4, 2), 16);
-                    }
-                } else {
-                    const m = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
-                    if (!m) return color;
-                    [r, g, b] = m.slice(1).map(Number);
-                }
-
-                const lightness = (0.2126 * r + 0.7152 * g + 0.0722 * b);
+                // compute lightness
+                const lightness = 0.2126 * r + 0.7152 * g + 0.0722 * b;
                 if (lightness > 200) {
-                    r = g = b = Math.round(lightness * 0.1);
-                } else if (lightness > 130) {
-                    r = Math.round(r * 0.5);
-                    g = Math.round(g * 0.5);
-                    b = Math.round(b * 0.5);
-                } else {
-                    r = Math.min(255, Math.round(r * 1.2));
-                    g = Math.min(255, Math.round(g * 1.2));
-                    b = Math.min(255, Math.round(b * 1.2));
+                    r = g = b = 20;          // white → black
+                } else if (lightness > 150) {
+                    r = Math.round(r * 0.4); // bright → darker
+                    g = Math.round(g * 0.4);
+                    b = Math.round(b * 0.4);
                 }
                 return `rgb(${r},${g},${b})`;
             };
 
-            svg.querySelectorAll('stop[stop-color]').forEach(stop => {
+            svg.querySelectorAll('defs stop[stop-color]').forEach(stop => {
                 const val = stop.getAttribute('stop-color');
                 stop.setAttribute('stop-color', adjustColor(val));
-            });
-
-            svg.querySelectorAll('[fill], [stroke]').forEach(el => {
-                const f = el.getAttribute('fill');
-                const s = el.getAttribute('stroke');
-                if (f && (/rgb|#/.test(f))) el.setAttribute('fill', adjustColor(f));
-                if (s && (/rgb|#/.test(s))) el.setAttribute('stroke', adjustColor(s));
             });
         });
 
         console.debug('PATCHES - Applied manual dark theme to all ApexCharts SVGs.');
     }
-    
+
     fixApexCharts();
 
     const chartWatcher = new MutationObserver((changes) => {
