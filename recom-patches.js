@@ -246,9 +246,23 @@ function injectExtraTheme() {
             if (s && /rgb/.test(s)) el.setAttribute('stroke', adjustColor(s));
         });
 
-        console.debug('PATCHES - Applied manual dark theme to apexcharts svg.');
+        console.debug('PATCHES - Applied manual dark theme to ApexCharts SVG.');
     }
     fixApexCharts();
+    const chartWatcher = new MutationObserver((list) => {
+        for (const mutation of list) {
+            if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                const found = Array.from(mutation.addedNodes).some(node =>
+                    node.nodeType === 1 && node.matches?.('svg.apexcharts-svg, .apexcharts-canvas, .apexcharts-inner')
+                );
+                if (found) {
+                    setTimeout(fixApexCharts, 100);
+                    break;
+                }
+            }
+        }
+    });
+    chartWatcher.observe(document.body, { childList: true, subtree: true });
 
     // setting stuff
     settings = loadPatchSettings();
