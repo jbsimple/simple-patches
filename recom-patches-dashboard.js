@@ -46,7 +46,7 @@ function replaceEngagewidget() {
         }
 
         const selectedImage = randomImages[Math.floor(Math.random() * randomImages.length)];
-        engagewidget.innerHTML = `<div class="card-body d-flex flex-column">
+        engagewidget.innerHTML = `<div class="card-body d-flex flex-column" style="background-color: #1e1e2d !important;">
             <div class="m-0">
                 <h1 class="fw-semibold text-white text-center lh-lg">
                     You have the Patches!<br>
