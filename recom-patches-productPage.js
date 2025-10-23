@@ -1417,9 +1417,9 @@ function wm_generateButton() {
 		select.value = upc;
 		select.dispatchEvent(new Event('change', { bubbles: true }));
 		
-		console.log("Generated UPC:", upc);
+		console.log("PATCHES - Generated UPC:", upc);
 	} else {
-        console.warn("Select element not found.");
+        console.warn("PATCHES - Select element not found.");
     }
 }
 function wm_resubmitAll() {
