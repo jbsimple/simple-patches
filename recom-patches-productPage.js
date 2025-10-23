@@ -1385,3 +1385,103 @@ function extraMediaInit() {
     }
 }
 waitForElement('#rc_product_media_tab', extraMediaInit);
+
+function wm_generateUPC() {
+    let digits = [];
+    for (let i = 0; i < 11; i++) {
+        digits.push(Math.floor(Math.random() * 10));
+    }
+
+    let sum = 0;
+    for (let i = 0; i < 11; i++) {
+        sum += digits[i] * (i % 2 === 0 ? 3 : 1);
+    }
+    let checkDigit = (10 - (sum % 10)) % 10;
+    digits.push(checkDigit);
+    return digits.join('');
+}
+function wm_generateButton() {
+	const select = document.querySelector('select[name="item[meta][7][value][]"]');
+	if (select) {
+		const upc = wm_generateUPC();
+		const randomId = Math.random().toString(36).substring(2, 8); 
+        const randomId2 = Math.random().toString(36).substring(2, 8);
+          
+		const option = document.createElement('option');
+		option.setAttribute('value', upc);
+		option.setAttribute('data-select2-id', `select2-data-${randomId}-${randomId2}`);
+		option.setAttribute('data-select2-tag', 'true');
+		option.textContent = upc;
+		
+		select.appendChild(option);
+		select.value = upc;
+		select.dispatchEvent(new Event('change', { bubbles: true }));
+		
+		console.log("Generated UPC:", upc);
+	} else {
+        console.warn("Select element not found.");
+    }
+}
+function wm_resubmitAll() {
+		let ajax = '/integrations/stores/listing/resubmit/';
+		let itemid = document.querySelector('.fs-5.text-info.fw-bolder.lh-1');
+		const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
+		if (itemid && csrfMeta && csrfMeta.getAttribute('content').length > 0) {
+			const csrfToken = csrfMeta.getAttribute('content');
+			itemid = itemid.textContent;
+			ajax += itemid;
+			
+			const body = new URLSearchParams();
+      body.append("store", "all");
+      
+      return fetch(ajax, {
+          method: "POST",
+          credentials: "include",
+          headers: {
+              "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+              "x-csrf-token": csrfToken,
+              "x-requested-with": "XMLHttpRequest"
+          },
+          body: body.toString()
+      })
+          .then(r => r.json())
+          .then(json => {
+              console.debug(`PATCHES - Resubmitted ${itemid}:`, json);
+              fireSwal('Yay!', `Resubmitted All Channels.`, success, true);
+          })
+          .catch(err => {
+              console.error(`PATCHES - Failed resubmitting ${itemid}:`, err);
+              fireSwal('UHOH!', ['Something Failed:',`${err}`], error, false);
+          });
+			
+		}
+}
+function wm_upcInit() {
+    const link = document.querySelector('a[href*="/docs/read?search=Walmart+UPC"]');
+    if (link && link.parentElement) {
+    		link.style.display = "none";
+    		const parent = link.parentElement;
+    		parent.setAttribute('style', 'display: flex; flex-direction: row; gap: 0.75rem; margin-top: 0.5rem;');
+    		parent.parentElement.classList.remove('mb-10');
+    		parent.parentElement.setAttribute('style', 'margin-bottom: 1.5rem !important;');
+    		
+        const generateButton = document.createElement('a');
+        generateButton.textContent = "Generate UPC";
+        generateButton.href = "#";
+        generateButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            wm_generateButton();
+        });
+        parent.appendChild(generateButton);
+        
+        const resubmitAll = document.createElement('a');
+        resubmitAll.textContent = "Resubmit All";
+        resubmitAll.href = "#";
+        resubmitAll.addEventListener('click', (e) => {
+            e.preventDefault();
+            wm_resubmitAll();
+        });
+        parent.appendChild(resubmitAll);
+    }
+}
+waitForElement('#el_item_form', wm_upcInit);
