@@ -223,13 +223,11 @@ function injectExtraTheme() {
                 const m = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
                 if (!m) return color;
                 let [r, g, b] = m.slice(1).map(Number);
-
-                // compute lightness
                 const lightness = 0.2126 * r + 0.7152 * g + 0.0722 * b;
                 if (lightness > 200) {
-                    r = g = b = 20;          // white → black
+                    r = g = b = 20;
                 } else if (lightness > 150) {
-                    r = Math.round(r * 0.4); // bright → darker
+                    r = Math.round(r * 0.4);
                     g = Math.round(g * 0.4);
                     b = Math.round(b * 0.4);
                 }
@@ -238,9 +236,15 @@ function injectExtraTheme() {
 
             svg.querySelectorAll('defs stop[stop-color]').forEach(stop => {
                 const val = stop.getAttribute('stop-color');
-                stop.setAttribute('stop-color', adjustColor(val));
+                const newColor = adjustColor(val);
+                stop.setAttribute('stop-color', newColor);
+                const [r, g, b] = newColor.match(/\d+/g).map(Number);
+                const lightness = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+                const newOpacity = Math.max(0, Math.min(0.7, lightness / 360));
+                stop.setAttribute('stop-opacity', newOpacity.toFixed(2));
             });
         });
+
 
         console.debug('PATCHES - Applied manual dark theme to all ApexCharts SVGs.');
     }
