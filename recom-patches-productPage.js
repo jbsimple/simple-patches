@@ -1420,6 +1420,7 @@ function wm_generateButton() {
 		console.log("PATCHES - Generated UPC:", upc);
 	} else {
         console.warn("PATCHES - Select element not found.");
+        fireSwal('UHOH!', ['Something Failed:',`Unable to find the Select?`], 'error', false);
     }
 }
 function wm_resubmitAll() {
@@ -1447,11 +1448,11 @@ function wm_resubmitAll() {
           .then(r => r.json())
           .then(json => {
               console.debug(`PATCHES - Resubmitted ${itemid}:`, json);
-              fireSwal('Yay!', `Resubmitted All Channels.`, success, true);
+              fireSwal('Yay!', `Resubmitted All Channels.`, 'success', true);
           })
           .catch(err => {
               console.error(`PATCHES - Failed resubmitting ${itemid}:`, err);
-              fireSwal('UHOH!', ['Something Failed:',`${err}`], error, false);
+              fireSwal('UHOH!', ['Something Failed:',`${err}`], 'error', false);
           });
 			
 		}
