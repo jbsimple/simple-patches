@@ -111,26 +111,16 @@ function injectGoods() {
 
     let darkreaderFetch = document.createElement('script');
     darkreaderFetch.src = "https://cdn.jsdelivr.net/npm/darkreader@4.9.112/darkreader.min.js";
-    darkreaderFetch.onload = function() { 
+    darkreaderFetch.onload = async function() { 
         console.debug('PATCHES - Loaded Dark Reader');
-        DarkReader.enable({
-            brightness: 100,
-            contrast: 100,
-            sepia: 0,
-            css: `
-                /* Apply dark filter to only SVGs */
-                html, body, *:not(svg, svg *) {
-                    filter: none !important;
-                    background-color: inherit !important;
-                    color: inherit !important;
-                }
-
-                svg, svg * {
-                    filter: invert(1) hue-rotate(180deg) !important;
-                }
-            `
-        });
-    };
+        const css = await DarkReader.exportGeneratedCSS();
+            style.textContent = `
+            svg, svg * {
+                filter: invert(1) hue-rotate(180deg) !important;
+            }
+        `;
+        document.head.appendChild(style);
+        };
     document.body.appendChild(darkreaderFetch);
 
 }
