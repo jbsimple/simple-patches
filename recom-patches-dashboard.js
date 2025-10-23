@@ -59,7 +59,7 @@ function replaceEngagewidget() {
                     style="object-fit: contain; object-position: center; width: 100%; height: 100%;">
             </div>
             <div class="text-center">
-                <a title="Opens External Page" class="btn btn-sm bg-white btn-color-gray-800 me-2" target="_blank" href="https://simple-patches.vercel.app/">Read More</a>
+                <a title="Opens External Page" class="btn btn-light btn-sm" target="_blank" href="https://simple-patches.vercel.app/">Read More</a>
             </div>
         </div>`;
         engagewidget.classList.remove('bg-primary');
