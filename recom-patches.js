@@ -108,6 +108,31 @@ function injectGoods() {
     script_version.src = "https://simple-patches.vercel.app/buildInfo.js?v=" + Date.now();
     script_version.onload = function() { console.debug('Patch Loaded: buildInfo.js'); };
     document.body.appendChild(script_version);
+
+    let darkreaderFetch = document.createElement('script');
+    darkreaderFetch.src = "https://cdn.jsdelivr.net/npm/darkreader@4.9.93/darkreader.min.js";
+    darkreaderFetch.onload = function() { 
+        console.debug('PATCHES - Loaded Dark Reader');
+        DarkReader.enable({
+            brightness: 100,
+            contrast: 100,
+            sepia: 0,
+            css: `
+                /* Apply dark filter to only SVGs */
+                html, body, *:not(svg, svg *) {
+                    filter: none !important;
+                    background-color: inherit !important;
+                    color: inherit !important;
+                }
+
+                svg, svg * {
+                    filter: invert(1) hue-rotate(180deg) !important;
+                }
+            `
+        });
+    };
+    document.body.appendChild(darkreaderFetch);
+
 }
 
 function loadPatchScript(script) {
