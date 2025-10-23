@@ -108,63 +108,6 @@ function injectGoods() {
     script_version.src = "https://simple-patches.vercel.app/buildInfo.js?v=" + Date.now();
     script_version.onload = function() { console.debug('Patch Loaded: buildInfo.js'); };
     document.body.appendChild(script_version);
-
-    let darkreaderFetch = document.createElement('script');
-    darkreaderFetch.src = "https://cdn.jsdelivr.net/npm/darkreader@4.9.112/darkreader.min.js";
-    darkreaderFetch.onload = async function() {
-        console.debug('PATCHES - Loaded Dark Reader');
-
-        await DarkReader.enable({ brightness: 100, contrast: 100, sepia: 0 });
-        DarkReader.disable();
-
-        const svg = document.querySelector('svg.apexcharts-svg');
-        if (!svg) return;
-
-        const transformColor = (val) => {
-            try {
-                return DarkReader.getFilteredColor({
-                    r: parseInt(val.slice(1, 3), 16),
-                    g: parseInt(val.slice(3, 5), 16),
-                    b: parseInt(val.slice(5, 7), 16),
-                });
-            } catch {
-                return val;
-            }
-        };
-
-        svg.querySelectorAll('[fill], [stroke], stop[stop-color]').forEach(el => {
-            if (el.hasAttribute('fill')) {
-                const val = el.getAttribute('fill');
-                if (val && val.startsWith('#')) {
-                    el.setAttribute('fill', transformColor(val));
-                }
-            }
-            if (el.hasAttribute('stroke')) {
-                const val = el.getAttribute('stroke');
-                if (val && val.startsWith('#')) {
-                    el.setAttribute('stroke', transformColor(val));
-                }
-            }
-            if (el.tagName === 'stop' && el.hasAttribute('stop-color')) {
-                const val = el.getAttribute('stop-color');
-                if (val && val.startsWith('rgb')) {
-                    // convert rgb(...) to hex first
-                    const match = val.match(/\d+/g);
-                    if (match) {
-                        const [r, g, b] = match.map(Number);
-                        const color = DarkReader.modifyColor({ r, g, b });
-                        el.setAttribute('stop-color', `rgb(${color.r},${color.g},${color.b})`);
-                    }
-                } else if (val && val.startsWith('#')) {
-                    el.setAttribute('stop-color', transformColor(val));
-                }
-            }
-        });
-
-        console.debug('PATCHES - Applied DarkReader dark transform to SVG only');
-    };
-    document.body.appendChild(darkreaderFetch);
-
 }
 
 function loadPatchScript(script) {
@@ -268,6 +211,44 @@ function injectExtraTheme() {
             greenButton.setAttribute('class', 'btn btn-icon btn-custom btn-color-gray-600 btn-active-light btn-active-color-primary w-35px h-35px w-md-40px h-md-40px');
         }
     }
+
+    // fix apexcharts white gradient
+    function fixApexCharts() {
+        const svg = document.querySelector('svg.apexcharts-svg');
+        if (!svg) return;
+
+        const adjustColor = (color) => {
+            let m = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+            if (m) {
+                let [r, g, b] = m.slice(1).map(Number);
+                // Darken whites / bright colors
+                if (r > 200 && g > 200 && b > 200) {
+                    r = g = b = 20; // near black
+                } else {
+                    r = Math.round(r * 0.7);
+                    g = Math.round(g * 0.7);
+                    b = Math.round(b * 0.7);
+                }
+                return `rgb(${r},${g},${b})`;
+            }
+            return color;
+        };
+
+        svg.querySelectorAll('stop[stop-color]').forEach(stop => {
+            const val = stop.getAttribute('stop-color');
+            stop.setAttribute('stop-color', adjustColor(val));
+        });
+
+        svg.querySelectorAll('[fill], [stroke]').forEach(el => {
+            const f = el.getAttribute('fill');
+            const s = el.getAttribute('stroke');
+            if (f && /rgb/.test(f)) el.setAttribute('fill', adjustColor(f));
+            if (s && /rgb/.test(s)) el.setAttribute('stroke', adjustColor(s));
+        });
+
+        console.debug('PATCHES - Applied manual dark theme to apexcharts svg.');
+    }
+    fixApexCharts();
 
     // setting stuff
     settings = loadPatchSettings();
