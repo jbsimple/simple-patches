@@ -110,7 +110,7 @@ function injectGoods() {
     document.body.appendChild(script_version);
 
     let darkreaderFetch = document.createElement('script');
-    darkreaderFetch.src = "https://cdn.jsdelivr.net/npm/darkreader@4.9.93/darkreader.min.js";
+    darkreaderFetch.src = "https://cdn.jsdelivr.net/npm/darkreader@4.9.112/darkreader.min.js";
     darkreaderFetch.onload = function() { 
         console.debug('PATCHES - Loaded Dark Reader');
         DarkReader.enable({
