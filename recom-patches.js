@@ -214,54 +214,79 @@ function injectExtraTheme() {
 
     // fix apexcharts white gradient
     function fixApexCharts() {
-        const svg = document.querySelector('svg.apexcharts-svg');
-        if (!svg) return;
+        const svgs = document.querySelectorAll('svg.apexcharts-svg');
+        if (!svgs.length) return;
 
-        const adjustColor = (color) => {
-            let m = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
-            if (m) {
-                let [r, g, b] = m.slice(1).map(Number);
-                // Darken whites / bright colors
-                if (r > 200 && g > 200 && b > 200) {
-                    r = g = b = 20; // near black
+        svgs.forEach(svg => {
+            const adjustColor = (color) => {
+                if (!color) return color;
+                let r, g, b;
+
+                if (color.startsWith('#')) {
+                    // parse hex
+                    const hex = color.replace('#', '');
+                    if (hex.length === 3) {
+                        r = parseInt(hex[0] + hex[0], 16);
+                        g = parseInt(hex[1] + hex[1], 16);
+                        b = parseInt(hex[2] + hex[2], 16);
+                    } else {
+                        r = parseInt(hex.substr(0, 2), 16);
+                        g = parseInt(hex.substr(2, 2), 16);
+                        b = parseInt(hex.substr(4, 2), 16);
+                    }
                 } else {
-                    r = Math.round(r * 0.7);
-                    g = Math.round(g * 0.7);
-                    b = Math.round(b * 0.7);
+                    const m = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+                    if (!m) return color;
+                    [r, g, b] = m.slice(1).map(Number);
+                }
+
+                const lightness = (0.2126 * r + 0.7152 * g + 0.0722 * b);
+                if (lightness > 200) {
+                    r = g = b = Math.round(lightness * 0.1);
+                } else if (lightness > 130) {
+                    r = Math.round(r * 0.5);
+                    g = Math.round(g * 0.5);
+                    b = Math.round(b * 0.5);
+                } else {
+                    r = Math.min(255, Math.round(r * 1.2));
+                    g = Math.min(255, Math.round(g * 1.2));
+                    b = Math.min(255, Math.round(b * 1.2));
                 }
                 return `rgb(${r},${g},${b})`;
-            }
-            return color;
-        };
+            };
 
-        svg.querySelectorAll('stop[stop-color]').forEach(stop => {
-            const val = stop.getAttribute('stop-color');
-            stop.setAttribute('stop-color', adjustColor(val));
+            svg.querySelectorAll('stop[stop-color]').forEach(stop => {
+                const val = stop.getAttribute('stop-color');
+                stop.setAttribute('stop-color', adjustColor(val));
+            });
+
+            svg.querySelectorAll('[fill], [stroke]').forEach(el => {
+                const f = el.getAttribute('fill');
+                const s = el.getAttribute('stroke');
+                if (f && (/rgb|#/.test(f))) el.setAttribute('fill', adjustColor(f));
+                if (s && (/rgb|#/.test(s))) el.setAttribute('stroke', adjustColor(s));
+            });
         });
 
-        svg.querySelectorAll('[fill], [stroke]').forEach(el => {
-            const f = el.getAttribute('fill');
-            const s = el.getAttribute('stroke');
-            if (f && /rgb/.test(f)) el.setAttribute('fill', adjustColor(f));
-            if (s && /rgb/.test(s)) el.setAttribute('stroke', adjustColor(s));
-        });
-
-        console.debug('PATCHES - Applied manual dark theme to ApexCharts SVG.');
+        console.debug('PATCHES - Applied manual dark theme to all ApexCharts SVGs.');
     }
+    
     fixApexCharts();
-    const chartWatcher = new MutationObserver((list) => {
-        for (const mutation of list) {
-            if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-                const found = Array.from(mutation.addedNodes).some(node =>
+
+    const chartWatcher = new MutationObserver((changes) => {
+        for (const mutation of changes) {
+            if (mutation.type === 'childList' && mutation.addedNodes.length) {
+                const hasNewChart = Array.from(mutation.addedNodes).some(node =>
                     node.nodeType === 1 && node.matches?.('svg.apexcharts-svg, .apexcharts-canvas, .apexcharts-inner')
                 );
-                if (found) {
-                    setTimeout(fixApexCharts, 100);
+                if (hasNewChart) {
+                    setTimeout(fixApexCharts, 150);
                     break;
                 }
             }
         }
     });
+
     chartWatcher.observe(document.body, { childList: true, subtree: true });
 
     // setting stuff
