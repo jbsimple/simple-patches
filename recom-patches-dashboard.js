@@ -39,6 +39,7 @@ function replaceEngagewidget() {
     const engagewidget = kt_app_content_container.querySelector('.card.bg-primary.card-flush.h-md-50.mb-xl-10');
     engagewidget.classList = '';
     engagewidget.classList.add('card' ,'overflow-hidden' ,'card-flush' ,'h-md-50' ,'mb-5' ,'mb-xl-10');
+    engagewidget.setAttribute('style', 'background-color: #1e1e2d !important; border: 1px solid #2B2B40 !important;');
     if (engagewidget) {
         const previous = engagewidget.previousElementSibling;
         if (previous) {
@@ -46,7 +47,7 @@ function replaceEngagewidget() {
         }
 
         const selectedImage = randomImages[Math.floor(Math.random() * randomImages.length)];
-        engagewidget.innerHTML = `<div class="card-body d-flex flex-column" style="background-color: #1e1e2d !important; border: 1px solid #2B2B40 !important;">
+        engagewidget.innerHTML = `<div class="card-body d-flex flex-column">
             <div class="m-0">
                 <h1 class="fw-semibold text-white text-center lh-lg">
                     You have the Patches!<br>
