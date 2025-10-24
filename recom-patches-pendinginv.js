@@ -40,7 +40,15 @@ async function updateLocations() {
     if (!table) {
         return false;
     }
-    const locations = table.querySelectorAll('[href^="javascript:quickCreate(\'Update Sorting Location\',\'ajax/actions/updateSortingLocation/"]');
+    
+    let locations = [];
+    const selectedCheck = table.querySelectorAll('tr.selected');
+    if (selectedCheck && selectedCheck.length > 0) {
+        locations = table.querySelectorAll('tr.selected > td > [href^="javascript:quickCreate(\'Update Sorting Location\',\'ajax/actions/updateSortingLocation/"]');
+    } else {
+        locations = table.querySelectorAll('[href^="javascript:quickCreate(\'Update Sorting Location\',\'ajax/actions/updateSortingLocation/"]');
+    }
+
     const log = [];
     for (const location of locations) {
         const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
