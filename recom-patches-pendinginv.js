@@ -332,7 +332,7 @@ function initToolbarButtons() {
         cursor: pointer;
         border-radius: 5px;
     `;
-    addPictureLocationButton.onclick = updateLocations('PICTURES');
+    addPictureLocationButton.onclick = () => updateLocations('PICTURES');
 
     const updatePictureLocationButton = document.createElement('button');
     updatePictureLocationButton.classList.add('btn', 'btn-secondary');
@@ -347,7 +347,7 @@ function initToolbarButtons() {
         cursor: pointer;
         border-radius: 5px;
     `;
-    updatePictureLocationButton.onclick = updateLocations('PUTAWAYS', 'PICTURES');
+    updatePictureLocationButton.onclick = () => updateLocations('PUTAWAYS', 'PICTURES');
 
     const toolbar = picontainer.querySelector('.card-toolbar.flex-row-fluid.justify-content-end');
     if (toolbar && toolbar.classList.contains('justify-content-end')) {
