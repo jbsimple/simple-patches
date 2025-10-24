@@ -463,3 +463,12 @@ div.dataTables_wrapper div.dataTables_processing {
 #kt_app_sidebar .app-sidebar-logo:hover {
     animation: var(--logo-animation);
 }
+
+/* fix table selected to not look terrible */
+tr.selected.even > * {
+    box-shadow: inset 0 0 0 9999px color-mix(in srgb, var(--bs-primary) 25%, transparent 75%) !important;
+}
+
+tr.selected.odd > * {
+    box-shadow: inset 0 0 0 9999px color-mix(in srgb, var(--bs-success) 25%, transparent 75%) !important;
+}
