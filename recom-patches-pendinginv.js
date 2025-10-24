@@ -35,7 +35,7 @@ async function checkPics() {
 	}
 }
 
-async function updateLocations() {
+async function updateLocations(to, from = null) {
     const table = document.getElementById('dtTable_wrapper');
     if (!table) {
         return false;
@@ -59,7 +59,13 @@ async function updateLocations() {
             const id = match[1];
             const currentLocation = location.textContent.trim();
 
-            let value = currentLocation.replace(/PICTURES/gi, 'PUTAWAYS').trimEnd();
+            let value = '';
+            if (from !== null && from !== '') {
+                value = currentLocation.replace(new RegExp(from, 'gi'), to).trimEnd();
+            } else {
+                value = `${to} ${currentLocation}`.trimEnd();
+            }
+
             let ajax = `/ajax/actions/updateSortingLocation/${id}`;
             const formData = new FormData();
             formData.append('name', value);
@@ -313,8 +319,23 @@ function initToolbarButtons() {
     `;
     checkImgButton.onclick = checkPics;
 
+    const addPictureLocationButton = document.createElement('button');
+    addPictureLocationButton.classList.add('btn', 'btn-secondary');
+    addPictureLocationButton.id = 'patch_adjustPictureLocation';
+    addPictureLocationButton.textContent = 'Add Picture Locations';
+    addPictureLocationButton.disabled = true;
+    addPictureLocationButton.title = "Add Results or Selected Entries with Picture Location.";
+    addPictureLocationButton.style.cssText = `
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 5px;
+    `;
+    addPictureLocationButton.onclick = updateLocations('PICTURES');
+
     const updatePictureLocationButton = document.createElement('button');
-    updatePictureLocationButton.classList.add('btn', 'btn-primary');
+    updatePictureLocationButton.classList.add('btn', 'btn-secondary');
     updatePictureLocationButton.id = 'patch_adjustPictureLocation';
     updatePictureLocationButton.textContent = 'Update Picture Locations';
     updatePictureLocationButton.disabled = true;
@@ -326,7 +347,7 @@ function initToolbarButtons() {
         cursor: pointer;
         border-radius: 5px;
     `;
-    updatePictureLocationButton.onclick = updateLocations;
+    updatePictureLocationButton.onclick = updateLocations('PUTAWAYS', 'PICTURES');
 
     const toolbar = picontainer.querySelector('.card-toolbar.flex-row-fluid.justify-content-end');
     if (toolbar && toolbar.classList.contains('justify-content-end')) {
