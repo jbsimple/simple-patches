@@ -40,7 +40,7 @@ async function updateLocations() {
     if (!table) {
         return false;
     }
-    
+
     let locations = [];
     const selectedCheck = table.querySelectorAll('tr.selected');
     if (selectedCheck && selectedCheck.length > 0) {
@@ -316,9 +316,9 @@ function initToolbarButtons() {
     const updatePictureLocationButton = document.createElement('button');
     updatePictureLocationButton.classList.add('btn', 'btn-primary');
     updatePictureLocationButton.id = 'patch_adjustPictureLocation';
-    updatePictureLocationButton.textContent = 'Picture Location';
+    updatePictureLocationButton.textContent = 'Update Picture Locations';
     updatePictureLocationButton.disabled = true;
-    updatePictureLocationButton.title = "Update Entries with Picture Location.";
+    updatePictureLocationButton.title = "Update Results or Selected Entries with Picture Location.";
     updatePictureLocationButton.style.cssText = `
         color: white;
         border: none;
