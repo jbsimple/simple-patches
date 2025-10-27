@@ -238,7 +238,7 @@ async function keywordSearch() {
         const tbody = dtTable.querySelector('tbody');
         if (thead && tfoot && tbody) {
             thead.innerHTML = `
-            <th></th>
+            <th style="width: 0px;"></th>
             <th>Keyword / Product</th>
             <th>PO #</th>
             <th>Quantity<br>Entered</th>
@@ -246,7 +246,7 @@ async function keywordSearch() {
             <th>Sorting<br>Location</th>
             <th>Added<br>By</th>
             <th>Date<br>Entered</th>
-            <th>Actions></th>
+            <th>Actions</th>
             `;
 
             const tfootth = tfoot.querySelectorAll('th');
@@ -279,9 +279,9 @@ async function keywordSearch() {
                     newrow.classList = 'even';
                 }
                 newrow.innerHTML = `<!-- NEW THEAD -->
-                <td></td>
+                <td style="width: 0px;"></td>
                 <td>
-                    <div style="display: flex; flex-direction: row; gap: 0.25rem;">
+                    <div style="display: flex; flex-direction: column; gap: 0.25rem;">
                         <strong>${row['Keyword']}</strong>
                         <a href="/products/${row['SID']}" target="_blank" class="text-muted fw-bold text-muted d-block fs-7">${row['Product_Name']}</a>
                     </div>
