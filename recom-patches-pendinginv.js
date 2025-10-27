@@ -398,6 +398,16 @@ async function keywordSearch() {
         if (tbody) {
             if (!dtTable.hasAttribute('Patched')) {
 
+                let parent = dtTable;
+                do {
+                    parent = parent.parentElement;
+                } while (parent && !parent.classList.contains('card') && !parent.classList.contains('card-flush'));
+
+                if (parent && parent.classList.contains('card') && parent.classList.contains('card-flush')) {
+                    parent.querySelector('.card-header')?.style.display = 'none';
+                    parent.querySelector('.dataTables_wrapper>.row')?.style.display = 'none';
+                }
+
                 const thead = dtTable.querySelector('thead>tr');
                 const tfoot = dtTable.querySelector('tfoot>tr');
                 if (thead) {
