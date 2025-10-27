@@ -185,21 +185,15 @@ async function keywordSearch() {
 
             var request = {
                 report: {
-                    type: "pending_inventory",
+                    type: "user_clock",
                     columns: [
-                        "purchase_orders.id",
-                        "inventory_receiving.keyword",
-                        "inventory_receiving.quantity",
-                        "queue_inventory.quantity_approved",
-                        "inventory_receiving.location",
-                        "inventory_receiving.created_at",
+                        "user_profile.user_id",
+                        "user_clock_activity.units",
+                        "user_clock_activity.created_at",
                         "products.sid",
-                        "products.name",
-                        "inventory_receiving.condition_id",
-                        "products.category_id",
-                        "products.mpn",
-                        "products.gtin",
-                        "products.asin"
+                        "product_items.sku",
+                        "product_items.condition_id",
+                        "inventory_receiving.condition_id"
                     ],
                     filters: [
                         {
