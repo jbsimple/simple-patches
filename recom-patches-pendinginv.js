@@ -271,13 +271,10 @@ async function keywordSearch() {
                         tfootth[8].querySelector('button.btn-primary')?.remove;
                         tfootth[8].querySelector('button.btn-secondary')?.remove;
                         const newreset = document.createElement('a');
-                        newreset.id = 'PATCHES_PIGOBACK';
                         newreset.href = '/receiving/queues/inventory';
                         newreset.classList = ["btn", "btn-secondary", "btn-sm"];
                         newreset.innerHTML = '<span><i class="la la-close"></i><span>Go Back</span></span>';
-                        if (!document.getElementById('PATCHES_PIGOBACK')) {
-                            tfootth[8].appendChild(newreset);
-                        }
+                        tfootth[8].appendChild(newreset);
                     }
                 }
                 dtTable.setAttribute('Patched' , 'true');
