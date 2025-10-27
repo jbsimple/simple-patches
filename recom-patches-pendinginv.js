@@ -262,8 +262,6 @@ async function keywordSearch() {
                     const tfootth = tfoot.querySelectorAll('th');
                     if (tfootth[0]) { tfootth[0].remove(); }
                     if (tfootth[1]) { tfootth[1].querySelector('input')?.setAttribute('placeholder', 'Keywords'); }
-                    if (tfootth[3]) { tfootth[3].innerHTML = ''; }
-                    if (tfootth[4]) { tfootth[4].innerHTML = ''; }
                     if (tfootth[5]) { tfootth[5].innerHTML = ''; }
                     if (tfootth[6]) { tfootth[6].innerHTML = ''; }
                     if (tfootth[7]) { tfootth[7].innerHTML = ''; }
