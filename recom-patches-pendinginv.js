@@ -168,6 +168,15 @@ async function keywordSearch() {
         const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
         if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
             const csrfToken = csrfMeta.getAttribute('content');
+
+            let filters = [
+                {
+                    column: "purchase_orders.id",
+                    opr: "{0} IN {1}",
+                    value: [params['PO #']?.value || null]
+                }
+            ];
+
             let keyword = null;
             if (params['Product']?.['Product Name or SKU']) {
                 keyword = params['Product']['Product Name or SKU'];
@@ -175,6 +184,40 @@ async function keywordSearch() {
                 keyword = params['Keyword / Product']['Keywords'];
             } else if (params['Keyword']?.['Keywords']) {
                 keyword = params['Keyword']['Keywords'];
+            }
+            filters.push({
+                column: "inventory_receiving.keyword",
+                opr: "{0} LIKE '%{1}%'",
+                value: keyword
+            });
+
+
+            if (params['Quantity Entered']?.['From']) {
+                filters.push({
+                    column: "inventory_receiving.quantity",
+                    opr: "{0} >= {1}",
+                    value: params['Quantity Entered']['From']
+                });
+            } else if (params['Quantity Entered']?.['To']) {
+                filters.push({
+                    column: "inventory_receiving.quantity",
+                    opr: "{0} <= {1}",
+                    value: params['Quantity Entered']['To']
+                });
+            }
+
+            if (params['Quantity Approved']?.['From']) {
+                filters.push({
+                    column: "queue_inventory.quantity_approved",
+                    opr: "{0} >= {1}",
+                    value: params['Quantity Entered']['From']
+                });
+            } else if (params['Quantity Approved']?.['To']) {
+                filters.push({
+                    column: "queue_inventory.quantity_approved",
+                    opr: "{0} <= {1}",
+                    value: params['Quantity Entered']['To']
+                });
             }
             
             var request = {
@@ -195,18 +238,7 @@ async function keywordSearch() {
                         "products.gtin",
                         "products.asin"
                     ],
-                    filters: [
-                        {
-                            column: "purchase_orders.id",
-                            opr: "{0} IN {1}",
-                            value: [params['PO #']?.value || null]
-                        },
-                        {
-                            column: "inventory_receiving.keyword",
-                            opr: "{0} LIKE '%{1}%'",
-                            value: keyword
-                        }
-                    ]
+                    filters: filters
                 },
                 csrf_recom: csrfToken
             };
