@@ -236,9 +236,7 @@ async function keywordSearch() {
         const thead = dtTable.querySelector('thead>tr');
         const tfoot = dtTable.querySelector('tfoot>tr');
         const tbody = dtTable.querySelector('tbody');
-        const card = dtTable.parentElement.parentElement;
         if (card && thead && tfoot && tbody) {
-            card.querySelector('.card-toolbar')?.style.display = 'none';
             thead.innerHTML = `
             <th style="width: 100%;">Keyword / Product</th>
             <th>PO #</th>
