@@ -155,12 +155,12 @@ async function keywordSearch() {
                 const epData = await fetchEPReport(params);
                 console.debug('PATCHES - EP Report data:', epData);
                 const parsedEpData = Object.fromEntries(
-                    epData.data.map(item => [`${item.SID}_${item.Units}`, item])
+                    epData.data.map(item => [`${item.SID}_${item.Inspected_Condition}_${item.Units}`, item])
                 );
 
                 let parsedPiData = piData.data;
                 parsedPiData.forEach(line => {
-                    const key = `${line['SID']}_${line['Quantity']}`;
+                    const key = `${line['SID']}_${line['Condition']}_${line['Quantity']}`;
                     const epLine = epData[key];
 
                     if (epLine) {
