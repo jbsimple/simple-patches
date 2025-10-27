@@ -438,6 +438,7 @@ async function keywordSearch() {
                         newreset.classList = ["btn", "btn-secondary", "btn-sm"];
                         newreset.innerHTML = '<span><i class="la la-close"></i><span>Go Back</span></span>';
                         tfootth[8].appendChild(newreset);
+                        console.debug('hello world');
                     }
                 }
                 dtTable.setAttribute('Patched' , 'true');
