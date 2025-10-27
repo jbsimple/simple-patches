@@ -219,6 +219,7 @@ async function keywordSearch() {
                     type: "user_clock",
                     columns: [
                         "user_profile.user_id",
+                        "user_clock_activity.activity_id",
                         "user_clock_activity.units",
                         "user_clock_activity.created_at",
                         "products.sid",
