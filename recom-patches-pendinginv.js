@@ -192,31 +192,31 @@ async function keywordSearch() {
             });
 
 
-            if (params['Quantity Entered']?.['From']) {
+            if (params['QuantityEntered']?.['From']) {
                 filters.push({
                     column: "inventory_receiving.quantity",
                     opr: "{0} >= {1}",
-                    value: params['Quantity Entered']['From']
+                    value: params['QuantityEntered']['From']
                 });
-            } else if (params['Quantity Entered']?.['To']) {
+            } else if (params['QuantityEntered']?.['To']) {
                 filters.push({
                     column: "inventory_receiving.quantity",
                     opr: "{0} <= {1}",
-                    value: params['Quantity Entered']['To']
+                    value: params['QuantityEntered']['To']
                 });
             }
 
-            if (params['Quantity Approved']?.['From']) {
+            if (params['QuantityApproved']?.['From']) {
                 filters.push({
                     column: "queue_inventory.quantity_approved",
                     opr: "{0} >= {1}",
-                    value: params['Quantity Entered']['From']
+                    value: params['QuantityApproved']['From']
                 });
-            } else if (params['Quantity Approved']?.['To']) {
+            } else if (params['QuantityApproved']?.['To']) {
                 filters.push({
                     column: "queue_inventory.quantity_approved",
                     opr: "{0} <= {1}",
-                    value: params['Quantity Entered']['To']
+                    value: params['QuantityApproved']['To']
                 });
             }
             
