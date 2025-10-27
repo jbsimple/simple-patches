@@ -401,11 +401,11 @@ async function keywordSearch() {
                 let parent = dtTable;
                 do {
                     parent = parent.parentElement;
-                } while (parent && !parent.classList.contains('card') && !parent.classList.contains('card-flush'));
+                } while (parent && !parent.matches('.card.card-flush'));
 
-                if (parent && parent.classList.contains('card') && parent.classList.contains('card-flush')) {
-                    parent.querySelector('.card-header')?.style.display = 'none';
-                    parent.querySelector('.dataTables_wrapper>.row')?.style.display = 'none';
+                if (parent) {
+                    parent.querySelector('.card-header')?.style.setProperty('display', 'none');
+                    parent.querySelector('.dataTables_wrapper > .row')?.style.setProperty('display', 'none');
                 }
 
                 const thead = dtTable.querySelector('thead>tr');
