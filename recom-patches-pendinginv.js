@@ -149,11 +149,14 @@ async function keywordSearch() {
 
         if (Object.keys(params).length > 0) {
             try {
-                const data = await fetchReport(params);
-                console.debug('PATCHES - report data:', data);
+                const piData = await fetchPIReport(params);
+                console.debug('PATCHES - PI Report data:', piData);
+
+                const epData = await fetchEPReport(params);
+                console.debug('PATCHES - EP Report data:', epData);
 
                 const kt_app_content = document.getElementById('kt_app_content');
-                if (kt_app_content) { keywordSearchReplaceTable(data.data) }
+                if (kt_app_content) { keywordSearchReplaceTable(piData.data) }
             } catch (err) {
                 console.error('PATCHES - fetchReport failed:', err);
                 fireSwal('Fetching Error', 'Error while fetching data.', 'error');
@@ -163,7 +166,91 @@ async function keywordSearch() {
         }
     }
 
-    async function fetchReport(params) {
+    async function fetchEPReport(params) {
+        // time to build a report
+        const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
+        if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
+            const csrfToken = csrfMeta.getAttribute('content');
+
+            const today = new Date();
+            const past = new Date();
+            past.setDate(today.getDate() - 29);
+            const formatDate = (date) => {
+                const mm = String(date.getMonth() + 1).padStart(2, '0');
+                const dd = String(date.getDate()).padStart(2, '0');
+                const yyyy = date.getFullYear();
+                return `${mm}/${dd}/${yyyy}`;
+            };
+            const range = `${formatDate(past)} - ${formatDate(today)}`;
+
+            var request = {
+                report: {
+                    type: "pending_inventory",
+                    columns: [
+                        "purchase_orders.id",
+                        "inventory_receiving.keyword",
+                        "inventory_receiving.quantity",
+                        "queue_inventory.quantity_approved",
+                        "inventory_receiving.location",
+                        "inventory_receiving.created_at",
+                        "products.sid",
+                        "products.name",
+                        "inventory_receiving.condition_id",
+                        "products.category_id",
+                        "products.mpn",
+                        "products.gtin",
+                        "products.asin"
+                    ],
+                    filters: [
+                        {
+                            column: "user_clocks.clock_date",
+                            opr: "between",
+                            value: range
+                        },
+                        {
+                            column: "user_clock_activity.activity_code",
+                            opr: "{0} = '{1}'",
+                            value: "receiving_add"
+                        },
+                        {
+                            column: "purchase_orders.id",
+                            opr: "{0} IN {1}",
+                            value: [params['PO #']?.value || null]
+                        }
+                    ]
+                },
+                csrf_recom: csrfToken
+            };
+
+            console.debug('PATCHES - Fetching EP report:', request);
+
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: "/reports/create",
+                    data: request,
+                }).done(function(data) {
+                    if (data.success && data.results.results && Array.isArray(data.results.results)) {
+                        resolve({
+                            data: data.results.results,
+                            download: `/renderfile/download?folder=reports&path=${data.results.filename}`,
+                            filename: data.results.filename
+                        });
+                    } else {
+                        resolve(null);
+                    }
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    console.error("Request failed: " + textStatus + ", " + errorThrown);
+                    reject(new Error("Request failed: " + textStatus + ", " + errorThrown));
+                });
+            });
+        } else {
+            return null;
+        }
+    }
+
+    async function fetchPIReport(params) {
         // time to build a report
         const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
         if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
