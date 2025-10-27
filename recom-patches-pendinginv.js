@@ -161,7 +161,7 @@ async function keywordSearch() {
                 let parsedPiData = piData.data;
                 parsedPiData.forEach(line => {
                     const key = `${line['SID']}_${line['Condition']}_${line['Quantity']}`;
-                    const epLine = epData[key];
+                    const epLine = parsedEpData[key];
 
                     if (epLine) {
                         Object.assign(line, epLine);
