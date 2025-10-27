@@ -170,6 +170,8 @@ async function keywordSearch() {
                     }
                 });
 
+                console.debug('PATCHES - parsedPiData:', parsedPiData);
+
                 const kt_app_content = document.getElementById('kt_app_content');
                 if (kt_app_content) { keywordSearchReplaceTable(parsedPiData) }
             } catch (err) {
