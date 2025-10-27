@@ -421,6 +421,7 @@ async function keywordSearch() {
                 <td>
                     <div style="display: flex; flex-direction: column; gap: 0.25rem;">
                         <strong>${row['Keyword']}</strong>
+                        <a href="/product/items/${row['SKU']}" target="_blank">${row['SKU']}</a>
                         <a href="/products/${row['SID']}" target="_blank" class="text-muted fw-bold text-muted d-block fs-7">${row['Product_Name']}</a>
                     </div>
                 </td>
