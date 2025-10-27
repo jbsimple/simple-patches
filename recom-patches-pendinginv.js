@@ -427,9 +427,9 @@ async function keywordSearch() {
                 <td>${row['PO_Number']}</td>
                 <td>${row['Quantity']}</td>
                 <td>${row['Approved_Quantity']}</td>
-                <td title="API needs to be fixed for this to work.">${row['Sort_Location']}</td>
                 <td title="API needs to be fixed for this to work.">N/a</td>
-                <td title="API needs to be fixed for this to work.">N/a</td>
+                <td>${row['User']}</td>
+                <td>${row['Event_Date']}</td>
                 <td></td>`;
                 tbody.appendChild(newrow);
                 i++;
