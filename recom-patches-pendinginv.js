@@ -280,7 +280,7 @@ async function keywordSearch() {
                         }
                     }
                 }
-                dtTable.setAttribute('Patched');
+                dtTable.setAttribute('Patched' , 'true');
             }
 
             tbody.innerHTML = '';
