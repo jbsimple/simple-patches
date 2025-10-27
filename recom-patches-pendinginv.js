@@ -421,7 +421,7 @@ async function keywordSearch() {
                 <td>
                     <div style="display: flex; flex-direction: column; gap: 0.25rem;">
                         <strong>${row['Keyword']}</strong>
-                        <a href="/product/items/${row['SKU']}" target="_blank">${row['SKU']}</a>
+                        ${(row['SKU']) ? `<a href="/product/items/${row['SKU']}" target="_blank">${row['SKU']}</a>` : ''}
                         <a href="/products/${row['SID']}" target="_blank" class="text-muted fw-bold text-muted d-block fs-7">${row['Product_Name']}</a>
                     </div>
                 </td>
@@ -429,8 +429,8 @@ async function keywordSearch() {
                 <td>${row['Quantity']}</td>
                 <td>${row['Approved_Quantity']}</td>
                 <td title="API needs to be fixed for this to work.">N/a</td>
-                <td>${row['User']}</td>
-                <td>${row['Event_Date']}</td>
+                <td>${row['User'] ?? 'N/a'}</td>
+                <td>${row['Event_Date'] ?? 'N/a'}</td>
                 <td></td>`;
                 tbody.appendChild(newrow);
                 i++;
