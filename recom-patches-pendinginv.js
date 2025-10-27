@@ -154,9 +154,24 @@ async function keywordSearch() {
 
                 const epData = await fetchEPReport(params);
                 console.debug('PATCHES - EP Report data:', epData);
+                const parsedEpData = Object.fromEntries(
+                    epData.data.map(item => [item.SID, item])
+                );
+
+                let parsedPiData = piData.data;
+                parsedPiData.forEach(line => {
+                    const sid = line['SID'];
+                    const epLine = parsedEpData[sid];
+
+                    if (epLine) {
+                        Object.assign(line, epLine);
+                    } else {
+                        console.warn(`No EP data found for SID: ${sid}`);
+                    }
+                });
 
                 const kt_app_content = document.getElementById('kt_app_content');
-                if (kt_app_content) { keywordSearchReplaceTable(piData.data) }
+                if (kt_app_content) { keywordSearchReplaceTable(parsedPiData) }
             } catch (err) {
                 console.error('PATCHES - fetchReport failed:', err);
                 fireSwal('Fetching Error', 'Error while fetching data.', 'error');
