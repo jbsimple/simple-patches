@@ -374,6 +374,16 @@ async function keywordSearch() {
         const tbody = dtTable.querySelector('tbody');
         if (tbody) {
             if (!dtTable.hasAttribute('Patched')) {
+
+                // replace default enter press
+                $("body").off("keypress");
+                $("body").on("keypress", function (e) {
+                    if (e.which === 13) {
+                        e.preventDefault();
+                        keywordSearch();
+                    }
+                });
+
                 const thead = dtTable.querySelector('thead>tr');
                 const tfoot = dtTable.querySelector('tfoot>tr');
                 if (thead) {
