@@ -168,6 +168,14 @@ async function keywordSearch() {
         const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
         if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
             const csrfToken = csrfMeta.getAttribute('content');
+            let keyword = null;
+            if (params['Product']?.['Product Name or SKU']) {
+                keyword = params['Product']['Product Name or SKU'];
+            } else if (params['Keyword / Product']?.['Keywords']) {
+                keyword = params['Keyword / Product']['Keywords'];
+            } else if (params['Keyword']?.['Keywords']) {
+                keyword = params['Keyword']['Keywords'];
+            }
             
             var request = {
                 report: {
@@ -196,7 +204,7 @@ async function keywordSearch() {
                         {
                             column: "inventory_receiving.keyword",
                             opr: "{0} LIKE '%{1}%'",
-                            value: params['Product']?.['Product Name or SKU'] || null
+                            value: keyword
                         }
                     ]
                 },
@@ -233,40 +241,46 @@ async function keywordSearch() {
 
     function keywordSearchReplaceTable(rows) {
         const dtTable = document.getElementById('dtTable');
-        const thead = dtTable.querySelector('thead>tr');
-        const tfoot = dtTable.querySelector('tfoot>tr');
         const tbody = dtTable.querySelector('tbody');
-        if (thead && tfoot && tbody) {
-            thead.innerHTML = `
-            <th style="width: 0px; padding: 0px !important;"></th>
-            <th>Keyword / Product</th>
-            <th>PO #</th>
-            <th>Quantity<br>Entered</th>
-            <th>Quantity<br>Approved</th>
-            <th>Sorting<br>Location</th>
-            <th>Added<br>By</th>
-            <th>Date<br>Entered</th>
-            <th>Actions</th>
-            `;
-
-            const tfootth = tfoot.querySelectorAll('th');
-            if (tfootth[0]) { tfootth[0].innerHTML = ''; }
-            if (tfootth[3]) { tfootth[3].innerHTML = ''; }
-            if (tfootth[4]) { tfootth[4].innerHTML = ''; }
-            if (tfootth[5]) { tfootth[5].innerHTML = ''; }
-            if (tfootth[6]) { tfootth[6].innerHTML = ''; }
-            if (tfootth[7]) { tfootth[7].innerHTML = ''; }
-            if (tfootth[8]) {
-                tfootth[8].querySelector('button.btn-primary')?.remove;
-                tfootth[8].querySelector('button.btn-secondary')?.remove;
-                const newreset = document.createElement('a');
-                newreset.id = 'PATCHES_PIGOBACK';
-                newreset.href = '/receiving/queues/inventory';
-                newreset.classList = ["btn", "btn-secondary", "btn-sm"];
-                newreset.innerHTML = '<span><i class="la la-close"></i><span>Go Back</span></span>';
-                if (!document.getElementById('PATCHES_PIGOBACK')) {
-                    tfootth[8].appendChild(newreset);
+        if (tbody) {
+            if (!dtTable.hasAttribute('Patched')) {
+                const thead = dtTable.querySelector('thead>tr');
+                const tfoot = dtTable.querySelector('tfoot>tr');
+                if (thead) {
+                    thead.innerHTML = `
+                        <th>Keyword / Product</th>
+                        <th>PO #</th>
+                        <th>Quantity<br>Entered</th>
+                        <th>Quantity<br>Approved</th>
+                        <th>Sorting<br>Location</th>
+                        <th>Added<br>By</th>
+                        <th>Date<br>Entered</th>
+                        <th>Actions</th>
+                    `;
                 }
+                if (tfoot) {
+                    const tfootth = tfoot.querySelectorAll('th');
+                    if (tfootth[0]) { tfootth[0].remove(); }
+                    if (tfootth[1]) { tfootth[1].querySelector('input')?.setAttribute('placeholder', 'Keywords'); }
+                    if (tfootth[3]) { tfootth[3].innerHTML = ''; }
+                    if (tfootth[4]) { tfootth[4].innerHTML = ''; }
+                    if (tfootth[5]) { tfootth[5].innerHTML = ''; }
+                    if (tfootth[6]) { tfootth[6].innerHTML = ''; }
+                    if (tfootth[7]) { tfootth[7].innerHTML = ''; }
+                    if (tfootth[8]) {
+                        tfootth[8].querySelector('button.btn-primary')?.remove;
+                        tfootth[8].querySelector('button.btn-secondary')?.remove;
+                        const newreset = document.createElement('a');
+                        newreset.id = 'PATCHES_PIGOBACK';
+                        newreset.href = '/receiving/queues/inventory';
+                        newreset.classList = ["btn", "btn-secondary", "btn-sm"];
+                        newreset.innerHTML = '<span><i class="la la-close"></i><span>Go Back</span></span>';
+                        if (!document.getElementById('PATCHES_PIGOBACK')) {
+                            tfootth[8].appendChild(newreset);
+                        }
+                    }
+                }
+                dtTable.setAttribute('Patched');
             }
 
             tbody.innerHTML = '';
@@ -279,7 +293,6 @@ async function keywordSearch() {
                     newrow.classList = 'even';
                 }
                 newrow.innerHTML = `<!-- NEW THEAD -->
-                <td style="width: 0px;"></td>
                 <td>
                     <div style="display: flex; flex-direction: column; gap: 0.25rem;">
                         <strong>${row['Keyword']}</strong>
