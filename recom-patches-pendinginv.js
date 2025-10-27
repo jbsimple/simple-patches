@@ -433,11 +433,14 @@ async function keywordSearch() {
                     if (tfootth[8]) {
                         tfootth[8].querySelector('button.btn-primary')?.remove();
                         tfootth[8].querySelector('button.btn-secondary')?.remove();
+                        tfootth[8].querySelectorAll('br').forEach(br => br.remove());
+
                         const newreset = document.createElement('a');
                         newreset.href = '/receiving/queues/inventory';
                         newreset.className = 'btn btn-secondary btn-sm';
                         newreset.innerHTML = '<span><i class="la la-close"></i><span>Go Back</span></span>';
                         tfootth[8].appendChild(newreset);
+                        console.debug('PATCHES - Please add the goback button? Where:', tfootth[8]);
                     }
                 }
                 dtTable.setAttribute('Patched' , 'true');
