@@ -153,31 +153,7 @@ async function keywordSearch() {
                 console.debug('PATCHES - report data:', data);
 
                 const kt_app_content = document.getElementById('kt_app_content');
-                if (kt_app_content) {
-                    const oldcard = kt_app_content.querySelector('#kt_app_content_container > .card.card-flush');
-                    const kt_app_content_container = document.getElementById('kt_app_content_container');
-                    if (kt_app_content_container && oldcard) {
-                        oldcard.style.display = 'none';
-                        const newcard = document.createElement('div');
-                        newcard.classList.add('card');
-                        newcard.innerHTML = `<div class="card-header ribbon ribbon-top" style="padding: 1.25rem 2.15rem; padding-bottom: 0;">
-                            <div class="card-title">
-                                <h2>Keyword Search Results:</h2>
-                            </div>
-                            <div class="card-toolbar" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1rem;">
-                                <a href="/receiving/queues/inventory" class="btn btn-sm btn-primary">Back to Pending Inventory</a>
-                            </div>
-                        </div>`;
-                        
-                        const tableWrapper = document.createElement('div');
-                        tableWrapper.classList.add('card-body');
-                        tableWrapper.innerHTML = buildResultsTable(data.data);
-
-                        newcard.appendChild(tableWrapper);
-                        kt_app_content_container.appendChild(newcard);
-                    }
-                }
-
+                if (kt_app_content) { keywordSearchReplaceTable(data.data) }
             } catch (err) {
                 console.error('PATCHES - fetchReport failed:', err);
                 fireSwal('Fetching Error', 'Error while fetching data.', 'error');
@@ -255,31 +231,72 @@ async function keywordSearch() {
         }
     }
 
-    function buildResultsTable(rows) {
-        if (!rows || rows.length === 0) {
-            return `<p class="text-muted">No results found.</p>`;
-        }
+    function keywordSearchReplaceTable(rows) {
+        const dtTable = document.getElementById('dtTable');
+        const thead = dtTable.querySelector('thead>tr');
+        const tfoot = dtTable.querySelector('tfoot>tr');
+        const tbody = dtTable.querySelector('tbody');
+        const card = dtTable.parentElement.parentElement;
+        if (card && thead && tfoot && tbody) {
+            card.querySelector('.card-toolbar').style.display = 'none';
+            thead.innerHTML = `
+            <th style="width: 100%;">Keyword / Product</th>
+            <th>PO #</th>
+            <th>Quantity<br>Entered</th>
+            <th>Quantity<br>Approved</th>
+            <th>Sorting<br>Location</th>
+            <th>Added<br>By</th>
+            <th>Date<br>Entered</th>
+            <thActions></th>
+            `;
 
-        const cols = ["Keyword", "SID", "Product_Name", "Condition", "Quantity", "PO_Number"];
-
-        let html = `<table class="table table-striped table-bordered align-middle">
-            <thead><tr>${cols.map(c => `<th>${c}</th>`).join('')}</tr></thead>
-            <tbody>`;
-
-        rows.forEach(row => {
-            html += "<tr>";
-            cols.forEach(col => {
-                let value = row[col] ?? "";
-                if (col === "SID" && value) {
-                    value = `<a href="/products/${encodeURIComponent(value)}" target="_blank">${value}</a>`;
+            const tfootth = tfoot.querySelectorAll('th');
+            if (tfootth[0]) { tfootth[0].innerHTML = ''; }
+            if (tfootth[3]) { tfootth[3].innerHTML = ''; }
+            if (tfootth[4]) { tfootth[4].innerHTML = ''; }
+            if (tfootth[5]) { tfootth[5].innerHTML = ''; }
+            if (tfootth[6]) { tfootth[6].innerHTML = ''; }
+            if (tfootth[7]) { tfootth[7].innerHTML = ''; }
+            if (tfootth[8]) {
+                tfootth[8].querySelector('button.btn-primary')?.remove;
+                tfootth[8].querySelector('button.btn-secondary')?.remove;
+                const newreset = document.createElement('a');
+                newreset.id = 'PATCHES_PIGOBACK';
+                newreset.href = '/receiving/queues/inventory';
+                newreset.classList = ["btn", "btn-secondary", "btn-sm"];
+                newreset.innerHTML = '<span><i class="la la-close"></i><span>Go Back</span></span>';
+                if (!document.getElementById('PATCHES_PIGOBACK')) {
+                    tfootth[8].appendChild(newreset);
                 }
-                html += `<td>${value}</td>`;
-            });
-            html += "</tr>";
-        });
+            }
 
-        html += "</tbody></table>";
-        return html;
+            tbody.innerHTML = '';
+            let i = 1;
+            rows.forEach(row => {
+                const newrow = document.createElement('tr');
+                if (i % 2 === 1) {
+                    newrow.classList = 'odd';
+                } else {
+                    newrow.classList = 'even';
+                }
+                newrow.innerHTML = `<!-- NEW THEAD -->
+                <td>
+                    <div style="display: flex; flex-direction: row; gap: 0.25rem;">
+                        <strong>${row['Keyword']}</strong>
+                        <a href="/products/${row['SID']}" target="_blank" class="text-muted fw-bold text-muted d-block fs-7">${row['Product_Name']}</a>
+                    </div>
+                </td>
+                <td>${row['PO_Number']}</td>
+                <td>${row['Quantity']}</td>
+                <td>${row['Approved_Quantity']}</td>
+                <td title="API needs to be fixed for this to work.">${row['Sort_Location']}</td>
+                <td title="API needs to be fixed for this to work.">N/a</td>
+                <td title="API needs to be fixed for this to work.">N/a</td>
+                <td></td>`;
+                tbody.appendChild(newrow);
+                i++;
+            });
+        }
     }
 }
 
