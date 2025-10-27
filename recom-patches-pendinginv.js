@@ -155,18 +155,18 @@ async function keywordSearch() {
                 const epData = await fetchEPReport(params);
                 console.debug('PATCHES - EP Report data:', epData);
                 const parsedEpData = Object.fromEntries(
-                    epData.data.map(item => [item.SID, item])
+                    epData.data.map(item => [`${item.SID}_${item.Quantity}`, item])
                 );
 
                 let parsedPiData = piData.data;
                 parsedPiData.forEach(line => {
-                    const sid = line['SID'];
-                    const epLine = parsedEpData[sid];
+                    const key = `${line['SID']}_${line['Quantity']}`;
+                    const epLine = epData[key];
 
                     if (epLine) {
                         Object.assign(line, epLine);
                     } else {
-                        console.warn(`No EP data found for SID: ${sid}`);
+                        console.warn(`No EP data found for key: ${key}`);
                     }
                 });
 
@@ -426,8 +426,8 @@ async function keywordSearch() {
                     </div>
                 </td>
                 <td>${row['PO_Number']}</td>
-                <td>${row['Quantity']}</td>
-                <td>${row['Approved_Quantity']}</td>
+                <td>${row['Quantity'] ?? '-1'}</td>
+                <td>${row['Approved_Quantity'] ?? '0'}</td>
                 <td title="API needs to be fixed for this to work.">N/a</td>
                 <td>${row['User'] ?? 'N/a'}</td>
                 <td>${row['Event_Date'] ?? 'N/a'}</td>
