@@ -155,7 +155,7 @@ async function keywordSearch() {
                 const epData = await fetchEPReport(params);
                 console.debug('PATCHES - EP Report data:', epData);
                 const parsedEpData = Object.fromEntries(
-                    epData.data.map(item => [`${item.SID}_${item.Quantity}`, item])
+                    epData.data.map(item => [`${item.SID}_${item.Units}`, item])
                 );
 
                 let parsedPiData = piData.data;
