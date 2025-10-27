@@ -124,6 +124,19 @@ function fetchFieldValues(field) {
 }
 
 async function keywordSearch() {
+    function toggleLoad(display = null) {
+        const dtTable_processing = document.getElementById('dtTable_processing');
+        if (dtTable_processing) {
+            if (display !== null) {
+                dtTable_processing.style.display = display
+            } else if (dtTable_processing.style.display === 'none') {
+                dtTable_processing.style.display = 'inherit';
+            } else {
+                dtTable_processing.style.display = 'none';
+            }
+        }
+    }
+    toggleLoad('inherit');
     const dtfoot = document.getElementById('dtfoot');
     const dtTable = document.getElementById('dtTable');
     const params = {};
@@ -177,6 +190,7 @@ async function keywordSearch() {
             } catch (err) {
                 console.error('PATCHES - fetchReport failed:', err);
                 fireSwal('Fetching Error', 'Error while fetching data.', 'error');
+                toggleLoad('none');
             }
         } else {
             fireSwal('Missing Params', 'Unable to fetch parameter values for keyword pending inventory search.', 'error');
@@ -446,6 +460,7 @@ async function keywordSearch() {
                 i++;
             });
         }
+        toggleLoad('none');
     }
 }
 
