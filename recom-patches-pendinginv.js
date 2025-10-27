@@ -238,7 +238,7 @@ async function keywordSearch() {
         const tbody = dtTable.querySelector('tbody');
         if (thead && tfoot && tbody) {
             thead.innerHTML = `
-            <th style="width: 0px;"></th>
+            <th style="width: 0px; padding: 0px !important;"></th>
             <th>Keyword / Product</th>
             <th>PO #</th>
             <th>Quantity<br>Entered</th>
