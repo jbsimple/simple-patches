@@ -463,7 +463,7 @@ async function keywordSearch() {
                 <td>${row['PO_Number']}</td>
                 <td>${row['Quantity'] ?? '-1'}</td>
                 <td>${row['Approved_Quantity'] ?? '0'}</td>
-                <td title="API needs to be fixed for this to work.">N/a</td>
+                <td><a href="javascript:quickCreate('Update Sorting Location','ajax/actions/updateSortingLocation/${row['Event_ID']}', true);">{Set Location}</a></td>
                 <td>${row['User'] ?? 'N/a'}</td>
                 <td>${row['Event_Date'] ?? 'N/a'}</td>
                 <td></td>`;
