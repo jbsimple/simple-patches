@@ -120,7 +120,12 @@ async function prettyLinkSkus() {
     const rows = table.querySelectorAll('tbody tr');
 
     for (const row of rows) {
-        if (row.querySelector('td.in-stock-col')) continue;
+        await processRow(row);
+    }
+    toggleLoad('none');
+
+    async function processRow(row) {
+        if (row.querySelector('td.in-stock-col')) return;
 
         const cells = row.querySelectorAll('td');
         const skuCell = cells[3];
@@ -198,7 +203,6 @@ async function prettyLinkSkus() {
 
         }
     }
-    toggleLoad('none');
 
     function addTableHeadings(textContent, className = 'patches_newHeader') {
         const th = document.createElement('th');
