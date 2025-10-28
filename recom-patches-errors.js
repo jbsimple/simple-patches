@@ -19,29 +19,11 @@ async function fetchItemDetails(sku = null) {
     if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
         const csrfToken = csrfMeta.getAttribute('content');
 
-        const today = new Date();
-        const past = new Date();
-        past.setDate(today.getDate() - 89);
-
-        const formatDate = (date) => {
-            const mm = String(date.getMonth() + 1).padStart(2, '0');
-            const dd = String(date.getDate()).padStart(2, '0');
-            const yyyy = date.getFullYear();
-            return `${mm}/${dd}/${yyyy}`;
-        };
-
-        const range = `${formatDate(past)} - ${formatDate(today)}`;
-
         let filters = [
             {
                 column: "product_items.in_stock",
                 opr: "{0} >= {1}",
                 value: -100
-            },
-            {
-                column: "product_items.updated_at",
-                opr: "between",
-                value: range 
             }
         ];
         
@@ -50,6 +32,25 @@ async function fetchItemDetails(sku = null) {
                 column: "product_items.sku",
                 opr: "{0} LIKE '%{1}%'",
                 value: sku
+            });
+        } else {
+            const today = new Date();
+            const past = new Date();
+            past.setDate(today.getDate() - 89);
+
+            const formatDate = (date) => {
+                const mm = String(date.getMonth() + 1).padStart(2, '0');
+                const dd = String(date.getDate()).padStart(2, '0');
+                const yyyy = date.getFullYear();
+                return `${mm}/${dd}/${yyyy}`;
+            };
+
+            const range = `${formatDate(past)} - ${formatDate(today)}`;
+
+            filters.push({
+                column: "product_items.updated_at",
+                opr: "between",
+                value: range 
             });
         }
 
