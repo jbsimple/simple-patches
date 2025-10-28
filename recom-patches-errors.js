@@ -129,15 +129,16 @@ async function prettyLinkSkus() {
         let item_id = null;
         if (text.startsWith('SC-') || text.startsWith('RF_SC-') || text.startsWith('DF-') || text.startsWith('CP_0_SC-')) {
             let cleanedSku = text.startsWith('RF_') ? text.replace(/^RF_/, '').trim() : text;
-            cleanedSku = text.startsWith('CP_0_') ? text.replace(/^CP_0_/, '').trim() : cleanedSku;
+            cleanedSku = cleanedSku.startsWith('CP_0_') ? cleanedSku.replace(/^CP_0_/, '').trim() : cleanedSku;
             const href = `/product/items/${cleanedSku}`;
             skuCell.innerHTML = `<a href="${href}" target="_blank">${text}</a>`;
+
             if (itemData[cleanedSku]) {
                 console.debug(`PATCHES - Found Data for ${cleanedSku}:`, itemData[cleanedSku]);
-                
-                in_stock = itemData[cleanedSku]['MAIN_Qty'] ? itemData[text]['MAIN_Qty'] : 0;
-                sid = itemData[cleanedSku]['SID'] ? itemData[text]['SID'] : null;
-                item_id = itemData[cleanedSku]['Item_ID'] ? itemData[text]['Item_ID'] : null;
+
+                in_stock = itemData[cleanedSku]['MAIN_Qty'] ? itemData[cleanedSku]['MAIN_Qty'] : 0;
+                sid = itemData[cleanedSku]['SID'] ? itemData[cleanedSku]['SID'] : null;
+                item_id = itemData[cleanedSku]['Item_ID'] ? itemData[cleanedSku]['Item_ID'] : null;
             } else {
                 console.warn(`PATCHES - Manually fetching data for ${cleanedSku}`);
 
