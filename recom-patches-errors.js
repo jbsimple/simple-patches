@@ -2,6 +2,7 @@
 
 let itemData = null;
 let manualData = {};
+const fetchPromises = {};
 const getWMFeed = false;
 
 async function itemDetailsInit() {
@@ -144,25 +145,35 @@ async function prettyLinkSkus() {
         let sid = null;
         let item_id = null;
         let data = itemData[cleanedSku] || manualData[cleanedSku];
+
         if (!data) {
             console.warn(`PATCHES - Manually fetching data for ${cleanedSku}`);
-            try {
-                const reportFetch = await fetchItemDetails(cleanedSku);
-                console.debug(`PATCHES - Manually fetched data:`, reportFetch);
-                const fetched = Array.isArray(reportFetch?.data)
-                    ? reportFetch.data[0]
-                    : reportFetch?.data;
+            if (!fetchPromises[cleanedSku]) {
+                fetchPromises[cleanedSku] = (async () => {
+                    try {
+                        const reportFetch = await fetchItemDetails(cleanedSku);
+                        console.debug(`PATCHES - Manually fetched data:`, reportFetch);
+                        const fetched = Array.isArray(reportFetch?.data)
+                            ? reportFetch.data[0]
+                            : reportFetch?.data;
 
-                if (fetched && (fetched['SID'] || fetched['In_Stock'] || fetched['MAIN_Qty'])) {
-                    data = fetched;
-                    manualData[cleanedSku] = fetched;
-                    console.debug(`PATCHES - Stored manualData for ${cleanedSku}`, fetched);
-                } else {
-                    console.warn(`PATCHES - No data returned for ${cleanedSku}:`, reportFetch);
-                }
-            } catch (err) {
-                console.error(`PATCHES - Error fetching data for ${cleanedSku}:`, err);
+                        if (fetched && (fetched['SID'] || fetched['In_Stock'] || fetched['MAIN_Qty'])) {
+                            manualData[cleanedSku] = fetched;
+                            console.debug(`PATCHES - Stored manualData for ${cleanedSku}`, fetched);
+                            return fetched;
+                        } else {
+                            console.warn(`PATCHES - No data returned for ${cleanedSku}:`, reportFetch);
+                            return null;
+                        }
+                    } catch (err) {
+                        console.error(`PATCHES - Error fetching data for ${cleanedSku}:`, err);
+                        return null;
+                    } finally {
+                        delete fetchPromises[cleanedSku];
+                    }
+                })();
             }
+            data = await fetchPromises[cleanedSku];
         }
 
         if (data) {
