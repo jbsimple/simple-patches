@@ -125,6 +125,9 @@ async function prettyLinkSkus() {
     toggleLoad('none');
 
     async function processRow(row) {
+        if (row.dataset.processing === "true" || row.querySelector('td.in-stock-col')) return;
+        row.dataset.processing = "true";
+    
         if (row.querySelector('td.in-stock-col')) return;
 
         const cells = row.querySelectorAll('td');
@@ -133,36 +136,35 @@ async function prettyLinkSkus() {
 
         if (!(text.startsWith('SC-') || text.startsWith('RF_SC-') || text.startsWith('DF-') || text.startsWith('CP_0_SC-'))) return;
 
-        let in_stock = null;
-        let sid = null;
-        let item_id = null;
-        let cleanedSku = text.startsWith('RF_') ? text.replace(/^RF_/, '').trim() : text;
-        cleanedSku = cleanedSku.startsWith('CP_0_') ? cleanedSku.replace(/^CP_0_/, '').trim() : cleanedSku;
+        let cleanedSku = text.replace(/^RF_/, '').replace(/^CP_0_/, '');
         const href = `/product/items/${cleanedSku}`;
         skuCell.innerHTML = `<a href="${href}" target="_blank">${text}</a>`;
 
-        if (itemData[cleanedSku]) {
-            console.debug(`PATCHES - Found Data for ${cleanedSku}:`, itemData[cleanedSku]);
-
-            in_stock = itemData[cleanedSku]['MAIN_Qty'] ? itemData[cleanedSku]['MAIN_Qty'] : 0;
-            sid = itemData[cleanedSku]['SID'] ? itemData[cleanedSku]['SID'] : null;
-            item_id = itemData[cleanedSku]['Item_ID'] ? itemData[cleanedSku]['Item_ID'] : null;
-
-        } else if (manualData[cleanedSku]) {
-            in_stock = manualData[cleanedSku]['MAIN_Qty'] ? itemData[cleanedSku]['MAIN_Qty'] : 0;
-            sid = manualData[cleanedSku]['SID'] ? itemData[cleanedSku]['SID'] : null;
-            item_id = manualData[cleanedSku]['Item_ID'] ? itemData[cleanedSku]['Item_ID'] : null;
-        } else {
+        let in_stock = null;
+        let sid = null;
+        let item_id = null;
+        let data = itemData[cleanedSku] || manualData[cleanedSku];
+        if (!data) {
             console.warn(`PATCHES - Manually fetching data for ${cleanedSku}`);
+            try {
+                const reportFetch = await fetchItemDetails(cleanedSku);
+                console.debug(`PATCHES - Manually fetched data:`, reportFetch);
 
-            const reportFetch = await fetchItemDetails(cleanedSku);
-            console.debug(`PATCHES - Manually fetched data:`, reportFetch);
-            if (reportFetch && reportFetch.data) {
-                manualData[cleanedSku] = reportFetch.data;
-                in_stock = reportFetch.data['In_Stock'] ?? null;
-                sid = reportFetch.data['SID'] ?? null;
-                item_id = reportFetch.data['Item_ID'] ?? null;
+                if (reportFetch && reportFetch.data) {
+                    data = reportFetch.data;
+                    manualData[cleanedSku] = reportFetch.data;
+                } else {
+                    console.warn(`PATCHES - No data returned for ${cleanedSku}`);
+                }
+            } catch (err) {
+                console.error(`PATCHES - Error fetching data for ${cleanedSku}:`, err);
             }
+        }
+
+        if (data) {
+            in_stock = data['MAIN_Qty'] ?? data['In_Stock'] ?? null;
+            sid = data['SID'] ?? null;
+            item_id = data['Item_ID'] ?? null;
         }
 
         row.insertBefore(addCell(`<span>${in_stock}</span>`, 'in-stock-col', "Main Quantity of SKU"), cells[4]);
@@ -201,6 +203,8 @@ async function prettyLinkSkus() {
                 cells[2].textContent = wm_feedID;
             }
         }
+
+        delete row.dataset.processing;
 
     }
 
