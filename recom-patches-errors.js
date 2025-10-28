@@ -128,8 +128,8 @@ async function prettyLinkSkus() {
         let sid = null;
         let item_id = null;
         if (text.startsWith('SC-') || text.startsWith('RF_SC-') || text.startsWith('DF-') || text.startsWith('CP_0_SC-')) {
-            let cleanedSku = text.startsWith('RF_') ? text.replace(/^RF_/, '') : text;
-            cleanedSku = text.startsWith('CP_0_') ? text.replace(/^CP_0_/, '') : cleanedSku;
+            let cleanedSku = text.startsWith('RF_') ? text.replace(/^RF_/, '').trim() : text;
+            cleanedSku = text.startsWith('CP_0_') ? text.replace(/^CP_0_/, '').trim() : cleanedSku;
             const href = `/product/items/${cleanedSku}`;
             skuCell.innerHTML = `<a href="${href}" target="_blank">${text}</a>`;
             if (itemData[cleanedSku]) {
