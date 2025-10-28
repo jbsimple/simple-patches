@@ -127,10 +127,21 @@ async function prettyLinkSkus() {
             const href = `/product/items/${cleanedSku}`;
             skuCell.innerHTML = `<a href="${href}" target="_blank">${text}</a>`;
             if (itemData[text]) {
-                in_stock = itemData[text]['MAIN_Qty'];
-                image = itemData[text]['Product_Image'];
-                sid = itemData[text]['SID'];
+                in_stock = itemData[text]['MAIN_Qty'] ? itemData[text]['MAIN_Qty'] : 0;
+                row.insertBefore(addCell(in_stock, 'in-stock-col', "Main Quantity of SKU"), cells[4]);
+
+                image = itemData[text]['Product_Image'] ? itemData[text]['Product_Image'] : "https://s3.amazonaws.com/elog-cdn/no-image.png";
+                row.insertBefore(addCell(`<img src="${image}" style="width: 96px; height: 96px;">`, 'picture-col', "First Product Image"), cells[4]);
+
+                sid = itemData[text]['SID'] ? itemData[text]['SID'] : null;
+                if (sid !== null) {
+                    row.insertBefore(addCell(`<a href="/products/${sid}" target="_blank" class="text-muted fw-bold text-muted d-block fs-7">${sid}</a>`, 'sid-col', "Link to SID"), cells[4]);
+                } else {
+                    row.insertBefore(addCell(`<span></span>`, 'sid-col', "Link to SID"), cells[4]);
+                }
+
                 item_id = itemData[text]['Item_ID'];
+                console.debug(`PATCHES - Item ID ${item_id} has had info added!`, itemData[text]);
             } else {
                 console.warn(`PATCHES - No Item Data for ${text}`);
                 /* the old method which was slow
@@ -166,12 +177,6 @@ async function prettyLinkSkus() {
             }
         }
 
-        // Create the new cell only once
-        const inStockCell = document.createElement('td');
-        inStockCell.classList.add('in-stock-col');
-        inStockCell.textContent = in_stock ? in_stock : "0";
-        row.insertBefore(inStockCell, cells[4]);
-
         //"https://s3.amazonaws.com/elog-cdn/no-image.png"
 
         if (getWMFeed) {
@@ -202,6 +207,15 @@ async function prettyLinkSkus() {
                 cells[2].textContent = wm_feedID;
             }
         }
+    }
+
+    function addCell(innerHTML, className = 'patches_newcell', title = 'Patches New Cell', label = 'New Patch Cell') {
+        const newCell = document.createElement('td');
+        newCell.classList.add(className);
+        newCell.innerHTML = innerHTML;
+        newCell.title = title;
+        newCell.setAttribute('label', label);
+        return newCell;
     }
 }
 
