@@ -32,8 +32,9 @@ async function prettyLinkSkus() {
 
         let in_stock = "";
         let item_id = "";
-        if (text.startsWith('SC-') || text.startsWith('RF_SC-') || text.startsWith('DF-')) {
-            const cleanedSku = text.startsWith('RF_') ? text.replace(/^RF_/, '') : text;
+        if (text.startsWith('SC-') || text.startsWith('RF_SC-') || text.startsWith('DF-') || text.startsWith('CP_0_SC-')) {
+            let cleanedSku = text.startsWith('RF_') ? text.replace(/^RF_/, '') : text;
+            cleanedSku = text.startsWith('CP_0_') ? text.replace(/^CP_0_/, '') : text;
             const href = `/product/items/${cleanedSku}`;
 
             skuCell.innerHTML = `<a href="${href}" target="_blank">${text}</a>`;
