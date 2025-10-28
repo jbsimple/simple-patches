@@ -11,78 +11,87 @@ async function itemDetailsInit() {
         );
     }
     return itemDataFetch.data;
+}
 
-    async function fetchItemDetails() {
-        // time to build a report
-        const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
-        if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
-            const csrfToken = csrfMeta.getAttribute('content');
+async function fetchItemDetails(sku = null) {
+    // time to build a report
+    const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
+    if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
+        const csrfToken = csrfMeta.getAttribute('content');
 
-            const today = new Date();
-            const past = new Date();
-            past.setDate(today.getDate() - 89);
+        const today = new Date();
+        const past = new Date();
+        past.setDate(today.getDate() - 89);
 
-            const formatDate = (date) => {
-                const mm = String(date.getMonth() + 1).padStart(2, '0');
-                const dd = String(date.getDate()).padStart(2, '0');
-                const yyyy = date.getFullYear();
-                return `${mm}/${dd}/${yyyy}`;
-            };
+        const formatDate = (date) => {
+            const mm = String(date.getMonth() + 1).padStart(2, '0');
+            const dd = String(date.getDate()).padStart(2, '0');
+            const yyyy = date.getFullYear();
+            return `${mm}/${dd}/${yyyy}`;
+        };
 
-            const range = `${formatDate(past)} - ${formatDate(today)}`;
+        const range = `${formatDate(past)} - ${formatDate(today)}`;
 
-            var request = {
-                report: {
-                    type: "active_inventory",
-                    columns: [
-                        "products.sid",
-                        "product_items.id",
-                        "product_items.sku",
-                        "first_image",
-                        "product_items.in_stock"
-                    ],
-                    filters: [
-                        {
-                            column: "product_items.in_stock",
-                            opr: "{0} >= {1}",
-                            value: -100
-                        },
-                        {
-                            column: "product_items.updated_at",
-                            opr: "between",
-                            value: range 
-                        }
-                    ]
-                },
-                csrf_recom: csrfToken
-            };
-
-            console.debug('PATCHES - Fetching Item Detials report:', request);
-
-            return new Promise((resolve, reject) => {
-                $.ajax({
-                    type: "POST",
-                    dataType: "json",
-                    url: "/reports/create",
-                    data: request,
-                }).done(function(data) {
-                    if (data.success && data.results.results && Array.isArray(data.results.results)) {
-                        resolve({
-                            data: data.results.results,
-                            download: `/renderfile/download?folder=reports&path=${data.results.filename}`,
-                            filename: data.results.filename
-                        });
-                    } else {
-                        resolve(null);
-                    }
-                }).fail(function(jqXHR, textStatus, errorThrown) {
-                    console.error("Request failed: " + textStatus + ", " + errorThrown);
-                    reject(new Error("Request failed: " + textStatus + ", " + errorThrown));
-                });
+        let filters = [
+            {
+                column: "product_items.in_stock",
+                opr: "{0} >= {1}",
+                value: -100
+            },
+            {
+                column: "product_items.updated_at",
+                opr: "between",
+                value: range 
+            }
+        ];
+        
+        if (sku !== null) {
+            filters.push({
+                column: "product_items.sku",
+                opr: "{0} LIKE '%{1}%'",
+                value: sku
             });
-        } else {
-            return null;
         }
+
+        var request = {
+            report: {
+                type: "active_inventory",
+                columns: [
+                    "products.sid",
+                    "product_items.id",
+                    "product_items.sku",
+                    "product_items.in_stock"
+                ],
+                filters: filters
+            },
+            csrf_recom: csrfToken
+        };
+
+        console.debug('PATCHES - Fetching Item Detials report:', request);
+
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: "/reports/create",
+                data: request,
+            }).done(function(data) {
+                if (data.success && data.results.results && Array.isArray(data.results.results)) {
+                    resolve({
+                        data: data.results.results,
+                        download: `/renderfile/download?folder=reports&path=${data.results.filename}`,
+                        filename: data.results.filename
+                    });
+                } else {
+                    resolve(null);
+                }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error("Request failed: " + textStatus + ", " + errorThrown);
+                reject(new Error("Request failed: " + textStatus + ", " + errorThrown));
+            });
+        });
+    } else {
+        return null;
     }
 }
 
@@ -94,13 +103,11 @@ async function prettyLinkSkus() {
     const footerRow = table.querySelector('tfoot>tr');
 
     if (headerRow && !table.hasAttribute('patched')) {
-        headerRow.insertBefore(addTableHeadings("Picture", 'picture-col'), headerRow.children[4]);
         headerRow.insertBefore(addTableHeadings("SID", 'sid-col'), headerRow.children[4]);
         headerRow.insertBefore(addTableHeadings("In Stock", 'in-stock-col'), headerRow.children[4]);
     }
 
     if (footerRow && !table.hasAttribute('patched')) {
-        footerRow.insertBefore(addTableHeadings("", 'picture-col'), footerRow.children[4]);
         footerRow.insertBefore(addTableHeadings("", 'sid-col'), footerRow.children[4]);
         footerRow.insertBefore(addTableHeadings("", 'in-stock-col'), footerRow.children[4]);
     }
@@ -108,8 +115,6 @@ async function prettyLinkSkus() {
     table.setAttribute('patched', 'true');
 
     const rows = table.querySelectorAll('tbody tr');
-
-    const parser = new DOMParser();
 
     for (const row of rows) {
         if (row.querySelector('td.in-stock-col')) continue;
@@ -119,7 +124,6 @@ async function prettyLinkSkus() {
         const text = skuCell.textContent.trim();
 
         let in_stock = null;
-        let image = null;
         let sid = null;
         let item_id = null;
         if (text.startsWith('SC-') || text.startsWith('RF_SC-') || text.startsWith('DF-') || text.startsWith('CP_0_SC-')) {
@@ -129,84 +133,57 @@ async function prettyLinkSkus() {
             skuCell.innerHTML = `<a href="${href}" target="_blank">${text}</a>`;
             if (itemData[text]) {
                 in_stock = itemData[text]['MAIN_Qty'] ? itemData[text]['MAIN_Qty'] : 0;
-                row.insertBefore(addCell(in_stock, 'in-stock-col', "Main Quantity of SKU"), cells[4]);
-
                 sid = itemData[text]['SID'] ? itemData[text]['SID'] : null;
-                if (sid !== null) {
-                    row.insertBefore(addCell(`<a href="/products/${sid}" target="_blank">${sid}</a>`, 'sid-col', "Link to SID"), cells[4]);
-                } else {
-                    row.insertBefore(addCell(`<span></span>`, 'sid-col', "Link to SID"), cells[4]);
-                }
-
-                image = itemData[text]['Product_Image'] ? itemData[text]['Product_Image'] : "https://s3.amazonaws.com/elog-cdn/no-image.png";
-                row.insertBefore(addCell(`<img src="${image}" style="width: 96px; height: 96px;">`, 'picture-col', "First Product Image"), cells[4]);
-
-                item_id = itemData[text]['Item_ID'];
-                console.debug(`PATCHES - Item ID ${item_id} has had info added!`, itemData[text]);
+                item_id = itemData[text]['Item_ID'] ? itemData[text]['Item_ID'] : null;
             } else {
-                console.warn(`PATCHES - No Item Data for ${text}`);
-                /* the old method which was slow
-                try {
-                    const res = await fetch(href);
-                    if (res.ok) {
-                        const html = await res.text();
-                        const doc = parser.parseFromString(html, "text/html");
+                console.warn(`PATCHES - Manually fetching data for ${text}`);
 
-                        const invLink = doc.getElementById('getTotalInventoryBreakdown');
-                        if (invLink) {
-                            const parent = invLink.parentElement;
-                            if (parent && parent.nextElementSibling) {
-                                in_stock = parent.nextElementSibling.textContent.trim();
-                            }
-                        }
-
-                        const itemLabelDiv = [...doc.querySelectorAll('div')].find(div => div.textContent.trim() === 'Item #');
-                        if (itemLabelDiv) {
-                            const parent = itemLabelDiv.parentElement;
-                            if (parent) {
-                                const idDiv = parent.querySelector('.fs-5.text-info.fw-bolder.lh-1');
-                                if (idDiv) {
-                                    item_id = idDiv.textContent.trim();
-                                }
-                            }
-                        }
-
-                    }
-                } catch (err) {
-                    console.error("Error fetching", href, err);
-                } */
-            }
-        }
-
-        //"https://s3.amazonaws.com/elog-cdn/no-image.png"
-
-        if (getWMFeed) {
-            const marketplaceCell = cells[1];
-            const marketplace = marketplaceCell.textContent.trim();
-            let wm_feedID = ""; 
-            if (marketplace === 'Walmart US' && item_id) {
-                try {
-                    const feedRes = await fetch(`/integrations/stores/listing/item/${item_id}`);
-                    if (feedRes.ok) {
-                        const feedHtml = await feedRes.text();
-                        const feedDoc = parser.parseFromString(feedHtml, "text/html");
-
-                        const wmRow = [...feedDoc.querySelectorAll('tbody tr')].find(row => row.querySelector('td')?.textContent.trim() === 'Walmart US');
-
-                        if (wmRow) {
-                            const cols = wmRow.querySelectorAll('td');
-                            wm_feedID = cols[2]?.textContent.trim() || "";
-                        }
-                    }
-                } catch (err) {
-                    console.error("Error fetching feed ID", err);
+                const reportFetch = fetchItemDetails(cleanedSku);
+                console.debug(`PATCHES - Manually fetched data:`, reportFetch);
+                if (reportFetch.data) {
+                    in_stock = reportFetch.data['In_Stock'] ?? 0;
+                    sid = reportFetch.data['SID'] ?? null;
+                    item_id = reportFetch.data['Item_ID'] ?? null;
                 }
             }
 
-            if (wm_feedID) {
-                cells[2].title = cells[2].textContent.trim();
-                cells[2].textContent = wm_feedID;
+            row.insertBefore(addCell(`<span>${in_stock}</span>`, 'in-stock-col', "Main Quantity of SKU"), cells[4]);
+            if (sid !== null) {
+                row.insertBefore(addCell(`<a href="/products/${sid}" target="_blank">${sid}</a>`, 'sid-col', "Link to SID"), cells[4]);
+            } else {
+                row.insertBefore(addCell(`<span></span>`, 'sid-col', "Link to SID"), cells[4]);
             }
+
+            if (getWMFeed) {
+                const parser = new DOMParser();
+                const marketplaceCell = cells[1];
+                const marketplace = marketplaceCell.textContent.trim();
+                let wm_feedID = ""; 
+                if (marketplace === 'Walmart US' && item_id) {
+                    try {
+                        const feedRes = await fetch(`/integrations/stores/listing/item/${item_id}`);
+                        if (feedRes.ok) {
+                            const feedHtml = await feedRes.text();
+                            const feedDoc = parser.parseFromString(feedHtml, "text/html");
+
+                            const wmRow = [...feedDoc.querySelectorAll('tbody tr')].find(row => row.querySelector('td')?.textContent.trim() === 'Walmart US');
+
+                            if (wmRow) {
+                                const cols = wmRow.querySelectorAll('td');
+                                wm_feedID = cols[2]?.textContent.trim() || "";
+                            }
+                        }
+                    } catch (err) {
+                        console.error("Error fetching feed ID", err);
+                    }
+                }
+
+                if (wm_feedID) {
+                    cells[2].title = cells[2].textContent.trim();
+                    cells[2].textContent = wm_feedID;
+                }
+            }
+
         }
     }
 
