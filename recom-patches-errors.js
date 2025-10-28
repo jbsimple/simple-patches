@@ -31,7 +31,7 @@ async function itemDetailsInit() {
                         {
                             column: "product_items.in_stock",
                             opr: "{0} >= {1}",
-                            value: 1
+                            value: -100
                         }
                     ]
                 },
