@@ -98,8 +98,8 @@ async function prettyLinkSkus() {
         const skuCell = cells[3];
         const text = skuCell.textContent.trim();
 
-        let in_stock = 0;
-        let image = "https://s3.amazonaws.com/elog-cdn/no-image.png";
+        let in_stock = null;
+        let image = null;
         let sid = null;
         let item_id = null;
         if (text.startsWith('SC-') || text.startsWith('RF_SC-') || text.startsWith('DF-') || text.startsWith('CP_0_SC-')) {
@@ -150,8 +150,10 @@ async function prettyLinkSkus() {
         // Create the new cell only once
         const inStockCell = document.createElement('td');
         inStockCell.classList.add('in-stock-col');
-        inStockCell.textContent = in_stock ? in_stock : "N/a";
+        inStockCell.textContent = in_stock ? in_stock : "0";
         row.insertBefore(inStockCell, cells[4]);
+
+        //"https://s3.amazonaws.com/elog-cdn/no-image.png"
 
         if (getWMFeed) {
             const marketplaceCell = cells[1];
