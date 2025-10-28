@@ -10,6 +10,7 @@ async function itemDetailsInit() {
             itemDataFetch.data.map(item => [item.SKU, item])
         );
     }
+    return itemDataFetch.data;
 
     async function fetchItemDetails() {
         // time to build a report
@@ -183,20 +184,6 @@ async function prettyLinkSkus() {
     }
 }
 
-// Run once on initial load
-setTimeout(prettyLinkSkus, 500);
-
-// Observe #dtTable_wrapper for changes
-const wrapper = document.getElementById('dtTable_wrapper');
-if (wrapper) {
-    const observer = new MutationObserver(() => {
-        clearTimeout(observer._debounce);
-        observer._debounce = setTimeout(prettyLinkSkus, 500);
-    });
-
-    observer.observe(wrapper, { childList: true, subtree: true });
-}
-
 function exportTable() {
     const table = document.getElementById('dtTable');
     if (!table) return;
@@ -260,4 +247,19 @@ function initExport() {
     toolbar.insertBefore(button, toolbar.firstChild);
 }
 
-setTimeout(initExport, 50);
+async function initErrorLogPatch() {
+    await itemDetailsInit();
+    prettyLinkSkus();
+    const wrapper = document.getElementById('dtTable_wrapper');
+    if (wrapper) {
+        const observer = new MutationObserver(() => {
+            clearTimeout(observer._debounce);
+            observer._debounce = setTimeout(prettyLinkSkus, 500);
+        });
+
+        observer.observe(wrapper, { childList: true, subtree: true });
+    }
+    initExport();
+}
+
+setTimeout(initErrorLogPatch, 150);
