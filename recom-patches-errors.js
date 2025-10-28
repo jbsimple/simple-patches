@@ -125,7 +125,6 @@ async function prettyLinkSkus() {
     }
 
     async function fetchItemDetails() {
-        async function fetchEPReport(params) {
         // time to build a report
         const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
         if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
@@ -177,7 +176,6 @@ async function prettyLinkSkus() {
         } else {
             return null;
         }
-    }
     }
 }
 
