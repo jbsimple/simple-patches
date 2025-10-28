@@ -133,6 +133,8 @@ async function prettyLinkSkus() {
             const href = `/product/items/${cleanedSku}`;
             skuCell.innerHTML = `<a href="${href}" target="_blank">${text}</a>`;
             if (itemData[cleanedSku]) {
+                console.debug(`PATCHES - Found Data for ${cleanedSku}:`, itemData[cleanedSku]);
+                
                 in_stock = itemData[cleanedSku]['MAIN_Qty'] ? itemData[text]['MAIN_Qty'] : 0;
                 sid = itemData[cleanedSku]['SID'] ? itemData[text]['SID'] : null;
                 item_id = itemData[cleanedSku]['Item_ID'] ? itemData[text]['Item_ID'] : null;
