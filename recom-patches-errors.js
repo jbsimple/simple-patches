@@ -1,128 +1,14 @@
 /* only one time get this big report */
-const itemDataFetch = await fetchItemDetails();
+
 let itemData = null;
-if (itemDataFetch.data) {
-    itemData = Object.fromEntries(
-        itemDataFetch.data.map(item => [item.SKU, item])
-    );
-}
-
 const getWMFeed = false;
-async function prettyLinkSkus() {
-    const table = document.getElementById('dtTable');
-    if (!table) return;
 
-    const headerRow = table.querySelector('thead tr');
-    const footerRow = table.querySelector('tfoot tr');
-
-    if (!headerRow.querySelector('th.in-stock-col')) {
-        const th = document.createElement('th');
-        th.textContent = "In Stock";
-        th.classList.add('in-stock-col', 'min-w-100px');
-        headerRow.insertBefore(th, headerRow.children[4]);
-    }
-
-    if (footerRow && !footerRow.querySelector('th.in-stock-col')) {
-        const th = document.createElement('th');
-        th.classList.add('in-stock-col');
-        footerRow.insertBefore(th, footerRow.children[4]);
-    }
-
-    const rows = table.querySelectorAll('tbody tr');
-
-    const parser = new DOMParser();
-
-    for (const row of rows) {
-        if (row.querySelector('td.in-stock-col')) continue;
-
-        const cells = row.querySelectorAll('td');
-        const skuCell = cells[3];
-        const text = skuCell.textContent.trim();
-
-        let in_stock = "N/a";
-        let image = "https://s3.amazonaws.com/elog-cdn/no-image.png";
-        let sid = null;
-        let item_id = null;
-        if (text.startsWith('SC-') || text.startsWith('RF_SC-') || text.startsWith('DF-') || text.startsWith('CP_0_SC-')) {
-            let cleanedSku = text.startsWith('RF_') ? text.replace(/^RF_/, '') : text;
-            cleanedSku = text.startsWith('CP_0_') ? text.replace(/^CP_0_/, '') : text;
-            const href = `/product/items/${cleanedSku}`;
-            skuCell.innerHTML = `<a href="${href}" target="_blank">${text}</a>`;
-            if (itemData[text]) {
-                in_stock = itemData[text]['MAIN_Qty'];
-                image = itemData[text]['Product_Image'];
-                sid = itemData[text]['SID'];
-                item_id = itemData[text]['Item_ID'];
-            } else {
-                console.warn(`PATCHES - No Item Data for ${text}`);
-            }
-
-            /* the old method which was slow
-            try {
-                const res = await fetch(href);
-                if (res.ok) {
-                    const html = await res.text();
-                    const doc = parser.parseFromString(html, "text/html");
-
-                    const invLink = doc.getElementById('getTotalInventoryBreakdown');
-                    if (invLink) {
-                        const parent = invLink.parentElement;
-                        if (parent && parent.nextElementSibling) {
-                            in_stock = parent.nextElementSibling.textContent.trim();
-                        }
-                    }
-
-                    const itemLabelDiv = [...doc.querySelectorAll('div')].find(div => div.textContent.trim() === 'Item #');
-                    if (itemLabelDiv) {
-                        const parent = itemLabelDiv.parentElement;
-                        if (parent) {
-                            const idDiv = parent.querySelector('.fs-5.text-info.fw-bolder.lh-1');
-                            if (idDiv) {
-                                item_id = idDiv.textContent.trim();
-                            }
-                        }
-                    }
-
-                }
-            } catch (err) {
-                console.error("Error fetching", href, err);
-            } */
-        }
-
-        // Create the new cell only once
-        const inStockCell = document.createElement('td');
-        inStockCell.classList.add('in-stock-col');
-        inStockCell.textContent = in_stock ? in_stock : "N/a";
-        row.insertBefore(inStockCell, cells[4]);
-
-        if (getWMFeed) {
-            const marketplaceCell = cells[1];
-            const marketplace = marketplaceCell.textContent.trim();
-            let wm_feedID = ""; 
-            if (marketplace === 'Walmart US' && item_id) {
-                try {
-                    const feedRes = await fetch(`/integrations/stores/listing/item/${item_id}`);
-                    if (feedRes.ok) {
-                        const feedHtml = await feedRes.text();
-                        const feedDoc = parser.parseFromString(feedHtml, "text/html");
-
-                        const wmRow = [...feedDoc.querySelectorAll('tbody tr')].find(row => row.querySelector('td')?.textContent.trim() === 'Walmart US');
-
-                        if (wmRow) {
-                            const cols = wmRow.querySelectorAll('td');
-                            wm_feedID = cols[2]?.textContent.trim() || "";
-                        }
-                    }
-                } catch (err) {
-                    console.error("Error fetching feed ID", err);
-                }
-            }
-
-            if (wm_feedID) {
-                cells[2].title = cells[2].textContent.trim();
-                cells[2].textContent = wm_feedID;
-            }
-        }
+async function itemDetailsInit() {
+    const itemDataFetch = await fetchItemDetails();
+    if (itemDataFetch.data) {
+        itemData = Object.fromEntries(
+            itemDataFetch.data.map(item => [item.SKU, item])
+        );
     }
 
     async function fetchItemDetails() {
@@ -176,6 +62,123 @@ async function prettyLinkSkus() {
             });
         } else {
             return null;
+        }
+    }
+}
+
+async function prettyLinkSkus() {
+    const table = document.getElementById('dtTable');
+    if (!table) return;
+
+    const headerRow = table.querySelector('thead tr');
+    const footerRow = table.querySelector('tfoot tr');
+
+    if (!headerRow.querySelector('th.in-stock-col')) {
+        const th = document.createElement('th');
+        th.textContent = "In Stock";
+        th.classList.add('in-stock-col', 'min-w-100px');
+        headerRow.insertBefore(th, headerRow.children[4]);
+    }
+
+    if (footerRow && !footerRow.querySelector('th.in-stock-col')) {
+        const th = document.createElement('th');
+        th.classList.add('in-stock-col');
+        footerRow.insertBefore(th, footerRow.children[4]);
+    }
+
+    const rows = table.querySelectorAll('tbody tr');
+
+    const parser = new DOMParser();
+
+    for (const row of rows) {
+        if (row.querySelector('td.in-stock-col')) continue;
+
+        const cells = row.querySelectorAll('td');
+        const skuCell = cells[3];
+        const text = skuCell.textContent.trim();
+
+        let in_stock = "N/a";
+        let image = "https://s3.amazonaws.com/elog-cdn/no-image.png";
+        let sid = null;
+        let item_id = null;
+        if (text.startsWith('SC-') || text.startsWith('RF_SC-') || text.startsWith('DF-') || text.startsWith('CP_0_SC-')) {
+            let cleanedSku = text.startsWith('RF_') ? text.replace(/^RF_/, '') : text;
+            cleanedSku = text.startsWith('CP_0_') ? text.replace(/^CP_0_/, '') : text;
+            const href = `/product/items/${cleanedSku}`;
+            skuCell.innerHTML = `<a href="${href}" target="_blank">${text}</a>`;
+            if (itemData[text]) {
+                in_stock = itemData[text]['MAIN_Qty'];
+                image = itemData[text]['Product_Image'];
+                sid = itemData[text]['SID'];
+                item_id = itemData[text]['Item_ID'];
+            } else {
+                console.warn(`PATCHES - No Item Data for ${text}`);
+                /* the old method which was slow
+                try {
+                    const res = await fetch(href);
+                    if (res.ok) {
+                        const html = await res.text();
+                        const doc = parser.parseFromString(html, "text/html");
+
+                        const invLink = doc.getElementById('getTotalInventoryBreakdown');
+                        if (invLink) {
+                            const parent = invLink.parentElement;
+                            if (parent && parent.nextElementSibling) {
+                                in_stock = parent.nextElementSibling.textContent.trim();
+                            }
+                        }
+
+                        const itemLabelDiv = [...doc.querySelectorAll('div')].find(div => div.textContent.trim() === 'Item #');
+                        if (itemLabelDiv) {
+                            const parent = itemLabelDiv.parentElement;
+                            if (parent) {
+                                const idDiv = parent.querySelector('.fs-5.text-info.fw-bolder.lh-1');
+                                if (idDiv) {
+                                    item_id = idDiv.textContent.trim();
+                                }
+                            }
+                        }
+
+                    }
+                } catch (err) {
+                    console.error("Error fetching", href, err);
+                } */
+            }
+        }
+
+        // Create the new cell only once
+        const inStockCell = document.createElement('td');
+        inStockCell.classList.add('in-stock-col');
+        inStockCell.textContent = in_stock ? in_stock : "N/a";
+        row.insertBefore(inStockCell, cells[4]);
+
+        if (getWMFeed) {
+            const marketplaceCell = cells[1];
+            const marketplace = marketplaceCell.textContent.trim();
+            let wm_feedID = ""; 
+            if (marketplace === 'Walmart US' && item_id) {
+                try {
+                    const feedRes = await fetch(`/integrations/stores/listing/item/${item_id}`);
+                    if (feedRes.ok) {
+                        const feedHtml = await feedRes.text();
+                        const feedDoc = parser.parseFromString(feedHtml, "text/html");
+
+                        const wmRow = [...feedDoc.querySelectorAll('tbody tr')].find(row => row.querySelector('td')?.textContent.trim() === 'Walmart US');
+
+                        if (wmRow) {
+                            const cols = wmRow.querySelectorAll('td');
+                            wm_feedID = cols[2]?.textContent.trim() || "";
+                        }
+                    }
+                } catch (err) {
+                    console.error("Error fetching feed ID", err);
+                }
+            }
+
+            if (wm_feedID) {
+                cells[2].title = cells[2].textContent.trim();
+                cells[2].textContent = wm_feedID;
+            }
         }
     }
 }
