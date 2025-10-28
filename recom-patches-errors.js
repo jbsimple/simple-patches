@@ -1,3 +1,12 @@
+/* only one time get this big report */
+const itemDataFetch = await fetchItemDetails();
+let itemData = null;
+if (itemDataFetch.data) {
+    itemData = Object.fromEntries(
+        itemDataFetch.data.map(item => [item.SKU, item])
+    );
+}
+
 const getWMFeed = false;
 async function prettyLinkSkus() {
     const table = document.getElementById('dtTable');
@@ -22,14 +31,6 @@ async function prettyLinkSkus() {
     const rows = table.querySelectorAll('tbody tr');
 
     const parser = new DOMParser();
-
-    const itemDataFetch = await fetchItemDetails();
-    let itemData = null;
-    if (itemDataFetch.data) {
-        itemData = Object.fromEntries(
-            itemDataFetch.data.map(item => [item.SKU, item])
-        );
-    }
 
     for (const row of rows) {
         if (row.querySelector('td.in-stock-col')) continue;
@@ -91,7 +92,7 @@ async function prettyLinkSkus() {
         // Create the new cell only once
         const inStockCell = document.createElement('td');
         inStockCell.classList.add('in-stock-col');
-        inStockCell.textContent = in_stock ? in_stock : "";
+        inStockCell.textContent = in_stock ? in_stock : "N/a";
         row.insertBefore(inStockCell, cells[4]);
 
         if (getWMFeed) {
