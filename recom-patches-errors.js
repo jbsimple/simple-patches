@@ -94,15 +94,15 @@ async function prettyLinkSkus() {
     const footerRow = table.querySelector('tfoot>tr');
 
     if (headerRow && !table.hasAttribute('patched')) {
-        headerRow.insertBefore(addTableHeadings("In Stock", 'in-stock-col'), headerRow.children[4]);
-        headerRow.insertBefore(addTableHeadings("SID", 'sid-col'), headerRow.children[4]);
         headerRow.insertBefore(addTableHeadings("Picture", 'picture-col'), headerRow.children[4]);
+        headerRow.insertBefore(addTableHeadings("SID", 'sid-col'), headerRow.children[4]);
+        headerRow.insertBefore(addTableHeadings("In Stock", 'in-stock-col'), headerRow.children[4]);
     }
 
     if (footerRow && !table.hasAttribute('patched')) {
-        footerRow.insertBefore(addTableHeadings("", 'in-stock-col'), footerRow.children[4]);
-        footerRow.insertBefore(addTableHeadings("", 'sid-col'), footerRow.children[4]);
         footerRow.insertBefore(addTableHeadings("", 'picture-col'), footerRow.children[4]);
+        footerRow.insertBefore(addTableHeadings("", 'sid-col'), footerRow.children[4]);
+        footerRow.insertBefore(addTableHeadings("", 'in-stock-col'), footerRow.children[4]);
     }
 
     table.setAttribute('patched', 'true');
