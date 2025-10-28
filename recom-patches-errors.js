@@ -297,6 +297,20 @@ async function initErrorLogPatch() {
         observer.observe(wrapper, { childList: true, subtree: true });
     }
     initExport();
+    unsafeTableLength();
+}
+
+async function unsafeTableLength() {
+    const select = document.querySelector('select[name="dtTable_length"]');
+    if (select) {
+        const addOptions = [200, 250, 300, 350, 400, 450, 500];
+        addOptions.forEach(value => {
+            const option = document.createElement('option');
+            option.setAttribute('value', value);
+            option.textContent = value;
+            select.appendChild(option);
+        })
+    }
 }
 
 setTimeout(initErrorLogPatch, 150);
