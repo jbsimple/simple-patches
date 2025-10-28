@@ -96,6 +96,7 @@ async function fetchItemDetails(sku = null) {
 }
 
 async function prettyLinkSkus() {
+    toggleLoad('inherit');
     const table = document.getElementById('dtTable');
     if (!table) return;
 
@@ -186,6 +187,7 @@ async function prettyLinkSkus() {
 
         }
     }
+    toggleLoad('none');
 
     function addTableHeadings(textContent, className = 'patches_newHeader') {
         const th = document.createElement('th');
@@ -267,9 +269,24 @@ function initExport() {
     toolbar.insertBefore(button, toolbar.firstChild);
 }
 
+function toggleLoad(display = null) {
+        const dtTable_processing = document.getElementById('dtTable_processing');
+        if (dtTable_processing) {
+            if (display !== null) {
+                dtTable_processing.style.display = display
+            } else if (dtTable_processing.style.display === 'none') {
+                dtTable_processing.style.display = 'inherit';
+            } else {
+                dtTable_processing.style.display = 'none';
+            }
+        }
+    }
+
 async function initErrorLogPatch() {
+    toggleLoad('inherit');
     await itemDetailsInit();
     prettyLinkSkus();
+    toggleLoad('none');
     const wrapper = document.getElementById('dtTable_wrapper');
     if (wrapper) {
         const observer = new MutationObserver(() => {
