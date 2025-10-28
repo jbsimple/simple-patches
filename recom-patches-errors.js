@@ -159,7 +159,7 @@ async function prettyLinkSkus() {
             console.debug(`PATCHES - Manually fetched data:`, reportFetch);
             if (reportFetch && reportFetch.data) {
                 manualData[cleanedSku] = reportFetch.data;
-                in_stock = reportFetch.data['In_Stock'] ?? 0;
+                in_stock = reportFetch.data['In_Stock'] ?? null;
                 sid = reportFetch.data['SID'] ?? null;
                 item_id = reportFetch.data['Item_ID'] ?? null;
             }
