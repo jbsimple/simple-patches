@@ -154,7 +154,7 @@ async function prettyLinkSkus() {
         }
 
         if (data) {
-            in_stock = data['MAIN_Qty'] ?? data['In_Stock'] ?? 0;
+            in_stock = data['MAIN_Qty'] ?? data['In_Stock'] ?? null;
             sid = data['SID'] ?? null;
             item_id = data['Item_ID'] ?? null;
         }
@@ -163,7 +163,7 @@ async function prettyLinkSkus() {
         if (sid !== null) {
             row.insertBefore(addCell(`<a href="/products/${sid}" target="_blank">${sid}</a>`, 'sid-col', "Link to SID"), cells[4]);
         } else {
-            row.insertBefore(addCell(`<span></span>`, 'sid-col', "Link to SID"), cells[4]);
+            row.insertBefore(addCell(`<span>null</span>`, 'sid-col', "Link to SID"), cells[4]);
         }
 
 
