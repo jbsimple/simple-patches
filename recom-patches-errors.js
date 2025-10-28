@@ -31,7 +31,7 @@ async function itemDetailsInit() {
                         {
                             column: "product_items.in_stock",
                             opr: "{0} >= {1}",
-                            value: -1000
+                            value: 1
                         }
                     ]
                 },
@@ -98,7 +98,7 @@ async function prettyLinkSkus() {
         const skuCell = cells[3];
         const text = skuCell.textContent.trim();
 
-        let in_stock = "N/a";
+        let in_stock = 0;
         let image = "https://s3.amazonaws.com/elog-cdn/no-image.png";
         let sid = null;
         let item_id = null;
