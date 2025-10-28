@@ -17,6 +17,20 @@ async function itemDetailsInit() {
         const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
         if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
             const csrfToken = csrfMeta.getAttribute('content');
+
+            const today = new Date();
+            const past = new Date();
+            past.setDate(today.getDate() - 89);
+
+            const formatDate = (date) => {
+                const mm = String(date.getMonth() + 1).padStart(2, '0');
+                const dd = String(date.getDate()).padStart(2, '0');
+                const yyyy = date.getFullYear();
+                return `${mm}/${dd}/${yyyy}`;
+            };
+
+            const range = `${formatDate(past)} - ${formatDate(today)}`;
+
             var request = {
                 report: {
                     type: "active_inventory",
@@ -32,6 +46,11 @@ async function itemDetailsInit() {
                             column: "product_items.in_stock",
                             opr: "{0} >= {1}",
                             value: -100
+                        },
+                        {
+                            column: "product_items.updated_at",
+                            opr: "between",
+                            value: range 
                         }
                     ]
                 },
