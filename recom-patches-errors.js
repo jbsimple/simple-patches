@@ -1,6 +1,7 @@
 /* only one time get this big report */
 
 let itemData = null;
+let manualData = {};
 const getWMFeed = false;
 
 async function itemDetailsInit() {
@@ -140,12 +141,18 @@ async function prettyLinkSkus() {
                 in_stock = itemData[cleanedSku]['MAIN_Qty'] ? itemData[cleanedSku]['MAIN_Qty'] : 0;
                 sid = itemData[cleanedSku]['SID'] ? itemData[cleanedSku]['SID'] : null;
                 item_id = itemData[cleanedSku]['Item_ID'] ? itemData[cleanedSku]['Item_ID'] : null;
+
+            } else if (manualData[cleanedSku]) {
+                in_stock = manualData[cleanedSku]['MAIN_Qty'] ? itemData[cleanedSku]['MAIN_Qty'] : 0;
+                sid = manualData[cleanedSku]['SID'] ? itemData[cleanedSku]['SID'] : null;
+                item_id = manualData[cleanedSku]['Item_ID'] ? itemData[cleanedSku]['Item_ID'] : null;
             } else {
                 console.warn(`PATCHES - Manually fetching data for ${cleanedSku}`);
 
                 const reportFetch = await fetchItemDetails(cleanedSku);
                 console.debug(`PATCHES - Manually fetched data:`, reportFetch);
                 if (reportFetch && reportFetch.data) {
+                    manualData[cleanedSku] = reportFetch.data;
                     in_stock = reportFetch.data['In_Stock'] ?? 0;
                     sid = reportFetch.data['SID'] ?? null;
                     item_id = reportFetch.data['Item_ID'] ?? null;
