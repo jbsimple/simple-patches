@@ -90,21 +90,22 @@ async function prettyLinkSkus() {
     const table = document.getElementById('dtTable');
     if (!table) return;
 
-    const headerRow = table.querySelector('thead tr');
-    const footerRow = table.querySelector('tfoot tr');
+    const headerRow = table.querySelector('thead>tr');
+    const footerRow = table.querySelector('tfoot>tr');
 
-    if (!headerRow.querySelector('th.in-stock-col')) {
-        const th = document.createElement('th');
-        th.textContent = "In Stock";
-        th.classList.add('in-stock-col', 'min-w-100px');
-        headerRow.insertBefore(th, headerRow.children[4]);
+    if (headerRow && !table.hasAttribute('patched')) {
+        headerRow.insertBefore(addTableHeadings("In Stock", 'in-stock-col'), headerRow.children[4]);
+        headerRow.insertBefore(addTableHeadings("Picture", 'picture-col'), headerRow.children[4]);
+        headerRow.insertBefore(addTableHeadings("SID", 'sid-col'), headerRow.children[4]);
     }
 
-    if (footerRow && !footerRow.querySelector('th.in-stock-col')) {
-        const th = document.createElement('th');
-        th.classList.add('in-stock-col');
-        footerRow.insertBefore(th, footerRow.children[4]);
+    if (footerRow && !table.hasAttribute('patched')) {
+        footerRow.insertBefore(addTableHeadings("", 'in-stock-col'), headerRow.children[4]);
+        footerRow.insertBefore(addTableHeadings("", 'picture-col'), headerRow.children[4]);
+        headerRow.insertBefore(addTableHeadings("", 'sid-col'), headerRow.children[4]);
     }
+
+    table.setAttribute('patched', 'true');
 
     const rows = table.querySelectorAll('tbody tr');
 
@@ -135,7 +136,7 @@ async function prettyLinkSkus() {
 
                 sid = itemData[text]['SID'] ? itemData[text]['SID'] : null;
                 if (sid !== null) {
-                    row.insertBefore(addCell(`<a href="/products/${sid}" target="_blank" class="text-muted fw-bold text-muted d-block fs-7">${sid}</a>`, 'sid-col', "Link to SID"), cells[4]);
+                    row.insertBefore(addCell(`<a href="/products/${sid}" target="_blank">${sid}</a>`, 'sid-col', "Link to SID"), cells[4]);
                 } else {
                     row.insertBefore(addCell(`<span></span>`, 'sid-col', "Link to SID"), cells[4]);
                 }
@@ -207,6 +208,13 @@ async function prettyLinkSkus() {
                 cells[2].textContent = wm_feedID;
             }
         }
+    }
+
+    function addTableHeadings(textContent, className = 'patches_newHeader') {
+        const th = document.createElement('th');
+        th.textContent = textContent;
+        th.classList.add(className, 'min-w-100px');
+        return th;
     }
 
     function addCell(innerHTML, className = 'patches_newcell', title = 'Patches New Cell', label = 'New Patch Cell') {
