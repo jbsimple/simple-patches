@@ -23,6 +23,14 @@ async function prettyLinkSkus() {
 
     const parser = new DOMParser();
 
+    const itemDataFetch = await fetchItemDetails();
+    let itemData = null;
+    if (itemDataFetch.data) {
+        itemData = Object.fromEntries(
+            itemDataFetch.data.map(item => [item.SKU, item])
+        );
+    }
+
     for (const row of rows) {
         if (row.querySelector('td.in-stock-col')) continue;
 
@@ -30,15 +38,25 @@ async function prettyLinkSkus() {
         const skuCell = cells[3];
         const text = skuCell.textContent.trim();
 
-        let in_stock = "";
-        let item_id = "";
+        let in_stock = "N/a";
+        let image = "https://s3.amazonaws.com/elog-cdn/no-image.png";
+        let sid = null;
+        let item_id = null;
         if (text.startsWith('SC-') || text.startsWith('RF_SC-') || text.startsWith('DF-') || text.startsWith('CP_0_SC-')) {
             let cleanedSku = text.startsWith('RF_') ? text.replace(/^RF_/, '') : text;
             cleanedSku = text.startsWith('CP_0_') ? text.replace(/^CP_0_/, '') : text;
             const href = `/product/items/${cleanedSku}`;
-
             skuCell.innerHTML = `<a href="${href}" target="_blank">${text}</a>`;
+            if (itemData[text]) {
+                in_stock = itemData[text]['MAIN_Qty'];
+                image = itemData[text]['Product_Image'];
+                sid = itemData[text]['SID'];
+                item_id = itemData[text]['Item_ID'];
+            } else {
+                console.warn(`PATCHES - No Item Data for ${text}`);
+            }
 
+            /* the old method which was slow
             try {
                 const res = await fetch(href);
                 if (res.ok) {
@@ -67,14 +85,14 @@ async function prettyLinkSkus() {
                 }
             } catch (err) {
                 console.error("Error fetching", href, err);
-            }
+            } */
         }
 
         // Create the new cell only once
-            const inStockCell = document.createElement('td');
-            inStockCell.classList.add('in-stock-col');
-            inStockCell.textContent = in_stock ? in_stock : "";
-            row.insertBefore(inStockCell, cells[4]);
+        const inStockCell = document.createElement('td');
+        inStockCell.classList.add('in-stock-col');
+        inStockCell.textContent = in_stock ? in_stock : "";
+        row.insertBefore(inStockCell, cells[4]);
 
         if (getWMFeed) {
             const marketplaceCell = cells[1];
@@ -104,6 +122,62 @@ async function prettyLinkSkus() {
                 cells[2].textContent = wm_feedID;
             }
         }
+    }
+
+    async function fetchItemDetails() {
+        async function fetchEPReport(params) {
+        // time to build a report
+        const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
+        if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
+            const csrfToken = csrfMeta.getAttribute('content');
+            var request = {
+                report: {
+                    type: "active_inventory",
+                    columns: [
+                        "products.sid",
+                        "product_items.id",
+                        "product_items.sku",
+                        "first_image",
+                        "product_items.in_stock"
+                    ],
+                    filters: [
+                        {
+                            column: "product_items.in_stock",
+                            opr: "{0} >= {1}",
+                            value: -1000
+                        }
+                    ]
+                },
+                csrf_recom: csrfToken
+            };
+
+            console.debug('PATCHES - Fetching Item Detials report:', request);
+
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: "/reports/create",
+                    data: request,
+                }).done(function(data) {
+                    if (data.success && data.results.results && Array.isArray(data.results.results)) {
+                        resolve({
+                            data: data.results.results,
+                            download: `/renderfile/download?folder=reports&path=${data.results.filename}`,
+                            filename: data.results.filename
+                        });
+                    } else {
+                        resolve(null);
+                    }
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    console.error("Request failed: " + textStatus + ", " + errorThrown);
+                    reject(new Error("Request failed: " + textStatus + ", " + errorThrown));
+                });
+            });
+        } else {
+            return null;
+        }
+    }
     }
 }
 
