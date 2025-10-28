@@ -133,41 +133,46 @@ async function prettyLinkSkus() {
 
         if (!(text.startsWith('SC-') || text.startsWith('RF_SC-') || text.startsWith('DF-') || text.startsWith('CP_0_SC-'))) return;
 
-        let cleanedSku = text.replace(/^RF_/, '').replace(/^CP_0_/, '');
-        const href = `/product/items/${cleanedSku}`;
-        skuCell.innerHTML = `<a href="${href}" target="_blank">${text}</a>`;
-
         let in_stock = null;
         let sid = null;
         let item_id = null;
+        let cleanedSku = text.startsWith('RF_') ? text.replace(/^RF_/, '').trim() : text;
+        cleanedSku = cleanedSku.startsWith('CP_0_') ? cleanedSku.replace(/^CP_0_/, '').trim() : cleanedSku;
+        const href = `/product/items/${cleanedSku}`;
+        skuCell.innerHTML = `<a href="${href}" target="_blank">${text}</a>`;
 
-        let data = itemData[cleanedSku] || manualData[cleanedSku];
-        if (!data) {
+        if (itemData[cleanedSku]) {
+            console.debug(`PATCHES - Found Data for ${cleanedSku}:`, itemData[cleanedSku]);
+
+            in_stock = itemData[cleanedSku]['MAIN_Qty'] ? itemData[cleanedSku]['MAIN_Qty'] : 0;
+            sid = itemData[cleanedSku]['SID'] ? itemData[cleanedSku]['SID'] : null;
+            item_id = itemData[cleanedSku]['Item_ID'] ? itemData[cleanedSku]['Item_ID'] : null;
+
+        } else if (manualData[cleanedSku]) {
+            in_stock = manualData[cleanedSku]['MAIN_Qty'] ? itemData[cleanedSku]['MAIN_Qty'] : 0;
+            sid = manualData[cleanedSku]['SID'] ? itemData[cleanedSku]['SID'] : null;
+            item_id = manualData[cleanedSku]['Item_ID'] ? itemData[cleanedSku]['Item_ID'] : null;
+        } else {
             console.warn(`PATCHES - Manually fetching data for ${cleanedSku}`);
+
             const reportFetch = await fetchItemDetails(cleanedSku);
             console.debug(`PATCHES - Manually fetched data:`, reportFetch);
-
             if (reportFetch && reportFetch.data) {
                 manualData[cleanedSku] = reportFetch.data;
-                data = reportFetch.data;
+                in_stock = reportFetch.data['In_Stock'] ?? 0;
+                sid = reportFetch.data['SID'] ?? null;
+                item_id = reportFetch.data['Item_ID'] ?? null;
             }
-        }
-
-        if (data) {
-            in_stock = data['MAIN_Qty'] ?? data['In_Stock'] ?? null;
-            sid = data['SID'] ?? null;
-            item_id = data['Item_ID'] ?? null;
         }
 
         row.insertBefore(addCell(`<span>${in_stock}</span>`, 'in-stock-col', "Main Quantity of SKU"), cells[4]);
         if (sid !== null) {
             row.insertBefore(addCell(`<a href="/products/${sid}" target="_blank">${sid}</a>`, 'sid-col', "Link to SID"), cells[4]);
         } else {
-            row.insertBefore(addCell(`<span>null</span>`, 'sid-col', "Link to SID"), cells[4]);
+            row.insertBefore(addCell(`<span></span>`, 'sid-col', "Link to SID"), cells[4]);
         }
 
-
-        if (getWMFeed && item_id) {
+        if (getWMFeed) {
             const parser = new DOMParser();
             const marketplaceCell = cells[1];
             const marketplace = marketplaceCell.textContent.trim();
