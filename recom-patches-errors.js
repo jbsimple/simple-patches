@@ -95,14 +95,14 @@ async function prettyLinkSkus() {
 
     if (headerRow && !table.hasAttribute('patched')) {
         headerRow.insertBefore(addTableHeadings("In Stock", 'in-stock-col'), headerRow.children[4]);
-        headerRow.insertBefore(addTableHeadings("Picture", 'picture-col'), headerRow.children[4]);
         headerRow.insertBefore(addTableHeadings("SID", 'sid-col'), headerRow.children[4]);
+        headerRow.insertBefore(addTableHeadings("Picture", 'picture-col'), headerRow.children[4]);
     }
 
     if (footerRow && !table.hasAttribute('patched')) {
         footerRow.insertBefore(addTableHeadings("", 'in-stock-col'), headerRow.children[4]);
-        footerRow.insertBefore(addTableHeadings("", 'picture-col'), headerRow.children[4]);
         headerRow.insertBefore(addTableHeadings("", 'sid-col'), headerRow.children[4]);
+        footerRow.insertBefore(addTableHeadings("", 'picture-col'), headerRow.children[4]);
     }
 
     table.setAttribute('patched', 'true');
@@ -131,15 +131,15 @@ async function prettyLinkSkus() {
                 in_stock = itemData[text]['MAIN_Qty'] ? itemData[text]['MAIN_Qty'] : 0;
                 row.insertBefore(addCell(in_stock, 'in-stock-col', "Main Quantity of SKU"), cells[4]);
 
-                image = itemData[text]['Product_Image'] ? itemData[text]['Product_Image'] : "https://s3.amazonaws.com/elog-cdn/no-image.png";
-                row.insertBefore(addCell(`<img src="${image}" style="width: 96px; height: 96px;">`, 'picture-col', "First Product Image"), cells[4]);
-
                 sid = itemData[text]['SID'] ? itemData[text]['SID'] : null;
                 if (sid !== null) {
                     row.insertBefore(addCell(`<a href="/products/${sid}" target="_blank">${sid}</a>`, 'sid-col', "Link to SID"), cells[4]);
                 } else {
                     row.insertBefore(addCell(`<span></span>`, 'sid-col', "Link to SID"), cells[4]);
                 }
+
+                image = itemData[text]['Product_Image'] ? itemData[text]['Product_Image'] : "https://s3.amazonaws.com/elog-cdn/no-image.png";
+                row.insertBefore(addCell(`<img src="${image}" style="width: 96px; height: 96px;">`, 'picture-col', "First Product Image"), cells[4]);
 
                 item_id = itemData[text]['Item_ID'];
                 console.debug(`PATCHES - Item ID ${item_id} has had info added!`, itemData[text]);
