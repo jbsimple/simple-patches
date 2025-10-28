@@ -142,7 +142,7 @@ async function prettyLinkSkus() {
             } else {
                 console.warn(`PATCHES - Manually fetching data for ${cleanedSku}`);
 
-                const reportFetch = fetchItemDetails(cleanedSku);
+                const reportFetch = await fetchItemDetails(cleanedSku);
                 console.debug(`PATCHES - Manually fetched data:`, reportFetch);
                 if (reportFetch.data) {
                     in_stock = reportFetch.data['In_Stock'] ?? 0;
