@@ -132,12 +132,12 @@ async function prettyLinkSkus() {
             cleanedSku = text.startsWith('CP_0_') ? text.replace(/^CP_0_/, '') : text;
             const href = `/product/items/${cleanedSku}`;
             skuCell.innerHTML = `<a href="${href}" target="_blank">${text}</a>`;
-            if (itemData[text]) {
-                in_stock = itemData[text]['MAIN_Qty'] ? itemData[text]['MAIN_Qty'] : 0;
-                sid = itemData[text]['SID'] ? itemData[text]['SID'] : null;
-                item_id = itemData[text]['Item_ID'] ? itemData[text]['Item_ID'] : null;
+            if (itemData[cleanedSku]) {
+                in_stock = itemData[cleanedSku]['MAIN_Qty'] ? itemData[text]['MAIN_Qty'] : 0;
+                sid = itemData[cleanedSku]['SID'] ? itemData[text]['SID'] : null;
+                item_id = itemData[cleanedSku]['Item_ID'] ? itemData[text]['Item_ID'] : null;
             } else {
-                console.warn(`PATCHES - Manually fetching data for ${text}`);
+                console.warn(`PATCHES - Manually fetching data for ${cleanedSku}`);
 
                 const reportFetch = fetchItemDetails(cleanedSku);
                 console.debug(`PATCHES - Manually fetched data:`, reportFetch);
