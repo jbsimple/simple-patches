@@ -1,3 +1,8 @@
-#kt_drawer_chat.bg-body.drawer.drawer-end:not(.drawer-on) {
-	display: none !important;	
-}
+/* the new loading time discrepancies create an animation glitch,
+this fixes that glitch */
+#kt_drawer_chat.bg-body.drawer.drawer-end:not(.drawer-on) { display: none !important; }
+
+/* On Newer versions of the chromium browser when using force dark mode
+will invert images even when you select the option to not invert images.
+This forces the browser to not do that */
+img { color-scheme: dark; }

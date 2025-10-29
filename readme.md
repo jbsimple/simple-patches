@@ -15,22 +15,20 @@ There are other smaller modifications made, look below at the patches list to se
 
 #### How to use (Chromium):
 - Get [User JavaScript and CSS extension.](https://chromewebstore.google.com/detail/user-javascript-and-css/nbhcbdghjpllgmfilhnhkllmkecfmpld?hl=en)
-- The extension requires exension developer mode; go to [manage extensions](chrome://extensions) and click the switch to enable developer mode.
-- Go to system homepage (dashboard).
+  - Older version of the extension requires exension developer mode; go to [manage extensions](chrome://extensions) and click the switch to enable developer mode.
+  - Newer version of the extension requires allowing user scripts. Once the exension is installed, go to [manage extensions](chrome://extensions), click on "Details" for the extension, and flip the switch for "Allow User Scripts" towards the middle of the options.
+- Once installed, navigate to the system homepage (dashboard).
 - Click on the extention and add a new rule.
 - Add a '/*' to the end of the url to ensure it works on all pages.
+  - Example: https://subdomain.maindomain.com/*
 - Paste code from [inject.js](https://simple-patches.vercel.app/inject.js) into js side.
-- Optional: Add contents of injex.css to fix loading issues caused by adding the patch.
-
+- Optional, add the CSS rules from [inject.css](https://simple-patches.vercel.app/inject.css) on the CSS side or add them in the patch settings once loaded.
 #### How to use (Firefox):
 - I don't have a good recommendation for an extension, just find something that allows JS injects.
 - Paste the code from [inject.js](https://simple-patches.vercel.app/inject.js) into the code editor.
 
 ## Patch List
 Below is a detailed list of all the pages made to the site. Everything that is modified is outlined below. The code is also open source (obviously) so feel free to see specifically what it is doing.
-
-#### Temporary Patches:
-No temporary patches at the moment.
 
 #### Settings Patches:
 These are patches added to a special settings box the user can edit.
@@ -57,7 +55,7 @@ These are patches added to a special settings box the user can edit.
   - Field to input notes.
   - Hijacks existing modal layout for data entry (with animations).
 - CSS additions to header and clock buttons to handle the additional buttons.
-- Added details and CSS modifications to product modal:
+- Modifications to the Product Modal:
   - Added a label for the product to print the created date.
   - Added a label for the product to print the status, color-coded.
   - Added a label for the product displaying the number of pictures on the product.
@@ -68,7 +66,7 @@ These are patches added to a special settings box the user can edit.
   - Adjusted some of the heading labels to make them shorter, better for width (In Stock and Stock Available).
 - Added a refresh check to clock in tasks, every minute it checks and applies the clock-in task if it has changed.
 - Change to UI-block loading wheel so it appears at the top of the div instead of the middle, and made it larger, so you can see that it is actually loading and not just sitting there.
-- When clocked into the pictures task, there is an activity buster to prevent the logout. This also means when clocked into pictures you're sendign user activity that you're active the whole time, so remember to clock out!
+- When clocked into the pictures task, there is an activity buster to prevent the logout, always sending system activity useage.
 
 #### Product and Item Page Patches:
 - CSS fix for layout of cards.
@@ -93,6 +91,7 @@ These are patches added to a special settings box the user can edit.
 - CSS change to increase the maximum height of the inventory table.
 - Added a button in the tools to open the product/item in FBA check or Pending Inventory, using GET parameters patch.
 - Added a new button above the attributes form to bulk resubmit all channels for in stock skus under the sid.
+- Added a button under the Walmart UPC metafield to generate a GTIN (an actual valid gtin). Added a button next to it to resubmit all for that SKU.
 
 #### Listing Patches:
 - Custom feature to prepend "PICTURES" to all newly-created SKUs Locations.
@@ -103,11 +102,12 @@ These are patches added to a special settings box the user can edit.
 - When prefill creating, if there is no picture, the picture is stock or has invalid dimensions, a warning appears.
 
 #### New Inventory Page Patches:
--  When a result appears that's In Catalog, the text is replaced with a link to open the SID modal.
--  Disabled entry of new inventory sent to listing without a GTIN.
--  Disabled entry of new inventory sent to listing with a GTIN longer than 12 characters.
--  Automatic response for invalid GTIN in input box.
--  Checkbox toggle to auto select searched text after making search for hands-free scanning.
+- When a result appears that's In Catalog, the text is replaced with a link to open the SID modal.
+- Disabled entry of new inventory sent to listing without a GTIN.
+- Disabled entry of new inventory sent to listing with a GTIN longer than 12 characters.
+- Automatic response for invalid GTIN in input box.
+- Checkbox toggle to auto select searched text after making search for hands-free scanning.
+- The default picture is hidden, I didn't like it.
 
 #### Pending Inventory Page Patches:
 - Added a button to load icons of product images into the table.
@@ -115,7 +115,11 @@ These are patches added to a special settings box the user can edit.
   - The process is resource heavy so it has to be a button so it can be used when it is needed.
 - Added GET parameters to auto-do a search.
   - Now links to search in pending inventory can be used throughout the patch.
-- Added a keywords search button to search by listing keywords/PO.
+- Added a special "Keywords" search option.
+  - Provided you have the keyword and a PO#.
+  - Will modify the table to have results based on keywords.
+  - Does some marrying of reports to get the info.
+  - Ability to set a new location directly.
 
 #### Reports Page Patches:
 - After submitting to generate a new report, the report displays under the original card.
@@ -138,19 +142,27 @@ These are patches added to a special settings box the user can edit.
 
 #### Intergations Errors Page:
 - Added a button to download the table into a csv.
-- Added a new column for In Stock SKUs
-  - Will load the SKU page to get the in stock for that SKU and adds a new column with that number.
+- Modified the table printout.
+  - Generates a big report of every SKU edited in the last 30 days, fetches individual ones as needed.
+  - Added links for SKUs.
+  - Added an In Stock count for each SKU Line.
+  - Added a SID link for each SKU line.
+- Added an "unsafe" number of results option.
+  - This doesn't take site performance since the interagtions tab just pulls from one datatable, no operations on the table.
+  - The unsafe options adds additional options to have more results per page printout.
+  - This can be used in tandem with the export button to download an entire search result error log.
 
 #### Other Page Patches:
 - On Dashboard; Added quick link buttons to commonly used functions in the system (that are usually hidden behind a cascade menu).
 - On Dashboard; Replaced the Engage Widget with a button to the project vercel home page; along with a rotating image for a splash of fun, I guess...
 - On Calendar; CSS fix to add a background color to the list of day's events.
-- On Integrations Error Page, replaced SKU references with links to the actual SKUs.
 - On Tools Page, restructured the tool cards so it makes more sense in css.
 - On Tools Page, added tool link to email-import so it can be used as a tool.
 - On Tools Page, added tool link to simple patches cdn uploader.
 - In Conditions Queues; Export Table button to save each visible line item into a csv. (In-system solution made, keeping it because its cool)
 - In Conditions Queues; Get Total button to ge the total quantity of all visible line items.
+- On user profile pages; Added a download button to the events tab. It tries to fetch all activity from the user in the last 3 days.
+  - List takes a while to generate since the user log only shows 5 entries per page.
 
 #### Additional Patches:
 - Replaced unfinished producivity pages.
@@ -162,6 +174,10 @@ These are patches added to a special settings box the user can edit.
   - Added a date selector to look at any producivity report within the last year.
 
 #### Future Patches:
-- Proper handling of users in different departments, Listing department is hard-coded for productivity page.
+- Revamp the productivity page:
+  - This patch is going to be used as a mockup for the real implementation of the productivity pages.
+  - So this means changing the producivity table to better represent what is actually needed for all.
+  - Handling more than one department.
+  - Combining producitvity pages split now into one page, the extra tools are marked better.
 - Create a proper set of CSS rules for dark mode.
 - Overhaul of CSS sizing, everything is so large that the page requires it to be zoomed out in order to be used.
