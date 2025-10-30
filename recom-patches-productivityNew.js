@@ -280,8 +280,8 @@ function printProductivity(data, user = null, department = null) {
         }]; // default to have all data
 
         const card = document.createElement('div');
-        card.classList.add('card', 'card-bordered');
-        card.setAttribute('style', `width: calc(${width} - 1rem)`);
+        card.classList.add('card', 'card-bordered', 'patches-card');
+        card.setAttribute('style', `--width: ${width}`);
 
         // card heading
         const card_header = document.createElement('div');
@@ -515,7 +515,17 @@ function printProductivity(data, user = null, department = null) {
     }
 
     if (content_container) {
-        content_container.innerHTML = '';
+        content_container.innerHTML = `<style>
+            .card.patches-card {
+                width: calc(var(--width) - 0.5rem);
+            }
+            @media (max-width: 899px) {
+                .card.patches-card {
+                    --width: 50%;
+                }
+            }
+
+        </style>`;
     }
 
     await fetchUserDetails();
