@@ -130,6 +130,9 @@ async function fetchProductivity(type, department = null, range = null) {
         let start  = `${past_mm}/${past_dd}/${past_yyyy}`;
         let end = todayFormatted;
         range = `${start} - ${end}`;
+
+        // I just want same day stats for now
+        range = `${todayFormatted} - ${todayFormatted}`;
     } else {
         const rangeRegex = /^\s*(\d{2}\/\d{2}\/\d{4})\s*-\s*(\d{2}\/\d{2}\/\d{4})\s*$/;
         const match = range.match(rangeRegex);
