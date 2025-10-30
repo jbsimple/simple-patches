@@ -266,7 +266,7 @@ function printProductivity(data, user = null, department = null) {
 
     const content_container = document.getElementById('kt_app_content_container');
     const wrapper = document.createElement('div');
-    wrapper.setAttribute('style', 'display: flex; flex-wrap: wrap; justify-content: space-around;');
+    wrapper.setAttribute('style', 'display: flex; flex-wrap: wrap; justify-content: space-between;');
     cards.forEach(card => {
         wrapper.appendChild(card);
     });
