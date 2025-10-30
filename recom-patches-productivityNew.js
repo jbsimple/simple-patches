@@ -239,7 +239,7 @@ async function fetchProductivity(type, department = null, range = null) {
     }
 }
 
-function printProductivity(data, department = null) {
+function printProductivity(data, user = null, department = null) {
     if (department === null) { department = department_name.toLowerCase(); }
 
     const uniqueData = Array.from(
@@ -251,10 +251,17 @@ function printProductivity(data, department = null) {
     cards.push(createCard(null, null, '50%'));
     cards.push(createCard('task', null, '50%'));
     cards.push(createCard('po', null, '50%'));
-    cards.push(createCard('user', null, '50%'));
-    cards.push(createCard('brand', 'Apple/Samsung', '33%'));
-    cards.push(createCard('brand', 'OtterBox/Designer', '33%'));
-    // still need to get the listing breakdown omg
+
+    if (user !== null) {
+        cards.push(createCard('user', null, '50%'));
+    }
+
+    if (department === 'production') {
+        cards.push(createCard('brand', 'Apple/Samsung', '33%'));
+        cards.push(createCard('brand', 'OtterBox/Designer', '33%'));
+        // still need to get the listing breakdown omg
+    }
+    
     console.debug('PATCHES - Productivity Cards:', cards);
 
     const content_container = document.getElementById('kt_app_content_container');
@@ -492,9 +499,9 @@ function printProductivity(data, department = null) {
 
     await fetchUserDetails();
 
-    const report = await fetchProductivity('team', 'Production');
+    const report = await fetchProductivity('team');
     console.debug('PATCHES TEST - Report:', report);
-    printProductivity(report.data, 'production');
+    printProductivity(report.data);
 
     if (content_container && window.location.href.includes('/productivity/employee')) { // simgle user
         document.title = document.title.replace('Employee Productivity', 'My Productivity');
