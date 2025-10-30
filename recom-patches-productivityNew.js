@@ -320,7 +320,7 @@ function printProductivity(data, department = null) {
 
             if (title !== null) {
                 // removing subsets, combining subsets into one
-                if (title.contains('Apple/Samsung')) {
+                if (title.includes('Apple/Samsung')) {
                     const appleEntry = subdata .find(entry => 
                         entry.key?.toLowerCase() === 'apple'
                     );
@@ -336,7 +336,7 @@ function printProductivity(data, department = null) {
                     subdata = [
                         { key: 'Apple/Samsung', data: combinedData }
                     ];
-                } else if (title.contains('OtterBox/Designer')) {
+                } else if (title.includes('OtterBox/Designer')) {
                     const otterEntry = subdata.find(entry =>
                         entry.key?.toLowerCase() === 'otterbox'
                     );
