@@ -1547,7 +1547,7 @@ function peekAtImages() {
 
     function scanAndAttach(root) {
         if (!root) return;
-        if (root.matches && (root.matches('img') || root.matches('image'))) {
+        if (root.matches && (root.matches('img:not([patches="noEnlarge"])') || root.matches('image:not([patches="noEnlarge"])'))) {
             attachToImage(root);
         }
         if (root.querySelectorAll) {
