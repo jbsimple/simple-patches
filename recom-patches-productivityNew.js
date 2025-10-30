@@ -248,7 +248,7 @@ function printProductivity(data, department = null) {
     console.debug('PATCHES - Unique data:', uniqueData);
 
     let cards = [];
-    cards.push(createCard);
+    cards.push(createCard());
     cards.push(createCard('task'));
     cards.push(createCard('po'));
     cards.push(createCard('user'));
