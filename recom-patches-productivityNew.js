@@ -378,33 +378,30 @@ function printProductivity(data, user = null, department = null) {
                         <h4>${subset['key']}:</h4>
                     </div>
                     <td>
-                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                            <span class="text-gray-700 fw-bold">Units:</span>
-                            <span class="text-gray-900 fw-boldest">${stats['units']}</span>
-                        </div>
+                        <span class="text-gray-900 fw-boldest">${stats['units']}</span>
                     </td>
                     <td>
-                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                            <span class="text-gray-700 fw-bold">Unique Items:</span>
-                            <span class="text-gray-900 fw-boldest">${stats['unique_lines']}</span>
-                        </div>
+                        <span class="text-gray-900 fw-boldest">${stats['unique_lines']}</span>
                     </td>
                     <td>
-                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                            <span class="text-gray-700 fw-bold">Time:</span>
-                            <span class="text-gray-900 fw-boldest">${stats['minutes']} Minutes</span>
-                        </div>
+                        <span class="text-gray-900 fw-boldest">${stats['minutes']} Minutes</span>
                     </td>
                     <td>
-                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                            <span class="text-gray-700 fw-bold">Average:</span>
-                            <span class="text-gray-900 fw-boldest">${stats['average']} ${stats['average_label']}</span>
-                        </div>
+                        <span class="text-gray-900 fw-boldest">${stats['average']} ${stats['average_label']}</span>
                     </td>
                 </tr>`;
             });
 
             card_body.innerHTML = `<table class="table align-middle table-row-dashed fs-6 gy-3 dataTable no-footer dtr-inline">
+            <thead>
+                <tr>
+                    <th width="35%" class="sorting_disabled" rowspan="1" colspan="1">${groupKey}</th>
+                    <th class="sorting_disabled" rowspan="1" colspan="1">Units</th>
+                    <th class="sorting_disabled" rowspan="1" colspan="1">Unique Items</th>
+                    <th class="sorting_disabled" rowspan="1" colspan="1">Time</th>
+                    <th class="sorting_disabled" rowspan="1" colspan="1">Average</th>
+                </tr>
+            </thead>
             <tbody class="fw-bolder text-gray-600">${tbody}</tbody>
             </table>`;
         } else {
