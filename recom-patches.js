@@ -1551,7 +1551,7 @@ function peekAtImages() {
             attachToImage(root);
         }
         if (root.querySelectorAll) {
-            root.querySelectorAll('img, image').forEach(attachToImage);
+            root.querySelectorAll('img:not([patches="noEnlarge"]), image:not([patches="noEnlarge"])').forEach(attachToImage);
         }
     }
 
