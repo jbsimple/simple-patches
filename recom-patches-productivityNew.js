@@ -388,7 +388,36 @@ function printProductivity(data, department = null) {
 
             card_body.innerHTML = html;
         } else {
-            //to-do
+            const stats = getStats(subdata[0]['data']);
+            card_body.innerHTML = `<div class="d-flex flex-stack">
+                <div class="text-gray-700 fw-bold fs-6 me-2">Units:</div>
+                <div class="d-flex align-items-senter">
+                    <span class="text-gray-900 fw-boldest fs-6">${stats['units']}</span>
+                </div>
+            </div>
+            <div class="separator separator-dashed my-3"></div>
+            <div class="d-flex flex-stack">
+                <div class="text-gray-700 fw-bold fs-6 me-2">Unique Items:</div>
+                <div class="d-flex align-items-senter">
+                    <span class="text-gray-900 fw-boldest fs-6">${stats['unique_lines']}</span>
+                </div>
+            </div>
+            <div class="separator separator-dashed my-3"></div>
+            <div class="d-flex flex-stack">
+                <div class="text-gray-700 fw-bold fs-6 me-2">Time:</div>
+                <div class="d-flex align-items-senter">
+                    <span class="text-gray-900 fw-boldest fs-6">${stats['minutes']}</span>
+                </div>
+            </div>
+            <div class="separator separator-dashed my-3"></div>
+            <div class="d-flex flex-stack">
+                <div class="text-gray-700 fw-bold fs-6 me-2">Average:</div>
+                <div class="d-flex align-items-senter" style="gap: 0.5rem;">
+                    <span class="text-gray-900 fw-boldest fs-6" data-inventory-stats="in-stock">${stats['average']}</span>
+                    <span class="text-gray-400 fw-bolder fs-6" title="Out of Stock" data-inventory-stats="out-stock-percent">${stats['average_label']}</span>
+                </div>
+            </div>
+            `;
         }
 
         card.appendChild(card_body);
@@ -416,7 +445,7 @@ function printProductivity(data, department = null) {
                     minutes: minutes,
                     unique_lines: unique_lines,
                     average: minutes / units,
-                    average_label: 'Minutes / Unit'
+                    average_label: 'Mins/Unit'
                 };
             } else {
                 return {
@@ -424,7 +453,7 @@ function printProductivity(data, department = null) {
                     minutes: minutes,
                     unique_lines: unique_lines,
                     average: units / minutes,
-                    average_label: 'Units / Minute'
+                    average_label: 'Units/Min'
                 };
             }
         }
