@@ -8,6 +8,8 @@ let rainbowAnnounce = [];
 let autoLocationUpdate = true;
 let allowed_colors = [];
 
+let mockupProductivity = true;
+
 async function loadEdgeConfig(key) {
     return new Promise(async (resolve, reject) => {
         try {
@@ -82,8 +84,11 @@ function injectGoods() {
 
     } else if (location.pathname.includes('/productivity') && !location.pathname.includes('/productivity/board')) {
 
-        // loadPatchScript('recom-patches-productivity.js');
-        loadPatchScript('recom-patches-productivityNew.js');
+        if (mockupProductivity) {
+            loadPatchScript('recom-patches-productivityNew.js');
+        } else {
+            loadPatchScript('recom-patches-productivity.js');
+        }
 
     } else if (location.pathname.includes('/tools') && !location.pathname.includes('/tools/import')) {
 
@@ -140,9 +145,11 @@ function injectExtraTheme() {
             } else if (name && name.textContent.includes('Hi, Nate')) {
                 name.textContent = 'Hi, Nasty Nate';
             }
-
+            
             const links = nav_sidebar_links.querySelectorAll('.menu-link');
-            if (links.length > 0) {
+            if (links && links.length > 0 && mockupProductivity) {
+
+            } else if (links && links.length > 0) {
                 links.forEach(link => {
                     const href = link.getAttribute('href'); 
                     const title = link.querySelector('.menu-title');
