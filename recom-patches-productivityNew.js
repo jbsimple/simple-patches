@@ -417,7 +417,7 @@ function printProductivity(data, user = null, department = null) {
             <div class="d-flex flex-stack">
                 <div class="text-gray-700 fw-bold fs-6 me-2">Time:</div>
                 <div class="d-flex align-items-senter">
-                    <span class="text-gray-900 fw-boldest fs-6">${stats['minutes']}</span>
+                    <span class="text-gray-900 fw-boldest fs-6">${stats['minutes']} Minutes</span>
                 </div>
             </div>
             <div class="separator separator-dashed my-3"></div>
