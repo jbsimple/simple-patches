@@ -239,6 +239,194 @@ async function fetchProductivity(type, department = null, range = null) {
     }
 }
 
+function printProductivity(data, department = null) {
+    if (department === null) { department = department_name.toLowerCase(); }
+
+    const uniqueData = Array.from(
+        new Map(data.map(obj => [JSON.stringify(obj), obj])).values()
+    );
+    console.debug('PATCHES - Unique data:', uniqueData);
+
+    let cards = [];
+    cards.push(createCard);
+    cards.push(createCard('task'));
+    cards.push(createCard('po'));
+    cards.push(createCard('user'));
+    cards.push(createCard('brand', 'Apple/Samsung'));
+    cards.push(createCard('brand', 'OtterBox/Designer'));
+    console.debug('PATCHES - Productivity Cards:', cards);
+
+    const content_container = document.getElementById('kt_app_content_container');
+    const wrapper = document.createElement('div');
+    wrapper.setAttribute('style', 'display: flex; flex-wrap: wrap; justify-content: space-around;');
+    cards.forEach(card => {
+        wrapper.appendChild(cards);
+    });
+    content_container.appendChild(wrapper);
+    
+    function createCard(breakdown = null, title = null) {
+        let groupKey = null;
+        let subdata = [{
+            key:"all",
+            data:data
+        }]; // default to have all data
+
+        const card = document.createElement('div');
+        card.classList.add('card', 'card-bordered');
+
+        // card heading
+        const card_header = document.createElement('div');
+        card_header.classList = 'card-header';
+        const card_title = document.createElement('div');
+        card_title.classList = 'card-title';
+        switch (breakdown) {
+            case 'task':
+                card_title.textContent = 'Task Stats';
+                groupKey = 'Task';
+                break;
+            case 'po':
+                card_title.textContent = 'PO Stats';
+                groupKey = 'PO_Number';
+                break;
+            case 'user':
+                card_title.textContent = 'User Stats';
+                groupKey = 'User';
+                break;
+            case 'brand':
+                card_title.textContent = title ?? 'Beand Stats';
+                groupKey = 'User';
+                break;
+            default:
+                card_title.textContent = 'All Stats';
+        }
+        card_header.appendChild(card_title);
+        card.appendChild(card_title);
+
+
+        const card_body = document.createElement('div');
+        card_body.classList = 'card-body';
+        if (groupKey) {
+            const grouped = {};
+            for (const row of uniqueData) {
+                const key = row[groupKey] ?? 'Unknown';
+                if (!grouped[key]) grouped[key] = [];
+                grouped[key].push(row);
+            }
+
+            subdata = Object.entries(grouped).map(([key, value]) => ({
+                key,
+                data: value
+            }));
+
+            if (title !== null) {
+                // removing subsets, combining subsets into one
+                if (title.contains('Apple/Samsung')) {
+                    const appleEntry = subdata .find(entry => 
+                        entry.key?.toLowerCase() === 'apple'
+                    );
+                    const samsungEntry = subdata .find(entry => 
+                        entry.key?.toLowerCase() === 'samsung'
+                    );
+
+                    const combinedData = [
+                        ...(appleEntry?.data ?? []),
+                        ...(samsungEntry?.data ?? [])
+                    ];
+
+                    subdata = [
+                        { key: 'Apple/Samsung', data: combinedData }
+                    ];
+                } else if (title.contains('OtterBox/Designer')) {
+                    const otterEntry = subdata.find(entry =>
+                        entry.key?.toLowerCase() === 'otterbox'
+                    );
+                    const designerEntry = subdata.find(entry =>
+                        entry.key?.toLowerCase() === 'designer'
+                    );
+
+                    const combinedData = [
+                        ...(otterEntry?.data ?? []),
+                        ...(designerEntry?.data ?? [])
+                    ];
+
+                    subdata = [
+                        { key: 'OtterBox/Designer', data: combinedData }
+                    ];
+                }
+            }
+
+            let html = '';
+
+            subdata.forEach(subset => {
+                const stats = getStats(subset[data]);
+                html += `<div style="display: flex; flex-direction: row; justify-content: space-between; gap: 0.75rem; alsign-items: center;">
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <h4>${subset[key]}:</h4>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <span class="text-gray-700 fw-bold">Units:</span>
+                        <span class="text-gray-900 fw-boldest">${stats[units]}</span>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <span class="text-gray-700 fw-bold">Unique Items:</span>
+                        <span class="text-gray-900 fw-boldest">${stats[unique_lines]}</span>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <span class="text-gray-700 fw-bold">Time:</span>
+                        <span class="text-gray-900 fw-boldest">${stats[minutes]} Minutes</span>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <span class="text-gray-700 fw-bold">Average:</span>
+                        <span class="text-gray-900 fw-boldest">${stats[average]} ${stats[average_label]}</span>
+                    </div>
+                </div>
+                <div class="separator separator-dashed my-3"></div>`;
+            });
+
+            card_body.innerHTML = html;
+
+
+        } else {
+
+        }
+
+        card.appendChild(card_body);
+        return card;
+
+        function getStats(subset) {
+            let units = 0;
+            let minutes = 0;
+            let unique_lines = 0;
+            subset.forEach(line => {
+                if (line.Units > 0) {
+                    units += line.Units;
+                    unique_lines++;
+                }
+
+                minutes += line.Time_Spent_in_mintues;
+            });
+
+            if (department === 'listing') {
+                return {
+                    units: units,
+                    minutes: minutes,
+                    unique_lines: unique_lines,
+                    average: minutes / units,
+                    average_label: 'Minutes / Unit'
+                };
+            } else {
+                return {
+                    units: units,
+                    minutes: minutes,
+                    unique_lines: unique_lines,
+                    average: units / minutes,
+                    average_label: 'Units / Minute'
+                };
+            }
+        }
+    }
+}
+
 /* init */
 (async () => {
     const content_container = document.getElementById('kt_app_content_container');
@@ -269,6 +457,7 @@ async function fetchProductivity(type, department = null, range = null) {
 
     const report = await fetchProductivity('team', 'Production');
     console.debug('PATCHES TEST - Report:', report);
+    printProductivity(report.data, 'production');
 
     if (content_container && window.location.href.includes('/productivity/employee')) { // simgle user
         document.title = document.title.replace('Employee Productivity', 'My Productivity');
