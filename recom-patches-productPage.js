@@ -579,6 +579,7 @@ function modifyMediaTable() {
                 let image_filename = '[ New ]';
                 if (image) {
                     image.setAttribute('style', 'width: 100px; height: 100px;');
+                    image.setAttribute('patches', 'noEnlarge');
                     image.querySelector('img').setAttribute('style', 'border-radius: 0.625rem;');
                     image_filename = image.querySelector('img').getAttribute('src').split('/').pop().split(/[?#]/)[0];
                     newCont.appendChild(image);

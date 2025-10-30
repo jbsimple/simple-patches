@@ -54,7 +54,8 @@ function replaceEngagewidget() {
                     <span class="fw-bolder">See all the changes made!</span>
                 </h1>
                 <img src="${selectedImage.url}" 
-                    title="${selectedImage.title}" 
+                    title="${selectedImage.title}"
+                    patches="noEnlarge"
                     class="flex-grow-1 card-rounded-bottom h-100px mh-200px my-5" 
                     style="object-fit: contain; object-position: center; width: 100%; height: 100%;">
             </div>

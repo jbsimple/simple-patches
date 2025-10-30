@@ -1565,7 +1565,10 @@ function peekAtImages() {
         }
     }
     // only do images in main app page, not top bar or sidebar :D
-    document.getElementById('kt_app_main').querySelectorAll('img, image').forEach(attachToImage);
+    document.getElementById('kt_app_main')
+        .querySelectorAll('img:not([patches="noEnlarge"]), image:not([patches="noEnlarge"])')
+        .forEach(attachToImage);
+
     const mo = new MutationObserver((mutations) => {
         for (const m of mutations) {
             m.addedNodes && m.addedNodes.forEach((node) => scanAndAttach(node));
