@@ -375,7 +375,7 @@ function printProductivity(data, user = null, department = null) {
                 const stats = getStats(subset['data']);
                 tbody += `<tr>
                     <td class="dtr-control">
-                        <h4>${subset['key']}:</h4>
+                        <h4>${subset['key']}</h4>
                     </div>
                     <td>
                         <span class="text-gray-900">${stats['units']}</span>
@@ -455,14 +455,16 @@ function printProductivity(data, user = null, department = null) {
             let units = 0;
             let minutes = 0;
             let minutes_avg = 0;
-            let unique_lines = 0;
+            let unique_lines = [];
             subset.forEach(line => {
                 const lineUnits = parseInt(line.Units) || 0;
                 const lineMinutes = parseFloat(line.Time_Spent_in_mintues) || 0;
 
                 if (lineUnits > 0) {
                     units += lineUnits;
-                    unique_lines++;
+                    if (!unique_lines.includes(line.SKU)) {
+                        unique_lines.push(line.SKU);
+                    }
                     minutes_avg += lineMinutes;
                 }
 
@@ -482,7 +484,7 @@ function printProductivity(data, user = null, department = null) {
             return {
                 units: units,
                 minutes: round2(minutes),
-                unique_lines: unique_lines,
+                unique_lines: unique_lines.length,
                 average: round2(average),
                 average_label: average_label
             };
