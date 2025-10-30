@@ -302,7 +302,7 @@ function printProductivity(data, department = null) {
         }
         card_title.appendChild(card_title_h2);
         card_header.appendChild(card_title);
-        card.appendChild(card_title);
+        card.appendChild(card_header);
 
         if (groupKey) {
             const grouped = {};
