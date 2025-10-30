@@ -378,16 +378,16 @@ function printProductivity(data, user = null, department = null) {
                         <h4>${subset['key']}:</h4>
                     </div>
                     <td>
-                        <span class="text-gray-900 fw-boldest">${stats['units']}</span>
+                        <span class="text-gray-900">${stats['units']}</span>
                     </td>
                     <td>
-                        <span class="text-gray-900 fw-boldest">${stats['unique_lines']}</span>
+                        <span class="text-gray-900">${stats['unique_lines']}</span>
                     </td>
                     <td>
-                        <span class="text-gray-900 fw-boldest">${stats['minutes']} Minutes</span>
+                        <span class="text-gray-900">${stats['minutes']} Minutes</span>
                     </td>
                     <td>
-                        <span class="text-gray-900 fw-boldest">${stats['average']} ${stats['average_label']}</span>
+                        <span class="text-gray-900">${stats['average']} ${stats['average_label']}</span>
                     </td>
                 </tr>`;
             });
@@ -395,11 +395,21 @@ function printProductivity(data, user = null, department = null) {
             card_body.innerHTML = `<table class="table align-middle table-row-dashed fs-6 gy-3 dataTable no-footer dtr-inline">
             <thead>
                 <tr>
-                    <th width="35%" class="sorting_disabled" rowspan="1" colspan="1">${groupKey}</th>
-                    <th class="sorting_disabled" rowspan="1" colspan="1">Units</th>
-                    <th class="sorting_disabled" rowspan="1" colspan="1">Unique Items</th>
-                    <th class="sorting_disabled" rowspan="1" colspan="1">Time</th>
-                    <th class="sorting_disabled" rowspan="1" colspan="1">Average</th>
+                    <th width="40%" class="sorting_disabled" rowspan="1" colspan="1">
+                        <span class="fw-boldest">${groupKey}</span>
+                    </th>
+                    <th class="sorting_disabled" rowspan="1" colspan="1">
+                        <span class="fw-boldest">Units</span>
+                    </th>
+                    <th class="sorting_disabled" rowspan="1" colspan="1">
+                        <span class="fw-boldest">Unique Items</span>
+                    </th>
+                    <th class="sorting_disabled" rowspan="1" colspan="1">
+                        <span class="fw-boldest">Time</span>
+                    </th>
+                    <th class="sorting_disabled" rowspan="1" colspan="1">
+                        <span class="fw-boldest">Average</span>
+                    </th>
                 </tr>
             </thead>
             <tbody class="fw-bolder text-gray-600">${tbody}</tbody>
