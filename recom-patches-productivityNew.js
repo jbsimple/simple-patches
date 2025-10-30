@@ -260,7 +260,7 @@ function printProductivity(data, department = null) {
     const wrapper = document.createElement('div');
     wrapper.setAttribute('style', 'display: flex; flex-wrap: wrap; justify-content: space-around;');
     cards.forEach(card => {
-        wrapper.appendChild(cards);
+        wrapper.appendChild(card);
     });
     content_container.appendChild(wrapper);
     
