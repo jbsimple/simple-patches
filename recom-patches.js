@@ -1287,24 +1287,31 @@ async function searchDataList(type, value) {
 
     switch (type) {
         case 'purchaseorders':
+        case 'po':
             url += 'PurchaseOrders';
             break;
         case 'usersprofiles':
+        case 'users':
+        case 'username':
             url += 'UsersProfiles';
             break;
         case 'departments':
             url += 'departments';
             break;
         case 'clockintasks':
+        case 'tasks':
             url += 'ClockInTasks';
             break;
         case 'conditions':
+        case 'condition':
             url += 'Conditions';
             break;
         case 'categories':
+        case 'category':
             url += 'categories';
             break;
         case 'brands':
+        case 'brand':
             url += 'brands';
             break;
         default:
@@ -1339,11 +1346,6 @@ async function searchDataList(type, value) {
 
     return results;
 }
-
-// bust attempt 1
-window.trackUserActivity = function () {
-    console.debug("PATCHES - trackUserActivity disabled.");
-};
 
 function bustUserTracker() {
     function simulateUserActivity() {
