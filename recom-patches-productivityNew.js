@@ -297,7 +297,7 @@ function printProductivity(data, department = null) {
                 break;
             case 'brand':
                 card_title_h2.textContent = title ?? 'Beand Stats';
-                groupKey = 'User';
+                groupKey = 'Brand';
                 break;
             default:
                 card_title_h2.textContent = 'All Stats';
