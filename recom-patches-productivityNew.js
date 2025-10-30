@@ -248,12 +248,13 @@ function printProductivity(data, department = null) {
     console.debug('PATCHES - Unique data:', uniqueData);
 
     let cards = [];
-    cards.push(createCard());
-    cards.push(createCard('task'));
-    cards.push(createCard('po'));
-    cards.push(createCard('user'));
-    cards.push(createCard('brand', 'Apple/Samsung'));
-    cards.push(createCard('brand', 'OtterBox/Designer'));
+    cards.push(createCard(null, null, '50%'));
+    cards.push(createCard('task', null, '50%'));
+    cards.push(createCard('po', null, '50%'));
+    cards.push(createCard('user', null, '50%'));
+    cards.push(createCard('brand', 'Apple/Samsung', '33%'));
+    cards.push(createCard('brand', 'OtterBox/Designer', '33%'));
+    // still need to get the listing breakdown omg
     console.debug('PATCHES - Productivity Cards:', cards);
 
     const content_container = document.getElementById('kt_app_content_container');
@@ -264,7 +265,7 @@ function printProductivity(data, department = null) {
     });
     content_container.appendChild(wrapper);
     
-    function createCard(breakdown = null, title = null) {
+    function createCard(breakdown = null, title = null, width = '50%') {
         let groupKey = null;
         let subdata = [{
             key:"all",
@@ -273,6 +274,7 @@ function printProductivity(data, department = null) {
 
         const card = document.createElement('div');
         card.classList.add('card', 'card-bordered');
+        card.setAttribute('style', `width: calc(${width} - 1rem)`);
 
         // card heading
         const card_header = document.createElement('div');
