@@ -19,10 +19,9 @@ async function fetchUserDetails() {
         if (deptIcon && deptIcon.parentElement) {
             department_name = deptIcon.parentElement.textContent.trim();
             const departmentLookUp = await searchDataList('department', department_name);
-            if (departmentLookUp && departmentLookUp[0] && departmentLookUp.length === 0) {
+            if (departmentLookUp && departmentLookUp[0] && departmentLookUp.length === 1) {
                 department_id = departmentLookUp[0]['id'];
             }
-            console.debug('PATCHES - Department Lookup:', departmentLookUp);
         }
 
         const userSpan = doc.querySelector('span.fs-3.text-gray-800.text-hover-primary.fw-bolder.mb-3');
