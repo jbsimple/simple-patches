@@ -298,7 +298,7 @@ function printProductivity(data, department = null) {
                 groupKey = 'User';
                 break;
             default:
-                card_title.textContent = 'All Stats';
+                card_title_h2.textContent = 'All Stats';
         }
         card_title.appendChild(card_title_h2);
         card_header.appendChild(card_title);
