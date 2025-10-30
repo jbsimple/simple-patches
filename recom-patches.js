@@ -82,8 +82,8 @@ function injectGoods() {
 
     } else if (location.pathname.includes('/productivity') && !location.pathname.includes('/productivity/board')) {
 
-        loadPatchScript('recom-patches-productivity.js');
-        //loadPatchScript('recom-patches-productivityNew.js');
+        // loadPatchScript('recom-patches-productivity.js');
+        loadPatchScript('recom-patches-productivityNew.js');
 
     } else if (location.pathname.includes('/tools') && !location.pathname.includes('/tools/import')) {
 

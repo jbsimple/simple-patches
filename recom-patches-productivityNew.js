@@ -37,5 +37,54 @@ async function fetchUserDetails() {
 
 
 (async () => {
+    const content = document.getElementById('kt_app_content');
+    const toolbar = document.getElementById('kt_app_toolbar');
+    let heading = null;
+    let breadcrumb = null;
+    if (toolbar) {
+        heading = toolbar.querySelector('.page-heading');
+        breadcrumb = toolbar.querySelector('.breadcrumb');
+        if (breadcrumb) {
+            breadcrumb.innerHTML = `<li class="breadcrumb-item text-muted">
+                <a href="/" class="text-muted text-hover-primary">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item">
+                <span class="bullet bg-gray-400 w-5px h-2px"></span>
+            </li>
+            <li class="breadcrumb-item text-muted">
+                <a href="/productivity" class="text-muted text-hover-primary">Productivity</a>
+            </li>`;
+        }
+    }
+
     await fetchUserDetails();
+
+    if (content && window.location.href.includes('/productivity/employee')) { // simgle user
+        document.title = document.title.replace('Employee Productivity', 'My Productivity');
+        
+        if (heading) {
+            heading.textContent = 'My Productivity';
+        }
+
+        if (breadcrumb) {
+            breadcrumb.innerHTML += `<!-- ADDITIONAL -->
+            <li class="breadcrumb-item">
+                <span class="bullet bg-gray-400 w-5px h-2px"></span>
+            </li>
+            <li class="breadcrumb-item text-muted">
+                <a href="/productivity/employee/0" class="text-muted text-hover-primary">My Productivity</a>
+            </li>`;
+        }
+
+        // function calls
+
+    } else if (content && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board') && !window.location.href.includes('/productivity/employee')) { // team
+        document.title = document.title.replace('Productivity', 'Team Productivity');
+
+        if (heading) {
+            heading.textContent = 'Team Productivity';
+        }
+
+        // function calls
+    }
 })();
