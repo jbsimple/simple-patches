@@ -179,6 +179,7 @@ async function fetchProductivity(type, department = null, range = null) {
                     "user_profile.department_id",
                     "user_clocks.task_id",
                     "purchase_orders.id",
+                    "purchase_orders.type",
                     "user_clock_activity.activity_id",
                     "user_clock_activity.activity_code",
                     "user_clock_activity.notes",
@@ -266,8 +267,7 @@ async function fetchProductivity(type, department = null, range = null) {
 
     await fetchUserDetails();
 
-    // this is an epic test, should be my team last 7 days
-    const report = await fetchProductivity('team');
+    const report = await fetchProductivity('team', 'Production');
     console.debug('PATCHES TEST - Report:', report);
 
     if (content_container && window.location.href.includes('/productivity/employee')) { // simgle user
