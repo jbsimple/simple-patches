@@ -358,6 +358,7 @@ function printProductivity(data, department = null) {
             let html = '';
 
             subdata.forEach(subset => {
+                console.debug('PATCHES - Subset:', subset);
                 const stats = getStats(subset[data]);
                 html += `<div style="display: flex; flex-direction: row; justify-content: space-between; gap: 0.75rem; alsign-items: center;">
                     <div style="display: flex; flex-direction: column; gap: 0.5rem;">
@@ -387,7 +388,7 @@ function printProductivity(data, department = null) {
 
 
         } else {
-
+            //to-do
         }
 
         card.appendChild(card_body);
