@@ -252,7 +252,7 @@ function printProductivity(data, user = null, department = null) {
     cards.push(createCard('task', null, '50%'));
     cards.push(createCard('po', null, '50%'));
 
-    if (user !== null) {
+    if (user === null) {
         cards.push(createCard('user', null, '50%'));
     }
 
@@ -437,6 +437,7 @@ function printProductivity(data, user = null, department = null) {
         function getStats(subset) {
             let units = 0;
             let minutes = 0;
+            let minutes_avg = 0;
             let unique_lines = 0;
             subset.forEach(line => {
                 const lineUnits = parseInt(line.Units) || 0;
@@ -445,6 +446,7 @@ function printProductivity(data, user = null, department = null) {
                 if (lineUnits > 0) {
                     units += lineUnits;
                     unique_lines++;
+                    minutes_avg += lineMinutes;
                 }
 
                 minutes += lineMinutes;
@@ -453,10 +455,10 @@ function printProductivity(data, user = null, department = null) {
             const round2 = num => Math.round((num + Number.EPSILON) * 100) / 100;
             let average, average_label;
             if (department === 'listing') {
-                average = units > 0 ? minutes / units : 0;
+                average = units > 0 ? minutes_avg / units : 0;
                 average_label = 'Mins/Unit';
             } else {
-                average = minutes > 0 ? units / minutes : 0;
+                average = minutes > 0 ? units / minutes_avg : 0;
                 average_label = 'Units/Min';
             }
 
