@@ -1304,6 +1304,7 @@ async function searchDataList(type, value) {
             url += 'UsersProfiles';
             break;
         case 'departments':
+        case 'department':
             url += 'departments';
             break;
         case 'clockintasks':

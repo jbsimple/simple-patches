@@ -18,7 +18,7 @@ async function fetchUserDetails() {
         const deptIcon = doc.querySelector('i.fas.fa-exclamation-circle[data-bs-content="Department"]');
         if (deptIcon && deptIcon.parentElement) {
             department_name = deptIcon.parentElement.textContent.trim();
-            const departmentLookUp = await searchDataList(department_name);
+            const departmentLookUp = await searchDataList('department', department_name);
             console.debug('PATCHES - Department Lookup:', departmentLookUp);
         }
 
