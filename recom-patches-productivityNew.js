@@ -359,12 +359,12 @@ function printProductivity(data, department = null) {
 
         const card_body = document.createElement('div');
         card_body.classList = 'card-body';
+        
+        console.debug('PATCHES - Subdata:', subdata);
 
         if (subdata.length > 1) {
             let html = '';
-
             subdata.forEach(subset => {
-                console.debug('PATCHES - Subset:', subset);
                 const stats = getStats(subset['data']);
                 html += `<div style="display: flex; flex-direction: row; justify-content: space-between; gap: 0.75rem; alsign-items: center;">
                     <div style="display: flex; flex-direction: column; gap: 0.5rem;">
