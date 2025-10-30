@@ -279,26 +279,28 @@ function printProductivity(data, department = null) {
         card_header.classList = 'card-header';
         const card_title = document.createElement('div');
         card_title.classList = 'card-title';
+        const card_title_h2 = document.createElement('h2');
         switch (breakdown) {
             case 'task':
-                card_title.textContent = 'Task Stats';
+                card_title_h2.textContent = 'Task Stats';
                 groupKey = 'Task';
                 break;
             case 'po':
-                card_title.textContent = 'PO Stats';
+                card_title_h2.textContent = 'PO Stats';
                 groupKey = 'PO_Number';
                 break;
             case 'user':
-                card_title.textContent = 'User Stats';
+                card_title_h2.textContent = 'User Stats';
                 groupKey = 'User';
                 break;
             case 'brand':
-                card_title.textContent = title ?? 'Beand Stats';
+                card_title_h2.textContent = title ?? 'Beand Stats';
                 groupKey = 'User';
                 break;
             default:
                 card_title.textContent = 'All Stats';
         }
+        card_title.appendChild(card_title_h2);
         card_header.appendChild(card_title);
         card.appendChild(card_title);
 
