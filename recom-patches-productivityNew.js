@@ -19,6 +19,9 @@ async function fetchUserDetails() {
         if (deptIcon && deptIcon.parentElement) {
             department_name = deptIcon.parentElement.textContent.trim();
             const departmentLookUp = await searchDataList('department', department_name);
+            if (departmentLookUp && departmentLookUp[0] && departmentLookUp.length === 0) {
+                department_id = departmentLookUp[0]['id'];
+            }
             console.debug('PATCHES - Department Lookup:', departmentLookUp);
         }
 
