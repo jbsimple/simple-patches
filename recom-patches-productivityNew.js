@@ -37,7 +37,7 @@ async function fetchUserDetails() {
 
 
 (async () => {
-    const content = document.getElementById('kt_app_content');
+    const content_container = document.getElementById('kt_app_content_container');
     const toolbar = document.getElementById('kt_app_toolbar');
     let heading = null;
     let breadcrumb = null;
@@ -57,9 +57,13 @@ async function fetchUserDetails() {
         }
     }
 
+    if (content_container) {
+        content_container.innerHTML = '';
+    }
+
     await fetchUserDetails();
 
-    if (content && window.location.href.includes('/productivity/employee')) { // simgle user
+    if (content_container && window.location.href.includes('/productivity/employee')) { // simgle user
         document.title = document.title.replace('Employee Productivity', 'My Productivity');
         
         if (heading) {
@@ -78,7 +82,7 @@ async function fetchUserDetails() {
 
         // function calls
 
-    } else if (content && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board') && !window.location.href.includes('/productivity/employee')) { // team
+    } else if (content_container && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board') && !window.location.href.includes('/productivity/employee')) { // team
         document.title = document.title.replace('Productivity', 'Team Productivity');
 
         if (heading) {
