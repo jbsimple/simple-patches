@@ -302,9 +302,6 @@ function printProductivity(data, department = null) {
         card_header.appendChild(card_title);
         card.appendChild(card_title);
 
-
-        const card_body = document.createElement('div');
-        card_body.classList = 'card-body';
         if (groupKey) {
             const grouped = {};
             for (const row of uniqueData) {
@@ -354,7 +351,12 @@ function printProductivity(data, department = null) {
                     ];
                 }
             }
+        }
 
+        const card_body = document.createElement('div');
+        card_body.classList = 'card-body';
+
+        if (subdata.length > 1) {
             let html = '';
 
             subdata.forEach(subset => {
@@ -385,8 +387,6 @@ function printProductivity(data, department = null) {
             });
 
             card_body.innerHTML = html;
-
-
         } else {
             //to-do
         }
