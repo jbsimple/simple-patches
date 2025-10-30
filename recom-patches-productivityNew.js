@@ -370,34 +370,43 @@ function printProductivity(data, user = null, department = null) {
         console.debug('PATCHES - Subdata:', subdata);
 
         if (subdata.length > 1) {
-            let html = '';
+            let tbody = '';
             subdata.forEach(subset => {
                 const stats = getStats(subset['data']);
-                html += `<div style="display: flex; flex-direction: row; justify-content: space-between; gap: 0.75rem; alsign-items: center;">
-                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                tbody += `<tr>
+                    <td class="dtr-control">
                         <h4>${subset['key']}:</h4>
                     </div>
-                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                        <span class="text-gray-700 fw-bold">Units:</span>
-                        <span class="text-gray-900 fw-boldest">${stats['units']}</span>
-                    </div>
-                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                        <span class="text-gray-700 fw-bold">Unique Items:</span>
-                        <span class="text-gray-900 fw-boldest">${stats['unique_lines']}</span>
-                    </div>
-                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                        <span class="text-gray-700 fw-bold">Time:</span>
-                        <span class="text-gray-900 fw-boldest">${stats['minutes']} Minutes</span>
-                    </div>
-                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                        <span class="text-gray-700 fw-bold">Average:</span>
-                        <span class="text-gray-900 fw-boldest">${stats['average']} ${stats['average_label']}</span>
-                    </div>
-                </div>
-                <div class="separator separator-dashed my-3"></div>`;
+                    <td>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <span class="text-gray-700 fw-bold">Units:</span>
+                            <span class="text-gray-900 fw-boldest">${stats['units']}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <span class="text-gray-700 fw-bold">Unique Items:</span>
+                            <span class="text-gray-900 fw-boldest">${stats['unique_lines']}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <span class="text-gray-700 fw-bold">Time:</span>
+                            <span class="text-gray-900 fw-boldest">${stats['minutes']} Minutes</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <span class="text-gray-700 fw-bold">Average:</span>
+                            <span class="text-gray-900 fw-boldest">${stats['average']} ${stats['average_label']}</span>
+                        </div>
+                    </td>
+                </tr>`;
             });
 
-            card_body.innerHTML = html;
+            card_body.innerHTML = `<table class="table align-middle table-row-dashed fs-6 gy-3 dataTable no-footer dtr-inline">
+            <tbody class="fw-bolder text-gray-600">${tbody}</tbody>
+            </table>`;
         } else {
             const stats = getStats(subdata[0]['data']);
             card_body.innerHTML = `<div class="d-flex flex-stack">
@@ -429,6 +438,7 @@ function printProductivity(data, user = null, department = null) {
                 </div>
             </div>
             `;
+            // add number of worked po
         }
 
         card.appendChild(card_body);
