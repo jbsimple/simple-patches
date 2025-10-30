@@ -359,26 +359,26 @@ function printProductivity(data, department = null) {
 
             subdata.forEach(subset => {
                 console.debug('PATCHES - Subset:', subset);
-                const stats = getStats(subset[data]);
+                const stats = getStats(subset['data']);
                 html += `<div style="display: flex; flex-direction: row; justify-content: space-between; gap: 0.75rem; alsign-items: center;">
                     <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                        <h4>${subset[key]}:</h4>
+                        <h4>${subset['key']}:</h4>
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                         <span class="text-gray-700 fw-bold">Units:</span>
-                        <span class="text-gray-900 fw-boldest">${stats[units]}</span>
+                        <span class="text-gray-900 fw-boldest">${stats['units']}</span>
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                         <span class="text-gray-700 fw-bold">Unique Items:</span>
-                        <span class="text-gray-900 fw-boldest">${stats[unique_lines]}</span>
+                        <span class="text-gray-900 fw-boldest">${stats['unique_lines']}</span>
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                         <span class="text-gray-700 fw-bold">Time:</span>
-                        <span class="text-gray-900 fw-boldest">${stats[minutes]} Minutes</span>
+                        <span class="text-gray-900 fw-boldest">${stats['minutes']} Minutes</span>
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                         <span class="text-gray-700 fw-bold">Average:</span>
-                        <span class="text-gray-900 fw-boldest">${stats[average]} ${stats[average_label]}</span>
+                        <span class="text-gray-900 fw-boldest">${stats['average']} ${stats['average_label']}</span>
                     </div>
                 </div>
                 <div class="separator separator-dashed my-3"></div>`;
