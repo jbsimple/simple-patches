@@ -399,12 +399,15 @@ function printProductivity(data, department = null) {
             let minutes = 0;
             let unique_lines = 0;
             subset.forEach(line => {
-                if (line.Units > 0) {
-                    units += line.Units;
+                const lineUnits = parseInt(line.Units) || 0;
+                const lineMinutes = parseFloat(line.Time_Spent_in_mintues) || 0;
+
+                if (lineUnits > 0) {
+                    units += lineUnits;
                     unique_lines++;
                 }
 
-                minutes += line.Time_Spent_in_mintues;
+                minutes += lineMinutes;
             });
 
             if (department === 'listing') {
