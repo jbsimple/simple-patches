@@ -439,23 +439,23 @@ function printProductivity(data, department = null) {
                 minutes += lineMinutes;
             });
 
+            const round2 = num => Math.round((num + Number.EPSILON) * 100) / 100;
+            let average, average_label;
             if (department === 'listing') {
-                return {
-                    units: units,
-                    minutes: minutes,
-                    unique_lines: unique_lines,
-                    average: minutes / units,
-                    average_label: 'Mins/Unit'
-                };
+                average = units > 0 ? minutes / units : 0;
+                average_label = 'Mins/Unit';
             } else {
-                return {
-                    units: units,
-                    minutes: minutes,
-                    unique_lines: unique_lines,
-                    average: units / minutes,
-                    average_label: 'Units/Min'
-                };
+                average = minutes > 0 ? units / minutes : 0;
+                average_label = 'Units/Min';
             }
+
+            return {
+                units: units,
+                minutes: round2(minutes),
+                unique_lines: unique_lines,
+                average: round2(average),
+                average_label: average_label
+            };
         }
     }
 }
