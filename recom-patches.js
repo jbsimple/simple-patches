@@ -8,7 +8,7 @@ let rainbowAnnounce = [];
 let autoLocationUpdate = true;
 let allowed_colors = [];
 
-let mockupProductivity = true;
+let mockupProductivity = false;
 
 async function loadEdgeConfig(key) {
     return new Promise(async (resolve, reject) => {
