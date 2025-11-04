@@ -23,7 +23,7 @@ function initAddTools() {
             "Bulk download the descriptions from a list of products.",
             "Requires good computer."
         ],
-        "?tool=bulkDescDownload"
+        "/tools?tool=bulkDescDownload"
     );
 }
 
