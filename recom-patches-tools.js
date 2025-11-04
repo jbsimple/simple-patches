@@ -16,6 +16,15 @@ function initAddTools() {
         ],
         "https://simple-patches.vercel.app/api"
     );
+
+    addButtonCard(
+        'Bulk Description Download',
+        [
+            "Bulk download the descriptions from a list of products.",
+            "Requires good computer."
+        ],
+        "?tool=bulkDescDownload"
+    );
 }
 
 initAddTools();
