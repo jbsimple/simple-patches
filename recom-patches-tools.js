@@ -23,11 +23,9 @@ function initAddTools() {
             "Bulk download the descriptions from a list of products.",
             "Requires good computer."
         ],
-        "/tools?tool=bulkDescDownload"
+        "/tools?tool=desc"
     );
 }
-
-initAddTools();
 
 function addButtonCard(title, bullets, href) {
     const toolContainer = document.getElementById('kt_app_content_container');
@@ -78,4 +76,15 @@ function addButtonCard(title, bullets, href) {
     replacedTools.forEach(tool => { tool.setAttribute('style', 'width: calc(33% - 1rem); height: unset !important;'); })
 
     toolContainer.setAttribute('style', 'display: flex; flex-wrap: wrap; gap: 2rem; justify-content: space-between;');
+}
+
+const params = new URLSearchParams(window.location.search);
+const tool = params.get('tool');
+
+if (!tool) {
+    // Only run if ?tool is missing or has no value
+    console.debug('PATCHES - No tool parameter detected, initializing Add Tools...');
+    initAddTools();
+} else {
+    console.debug(`PATCHES - Skipping initAddTools(), found tool=${tool}`);
 }
