@@ -78,13 +78,16 @@ function addButtonCard(title, bullets, href) {
     toolContainer.setAttribute('style', 'display: flex; flex-wrap: wrap; gap: 2rem; justify-content: space-between;');
 }
 
-const params = new URLSearchParams(window.location.search);
-const tool = params.get('tool');
+(async () => {
+    const params = new URLSearchParams(window.location.search);
+    const tool = params.get('tool');
 
-if (!tool) {
-    // Only run if ?tool is missing or has no value
-    console.debug('PATCHES - No tool parameter detected, initializing Add Tools...');
-    initAddTools();
-} else {
-    console.debug(`PATCHES - Skipping initAddTools(), found tool=${tool}`);
-}
+    if (!tool) {
+        // Only run if ?tool is missing or has no value
+        console.debug('PATCHES - No tool parameter detected, initializing Add Tools...');
+        initAddTools();
+    } else {
+        console.debug(`PATCHES - Skipping initAddTools(), found tool=${tool}`);
+    }
+})();
+
