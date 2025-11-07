@@ -1391,6 +1391,7 @@ async function report_pictureURLSComplete_init(checkResolution = false) {
                 "products.category_id",
                 "product_items.condition_id",
                 "product_items.in_stock",
+                "product_items.location",
                 "product_items.price",
                 "product_items.created_at"
             ],
@@ -1896,6 +1897,7 @@ function generateReportTableFromList(list, name, display = true) {
         table.style.display = 'none';
         const largeLabel = document.createElement('h2');
         largeLabel.classList.add('fw-bolder', 'text-dark');
+        largeLabel.style.textAlign = 'center';
         largeLabel.textContent = `Too Large to Load Preview, Download to View`;
         card.appendChild(largeLabel);
     }
