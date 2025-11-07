@@ -1362,6 +1362,18 @@ async function report_pictureMissingFull_init() {
 }
 
 async function report_pictureURLSComplete_init(checkResolution = false) {
+    let createButton = null;
+    if (checkResolution) {
+        createButton = document.querySelector(`button[data-id="patches-reports-pictureResolution"]`);
+    } else {
+        createButton = document.querySelector(`button[data-id="patches-reports-pictureURLs"]`);
+    }
+
+    if (createButton) {
+        createButton.textContent = 'Loading...';
+        createButton.setAttribute('style', 'background-color: gray !important;');
+    }
+
     const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
 
     let items_images_report = null;
