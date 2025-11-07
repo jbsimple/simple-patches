@@ -463,7 +463,7 @@ function report_preset(name) {
         details.name = `patches-reports-pictureURLs`;
         details.func = `report_pictureURLSComplete_init();`;
         details.desc = "Gets Image URLS Comma Separated for each Item->Product.<br>To get a list of images per sku, count the number of commas and add one.";
-        details.title = "REALLY Special Picture Report";
+        details.title = "Picture URLs";
         return report_initHTML(details);
     } else if (name === 'picture_resolution') {
         var details = {};
@@ -471,7 +471,7 @@ function report_preset(name) {
         details.name = `patches-reports-pictureResolution`;
         details.func = `report_pictureURLSComplete_init(true);`;
         details.desc = "Gets Image URLs and Resolutions for each Item->Product.<br>DO NOT RUN. This report takes 30 minutes to run and a ton of resources.";
-        details.title = "REALLY Special Picture Report";
+        details.title = "Picture URLs + Resolutions";
         return report_initHTML(details);
     } else {
         return null;
