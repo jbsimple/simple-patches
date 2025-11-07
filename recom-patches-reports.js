@@ -1822,6 +1822,11 @@ function generateReportTableFromList(list, name, display = true) {
     table.classList.add('table', 'table-striped');
     if (!display) {
         table.style.display = 'none';
+        const largeLabel = document.createElement('h2');
+        largeLabel.classList.push('fw-bolder', 'text-dark');
+        largeLabel.textContent = `Too Large to Load Preview, Download to View`;
+        card.appendChild(largeLabel);
+
     }
 
     const thead = document.createElement('thead');
