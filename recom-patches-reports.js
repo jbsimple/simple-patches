@@ -1583,12 +1583,12 @@ async function report_pictureURLSComplete_init(checkResolution = false) {
         Promise.all(resolutionPromises).then(() => {
             const list = Object.values(listObj);
             console.debug('final list', list);
-            generateReportTableFromList(list, 'items-images-completeList');
+            generateReportTableFromList(list, 'items-images-resolutions', false);
         });
     } else {
         const list = Object.values(listObj);
         console.debug('final list', list);
-        generateReportTableFromList(list, 'items-images-completeList');
+        generateReportTableFromList(list, 'items-images-list');
     }
 }
 
@@ -1806,7 +1806,7 @@ function generateDwnloadFromTable(list, name) {
     };
 }
 
-function generateReportTableFromList(list, name) {
+function generateReportTableFromList(list, name, display = true) {
     goToLastStep();
 
     const button = document.getElementById('report_download');
@@ -1820,6 +1820,9 @@ function generateReportTableFromList(list, name) {
     table.style.overflow = 'auto';
     table.id = 'recompatches-customreportTable';
     table.classList.add('table', 'table-striped');
+    if (!display) {
+        table.style.display = 'none';
+    }
 
     const thead = document.createElement('thead');
     const tbody = document.createElement('tbody');
