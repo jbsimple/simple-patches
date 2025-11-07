@@ -1820,15 +1820,7 @@ function generateReportTableFromList(list, name, display = true) {
     table.style.overflow = 'auto';
     table.id = 'recompatches-customreportTable';
     table.classList.add('table', 'table-striped');
-    if (!display) {
-        table.style.display = 'none';
-        const largeLabel = document.createElement('h2');
-        largeLabel.classList.push('fw-bolder', 'text-dark');
-        largeLabel.textContent = `Too Large to Load Preview, Download to View`;
-        card.appendChild(largeLabel);
-
-    }
-
+    
     const thead = document.createElement('thead');
     const tbody = document.createElement('tbody');
 
@@ -1899,6 +1891,14 @@ function generateReportTableFromList(list, name, display = true) {
     card_body.appendChild(content);
 
     card.appendChild(card_body);
+
+    if (!display) {
+        table.style.display = 'none';
+        const largeLabel = document.createElement('h2');
+        largeLabel.classList.push('fw-bolder', 'text-dark');
+        largeLabel.textContent = `Too Large to Load Preview, Download to View`;
+        card.appendChild(largeLabel);
+    }
 
     // show number of things
     const lengthLabel = document.createElement('p');
