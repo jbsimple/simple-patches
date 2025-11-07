@@ -1588,7 +1588,7 @@ async function report_pictureURLSComplete_init(checkResolution = false) {
     } else {
         const list = Object.values(listObj);
         console.debug('final list', list);
-        generateReportTableFromList(list, 'items-images-list');
+        generateReportTableFromList(list, 'items-images-list', false);
     }
 }
 
