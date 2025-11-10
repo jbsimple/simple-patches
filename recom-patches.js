@@ -865,14 +865,11 @@ function hijackAjaxModal() {
                 if (target && target.matches('i.fas')) {
                     // console.log('Patches - Getting Parent:', target);
                     target = target.parentElement;
-                }                
+                }
 
                 if (target && (target.id === "rc_ajax_modal" && target.querySelector('.fw-bold.fs-6.text-gray-400')?.textContent.trim() === 'GTIN' && target.querySelector('table').classList.contains('table-row-bordered')) 
                         || (target.tagName === 'A' && target.hasAttribute('data-url') && target.getAttribute('data-url').includes('ajax/modals/productitems/') && target.classList.contains('ajax-modal'))) {
-                    // console.debug('Patches - AJAX modal is product glace:', target);
-                    
-                    modalPictureCount();
-
+                    modalProduct();
                 } else if (target.getAttribute('href') === "javascript:clockInOut('in');") {
                     // console.debug('Patches - AJAX modal is clock in:', target);
                     modalClockIn();
@@ -894,7 +891,7 @@ function hijackAjaxModal() {
 
     console.debug('Patch: MutationObserver is now monitoring the modal content.');
 
-    async function modalPictureCount() {
+    async function modalProduct() {
         const descriptionDiv = modal.querySelector('div.d-flex.flex-wrap.fw-bold.mb-4.fs-5.text-gray-400');
         if (descriptionDiv) {
             const descriptionText = descriptionDiv.textContent.trim();
