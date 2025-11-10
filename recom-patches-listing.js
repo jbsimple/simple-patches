@@ -1115,6 +1115,12 @@ async function bulkDelete() {
         }
     };
 
+    const dtsearchbtns = document.getElementById('dtsearchbtns');
+    if (dtsearchbtns) {
+        const search = dtsearchbtns.querySelector('.btn.btn-primary');
+        if (search) { search.click(); }
+    }
+
     fireSwal('Done', [`Processed ${log.length}.`, "Check console for detailed log."], 'success');
     console.debug(`PATCHES - Log:`, log);
     return null;
