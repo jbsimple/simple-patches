@@ -1116,7 +1116,7 @@ async function bulkDelete() {
     };
 
     fireSwal('Done', [`Processed ${log.length}.`, "Check console for detailed log."], 'success');
-    console.table(log);
+    console.debug(`PATCHES - Log:`, log);
     return null;
 }
 
