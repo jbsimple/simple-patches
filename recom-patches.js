@@ -831,12 +831,12 @@ function hijackAjaxModal() {
             if (lastEvent) {
                 let { target } = lastEvent;
 
-                if (target.matches('i.fas')) {
+                if (target && target.matches('i.fas')) {
                     // console.log('Patches - Getting Parent:', target);
                     target = target.parentElement;
                 }                
 
-                if ((target.id === "rc_ajax_modal" && target.querySelector('.fw-bold.fs-6.text-gray-400')?.textContent.trim() === 'GTIN' && target.querySelector('table').classList.contains('table-row-bordered')) 
+                if (target && (target.id === "rc_ajax_modal" && target.querySelector('.fw-bold.fs-6.text-gray-400')?.textContent.trim() === 'GTIN' && target.querySelector('table').classList.contains('table-row-bordered')) 
                         || (target.tagName === 'A' && target.hasAttribute('data-url') && target.getAttribute('data-url').includes('ajax/modals/productitems/') && target.classList.contains('ajax-modal'))) {
                     // console.debug('Patches - AJAX modal is product glace:', target);
                     
