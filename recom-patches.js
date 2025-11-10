@@ -852,29 +852,25 @@ function hijackAjaxModal() {
     modal.addEventListener('hidden.bs.modal', () => {
         processedContent.clear();
         inProgressContent.clear();
-        // console.debug('Patch: Modal closed. Resetting processed and in-progress content.');
     });
 
     const observer = new MutationObserver(async (mutationsList) => {
         const mutation = mutationsList[0];
         if (mutation) {
-            // console.debug('Patches - Mutation Fired:', mutation);
             if (lastEvent) {
                 let { target } = lastEvent;
 
-                if (target && target.matches('i.fas')) {
-                    // console.log('Patches - Getting Parent:', target);
-                    target = target.parentElement;
-                }
+                if (!(target instanceof Element)) return;
+
+                if (target && target.matches('i.fas')) { target = target.parentElement; }
 
                 if (target && (target.id === "rc_ajax_modal" && target.querySelector('.fw-bold.fs-6.text-gray-400')?.textContent.trim() === 'GTIN' && target.querySelector('table').classList.contains('table-row-bordered')) 
                         || (target.tagName === 'A' && target.hasAttribute('data-url') && target.getAttribute('data-url').includes('ajax/modals/productitems/') && target.classList.contains('ajax-modal'))) {
                     modalProduct();
                 } else if (target.getAttribute('href') === "javascript:clockInOut('in');") {
-                    // console.debug('Patches - AJAX modal is clock in:', target);
                     modalClockIn();
                 } else {
-                    // console.debug('Patches - AJAX modal not defined modal:', target);
+                    console.warn('PATCHES - AJAX modal not defined modal:', target);
                 }
             }
         }
