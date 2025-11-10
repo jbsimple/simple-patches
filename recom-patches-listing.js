@@ -1043,13 +1043,18 @@ async function initListingPatch() {
 }
 
 async function bulkDelete() {
-    let pin = null;
-    const csrfToken = csrfMeta.getAttribute('content'); // this is needed in header as "x-csrf-token"
+    let log = [];
+
+    /* csrf */
+    const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
+    const csrfToken = csrfMeta?.getAttribute('content');
     if (!csrfToken) {
         fireSwal('UHOH!', 'Unable to find CSRF Token.', 'error');
         return null;
     }
 
+    /* pin */
+    let pin = null;
     try {
         const res = await fetch('/settings/general', { credentials: 'include' });
         if (!res.ok) throw new Error('Failed to fetch settings page');
@@ -1059,14 +1064,12 @@ async function bulkDelete() {
         const doc = parser.parseFromString(html, 'text/html');
 
         const input = doc.querySelector('input[name="settings[admin_pin]"]');
-        if (input) {
-            pin = input.value?.trim() || null;
-        }
+        pin = input?.value?.trim() || null;
     } catch (err) {
         console.error('Error fetching admin PIN:', err);
     }
 
-    if (!pin || pin === null) {
+    if (!pin) {
         fireSwal('UHOH!', 'Unable to fetch the Admin Pin.', 'error');
         return null;
     }
@@ -1083,11 +1086,13 @@ async function bulkDelete() {
         return null;
     };
 
-    deleteButtons.forEach(button => {
-        if (button.hasAttribute('data-id')) {
-            const id = button.getAttribute('data-id');
-            const request = `/receiving/delete/${id}?pin=${pin}`;
-            return fetch(request, {
+    for (const button of deleteButtons) {
+        const id = button.getAttribute('data-id');
+        const request = `/receiving/delete/${id}?pin=${encodeURIComponent(pin)}`;
+        const body = new URLSearchParams({ pin });
+
+        try {
+            const res = await fetch(request, {
                 method: "POST",
                 credentials: "include",
                 headers: {
@@ -1096,21 +1101,23 @@ async function bulkDelete() {
                     "x-requested-with": "XMLHttpRequest"
                 },
                 body: body.toString()
-            })
-                .then(r => r.json())
-                .then(json => {
-                    console.debug(`PATCHES - Resubmitted ${item.sku}:`, json);
-                    log.push({ sku: item.sku, response: json });
-                })
-                .catch(err => {
-                    console.error(`PATCHES - Failed resubmitting ${item.sku}:`, err);
-                    log.push({
-                        sku: item.sku,
-                        response: { success: false, message: "Failed to resubmit.", err: err.toString() }
-                    });
-                });
+            });
+
+            const json = await res.json();
+            console.debug(`PATCHES - Deleted ${id}:`, json);
+            log.push({ item: id, response: json });
+        } catch (err) {
+            console.error(`PATCHES - Failed Deleting ${id}:`, err);
+            log.push({
+                item: id,
+                response: { success: false, message: "Failed to delete.", err: err.toString() }
+            });
         }
-    });
+    };
+
+    fireSwal('Done', [`Processed ${log.length}.`, "Check console for detailed log."], 'success');
+    console.table(log);
+    return null;
 }
 
 (async () => {
