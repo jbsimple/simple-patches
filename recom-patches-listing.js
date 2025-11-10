@@ -1042,6 +1042,77 @@ async function initListingPatch() {
     }
 }
 
+async function bulkDelete() {
+    let pin = null;
+    const csrfToken = csrfMeta.getAttribute('content'); // this is needed in header as "x-csrf-token"
+    if (!csrfToken) {
+        fireSwal('UHOH!', 'Unable to find CSRF Token.', 'error');
+        return null;
+    }
+
+    try {
+        const res = await fetch('/settings/general', { credentials: 'include' });
+        if (!res.ok) throw new Error('Failed to fetch settings page');
+
+        const html = await res.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+
+        const input = doc.querySelector('input[name="settings[admin_pin]"]');
+        if (input) {
+            pin = input.value?.trim() || null;
+        }
+    } catch (err) {
+        console.error('Error fetching admin PIN:', err);
+    }
+
+    if (!pin || pin === null) {
+        fireSwal('UHOH!', 'Unable to fetch the Admin Pin.', 'error');
+        return null;
+    }
+
+    const table = document.getElementById('dtTable');
+    if (!table) {
+        fireSwal('UHOH!', 'Unable to find table.', 'error');
+        return null;
+    };
+
+    const deleteButtons = table.querySelectorAll('button[title="Delete"]');
+    if (!deleteButtons) {
+        fireSwal('UHOH!', 'Unable to find delete queries.', 'error');
+        return null;
+    };
+
+    deleteButtons.forEach(button => {
+        if (button.hasAttribute('data-id')) {
+            const id = button.getAttribute('data-id');
+            const request = `/receiving/delete/${id}?pin=${pin}`;
+            return fetch(request, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                    "x-csrf-token": csrfToken,
+                    "x-requested-with": "XMLHttpRequest"
+                },
+                body: body.toString()
+            })
+                .then(r => r.json())
+                .then(json => {
+                    console.debug(`PATCHES - Resubmitted ${item.sku}:`, json);
+                    log.push({ sku: item.sku, response: json });
+                })
+                .catch(err => {
+                    console.error(`PATCHES - Failed resubmitting ${item.sku}:`, err);
+                    log.push({
+                        sku: item.sku,
+                        response: { success: false, message: "Failed to resubmit.", err: err.toString() }
+                    });
+                });
+        }
+    });
+}
+
 (async () => {
     if (window.location.href.includes('/receiving/queues/listing/') || window.location.href.includes('/products/new')) { 
         initListingPatch();
