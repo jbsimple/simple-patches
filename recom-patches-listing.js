@@ -1043,7 +1043,18 @@ async function initListingPatch() {
 }
 
 async function bulkDelete() {
-    let log = [];
+    /* queries */
+    const table = document.getElementById('dtTable');
+    if (!table) {
+        fireSwal('UHOH!', 'Unable to find table.', 'error');
+        return null;
+    };
+
+    const deleteButtons = table.querySelectorAll('button[title="Delete"]');
+    if (!deleteButtons) {
+        fireSwal('UHOH!', 'Unable to find delete queries.', 'error');
+        return null;
+    };
 
     /* csrf */
     const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
@@ -1074,18 +1085,20 @@ async function bulkDelete() {
         return null;
     }
 
-    const table = document.getElementById('dtTable');
-    if (!table) {
-        fireSwal('UHOH!', 'Unable to find table.', 'error');
-        return null;
-    };
+    const confirm = await confirmSwal(
+        'Confirm Bulk Delete',
+        [`You are about to delete <strong>${deleteButtons.length}</strong> items.`, 'This action cannot be undone.'],
+        'warning',
+        'Delete Them',
+        'Cancel'
+    );
 
-    const deleteButtons = table.querySelectorAll('button[title="Delete"]');
-    if (!deleteButtons) {
-        fireSwal('UHOH!', 'Unable to find delete queries.', 'error');
+    if (!confirm) {
+        console.info('PATCHES - Bulk delete cancelled by user.');
         return null;
-    };
+    }
 
+    let log = [];
     for (const button of deleteButtons) {
         const id = button.getAttribute('data-id');
         const request = `/receiving/delete/${id}?pin=${encodeURIComponent(pin)}`;

@@ -620,6 +620,37 @@ function fireSwal(title, message, icon = 'warning', refresh = false) {
     });
 }
 
+async function confirmSwal(title, message, icon = 'warning', confirmText = 'Yes', cancelText = 'Cancel') {
+    const isArray = Array.isArray(message);
+    const htmlMessage = isArray ? message.join('<br>') : message;
+
+    const validIcons = ['success', 'error', 'warning', 'info', 'question'];
+    if (!validIcons.includes(icon)) {
+        console.warn(`Invalid icon "${icon}" passed to confirmSwal. Defaulting to "warning".`);
+        icon = 'warning';
+    }
+
+    const result = await Swal.fire({
+        title: title,
+        html: htmlMessage,
+        icon: icon,
+        showCancelButton: true,
+        confirmButtonText: confirmText,
+        cancelButtonText: cancelText,
+        customClass: {
+            confirmButton: 'btn btn-primary',
+            cancelButton: 'btn btn-secondary'
+        },
+        buttonsStyling: false,
+        reverseButtons: true,
+        allowOutsideClick: false,
+        allowEscapeKey: true
+    });
+
+    console.debug('PATCHES - ConfirmSwal response:', result);
+    return result.isConfirmed === true;
+}
+
 function clockTaskVisualRefresh(ping = false) {
     const href = '/user/me';
     const checkButtonSelector = 'a[href^="javascript:clockInOut"]';
