@@ -1051,7 +1051,7 @@ async function bulkDelete() {
     };
 
     const deleteButtons = table.querySelectorAll('button[title="Delete"]');
-    if (!deleteButtons) {
+    if (!deleteButtons || deleteButtons.length <= 0) {
         fireSwal('UHOH!', 'Unable to find delete queries.', 'error');
         return null;
     };
