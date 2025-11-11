@@ -1235,12 +1235,24 @@ function extraMediaInit() {
             protected_conditions = [];
         }
         
-        const url = window.location.href;
-        const parts = url.split('/');
-        const lastPart = parts.filter(Boolean).pop();
-        const id = parseInt(lastPart);
+        let id = null;
+        const container = document.getElementById('kt_app_content_container');
+        if (container) {
+            const spans = container.querySelectorAll('span.text-info');
+
+            spans.forEach(span => {
+                const parent = span.parentElement;
+                if (parent && parent.textContent.trim().startsWith('Product#')) {
+                    const num = span.textContent.trim().replace(/\D+/g, '');
+                    if (num) {
+                        id = parseInt(num, 10);
+                    }
+                }
+            });
+        }
 
         if (isNaN(id)) {
+            fireSwal('UHOH', 'Unable to get Product ID? How?', 'error', true);
             console.error('Invalid product ID in URL:', lastPart);
             return;
         }
