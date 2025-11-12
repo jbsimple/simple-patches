@@ -691,7 +691,11 @@ function patchesSettingsModal() {
         const newSettings = {};
 
         inputs.forEach(input => {
-            newSettings[input.name] = input.value;
+            if (input.type === 'checkbox') {
+                newSettings[input.name] = input.checked;
+            } else {
+                newSettings[input.name] = input.value;
+            }
         });
 
         localStorage.setItem('patch_settings', JSON.stringify(newSettings));
