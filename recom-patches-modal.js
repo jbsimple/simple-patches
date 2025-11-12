@@ -578,12 +578,12 @@ function patchesSettingsModal() {
         </div>
         <div class="d-flex mb-8 patches-twowrap">
             <div class="d-flex flex-column mb-8">
-                <label class="fs-6 fw-bold mb-2" for="patch_setting_pfpurl">Enable Mockup Productivity:</label>
+                <label class="fs-6 fw-bold mb-2" for="patch_setting_mockupProductivity">Enable Mockup Productivity:</label>
                 <p class="fs-6 fw-semibold form-label mb-2">This is the mockup I am using for the KMP.</p>
-                <input type="checkbox" class="form-control form-control-solid" name="mockupProductivity" id="patch_setting_mockupProductivity" value="" spellcheck="false">
+                <input type="checkbox" class="form-check-input" name="mockupProductivity" id="patch_setting_mockupProductivity">
             </div>
             <div class="d-flex flex-column mb-8">
-                <label class="fs-6 fw-bold mb-2" for="patch_setting_pfpurl">Mockup Productivity Department:</label>
+                <label class="fs-6 fw-bold mb-2" for="patch_setting_mockupProductivityDepartment">Mockup Productivity Department:</label>
                 <p class="fs-6 fw-semibold form-label mb-2">Fetch Productivity for a specific department.</p>
                 <input type="text" class="form-control form-control-solid" name="mockupProductivityDepartment" id="patch_setting_mockupProductivityDepartment" placeholder="Enter Department Name" value="" spellcheck="false">
             </div>
