@@ -425,8 +425,9 @@ function injectExtraTheme() {
             settings.activitylist = listArray;
         }
 
-        let mockupProductivity_enable = settings.mockupProductivity ?? false;
-        console.debug(mockupProductivity_enable);
+        // mockup productivity
+        mockupProductivity = settings.mockupProductivity ?? false;
+
         let mockupProductivity_department = (settings && settings.mockupProductivityDepartment && settings.mockupProductivityDepartment !== '') ? settings.mockupProductivityDepartment.trim() : null;
         if (mockupProductivity_department) { console.debug(mockupProductivity_department); }
     }
