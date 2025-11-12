@@ -9,6 +9,7 @@ let autoLocationUpdate = true;
 let allowed_colors = [];
 
 let mockupProductivity = false;
+let mockupProductivityDepartment = null;
 
 async function loadEdgeConfig(key) {
     return new Promise(async (resolve, reject) => {
@@ -423,6 +424,11 @@ function injectExtraTheme() {
                 .filter(item => item.length > 0);
             settings.activitylist = listArray;
         }
+
+        let mockupProductivity_enable = (settings && settings.mockupProductivity && settings.mockupProductivity !== '') ? settings.mockupProductivity.trim() : null;
+        if (mockupProductivity_enable) { console.debug(mockupProductivity_enable); }
+        let mockupProductivity_department = (settings && settings.mockupProductivityDepartment && settings.mockupProductivityDepartment !== '') ? settings.mockupProductivityDepartment.trim() : null;
+        if (mockupProductivity_department) { console.debug(mockupProductivity_department); }
     }
 
     /* theme stuff */

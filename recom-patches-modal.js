@@ -576,6 +576,18 @@ function patchesSettingsModal() {
             <p class="fs-6 fw-semibold form-label mb-2">If you want to have a list of commonly used activities for uniformity.</p>
             <textarea style="max-height: 20vh;" class="form-control form-control-solid" rows="2" name="activitylist" id="patch_setting_activitylist" placeholder="Enter comma-separated list here." spellcheck="false"></textarea>
         </div>
+        <div class="d-flex mb-8 patches-twowrap">
+            <div class="d-flex flex-column mb-8">
+                <label class="fs-6 fw-bold mb-2" for="patch_setting_pfpurl">Enable Mockup Productivity:</label>
+                <p class="fs-6 fw-semibold form-label mb-2">This is the mockup I am using for the KMP.</p>
+                <input type="checbox" class="form-control form-control-solid" name="mockupProductivity" id="patch_setting_mockupProductivity" value="" spellcheck="false">
+            </div>
+            <div class="d-flex flex-column mb-8">
+                <label class="fs-6 fw-bold mb-2" for="patch_setting_pfpurl">Mockup Productivity Department:</label>
+                <p class="fs-6 fw-semibold form-label mb-2">Fetch Productivity for a specific department.</p>
+                <input type="text" class="form-control form-control-solid" name="mockupProductivity" id="patch_setting_mockupProductivity" placeholder="Enter Department Name" value="" spellcheck="false">
+            </div>
+        </div>
         <div class="d-flex flex-column mb-8">
             <label class="fs-6 fw-bold mb-2" for="patch_setting_pfpurl">User Icon URL:</label>
             <p class="fs-6 fw-semibold form-label mb-2">If you want to add a custom profile picture for the top bar.</p>
