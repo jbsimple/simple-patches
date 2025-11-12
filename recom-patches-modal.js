@@ -671,10 +671,16 @@ function patchesSettingsModal() {
         if (modal) {
             const inputs = modal.querySelectorAll('input, select, textarea');
             inputs.forEach(input => {
-                if (settings.hasOwnProperty(input.name) && settings[input.name] !== undefined) {
-                    input.value = settings[input.name];
-                    console.debug(`PATCHES - Prefilled ${input.name} =`, settings[input.name]);
+                const val = settings[input.name];
+                if (val === undefined) return;
+
+                if (input.type === 'checkbox') {
+                    input.checked = Boolean(val);
+                } else {
+                    input.value = val;
                 }
+
+                console.debug(`PATCHES - Prefilled ${input.name} =`, val);
             });
         }
     }
