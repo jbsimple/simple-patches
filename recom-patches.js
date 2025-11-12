@@ -130,6 +130,165 @@ function loadPatchStyle(name) {
     document.head.innerHTML += `<link rel="stylesheet" href="https://simple-patches.vercel.app/${name}?v=${Date.now()}" type="text/css"/>`;
 }
 
+function loadPatchSettings() {
+    settings = fetchSettings();
+    console.debug('PATCHES - Loaded Patch Settings', settings);
+    setupFromSettings();
+
+    const kt_drawer_chat_toggle = document.getElementById('kt_drawer_chat_toggle');
+    if (kt_drawer_chat_toggle) {
+        const newbutton = `<a class="btn btn-icon btn-custom btn-color-gray-600 btn-active-light btn-active-color-primary w-35px h-35px w-md-40px h-md-40px" id="patches_settings" href="#">
+            <i class="fas fa-cogs fs-2"></i>
+        </a>`;
+        kt_drawer_chat_toggle.insertAdjacentHTML("beforebegin", newbutton);
+        const patches_settings = document.getElementById("patches_settings");
+        if (patches_settings) {
+            patches_settings.addEventListener("click", function (e) {
+                e.preventDefault();
+                patchesSettingsModal();
+            });
+        }
+    }
+
+    function fetchSettings() {
+        const saved = localStorage.getItem('patch_settings');
+        if (!saved) return {};
+
+        try {
+            return JSON.parse(saved) || {};
+        } catch (e) {
+            console.error("Invalid patch_settings JSON:", e);
+            return {};
+        }
+    }
+
+    function setupFromSettings() {
+        const icon = (settings && settings.pfpurl && settings.pfpurl !== '') ? settings.pfpurl.trim() : null;
+        if (icon !== null && icon !== '') {
+            const allImgs = document.getElementById('kt_app_header_container').querySelectorAll('img');
+            allImgs.forEach(avatar => {
+                const src = avatar.getAttribute('src') || '';
+                if (src.includes('assets') && src.includes('avatars')) {
+                    console.debug('PATCHES - Swapping Avatar:', src);
+                    avatar.src = icon;
+                }
+            });
+        }
+
+        const bgsrc = (settings && settings.bgurl && settings.bgurl !== '') ? settings.bgurl.trim() : null;
+        const bgpos = (settings && settings.bgpos && settings.bgpos !== '') ? settings.bgpos.trim() : null;
+        const bgobf = (settings && settings.bgobf && settings.bgobf !== '') ? settings.bgobf.trim() : null;
+        const bgopa = (settings && settings.bgopa && settings.bgopa !== '') ? settings.bgopa.trim() : null;
+        if (bgsrc !== null && bgsrc !== '') {
+            const sidebar = document.getElementById("kt_app_sidebar");
+            const header = document.getElementById("kt_app_header_navbar");
+            const container = document.getElementById("kt_app_main");
+            if (container) {
+                const bgImg = document.createElement("img");
+                bgImg.src = bgsrc;
+                if (bgpos !== null && bgpos !== '') { bgImg.style.objectPosition = bgpos; } else { bgImg.style.objectPosition = 'center center'; }
+                if (bgobf !== null && bgobf !== '') { bgImg.style.objectFit = bgobf; } else { bgImg.style.objectFit = 'cover'; }
+
+                let bgImgOpa = "0.8";
+                if (bgopa !== null && bgopa !== '') {
+                    if (typeof bgopa === 'number') {
+                        bgImgOpa = Math.min(Math.max(bgopa, 0), 1).toFixed(2);
+                    } else if (!isNaN(parseFloat(bgopa))) {
+                        const num = parseFloat(bgopa);
+                        bgImgOpa = Math.min(Math.max(num, 0), 1).toFixed(2).toString();
+                    } else {
+                        bgImgOpa = String(bgopa);
+                    }
+                }
+
+                bgImg.className = "dynamic-bgimg";
+
+                const computedStyle = window.getComputedStyle(container);
+                if (computedStyle.position === "static") {
+                    container.style.position = "relative";
+                }
+                
+                container.appendChild(bgImg);
+                const styleTag = document.createElement("style");
+                styleTag.id = 'dynamic-bgimg-style';
+                styleTag.textContent = `
+                    #kt_app_main > .dynamic-bgimg {
+                        position: fixed;
+                        top: 0px;
+                        left: 0px;
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                        z-index: -1;
+                        opacity: 0;
+                        transition: opacity 1s ease, padding 0.3s ease;
+                        pointer-events: none;
+                        user-select: none;
+                    }
+
+                    @media (max-width: 1199.98px) {
+                        #kt_app_main > .dynamic-bgimg {
+                            padding-left: 0px !important;
+                        }
+                    }
+
+                    .card {
+                        background-color: color-mix(in srgb, var(--bs-card-bg) 85%, transparent 15%) !important;
+                    }
+                `;
+                document.head.appendChild(styleTag);
+
+                updatePadding();
+                const resizeObserver = new ResizeObserver(() => updatePadding());
+                if (sidebar) resizeObserver.observe(sidebar);
+                if (header) resizeObserver.observe(header);
+
+                bgImg.addEventListener('load', () => {
+                    requestAnimationFrame(() => {
+                        bgImg.style.opacity = bgImgOpa;
+                    });
+                });
+
+                function updatePadding() {
+                    const sidebarWidth = sidebar ? sidebar.offsetWidth : 0;
+                    const headerHeight = header ? header.offsetHeight : 0;
+                    bgImg.style.paddingLeft = `${sidebarWidth}px`;
+                    bgImg.style.paddingTop = `${headerHeight}px`;
+                }
+            }
+        }
+
+        let customcss = (settings && settings.customcss && settings.customcss !== '') ? settings.customcss.trim() : null;
+        if (customcss !== null && customcss !== '') {
+            const customcss_id = 'patches_settings_customcss';
+            const oldTag = document.getElementById(customcss_id);
+            if (oldTag) oldTag.remove();
+            const styleTag = document.createElement('style');
+            styleTag.id = customcss_id;
+            styleTag.textContent = customcss;
+            document.head.appendChild(styleTag);
+        }
+
+        //activitylist
+        let activitylist = (settings && settings.activitylist && settings.activitylist !== '') ? settings.activitylist.trim() : null;
+        if (activitylist !== null && activitylist !== '') {
+            const listArray = activitylist
+                .split(',')
+                .map(item => item.trim())
+                .filter(item => item.length > 0);
+            settings.activitylist = listArray;
+        }
+
+        // mockup productivity
+        mockupProductivity = settings.mockupProductivity ?? false;
+
+        let mockupProductivity_department = (settings && settings.mockupProductivityDepartment && settings.mockupProductivityDepartment !== '') ? settings.mockupProductivityDepartment.trim() : null;
+        if (mockupProductivity_department) {
+            mockupProductivityDepartment = mockupProductivity_department;
+        }
+    }
+}
+
 function injectExtraTheme() {
     const nav_sidebar = document.getElementById('kt_app_sidebar_navs_wrappers');
     if (nav_sidebar) {
@@ -275,164 +434,6 @@ function injectExtraTheme() {
     });
 
     chartWatcher.observe(document.body, { childList: true, subtree: true });
-
-    // setting stuff
-    settings = loadPatchSettings();
-    console.debug('PATCHES - Loaded Patch Settings', settings);
-    setupFromSettings();
-
-    const kt_drawer_chat_toggle = document.getElementById('kt_drawer_chat_toggle');
-    if (kt_drawer_chat_toggle) {
-        const newbutton = `<a class="btn btn-icon btn-custom btn-color-gray-600 btn-active-light btn-active-color-primary w-35px h-35px w-md-40px h-md-40px" id="patches_settings" href="#">
-            <i class="fas fa-cogs fs-2"></i>
-        </a>`;
-        kt_drawer_chat_toggle.insertAdjacentHTML("beforebegin", newbutton);
-        const patches_settings = document.getElementById("patches_settings");
-        if (patches_settings) {
-            patches_settings.addEventListener("click", function (e) {
-                e.preventDefault();
-                patchesSettingsModal();
-            });
-        }
-    }
-
-    function loadPatchSettings() {
-        const saved = localStorage.getItem('patch_settings');
-        if (!saved) return {};
-
-        try {
-            return JSON.parse(saved) || {};
-        } catch (e) {
-            console.error("Invalid patch_settings JSON:", e);
-            return {};
-        }
-    }
-
-    function setupFromSettings() {
-        const icon = (settings && settings.pfpurl && settings.pfpurl !== '') ? settings.pfpurl.trim() : null;
-        if (icon !== null && icon !== '') {
-            const allImgs = document.getElementById('kt_app_header_container').querySelectorAll('img');
-            allImgs.forEach(avatar => {
-                const src = avatar.getAttribute('src') || '';
-                if (src.includes('assets') && src.includes('avatars')) {
-                    console.debug('PATCHES - Swapping Avatar:', src);
-                    avatar.src = icon;
-                }
-            });
-        }
-
-        const bgsrc = (settings && settings.bgurl && settings.bgurl !== '') ? settings.bgurl.trim() : null;
-        const bgpos = (settings && settings.bgpos && settings.bgpos !== '') ? settings.bgpos.trim() : null;
-        const bgobf = (settings && settings.bgobf && settings.bgobf !== '') ? settings.bgobf.trim() : null;
-        const bgopa = (settings && settings.bgopa && settings.bgopa !== '') ? settings.bgopa.trim() : null;
-        if (bgsrc !== null && bgsrc !== '') {
-            const sidebar = document.getElementById("kt_app_sidebar");
-            const header = document.getElementById("kt_app_header_navbar");
-            const container = document.getElementById("kt_app_main");
-            if (container) {
-                const bgImg = document.createElement("img");
-                bgImg.src = bgsrc;
-                if (bgpos !== null && bgpos !== '') { bgImg.style.objectPosition = bgpos; } else { bgImg.style.objectPosition = 'center center'; }
-                if (bgobf !== null && bgobf !== '') { bgImg.style.objectFit = bgobf; } else { bgImg.style.objectFit = 'cover'; }
-
-                let bgImgOpa = "0.8";
-                if (bgopa !== null && bgopa !== '') {
-                    if (typeof bgopa === 'number') {
-                        bgImgOpa = Math.min(Math.max(bgopa, 0), 1).toFixed(2);
-                    } else if (!isNaN(parseFloat(bgopa))) {
-                        const num = parseFloat(bgopa);
-                        bgImgOpa = Math.min(Math.max(num, 0), 1).toFixed(2).toString();
-                    } else {
-                        bgImgOpa = String(bgopa);
-                    }
-                }
-
-                bgImg.className = "dynamic-bgimg";
-
-                const computedStyle = window.getComputedStyle(container);
-                if (computedStyle.position === "static") {
-                    container.style.position = "relative";
-                }
-                
-                container.appendChild(bgImg);
-                const styleTag = document.createElement("style");
-                styleTag.id = 'dynamic-bgimg-style';
-                styleTag.textContent = `
-                    #kt_app_main > .dynamic-bgimg {
-                        position: fixed;
-                        top: 0px;
-                        left: 0px;
-                        width: 100%;
-                        height: 100%;
-                        object-fit: cover;
-                        z-index: -1;
-                        opacity: 0;
-                        transition: opacity 1s ease, padding 0.3s ease;
-                        pointer-events: none;
-                        user-select: none;
-                    }
-
-                    @media (max-width: 1199.98px) {
-                        #kt_app_main > .dynamic-bgimg {
-                            padding-left: 0px !important;
-                        }
-                    }
-
-                    .card {
-                        background-color: color-mix(in srgb, var(--bs-card-bg) 85%, transparent 15%) !important;
-                    }
-                `;
-                document.head.appendChild(styleTag);
-
-                updatePadding();
-                const resizeObserver = new ResizeObserver(() => updatePadding());
-                if (sidebar) resizeObserver.observe(sidebar);
-                if (header) resizeObserver.observe(header);
-
-                bgImg.addEventListener('load', () => {
-                    requestAnimationFrame(() => {
-                        bgImg.style.opacity = bgImgOpa;
-                    });
-                });
-
-                function updatePadding() {
-                    const sidebarWidth = sidebar ? sidebar.offsetWidth : 0;
-                    const headerHeight = header ? header.offsetHeight : 0;
-                    bgImg.style.paddingLeft = `${sidebarWidth}px`;
-                    bgImg.style.paddingTop = `${headerHeight}px`;
-                }
-            }
-        }
-
-        let customcss = (settings && settings.customcss && settings.customcss !== '') ? settings.customcss.trim() : null;
-        if (customcss !== null && customcss !== '') {
-            const customcss_id = 'patches_settings_customcss';
-            const oldTag = document.getElementById(customcss_id);
-            if (oldTag) oldTag.remove();
-            const styleTag = document.createElement('style');
-            styleTag.id = customcss_id;
-            styleTag.textContent = customcss;
-            document.head.appendChild(styleTag);
-        }
-
-        //activitylist
-        let activitylist = (settings && settings.activitylist && settings.activitylist !== '') ? settings.activitylist.trim() : null;
-        if (activitylist !== null && activitylist !== '') {
-            const listArray = activitylist
-                .split(',')
-                .map(item => item.trim())
-                .filter(item => item.length > 0);
-            settings.activitylist = listArray;
-        }
-
-        // mockup productivity
-        mockupProductivity = settings.mockupProductivity ?? false;
-
-        let mockupProductivity_department = (settings && settings.mockupProductivityDepartment && settings.mockupProductivityDepartment !== '') ? settings.mockupProductivityDepartment.trim() : null;
-        if (mockupProductivity_department) {
-            mockupProductivityDepartment = mockupProductivity_department;
-        }
-    }
 
     /* theme stuff */
     function rainbowMessage(message) {
@@ -1629,6 +1630,7 @@ function peekAtImages() {
 }
 
 async function patchInit() {
+    loadPatchSettings();
     injectGoods();
     injectExtraTheme();
     clockTaskVisualRefresh(false);
