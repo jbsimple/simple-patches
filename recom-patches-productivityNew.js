@@ -533,7 +533,7 @@ function printProductivity(data, user = null, department = null) {
 
     await fetchUserDetails();
 
-    const report = await fetchProductivity('team');
+    const report = await fetchProductivity('team', mockupProductivityDepartment);
     console.debug('PATCHES TEST - Report:', report);
     printProductivity(report.data);
 

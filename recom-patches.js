@@ -429,7 +429,9 @@ function injectExtraTheme() {
         mockupProductivity = settings.mockupProductivity ?? false;
 
         let mockupProductivity_department = (settings && settings.mockupProductivityDepartment && settings.mockupProductivityDepartment !== '') ? settings.mockupProductivityDepartment.trim() : null;
-        if (mockupProductivity_department) { console.debug(mockupProductivity_department); }
+        if (mockupProductivity_department) {
+            mockupProductivityDepartment = mockupProductivity_department;
+        }
     }
 
     /* theme stuff */
