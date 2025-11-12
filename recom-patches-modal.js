@@ -585,7 +585,7 @@ function patchesSettingsModal() {
             <div class="d-flex flex-column mb-8">
                 <label class="fs-6 fw-bold mb-2" for="patch_setting_pfpurl">Mockup Productivity Department:</label>
                 <p class="fs-6 fw-semibold form-label mb-2">Fetch Productivity for a specific department.</p>
-                <input type="text" class="form-control form-control-solid" name="mockupProductivity" id="patch_setting_mockupProductivity" placeholder="Enter Department Name" value="" spellcheck="false">
+                <input type="text" class="form-control form-control-solid" name="mockupProductivityDepartment" id="patch_setting_mockupProductivityDepartment" placeholder="Enter Department Name" value="" spellcheck="false">
             </div>
         </div>
         <div class="d-flex flex-column mb-8">
