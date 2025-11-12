@@ -692,7 +692,7 @@ async function injectTeamReport() {
             const userHeader = document.createElement('h2');
             userHeader.textContent = `Productivity Breakdown for ${user}`;
             userHeader.classList.add('card');
-            userHeader.setAttribute('style', 'padding: 2rem 2rem !important;margin: 2rem 30px !important;margin-bottom: 0 !important;border: var(--bs-border-width) solid var(--bs-border-color) !important;border-radius: 0.625rem !important;');
+            userHeader.setAttribute('style', 'padding: 2rem 2rem !important;margin: 2rem 30px !important;margin-bottom: 0 !important;');
 
             userContainer.appendChild(userHeader);
 
