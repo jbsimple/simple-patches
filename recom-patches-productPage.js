@@ -1028,199 +1028,40 @@ function initExtraUploadMethods() {
 }
 waitForElement('#rc_product_media', initExtraUploadMethods);
 
-function extraMediaInit() {
-    // Getting rid of bad gallery viewer
-    var media_tab = document.getElementById('rc_product_media_tab');
-    var media_tree = document.getElementById('product-images-container');
-    var media_tree_parent = null;
+function initItemImageOptions() {
+    const rc_product_media = document.getElementById('rc_product_media');
+    if (rc_product_media) {
+        const itemImageOptionRow = document.createElement('div');
+        itemImageOptionRow.setAttribute('style', 'display: flex; flex-direction: row; gap: 1rem;');
 
-    if (media_tree) {
-        media_tree_parent = media_tree.parentNode;
-    }
+        const itemImagesList = document.createElement('div');
+        itemImagesList.setAttribute('style', 'display: flex; flex-direction: column; gap: 0.25rem; flex: 1;');
 
-    var imageElements = media_tree.querySelectorAll('[data-type="image"]');
+        const itemImagesAction = document.createElement('div');
+        itemImagesAction.setAttribute('style', 'display: flex; flex-direction: row; gap: 0.25rem;');
+        const parameterContainer = document.createElement('div');
+        parameterContainer.setAttribute('style', 'display: flex; flex-direction: column; gap: 0.25rem;');
+        parameterContainer.title = 'Unchecking this will also delete 6, 8, and 18';
+        parameterContainer.innerHTML = `<label for="patches-nukeButtonToggle">Safe Delete?</label>
+        <input type="checkbox" id="patches-nukeButtonToggle" checked>`;
+        itemImagesAction.appendChild(parameterContainer);
+        var nukeAllButton = document.createElement('button');
+        nukeAllButton.classList.add('btn');
+        nukeAllButton.classList.add('btn-info');
+        nukeAllButton.classList.add('btn-danger');
+        nukeAllButton.id = 'deleteAllImages';
+        nukeAllButton.textContent = 'Delete All SKU Images';
+        nukeAllButton.title = 'Deletes All Children SKU Images';
+        nukeAllButton.style.color = 'white';
+        nukeAllButton.style.border = 'none';
+        nukeAllButton.style.padding = '10px 20px';
+        nukeAllButton.style.cursor = 'pointer';
+        nukeAllButton.style.borderRadius = '5px';
+        nukeAllButton.onclick = nukeAllSkuImages;
+        itemImagesAction.appendChild(nukeAllButton);
+        itemImageOptionRow.appendChild(itemImagesAction);
 
-    if (imageElements && imageElements.length > 0) {
-        $(imageElements).off(); //jQuery ftw
-
-        imageElements.forEach(imgLink => {
-            imgLink.onclick = null;
-            imgLink.setAttribute('target', '_blank');
-        });
-    }
-
-    // Handle new uploads
-    // Before, clicking a picture freshly uploaded by accident just opens the <a> default.
-    // AT LEAST it should be in a new tab.
-    if (media_tree) {
-        const observer = new MutationObserver(mutations => {
-            mutations.forEach(mutation => {
-                mutation.addedNodes.forEach(node => {
-                    if (node instanceof HTMLElement && node.matches('[data-type="image"]')) {
-                        $(node).off(); //jQuery ftw
-                        node.onclick = null;
-                        node.setAttribute('target', '_blank');
-                    }
-
-                    const newImages = node.querySelectorAll?.('[data-type="image"]');
-                    if (newImages) {
-                        newImages.forEach(imgLink => {
-                            $(imgLink).off(); //jQuery ftw
-                            imgLink.onclick = null;
-                            imgLink.setAttribute('target', '_blank');
-                        });
-                    }
-                });
-            });
-        });
-
-        observer.observe(media_tree, { childList: true, subtree: true });
-    }
-
-    const dropbox = document.getElementById('rc_product_media');
-
-    if (dropbox) {
-        const expectedClasses = ['dropzone', 'dz-clickable'];
-
-        window.onbeforeunload = function () {
-            const hasExactClasses = 
-                dropbox.classList.length === expectedClasses.length &&
-                expectedClasses.every(cls => dropbox.classList.contains(cls));
-
-            if (!hasExactClasses) {
-                return "Are you sure you want to leave? Images are still uploading.";
-            }
-            return undefined;
-        };
-    }
-
-    if (media_tab && media_tree) {
-        var newElement = document.createElement('div');
-        newElement.setAttribute('style', 'margin-bottom: 2.5rem; display: flex; flex-direction: row; gap: 1rem; align-items: center');
-
-        // open all button
-        if (imageElements.length > 0) {
-            var openAllButton = document.createElement('button');
-            openAllButton.classList.add('btn');
-            openAllButton.classList.add('btn-info');
-            openAllButton.id = 'patch_openAllImages';
-            openAllButton.textContent = 'Open All Images';
-            openAllButton.title = 'Opens each image into a new tab.';
-            openAllButton.style.color = 'white';
-            openAllButton.style.border = 'none';
-            openAllButton.style.padding = '10px 20px';
-            openAllButton.style.cursor = 'pointer';
-            openAllButton.style.borderRadius = '5px';
-            openAllButton.onclick = openAllImages;
-            if (!checkPopup()) {
-                openAllButton.title = "Popups are disabled, please enable for this to work.";
-            }
-            newElement.appendChild(openAllButton);
-        }
-
-        // delete all button
-        if (imageElements.length > 0) {
-            var deleteAllButton = document.createElement('button');
-            deleteAllButton.classList.add('btn');
-            deleteAllButton.classList.add('btn-info');
-            deleteAllButton.classList.add('btn-danger');
-            deleteAllButton.id = 'deleteAllImages';
-            deleteAllButton.textContent = 'Delete All Images';
-            deleteAllButton.title = 'Deletes All Images Below.';
-            deleteAllButton.style.color = 'white';
-            deleteAllButton.style.border = 'none';
-            deleteAllButton.style.padding = '10px 20px';
-            deleteAllButton.style.cursor = 'pointer';
-            deleteAllButton.style.borderRadius = '5px';
-            deleteAllButton.onclick = deleteAllImages;
-            newElement.appendChild(deleteAllButton);
-        }
-
-        // spacer
-        var spacer = document.createElement('span');
-        spacer.setAttribute('style', 'flex: 1');
-        newElement.appendChild(spacer);
-
-        // nuke sku button
-        const url = window.location.href;
-        if (url.includes('/products/')) {
-            const parameterContainer = document.createElement('div');
-            parameterContainer.setAttribute('style', 'display: flex; flex-direction: column; gap: 0.25rem;');
-            parameterContainer.title = 'Unchecking this will also delete 6, 8, and 18';
-            parameterContainer.innerHTML = `<label for="patches-nukeButtonToggle">Safe Delete?</label>
-            <input type="checkbox" id="patches-nukeButtonToggle" checked>`;
-            newElement.appendChild(parameterContainer);
-
-            var nukeAllButton = document.createElement('button');
-            nukeAllButton.classList.add('btn');
-            nukeAllButton.classList.add('btn-info');
-            nukeAllButton.classList.add('btn-danger');
-            nukeAllButton.id = 'deleteAllImages';
-            nukeAllButton.textContent = 'Delete All SKU Images';
-            nukeAllButton.title = 'Deletes All Children SKU Images';
-            nukeAllButton.style.color = 'white';
-            nukeAllButton.style.border = 'none';
-            nukeAllButton.style.padding = '10px 20px';
-            nukeAllButton.style.cursor = 'pointer';
-            nukeAllButton.style.borderRadius = '5px';
-            nukeAllButton.onclick = nukeAllSkuImages;
-            newElement.appendChild(nukeAllButton);
-        }
-        
-        media_tree_parent.insertBefore(newElement, media_tree);
-    }
-
-    function openAllImages() {
-        if (imageElements && imageElements.length > 0) {
-            console.debug('Patches: Opening all images by simulating clicks with delay:', imageElements);
-
-            for (let i = 0; i < imageElements.length; i++) {
-                setTimeout(() => {
-                    const imageElement = imageElements[i];
-                    console.debug(`Patches: Simulating click for URL: ${imageElement.href}`);
-                    imageElement.click();
-                }, i * 50);
-            }
-        }
-    }
-
-    function deleteAllImages() {
-        const imgwrap = document.getElementById('product-images-container');
-        const imgs = imgwrap.querySelectorAll('.col.draggable[data-id]');
-
-        let type = '';
-        const url = window.location.href;
-        if (url.includes('/products/')) {
-            type = 'product';
-        } else if (url.includes('/items/')) {
-            type = 'item';
-        }
-
-        const csrfToken = $('meta[name="X-CSRF-TOKEN"]').attr("content");
-
-        imgs.forEach(img => {
-            const id = img.getAttribute('data-id');
-
-            $.post({
-                url: "ajax/actions/productimagedelete/" + id,
-                dataType: "json",
-                data: {
-                    id: id,
-                    type: type
-                },
-                headers: {
-                    "X-CSRF-TOKEN": csrfToken,
-                },
-                success: function(data) {
-                    apiResponseAlert(data);
-                    $(img).closest(".col").remove();
-                },
-                error: function(error) {
-                    console.log("FAIL", error);
-                    ajaxFailAlert(error);
-                }
-            });
-        });
+        rc_product_media.parentNode.insertBefore(itemImageOptionRow, rc_product_media);
     }
 
     async function nukeAllSkuImages() {
@@ -1348,6 +1189,182 @@ function extraMediaInit() {
         } catch (err) {
             console.error('Error during SKU image nuke process:', err);
         }
+    }
+}
+
+function extraMediaInit() {
+    // Getting rid of bad gallery viewer
+    var media_tab = document.getElementById('rc_product_media_tab');
+    var media_tree = document.getElementById('product-images-container');
+    var media_tree_parent = null;
+
+    if (media_tree) {
+        media_tree_parent = media_tree.parentNode;
+    }
+
+    var imageElements = media_tree.querySelectorAll('[data-type="image"]');
+
+    if (imageElements && imageElements.length > 0) {
+        $(imageElements).off(); //jQuery ftw
+
+        imageElements.forEach(imgLink => {
+            imgLink.onclick = null;
+            imgLink.setAttribute('target', '_blank');
+        });
+    }
+
+    // Handle new uploads
+    // Before, clicking a picture freshly uploaded by accident just opens the <a> default.
+    // AT LEAST it should be in a new tab.
+    if (media_tree) {
+        const observer = new MutationObserver(mutations => {
+            mutations.forEach(mutation => {
+                mutation.addedNodes.forEach(node => {
+                    if (node instanceof HTMLElement && node.matches('[data-type="image"]')) {
+                        $(node).off(); //jQuery ftw
+                        node.onclick = null;
+                        node.setAttribute('target', '_blank');
+                    }
+
+                    const newImages = node.querySelectorAll?.('[data-type="image"]');
+                    if (newImages) {
+                        newImages.forEach(imgLink => {
+                            $(imgLink).off(); //jQuery ftw
+                            imgLink.onclick = null;
+                            imgLink.setAttribute('target', '_blank');
+                        });
+                    }
+                });
+            });
+        });
+
+        observer.observe(media_tree, { childList: true, subtree: true });
+    }
+
+    const dropbox = document.getElementById('rc_product_media');
+
+    if (dropbox) {
+        const expectedClasses = ['dropzone', 'dz-clickable'];
+
+        window.onbeforeunload = function () {
+            const hasExactClasses = 
+                dropbox.classList.length === expectedClasses.length &&
+                expectedClasses.every(cls => dropbox.classList.contains(cls));
+
+            if (!hasExactClasses) {
+                return "Are you sure you want to leave? Images are still uploading.";
+            }
+            return undefined;
+        };
+    }
+
+    if (media_tab && media_tree) {
+        var newElement = document.createElement('div');
+        newElement.setAttribute('style', 'margin-bottom: 2.5rem; display: flex; flex-direction: row; gap: 1rem; align-items: center');
+
+        // open all button
+        if (imageElements.length > 0) {
+            var openAllButton = document.createElement('button');
+            openAllButton.classList.add('btn');
+            openAllButton.classList.add('btn-info');
+            openAllButton.id = 'patch_openAllImages';
+            openAllButton.textContent = 'Open All Images';
+            openAllButton.title = 'Opens each image into a new tab.';
+            openAllButton.style.color = 'white';
+            openAllButton.style.border = 'none';
+            openAllButton.style.padding = '10px 20px';
+            openAllButton.style.cursor = 'pointer';
+            openAllButton.style.borderRadius = '5px';
+            openAllButton.onclick = openAllImages;
+            if (!checkPopup()) {
+                openAllButton.title = "Popups are disabled, please enable for this to work.";
+            }
+            newElement.appendChild(openAllButton);
+        }
+
+        // delete all button
+        if (imageElements.length > 0) {
+            var deleteAllButton = document.createElement('button');
+            deleteAllButton.classList.add('btn');
+            deleteAllButton.classList.add('btn-info');
+            deleteAllButton.classList.add('btn-danger');
+            deleteAllButton.id = 'deleteAllImages';
+            deleteAllButton.textContent = 'Delete All Images';
+            deleteAllButton.title = 'Deletes All Images Below.';
+            deleteAllButton.style.color = 'white';
+            deleteAllButton.style.border = 'none';
+            deleteAllButton.style.padding = '10px 20px';
+            deleteAllButton.style.cursor = 'pointer';
+            deleteAllButton.style.borderRadius = '5px';
+            deleteAllButton.onclick = deleteAllImages;
+            newElement.appendChild(deleteAllButton);
+        }
+
+        // spacer
+        var spacer = document.createElement('span');
+        spacer.setAttribute('style', 'flex: 1');
+        newElement.appendChild(spacer);
+        
+        media_tree_parent.insertBefore(newElement, media_tree);
+
+        // nuke sku button
+        const url = window.location.href;
+        if (url.includes('/products/')) {
+            initItemImageOptions();
+        }
+    }
+
+    function openAllImages() {
+        if (imageElements && imageElements.length > 0) {
+            console.debug('Patches: Opening all images by simulating clicks with delay:', imageElements);
+
+            for (let i = 0; i < imageElements.length; i++) {
+                setTimeout(() => {
+                    const imageElement = imageElements[i];
+                    console.debug(`Patches: Simulating click for URL: ${imageElement.href}`);
+                    imageElement.click();
+                }, i * 50);
+            }
+        }
+    }
+
+    function deleteAllImages() {
+        const imgwrap = document.getElementById('product-images-container');
+        const imgs = imgwrap.querySelectorAll('.col.draggable[data-id]');
+
+        let type = '';
+        const url = window.location.href;
+        if (url.includes('/products/')) {
+            type = 'product';
+        } else if (url.includes('/items/')) {
+            type = 'item';
+        }
+
+        const csrfToken = $('meta[name="X-CSRF-TOKEN"]').attr("content");
+
+        imgs.forEach(img => {
+            const id = img.getAttribute('data-id');
+
+            $.post({
+                url: "ajax/actions/productimagedelete/" + id,
+                dataType: "json",
+                data: {
+                    id: id,
+                    type: type
+                },
+                headers: {
+                    "X-CSRF-TOKEN": csrfToken,
+                },
+                success: function(data) {
+                    apiResponseAlert(data);
+                    $(img).closest(".col").remove();
+                },
+                error: function(error) {
+                    console.log("FAIL", error);
+                    ajaxFailAlert(error);
+                }
+            });
+        });
     }
 
     function checkPopup() {
