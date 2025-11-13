@@ -1028,14 +1028,18 @@ function initExtraUploadMethods() {
 }
 waitForElement('#rc_product_media', initExtraUploadMethods);
 
-function initItemImageOptions() {
+async function initItemImageOptions() {
     const rc_product_media = document.getElementById('rc_product_media');
     if (rc_product_media) {
         const itemImageOptionRow = document.createElement('div');
-        itemImageOptionRow.setAttribute('style', 'display: flex; flex-direction: row; gap: 1rem; align-items: center; justify-content: center;');
+        itemImageOptionRow.setAttribute('style', 'display: flex; flex-direction: row; gap: 1rem; align-items: center; justify-content: center; padding: 0.25rem; padding-bottom: 1.5rem;');
 
         const itemImagesList = document.createElement('div');
         itemImagesList.setAttribute('style', 'display: flex; flex-direction: column; gap: 0.25rem; flex: 1;');
+        const sidDetails = await fetchSidDetails(descriptionText);
+        if (sidDetails.image_counts) { image_counts = sidDetails.image_counts; }
+        console.debug('PATCHES - image_counts:', image_counts);
+
         itemImageOptionRow.appendChild(itemImagesList);
 
         const itemImagesAction = document.createElement('div');
