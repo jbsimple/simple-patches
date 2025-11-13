@@ -1415,7 +1415,7 @@ async function fetchPurchaseOrdersList(onlyIds = false) {
 
     const parsed = parse(json);
 
-    if (onlyIds === true) { return parsed.map(item => item.id); }
+    if (onlyIds === true) { return parsed.map(item => parseInt(item.id, 10)); }
 
     return parsed;
 }
