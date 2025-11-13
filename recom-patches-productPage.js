@@ -1036,9 +1036,14 @@ async function initItemImageOptions() {
 
         const itemImagesList = document.createElement('div');
         itemImagesList.setAttribute('style', 'display: flex; flex-direction: column; gap: 0.25rem; flex: 1;');
-        const sidDetails = await fetchSidDetails(descriptionText);
-        if (sidDetails.image_counts) { image_counts = sidDetails.image_counts; }
-        console.debug('PATCHES - image_counts:', image_counts);
+
+        // this is a lot of code to find the sid
+        const SID = getTheSid();
+        if (SID !== null) {
+            const sidDetails = await fetchSidDetails(SID);
+            if (sidDetails.image_counts) { image_counts = sidDetails.image_counts; }
+            console.debug('PATCHES - image_counts:', image_counts);
+        }
 
         itemImageOptionRow.appendChild(itemImagesList);
 
@@ -1067,6 +1072,26 @@ async function initItemImageOptions() {
         itemImageOptionRow.appendChild(itemImagesAction);
 
         rc_product_media.parentNode.insertBefore(itemImageOptionRow, rc_product_media);
+    }
+
+    function getTheSid() {
+        const productImageElem = document.querySelector('a[data-type="image"]');
+        if (productImageElem) {
+            let parent = productImageElem.parentElement;
+
+            while (parent && !parent.classList.contains('card') && !parent.classList.contains('card-flush')) {
+                parent = parent.parentElement;
+            }
+
+            if (parent) {
+                const header = parent.querySelector('.card-header h2');
+                if (header) {
+                    const titleText = header.textContent.trim();
+                    return titleText;
+                }
+            }
+        }
+        return null;
     }
 
     async function nukeAllSkuImages() {
