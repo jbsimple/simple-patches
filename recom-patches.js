@@ -68,16 +68,6 @@ function setupFromConfig() {
         patches_bulkUpdateLocationsClock.style.removeProperty('display');
     }
 
-    function rainbowMessage(message) {
-        const mainelem = document.getElementById('rc_header_search').parentElement;
-        if (mainelem) {
-            const newMessage = document.createElement('div');
-            newMessage.innerHTML = `<strong style="font-size: 1.25rem;" class="rainbow_text_animated">${message}</strong>`;
-            newMessage.setAttribute('style', 'flex: 1; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; margin-left: 1rem; margin-right: 1rem;');
-            mainelem.appendChild(newMessage);
-        }
-    }
-
     const today = new Date();
     rainbowAnnounce.forEach(announcement => {
         if (today.getDate() === announcement.day && today.getMonth() === (announcement.month - 1)) {
@@ -92,6 +82,16 @@ function setupFromConfig() {
         if (logoAnimations && logoAnimations[day]) {
             logo.style.setProperty("--logo-animation", logoAnimations[day]);
         }
+    }
+}
+
+function rainbowMessage(message) {
+    const mainelem = document.getElementById('rc_header_search').parentElement;
+    if (mainelem) {
+        const newMessage = document.createElement('div');
+        newMessage.innerHTML = `<strong style="font-size: 1.25rem;" class="rainbow_text_animated">${message}</strong>`;
+        newMessage.setAttribute('style', 'flex: 1; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; margin-left: 1rem; margin-right: 1rem;');
+        mainelem.appendChild(newMessage);
     }
 }
 
