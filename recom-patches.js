@@ -872,7 +872,6 @@ async function fetchSidDetails(SID) {
     const product_images = await getProductDetails(SID);
     console.debug('PATCHES: Product Details:', product_images);
 
-    processedContent.add(SID);
     const image_counts = countUrlsBySku(item_images);
     console.debug('Patch: SKU img counts:', image_counts);
 
@@ -1094,6 +1093,7 @@ function hijackAjaxModal() {
     
                 try {
                     const sidDetails = await fetchSidDetails(descriptionText);
+                    processedContent.add(SID);
                     if (sidDetails.item_images) {item_images = sidDetails.item_images; }
                     if (sidDetails.product_images) {product_images = sidDetails.product_images; }
                     if (sidDetails.image_counts) {image_counts = sidDetails.image_counts; }
