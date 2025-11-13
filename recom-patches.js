@@ -1396,6 +1396,27 @@ async function searchDataList(type, value) {
     return results;
 }
 
+async function fetchPurchaseOrdersList() {
+    const response = await fetch('/datatables/purchaseorders?start=0&length=9999');
+    const json = await response.json();
+
+    function parse(json) {
+        return json.data.map(row => {
+            const id = row[0];
+            const linkHtml = row[1];
+
+            // Extract visible text from the <a> tag
+            const temp = document.createElement("div");
+            temp.innerHTML = linkHtml;
+            const text = temp.textContent.trim();
+
+            return { id, text };
+        });
+    }
+
+    return parse(json);
+}
+
 function bustUserTracker() {
     function simulateUserActivity() {
         console.debug('PATCHES - Simulated events for userTracker');
