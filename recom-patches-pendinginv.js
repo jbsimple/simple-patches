@@ -165,10 +165,10 @@ async function keywordSearch() {
 
         if (Object.keys(params).length > 0) {
             try {
-                const piData = await fetchPIReport(params);
+                const piData = await fetchPIReport(params, poTerm);
                 console.debug('PATCHES - PI Report data:', piData);
 
-                const epData = await fetchEPReport(params);
+                const epData = await fetchEPReport(params, poTerm);
                 console.debug('PATCHES - EP Report data:', epData);
                 const parsedEpData = Object.fromEntries(
                     epData.data.map(item => [`${item.SID}_${item.Inspected_Condition}_${item.Units}`, item])
@@ -200,7 +200,7 @@ async function keywordSearch() {
         }
     }
 
-    async function fetchEPReport(poTerm) {
+    async function fetchEPReport(params, poTerm) {
         // time to build a report
         const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
         if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
