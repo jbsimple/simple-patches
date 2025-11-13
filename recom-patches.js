@@ -38,8 +38,37 @@ async function loadEdgeConfig(key) {
     });
 }
 
+function setupFromConfig() {
+    if (currentuser && currentuser !== '') {
+        // new metals warning
+        const userMeta = metals.find(m => m.name === currentuser);
+        if (userMeta?.warnings) {
+            userMeta.warnings.forEach(({ hour, minute, message }) => {
+                scheduleRun(hour, minute, () => {
+                    fireSwal("CLOCK CHECK!", message);
+                });
+            });
+        }
 
-async function injectGoods() {
+        const nav_sidebar_links = document.getElementById('#kt_app_sidebar_menu');
+        if (nav_sidebar_links) {
+            const nameElem = nav_sidebar_links.querySelectorAll('.menu-heading')[0];
+            currentuser = nameElem.textContent
+                            .replace(/hi[\s,]*/i, '')
+                            .trim()
+                            .toLowerCase();
+            
+            if (customNames[currentuser]) { nameElem.textContent = customNames[currentuser]; }
+        }
+    }
+
+    const patches_bulkUpdateLocationsClock = document.getElementById('patches_bulkUpdateLocationsClock');
+    if (autoLocationUpdate && patches_bulkUpdateLocationsClock) {
+        patches_bulkUpdateLocationsClock.style.removeProperty('display');
+    }
+}
+
+function injectGoods() {
     document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches.css?v=' + Date.now() + '" type="text/css"/>';
     let script_patch = document.createElement('script');
     script_patch.name = 'n/a';
@@ -309,13 +338,6 @@ function injectExtraTheme() {
                             .trim()
                             .toLowerCase();
             
-            if (customNames[currentuser]) {
-                console.debug('PATCHES - Swapping Name');
-                nameElem.textContent = customNames[currentuser];
-            } else {
-                console.debug('PATCHES - NOT Swapping Name. customNames:', customNames);
-            }
-            
             const links = nav_sidebar_links.querySelectorAll('.menu-link');
             if (links && links.length > 0 && mockupProductivity) {
 
@@ -478,20 +500,6 @@ function injectExtraTheme() {
             case 6: animation = "ripple-wave 1s ease-in-out infinite"; break;
         }
         logo.style.setProperty("--logo-animation", animation);
-    }
-}
-
-function setupFromConfig() {
-    if (currentuser && currentuser !== '') {
-        // new metals warning
-        const userMeta = metals.find(m => m.name === currentuser);
-        if (userMeta?.warnings) {
-            userMeta.warnings.forEach(({ hour, minute, message }) => {
-                scheduleRun(hour, minute, () => {
-                    fireSwal("CLOCK CHECK!", message);
-                });
-            });
-        }
     }
 }
 
@@ -1666,25 +1674,20 @@ function peekAtImages() {
 async function patchInit() {
     loadPatchSettings();
     injectGoods();
-    loadEdgeConfig('config').then(() => {
-        console.debug('PATCHES - Edge Config Loaded.');
-        setupFromConfig();
-
-        // show button
-        const patches_bulkUpdateLocationsClock = document.getElementById('patches_bulkUpdateLocationsClock');
-        if (autoLocationUpdate && patches_bulkUpdateLocationsClock) {
-            patches_bulkUpdateLocationsClock.style.removeProperty('display');
-        }
-    }).catch(err => {
-        console.error('PATCHES - Edge config failed:', err);
-    });
-    
     injectExtraTheme();
     clockTaskVisualRefresh(false);
     modifiedClockInit();
     checkWeatherAndCreateEffects();
     adjustToolbar();
     peekAtImages();
+
+    loadEdgeConfig('config').then(() => {
+        console.debug('PATCHES - Edge Config Loaded.');
+        setupFromConfig();
+        
+    }).catch(err => {
+        console.error('PATCHES - Edge config failed:', err);
+    });
 
     setTimeout(hijackAjaxModal, 500);
     console.log('PATCHES - Loading Complete');
