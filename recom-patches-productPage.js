@@ -1033,7 +1033,7 @@ async function initItemImageOptions() {
     if (rc_product_media) {
 
         const itemImagesList = document.createElement('div');
-        itemImagesList.setAttribute('style', 'display: flex; flex-direction: column; gap: 0.25rem; flex: 0.5;');
+        itemImagesList.setAttribute('style', 'display: flex; flex-direction: column; gap: 0.25rem; flex: 1;');
 
         // this is a lot of code to find the sid
         const SID = getTheSid();
@@ -1043,7 +1043,7 @@ async function initItemImageOptions() {
             if (sidDetails.image_counts) { image_counts = sidDetails.image_counts; }
             image_counts.forEach(item => {
                 if (item.count > 0) {
-                    itemImagesList.innerHTML += `<p><a targe="_blank" href="/product/items/${item.sku}">${item.sku}</a> has Pictures!</p>`;
+                    itemImagesList.innerHTML += `<p style="margin-bottom: 0;"><a targe="_blank" href="/product/items/${item.sku}">${item.sku}</a> has Pictures!</p>`;
                 }
             });
         }
