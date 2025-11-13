@@ -310,7 +310,7 @@ function injectExtraTheme() {
                             .toLowerCase();
             
             if (customNames[currentuser]) {
-                name.textContent = customNames[currentuser];
+                nameElem.textContent = customNames[currentuser];
             }
             
             const links = nav_sidebar_links.querySelectorAll('.menu-link');
