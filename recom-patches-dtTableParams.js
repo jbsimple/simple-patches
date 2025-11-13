@@ -32,3 +32,18 @@ function initAutoSearch() {
 }
 
 initAutoSearch();
+
+async function unsafeTableLength() {
+    const select = document.querySelector('select[name="dtTable_length"]');
+    if (!select) return;
+    
+    const addOptions = [200, 300, 500, 750, 1000, 1500, 2000, 3000]; // why am I able to just do this?
+    addOptions.forEach(value => {
+        const option = document.createElement('option');
+        option.setAttribute('value', value);
+        option.textContent = value;
+        select.appendChild(option);
+    });
+}
+
+unsafeTableLength();

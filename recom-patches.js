@@ -58,6 +58,7 @@ function injectGoods() {
     } else if (location.pathname.includes('/queues/conditions/')) {
         
         loadPatchScript('recom-patches-condqueue.js');
+        loadPatchScript('recom-patches-dtTableParams.js');
 
     } else if ((location.pathname.includes('/products/') || location.pathname.includes('/product/items/')) && !location.pathname.includes('/products/new')) {
         // ending slash is needed to ensure that the code only applies the patch for the sku and sid pages
@@ -82,6 +83,7 @@ function injectGoods() {
     } else if (location.pathname.includes('/integrations/store/logs')) {
 
         loadPatchScript('recom-patches-errors.js');
+        loadPatchScript('recom-patches-dtTableParams.js');
 
     } else if (location.pathname.includes('/productivity') && !location.pathname.includes('/productivity/board')) {
 
@@ -108,6 +110,10 @@ function injectGoods() {
 
         loadPatchStyle('recom-patches-dashboard.css');
         loadPatchScript('recom-patches-dashboard.js');
+
+    } else if (location.pathname.includes('/po') && !location.pathname.includes('/po/')) {
+
+        loadPatchScript('recom-patches-dtTableParams.js');
     }
 
     // get build info, might move around
