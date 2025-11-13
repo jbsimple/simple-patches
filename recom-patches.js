@@ -4,6 +4,8 @@ let settings = {};
 
 // empty defaults
 let metals = [];
+let queueDelete = [];
+let customNames = {};
 let rainbowAnnounce = [];
 let autoLocationUpdate = true;
 let allowed_colors = [];
@@ -303,14 +305,7 @@ function injectExtraTheme() {
         if (nav_sidebar_links) {
             const name = nav_sidebar_links.querySelectorAll('.menu-heading')[0];
             currentuser = name.textContent.replace(/^Hi,\s*/, '').toLocaleLowerCase();
-            console.debug('PATCHES - currentuser', currentuser); 
-
-            // change sidebar name
-            if (name && name.textContent.includes('Hi, Luke')) {
-                name.textContent = 'Hi, Psychopath';
-            } else if (name && name.textContent.includes('Hi, Nate')) {
-                name.textContent = 'Hi, Nasty Nate';
-            }
+            name.textContent = customNames[currentuser];
             
             const links = nav_sidebar_links.querySelectorAll('.menu-link');
             if (links && links.length > 0 && mockupProductivity) {
