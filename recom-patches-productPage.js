@@ -1052,7 +1052,7 @@ async function initItemImageOptions() {
         if (itemImagesList.innerHTML === '') return null;
 
         const itemImageOptionRow = document.createElement('div');
-        itemImageOptionRow.setAttribute('style', 'display: flex; flex-direction: row; gap: 1.5rem; width: 100%; border: var(--bs-border-width) solid var(--bs-card-border-color); padding: 1.25rem; border-radius: 0.625rem; box-sizing: border-box;');
+        itemImageOptionRow.setAttribute('style', 'display: flex; flex-direction: row; gap: 1.5rem; width: 100%; border: var(--bs-border-width) solid var(--bs-card-border-color); padding: 1.25rem; border-radius: 0.625rem; box-sizing: border-box; margin-bottom: 1.5rem;');
 
         itemImageOptionRow.appendChild(itemImagesList);
 
