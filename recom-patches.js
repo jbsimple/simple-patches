@@ -1396,7 +1396,7 @@ async function searchDataList(type, value) {
     return results;
 }
 
-async function fetchPurchaseOrdersList() {
+async function fetchPurchaseOrdersList(onlyIds = false) {
     const response = await fetch('/datatables/purchaseorders?start=0&length=9999');
     const json = await response.json();
 
@@ -1405,7 +1405,6 @@ async function fetchPurchaseOrdersList() {
             const id = row[0];
             const linkHtml = row[1];
 
-            // Extract visible text from the <a> tag
             const temp = document.createElement("div");
             temp.innerHTML = linkHtml;
             const text = temp.textContent.trim();
@@ -1414,7 +1413,11 @@ async function fetchPurchaseOrdersList() {
         });
     }
 
-    return parse(json);
+    const parsed = parse(json);
+
+    if (onlyIds === true) { return parsed.map(item => item.id); }
+
+    return parsed;
 }
 
 function bustUserTracker() {

@@ -153,11 +153,12 @@ async function keywordSearch() {
 
         console.debug('PATCHES - dtfoot params:', params);
 
+        let poTerm = '';
         const poVal = params['PO #']?.value || params['PO #']?.['PO #'] || "";
         if (!poVal || poVal.trim() === "") {
-            console.error("PATCHES - PO # is required.");
-            fireSwal('Missing PO #', 'In order to do a keyword search, you need to provide a PO #.', 'error');
-            return;
+            poTerm = await fetchPurchaseOrdersList(true);
+        } else {
+            poTerm = params['PO #']?.value;
         }
 
         if (Object.keys(params).length > 0) {
@@ -241,7 +242,7 @@ async function keywordSearch() {
                         {
                             column: "purchase_orders.id",
                             opr: "{0} IN {1}",
-                            value: [params['PO #']?.value || null]
+                            value: poTerm
                         }
                     ]
                 },
