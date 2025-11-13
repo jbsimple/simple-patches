@@ -1,5 +1,6 @@
 let version = '...';
 let currentuser = '';
+
 let settings = {};
 
 // empty defaults
@@ -10,9 +11,11 @@ let rainbowAnnounce = [];
 let logoAnimations = [];
 let autoLocationUpdate = true;
 let allowed_colors = [];
-
 let mockupProductivity = false;
 let mockupProductivityDepartment = null;
+
+// global references
+let sidDetailReference = {};
 
 async function loadEdgeConfig(key) {
     return new Promise(async (resolve, reject) => {
@@ -860,6 +863,28 @@ async function checkWeatherAndCreateEffects() {
     }
 }
 
+async function fetchSidDetails(SID) {
+    if (sidDetailReference[SID]) { return sidDetailReference[SID]; }
+    
+    const item_images = await getItemDetails(SID);
+    console.debug('PATCHES: Item Details:', item_images);
+
+    const product_images = await getProductDetails(SID);
+    console.debug('PATCHES: Product Details:', product_images);
+
+    processedContent.add(SID);
+    const image_counts = countUrlsBySku(item_images);
+    console.debug('Patch: SKU img counts:', image_counts);
+
+    sidDetailReference[SID] = {
+        'item_images': item_images,
+        'product_images': product_images,
+        'image_counts': image_counts
+    };
+    return sidDetailReference[SID];
+
+}
+
 function hijackAjaxModal() {
     let modal = document.getElementById('rc_ajax_modal');
     let lastEvent = null;
@@ -919,16 +944,11 @@ function hijackAjaxModal() {
                 inProgressContent.add(descriptionText);
     
                 try {
-                    const item_images = await getItemDetails(descriptionText);
-                    console.debug('PATCHES: Item Details:', item_images);
+                    const sidDetails = await fetchSidDetails(descriptionText);
+                    if (sidDetails.item_images) {item_images = sidDetails.item_images; }
+                    if (sidDetails.product_images) {product_images = sidDetails.product_images; }
+                    if (sidDetails.image_counts) {image_counts = sidDetails.image_counts; }
 
-                    const product_images = await getProductDetails(descriptionText);
-                    console.debug('PATCHES: Product Details:', product_images);
-
-                    processedContent.add(descriptionText);
-                    const image_counts = countUrlsBySku(item_images);
-    
-                    console.debug('Patch: SKU img counts:', image_counts);
                     const table = modal.querySelector('table.table-row-bordered');
                     if (table) {
                         const thead = table.querySelector('thead');
