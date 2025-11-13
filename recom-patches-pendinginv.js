@@ -157,7 +157,7 @@ async function keywordSearch() {
         const poVal = params['PO #']?.value || params['PO #']?.['PO #'] || "";
         if (!poVal || poVal.trim() === "") {
             poTerm = await fetchPurchaseOrdersList(true);
-            poTerm = JSON.stringify(poTerm);
+            // poTerm = JSON.stringify(poTerm);
             console.debug('PATCHES - poTerm:', poTerm);
         } else {
             poTerm = params['PO #']?.value;
