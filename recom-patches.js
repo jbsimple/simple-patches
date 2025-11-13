@@ -303,7 +303,7 @@ function injectExtraTheme() {
         // version tracker in build.sh
         const nav_sidebar_links = document.getElementById('#kt_app_sidebar_menu');
         if (nav_sidebar_links) {
-            const name = nav_sidebar_links.querySelectorAll('.menu-heading')[0];
+            const nameElem = nav_sidebar_links.querySelectorAll('.menu-heading')[0];
             currentuser = nameElem.textContent
                             .replace(/hi[\s,]*/i, '')
                             .trim()
