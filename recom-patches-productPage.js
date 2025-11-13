@@ -1043,7 +1043,7 @@ async function initItemImageOptions() {
             if (sidDetails.image_counts) { image_counts = sidDetails.image_counts; }
             image_counts.forEach(item => {
                 if (item.count > 0) {
-                    itemImagesList.innerHTML += `<a targe="_blank" href="/product/items/${item.SKU}">${item.SKU} has Pictures!</q>`;
+                    itemImagesList.innerHTML += `<a targe="_blank" href="/product/items/${item.sku}">${item.sku} has Pictures!</q>`;
                 }
             });
         }
