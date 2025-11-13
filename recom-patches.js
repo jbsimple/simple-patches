@@ -237,6 +237,9 @@ function loadPatchSettings() {
                     avatar.src = icon;
                 }
             });
+            // change hover menu pfp size
+            const menuicon = document.querySelector('#kt_header_user_menu_toggle .menu .symbol img');
+            if (menuicon) { menuicon.style.width = "96px"; menuicon.style.height = "96px"; }
         }
 
         const bgsrc = (settings && settings.bgurl && settings.bgurl !== '') ? settings.bgurl.trim() : null;
