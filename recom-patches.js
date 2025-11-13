@@ -304,7 +304,11 @@ function injectExtraTheme() {
         const nav_sidebar_links = document.getElementById('#kt_app_sidebar_menu');
         if (nav_sidebar_links) {
             const name = nav_sidebar_links.querySelectorAll('.menu-heading')[0];
-            currentuser = name.textContent.replace(/^Hi,\s*/, '').toLocaleLowerCase();
+            currentuser = nameElem.textContent
+                            .replace(/hi[\s,]*/i, '')
+                            .trim()
+                            .toLowerCase();
+            
             if (customNames[currentuser]) {
                 name.textContent = customNames[currentuser];
             }
