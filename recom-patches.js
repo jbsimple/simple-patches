@@ -16,6 +16,7 @@ let mockupProductivityDepartment = null;
 
 // global references
 let sidDetailReference = {};
+let sidDetailInProgress = {};
 
 async function loadEdgeConfig(key) {
     return new Promise(async (resolve, reject) => {
@@ -864,16 +865,41 @@ async function checkWeatherAndCreateEffects() {
 }
 
 async function fetchSidDetails(SID) {
-    if (sidDetailReference[SID]) { return sidDetailReference[SID]; }
+    if (sidDetailReference[SID]) {
+        return sidDetailReference[SID];
+    }
+
+    if (sidDetailInProgress[SID]) {
+        console.debug('PATCHES: fetchSidDetails already in progress for SID:', SID);
+        return sidDetailInProgress[SID];
+    }
     
-    const item_images = await getItemDetails(SID);
-    console.debug('PATCHES: Item Details:', item_images);
+    sidDetailInProgress[SID] = (async () => {
+        const item_images = await getItemDetails(SID);
+        console.debug('PATCHES: Item Details:', item_images);
 
-    const product_images = await getProductDetails(SID);
-    console.debug('PATCHES: Product Details:', product_images);
+        const product_images = await getProductDetails(SID);
+        console.debug('PATCHES: Product Details:', product_images);
 
-    const image_counts = countUrlsBySku(item_images);
-    console.debug('Patch: SKU img counts:', image_counts);
+        const image_counts = Array.isArray(item_images) ? countUrlsBySku(item_images) : [];
+        console.debug('PATCHES: SKU img counts:', image_counts);
+
+        const result = {
+            item_images,
+            product_images,
+            image_counts
+        };
+
+        sidDetailReference[SID] = result;
+        return result;
+    })();
+
+    try {
+        const result = await sidDetailInProgress[SID];
+        return result;
+    } finally {
+        delete sidDetailInProgress[SID];
+    }
 
     async function getItemDetails(SID) {
         const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
@@ -1022,15 +1048,6 @@ async function fetchSidDetails(SID) {
 
         return Object.values(skuMap);
     }
-
-    // end of main function 
-    sidDetailReference[SID] = {
-        'item_images': item_images,
-        'product_images': product_images,
-        'image_counts': image_counts
-    };
-    return sidDetailReference[SID];
-
 }
 
 function hijackAjaxModal() {
