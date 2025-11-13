@@ -1062,7 +1062,7 @@ async function initItemImageOptions() {
             </thead>
             <tbody>${itemImageCountsHTML}</tbody>
             `;
-            table.innerHTML(tableHTML);
+            table.innerHTML = tableHTML;
             itemImagesList.appendChild(table);
         }
 
