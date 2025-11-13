@@ -1033,7 +1033,7 @@ async function initItemImageOptions() {
     if (rc_product_media) {
 
         const itemImagesList = document.createElement('div');
-        itemImagesList.setAttribute('style', 'display: flex; flex-direction: column; gap: 0.25rem; flex: 1;');
+        itemImagesList.setAttribute('style', 'display: flex; flex-direction: column; gap: 0.25rem; flex: 0.5;');
 
         // this is a lot of code to find the sid
         const SID = getTheSid();
@@ -1052,12 +1052,12 @@ async function initItemImageOptions() {
         if (itemImagesList.innerHTML === '') return null;
 
         const itemImageOptionRow = document.createElement('div');
-        itemImageOptionRow.setAttribute('style', 'display: flex; flex-direction: row; gap: 1rem; align-items: center; justify-content: center; padding: 0.25rem; padding-bottom: 1.5rem;');
+        itemImageOptionRow.setAttribute('style', 'display: flex; flex-direction: row; gap: 1.5rem; width: 100%; border: var(--bs-border-width) solid var(--bs-card-border-color); padding: 1.25rem; border-radius: 0.625rem; box-sizing: border-box;');
 
         itemImageOptionRow.appendChild(itemImagesList);
 
         const itemImagesAction = document.createElement('div');
-        itemImagesAction.setAttribute('style', 'display: flex; flex-direction: row; gap: 0.25rem; align-items: center; justify-content: center;');
+        itemImagesAction.setAttribute('style', 'display: flex; flex-direction: row; gap: 0.5rem; align-items: center; justify-content: center;');
         const parameterContainer = document.createElement('div');
         parameterContainer.setAttribute('style', 'display: flex; flex-direction: column; gap: 0.25rem;');
         parameterContainer.title = 'Unchecking this will also delete 6, 8, and 18';
