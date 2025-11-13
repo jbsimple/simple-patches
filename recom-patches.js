@@ -310,7 +310,10 @@ function injectExtraTheme() {
                             .toLowerCase();
             
             if (customNames[currentuser]) {
+                console.debug('PATCHES - Swapping Name');
                 nameElem.textContent = customNames[currentuser];
+            } else {
+                console.debug('PATCHES - NOT Swapping Name. customNames:', customNames);
             }
             
             const links = nav_sidebar_links.querySelectorAll('.menu-link');
