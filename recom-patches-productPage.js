@@ -1032,13 +1032,14 @@ function initItemImageOptions() {
     const rc_product_media = document.getElementById('rc_product_media');
     if (rc_product_media) {
         const itemImageOptionRow = document.createElement('div');
-        itemImageOptionRow.setAttribute('style', 'display: flex; flex-direction: row; gap: 1rem;');
+        itemImageOptionRow.setAttribute('style', 'display: flex; flex-direction: row; gap: 1rem; align-items: center; justify-content: center;');
 
         const itemImagesList = document.createElement('div');
         itemImagesList.setAttribute('style', 'display: flex; flex-direction: column; gap: 0.25rem; flex: 1;');
+        itemImageOptionRow.appendChild(itemImagesList);
 
         const itemImagesAction = document.createElement('div');
-        itemImagesAction.setAttribute('style', 'display: flex; flex-direction: row; gap: 0.25rem;');
+        itemImagesAction.setAttribute('style', 'display: flex; flex-direction: row; gap: 0.25rem; align-items: center; justify-content: center;');
         const parameterContainer = document.createElement('div');
         parameterContainer.setAttribute('style', 'display: flex; flex-direction: column; gap: 0.25rem;');
         parameterContainer.title = 'Unchecking this will also delete 6, 8, and 18';
