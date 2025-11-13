@@ -1031,8 +1031,6 @@ waitForElement('#rc_product_media', initExtraUploadMethods);
 async function initItemImageOptions() {
     const rc_product_media = document.getElementById('rc_product_media');
     if (rc_product_media) {
-        const itemImageOptionRow = document.createElement('div');
-        itemImageOptionRow.setAttribute('style', 'display: flex; flex-direction: row; gap: 1rem; align-items: center; justify-content: center; padding: 0.25rem; padding-bottom: 1.5rem;');
 
         const itemImagesList = document.createElement('div');
         itemImagesList.setAttribute('style', 'display: flex; flex-direction: column; gap: 0.25rem; flex: 1;');
@@ -1049,6 +1047,12 @@ async function initItemImageOptions() {
                 }
             });
         }
+
+        // break out if no sku images
+        if (itemImagesList.innerHTML === '') return null;
+
+        const itemImageOptionRow = document.createElement('div');
+        itemImageOptionRow.setAttribute('style', 'display: flex; flex-direction: row; gap: 1rem; align-items: center; justify-content: center; padding: 0.25rem; padding-bottom: 1.5rem;');
 
         itemImageOptionRow.appendChild(itemImagesList);
 
