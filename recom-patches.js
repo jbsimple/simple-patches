@@ -305,7 +305,9 @@ function injectExtraTheme() {
         if (nav_sidebar_links) {
             const name = nav_sidebar_links.querySelectorAll('.menu-heading')[0];
             currentuser = name.textContent.replace(/^Hi,\s*/, '').toLocaleLowerCase();
-            name.textContent = customNames[currentuser];
+            if (customNames[currentuser]) {
+                name.textContent = customNames[currentuser];
+            }
             
             const links = nav_sidebar_links.querySelectorAll('.menu-link');
             if (links && links.length > 0 && mockupProductivity) {
