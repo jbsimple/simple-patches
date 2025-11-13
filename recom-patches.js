@@ -7,6 +7,7 @@ let metals = [];
 let queueDelete = [];
 let customNames = {};
 let rainbowAnnounce = [];
+let logoAnimations = [];
 let autoLocationUpdate = true;
 let allowed_colors = [];
 
@@ -65,6 +66,32 @@ function setupFromConfig() {
     const patches_bulkUpdateLocationsClock = document.getElementById('patches_bulkUpdateLocationsClock');
     if (autoLocationUpdate && patches_bulkUpdateLocationsClock) {
         patches_bulkUpdateLocationsClock.style.removeProperty('display');
+    }
+
+    function rainbowMessage(message) {
+        const mainelem = document.getElementById('rc_header_search').parentElement;
+        if (mainelem) {
+            const newMessage = document.createElement('div');
+            newMessage.innerHTML = `<strong style="font-size: 1.25rem;" class="rainbow_text_animated">${message}</strong>`;
+            newMessage.setAttribute('style', 'flex: 1; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; margin-left: 1rem; margin-right: 1rem;');
+            mainelem.appendChild(newMessage);
+        }
+    }
+
+    const today = new Date();
+    rainbowAnnounce.forEach(announcement => {
+        if (today.getDate() === announcement.day && today.getMonth() === (announcement.month - 1)) {
+            rainbowMessage(announcement.message);
+        }
+    });
+
+    /* cool logo animations */
+    const logo = document.querySelector("#kt_app_sidebar .app-sidebar-logo");
+    if (logo) {
+        const day = new Date().getDay();
+        if (logoAnimations && logoAnimations[day]) {
+            logo.style.setProperty("--logo-animation", logoAnimations[day]);
+        }
     }
 }
 
@@ -466,41 +493,6 @@ function injectExtraTheme() {
     });
 
     chartWatcher.observe(document.body, { childList: true, subtree: true });
-
-    /* theme stuff */
-    function rainbowMessage(message) {
-        const mainelem = document.getElementById('rc_header_search').parentElement;
-        if (mainelem) {
-            const newMessage = document.createElement('div');
-            newMessage.innerHTML = `<strong style="font-size: 1.25rem;" class="rainbow_text_animated">${message}</strong>`;
-            newMessage.setAttribute('style', 'flex: 1; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; margin-left: 1rem; margin-right: 1rem;');
-            mainelem.appendChild(newMessage);
-        }
-    }
-
-    const today = new Date();
-    rainbowAnnounce.forEach(announcement => {
-        if (today.getDate() === announcement.day && today.getMonth() === (announcement.month - 1)) {
-            rainbowMessage(announcement.message);
-        }
-    });
-
-    /* cool logo animations */
-    const logo = document.querySelector("#kt_app_sidebar .app-sidebar-logo");
-    if (logo) {
-        const day = new Date().getDay();
-        let animation;
-        switch (day) {
-            case 0: animation = "ripple-wave 1s ease-in-out infinite"; break;
-            case 1: animation = "wave 1s ease-in-out infinite"; break; // ripple monday
-            case 2: animation = "twist 0.5s ease"; break; // twist tuesday
-            case 3: animation = "wiggle 0.6s ease"; break; // wiggle wednesday
-            case 4: animation = "thrust 0.5s ease"; break; // thrust thursday
-            case 5: animation = "flip 2s ease-in-out infinite"; break; // flip friday
-            case 6: animation = "ripple-wave 1s ease-in-out infinite"; break;
-        }
-        logo.style.setProperty("--logo-animation", animation);
-    }
 }
 
 function scheduleRun(hour, minute, callback) {
