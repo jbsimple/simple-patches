@@ -1043,27 +1043,11 @@ async function initItemImageOptions() {
             const sidDetails = await fetchSidDetails(SID);
             let image_counts = [];
             if (sidDetails.image_counts) { image_counts = sidDetails.image_counts; }
-            let itemImageCountsHTML = '';
             image_counts.forEach(item => {
-                itemImageCountsHTML += `<tr>
-                    <td>${item.sku}</td>
-                    <td>${item.count}</td>
-                </tr>`;
-            })
-            
-            const table = document.createElement('table');
-            table.setAttribute('class', 'table table-row-bordered table-row-gray-100 align-middle gs-0 gy-3');
-            let tableHTML = `<!-- THEAD -->
-            <thead>
-            <tr class="fw-bolder text-muted">
-                <th>SKU</th>
-                <th>Images</th>
-            </tr>
-            </thead>
-            <tbody>${itemImageCountsHTML}</tbody>
-            `;
-            table.innerHTML = tableHTML;
-            itemImagesList.appendChild(table);
+                if (item.count > 0) {
+                    itemImagesList.innerHTML += `<a targe="_blank" href="/product/items/${item.SKU}">${item.SKU} has Pictures!</q>`;
+                }
+            });
         }
 
         itemImageOptionRow.appendChild(itemImagesList);
