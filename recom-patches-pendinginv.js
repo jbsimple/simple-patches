@@ -158,6 +158,7 @@ async function keywordSearch() {
         if (!poVal || poVal.trim() === "") {
             poTerm = await fetchPurchaseOrdersList(true);
             poTerm = JSON.stringify(poTerm);
+            console.debug('PATCHES - poTerm:', poTerm);
         } else {
             poTerm = params['PO #']?.value;
         }
