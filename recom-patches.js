@@ -1298,7 +1298,6 @@ function hijackAjaxModal() {
             console.debug('Patch: Modal has been hidden.');
         });
     }
-    
 
     async function modalClockIn() {
         modal = document.querySelector('.swal2-container');

@@ -9,8 +9,8 @@
 }
 
 body {
-    overflow: hidden;
-    overflow-y: auto;
+    overflow: hidden !important;
+    overflow-y: auto !important;
 }
 
 .app-navbar-item a.btn.btn-outline {
