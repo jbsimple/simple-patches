@@ -153,22 +153,19 @@ async function keywordSearch() {
 
         console.debug('PATCHES - dtfoot params:', params);
 
-        let poTerm = '';
         const poVal = params['PO #']?.value || params['PO #']?.['PO #'] || "";
         if (!poVal || poVal.trim() === "") {
-            poTerm = await fetchPurchaseOrdersList(true);
-            // poTerm = JSON.stringify(poTerm);
-            console.debug('PATCHES - poTerm:', poTerm);
-        } else {
-            poTerm = params['PO #']?.value;
+            console.error("PATCHES - PO # is required.");
+            fireSwal('Missing PO #', 'In order to do a keyword search, you need to provide a PO #.', 'error');
+            return;
         }
 
         if (Object.keys(params).length > 0) {
             try {
-                const piData = await fetchPIReport(params, poTerm);
+                const piData = await fetchPIReport(params);
                 console.debug('PATCHES - PI Report data:', piData);
 
-                const epData = await fetchEPReport(params, poTerm);
+                const epData = await fetchEPReport(params);
                 console.debug('PATCHES - EP Report data:', epData);
                 const parsedEpData = Object.fromEntries(
                     epData.data.map(item => [`${item.SID}_${item.Inspected_Condition}_${item.Units}`, item])
@@ -200,7 +197,7 @@ async function keywordSearch() {
         }
     }
 
-    async function fetchEPReport(params, poTerm) {
+    async function fetchEPReport(params) {
         // time to build a report
         const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
         if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
@@ -244,7 +241,7 @@ async function keywordSearch() {
                         {
                             column: "purchase_orders.id",
                             opr: "{0} IN {1}",
-                            value: poTerm
+                            value: [params['PO #']?.value || null]
                         }
                     ]
                 },
@@ -279,7 +276,7 @@ async function keywordSearch() {
         }
     }
 
-    async function fetchPIReport(params, poTerm) {
+    async function fetchPIReport(params) {
         // time to build a report
         const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
         if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
@@ -289,7 +286,7 @@ async function keywordSearch() {
                 {
                     column: "purchase_orders.id",
                     opr: "{0} IN {1}",
-                    value: poTerm
+                    value: [params['PO #']?.value || null]
                 }
             ];
 
