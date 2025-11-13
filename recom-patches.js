@@ -39,7 +39,7 @@ async function loadEdgeConfig(key) {
 }
 
 
-function injectGoods() {
+async function injectGoods() {
     document.head.innerHTML += '<link rel="stylesheet" href="https://simple-patches.vercel.app/recom-patches.css?v=' + Date.now() + '" type="text/css"/>';
     let script_patch = document.createElement('script');
     script_patch.name = 'n/a';
@@ -1666,13 +1666,6 @@ function peekAtImages() {
 async function patchInit() {
     loadPatchSettings();
     injectGoods();
-    injectExtraTheme();
-    clockTaskVisualRefresh(false);
-    modifiedClockInit();
-    checkWeatherAndCreateEffects();
-    adjustToolbar();
-    peekAtImages();
-
     loadEdgeConfig('config').then(() => {
         console.debug('PATCHES - Edge Config Loaded.');
         setupFromConfig();
@@ -1685,6 +1678,13 @@ async function patchInit() {
     }).catch(err => {
         console.error('PATCHES - Edge config failed:', err);
     });
+    
+    injectExtraTheme();
+    clockTaskVisualRefresh(false);
+    modifiedClockInit();
+    checkWeatherAndCreateEffects();
+    adjustToolbar();
+    peekAtImages();
 
     setTimeout(hijackAjaxModal, 500);
     console.log('PATCHES - Loading Complete');
