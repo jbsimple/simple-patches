@@ -1074,7 +1074,7 @@ async function initItemImageOptions() {
         }
 
         // break out if no sku images
-        if (itemImagesList.innerHTML === '') return null;
+        if (tbody === '') return null;
 
         const itemImageOptionRow = document.createElement('div');
         itemImageOptionRow.style.display = "flex";
