@@ -1035,7 +1035,9 @@ async function initItemImageOptions() {
     }
 
     async function initRow() {
+        
         const exitsingBlock = document.getElementById('PATCHES_SidItemImages');
+        console.log("PATCHES - remove attempt:", exitsingBlock);
         if (exitsingBlock) {
             exitsingBlock.remove();
         }
