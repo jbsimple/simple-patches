@@ -1041,7 +1041,6 @@ async function initItemImageOptions() {
         }
 
         const itemImagesList = document.createElement('div');
-        itemImagesList.id = 'PATCHES_SidItemImages';
         itemImagesList.setAttribute('style', 'display: flex; flex-direction: column; gap: 0.25rem; flex: 1;');
 
         let tbody = '';
@@ -1077,6 +1076,7 @@ async function initItemImageOptions() {
         if (tbody === '') return null;
 
         const itemImageOptionRow = document.createElement('div');
+        itemImageOptionRow.id = 'PATCHES_SidItemImages';
         itemImageOptionRow.style.display = "flex";
         itemImageOptionRow.style.flexDirection = "row";
         itemImageOptionRow.style.gap = "1.5rem";
