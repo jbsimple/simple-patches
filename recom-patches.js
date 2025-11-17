@@ -864,7 +864,12 @@ async function checkWeatherAndCreateEffects() {
     }
 }
 
-async function fetchSidDetails(SID) {
+async function fetchSidDetails(SID, force = false) {
+    if (force) {
+        delete sidDetailReference[SID];
+        delete sidDetailInProgress[SID];
+    }
+
     if (sidDetailReference[SID]) {
         return sidDetailReference[SID];
     }

@@ -1034,8 +1034,7 @@ async function initItemImageOptions() {
         await initRow();
     }
 
-    async function initRow() {
-        
+    async function initRow(force = false) {
         const exitsingBlock = document.getElementById('PATCHES_SidItemImages');
         console.log("PATCHES - remove attempt:", exitsingBlock);
         if (exitsingBlock) {
@@ -1048,7 +1047,7 @@ async function initItemImageOptions() {
         let tbody = '';
         const SID = getTheSid();
         if (SID !== null) {
-            const sidDetails = await fetchSidDetails(SID);
+            const sidDetails = await fetchSidDetails(SID, force);
             let image_counts = [];
             if (sidDetails.image_counts) { image_counts = sidDetails.image_counts; }
             image_counts.forEach(item => {
@@ -1264,7 +1263,7 @@ async function initItemImageOptions() {
             console.error('Error during SKU image nuke process:', err);
         }
         console.debug('PATCHES - SID Item Image Nuke Function Done.');
-        await initRow(); // new visual refresh
+        await initRow(true); // visual refresh with force
     }
 }
 
