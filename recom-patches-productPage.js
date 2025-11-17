@@ -1054,7 +1054,7 @@ async function initItemImageOptions() {
                 <table class="table table-row-bordered">
                     <thead>
                         <tr class="fw-bold fs-7 text-danger border-bottom border-gray-200 py-4">
-                            <th style="width: 100%;">SKU</th>
+                            <th style="width: calc(100% - 64px) !important;">SKU</th>
                             <th style="width: 64px !important;">Images</th>
                         </tr>
                     </thead>
