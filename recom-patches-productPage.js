@@ -1052,7 +1052,15 @@ async function initItemImageOptions() {
         if (itemImagesList.innerHTML === '') return null;
 
         const itemImageOptionRow = document.createElement('div');
-        itemImageOptionRow.setAttribute('style', 'display: flex; flex-direction: row; gap: 1.5rem; width: 100%; border: var(--bs-border-width) solid var(--bs-card-border-color); padding: 1.25rem; border-radius: 0.625rem; box-sizing: border-box; margin-bottom: 1.5rem;');
+        itemImageOptionRow.style.display = "flex";
+        itemImageOptionRow.style.flexDirection = "row";
+        itemImageOptionRow.style.gap = "1.5rem";
+        itemImageOptionRow.style.width = "100%";
+        itemImageOptionRow.style.border = "var(--bs-border-width) solid var(--bs-card-border-color)";
+        itemImageOptionRow.style.padding = "1.25rem";
+        itemImageOptionRow.style.borderRadius = "0.625rem";
+        itemImageOptionRow.style.boxSizing = "border-box";
+        itemImageOptionRow.style.marginBottom = "1.5rem";
 
         itemImageOptionRow.appendChild(itemImagesList);
 
