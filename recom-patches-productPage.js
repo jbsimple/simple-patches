@@ -1035,7 +1035,7 @@ async function initItemImageOptions() {
         const itemImagesList = document.createElement('div');
         itemImagesList.setAttribute('style', 'display: flex; flex-direction: column; gap: 0.25rem; flex: 1;');
 
-        // this is a lot of code to find the sid
+        let tbody = '';
         const SID = getTheSid();
         if (SID !== null) {
             const sidDetails = await fetchSidDetails(SID);
@@ -1043,9 +1043,25 @@ async function initItemImageOptions() {
             if (sidDetails.image_counts) { image_counts = sidDetails.image_counts; }
             image_counts.forEach(item => {
                 if (item.count > 0) {
-                    itemImagesList.innerHTML += `<p style="margin-bottom: 0;"><a targe="_blank" href="/product/items/${item.sku}">${item.sku}</a> has Pictures!</p>`;
+                    tbody += `<tr>
+                        <td>${item.sku}</td>
+                        <td>${item.count}</td>
+                    </tr>`;
                 }
             });
+
+            itemImagesList.innerHTML = `<div class="table-responsive">
+                <table class="table table-row-bordered">
+                    <thead>
+                        <tr class="fw-bold fs-7 text-danger border-bottom border-gray-200 py-4">
+                            <th style="width: 80% !important;">SKU</th>
+                            <th style="width: 20% !important;">Images</th>
+                        </tr>
+                    </thead>
+                    <tbody>${tbody}</tbody>
+                </table>
+            </div>
+            `;
         }
 
         // break out if no sku images
