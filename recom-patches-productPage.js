@@ -1044,7 +1044,7 @@ async function initItemImageOptions() {
             image_counts.forEach(item => {
                 if (item.count > 0) {
                     tbody += `<tr>
-                        <td>${item.sku}</td>
+                        <td><a href="/product/items/${item.sku}" target="_blank">${item.sku}</a></td>
                         <td>${item.count}</td>
                     </tr>`;
                 }
