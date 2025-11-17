@@ -1031,8 +1031,17 @@ waitForElement('#rc_product_media', initExtraUploadMethods);
 async function initItemImageOptions() {
     const rc_product_media = document.getElementById('rc_product_media');
     if (rc_product_media) {
+        await initRow();
+    }
+
+    async function initRow() {
+        const exitsingBlock = document.getElementById('PATCHES_SidItemImages');
+        if (exitsingBlock) {
+            exitsingBlock.remove();
+        }
 
         const itemImagesList = document.createElement('div');
+        itemImagesList.id = 'PATCHES_SidItemImages';
         itemImagesList.setAttribute('style', 'display: flex; flex-direction: column; gap: 0.25rem; flex: 1;');
 
         let tbody = '';
@@ -1252,6 +1261,8 @@ async function initItemImageOptions() {
         } catch (err) {
             console.error('Error during SKU image nuke process:', err);
         }
+        console.debug('PATCHES - SID Item Image Nuke Function Done.');
+        await initRow(); // new visual refresh
     }
 }
 
