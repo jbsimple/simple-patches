@@ -1262,8 +1262,10 @@ async function initItemImageOptions() {
         } catch (err) {
             console.error('Error during SKU image nuke process:', err);
         }
+
         console.debug('PATCHES - SID Item Image Nuke Function Done.');
-        await initRow(true); // visual refresh with force
+        // visual refresh with force, delay bc the above stuff could still be running when here, w javascript
+        setTimeout(() => { initRow(true); }, 300);
     }
 }
 
