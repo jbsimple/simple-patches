@@ -1235,26 +1235,16 @@ async function initItemImageOptions() {
             console.log('Collected image IDs:', imageIds);
             if (imageIds.length > 0) {
                 const csrfToken = $('meta[name="X-CSRF-TOKEN"]').attr("content");
-                imageIds.forEach(id => {
-                    $.post({
-                        url: "ajax/actions/productimagedelete/" + id,
-                        dataType: "json",
-                        data: {
-                            id: id,
-                            type: 'item'
-                        },
-                        headers: {
-                            "X-CSRF-TOKEN": csrfToken,
-                        },
-                        success: function(data) {
-                            apiResponseAlert(data);
-                        },
-                        error: function(error) {
-                            console.log("FAIL", error);
-                            ajaxFailAlert(error);
-                        }
-                    });
-                });
+                await Promise.all(
+                    imageIds.map(imageId => 
+                        postAsync("ajax/actions/productimagedelete/" + imageId, 
+                            { id: imageId, type: 'item' },
+                            { "X-CSRF-TOKEN": csrfToken }
+                        )
+                        .then(apiResponseAlert)
+                        .catch(ajaxFailAlert)
+                    )
+                );
             } else {
                 fireSwal('Response:' , 'No Images To Delete.', 'success');
             }
@@ -1263,9 +1253,21 @@ async function initItemImageOptions() {
             console.error('Error during SKU image nuke process:', err);
         }
 
+        function postAsync(url, data = {}, headers = {}) {
+            return new Promise((resolve, reject) => {
+                $.post({
+                    url: url,
+                    dataType: "json",
+                    data: data,
+                    headers: headers,
+                    success: resolve,
+                    error: reject
+                });
+            });
+        }
+
         console.debug('PATCHES - SID Item Image Nuke Function Done.');
-        // visual refresh with force, delay bc the above stuff could still be running when here, w javascript
-        setTimeout(() => { initRow(true); }, 300);
+        await initRow(true); // refresh block with new data
     }
 }
 
