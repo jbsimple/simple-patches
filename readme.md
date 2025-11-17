@@ -85,6 +85,11 @@ These are patches added to a special settings box the user can edit.
 - Added a popups check message on above button hover.
 - Added a 'copy to clipboard' button to copy unique identifier code for photo filenames.
 - Added a delete all images button.
+- On Products, added container above the dropzone for images on children items.
+  - A table prints with the item SKU and image count.
+  - Button to delete all images on children.
+  - Checkbox to toggle between a delete all and a safe delete.
+    - Safe delete skips conditions that should have images on them (Defective, Incomplete, etc.)
 - Modified the image list to be an actual list instead of a grid.
 - On all ASIN inputs, a link is generated under the input field to go to the ASIN on Amazon.
 - Added approved drop down options to existing color attribute field.
