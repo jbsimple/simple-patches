@@ -63,7 +63,8 @@ async function fetchItemDetails(sku = null) {
                     "products.sid",
                     "product_items.id",
                     "product_items.sku",
-                    "product_items.in_stock"
+                    "product_items.in_stock",
+                    "products.category_id"
                 ],
                 filters: filters
             },
@@ -144,6 +145,7 @@ async function prettyLinkSkus() {
         let in_stock = null;
         let sid = null;
         let item_id = null;
+        let category = null;
         let data = itemData[cleanedSku] || manualData[cleanedSku];
 
         if (!data) {
@@ -180,14 +182,12 @@ async function prettyLinkSkus() {
             in_stock = data['MAIN_Qty'] ?? data['In_Stock'] ?? null;
             sid = data['SID'] ?? null;
             item_id = data['Item_ID'] ?? null;
+            category = data['Category'] ?? null;
         }
 
         row.insertBefore(addCell(`<span>${in_stock}</span>`, 'in-stock-col', "Main Quantity of SKU"), cells[4]);
-        if (sid !== null) {
-            row.insertBefore(addCell(`<a href="/products/${sid}" target="_blank">${sid}</a>`, 'sid-col', "Link to SID"), cells[4]);
-        } else {
-            row.insertBefore(addCell(`<span></span>`, 'sid-col', "Link to SID"), cells[4]);
-        }
+        row.insertBefore(addCell(`<a href="/products/${sid}" target="_blank">${sid}</a>`, 'sid-col', "Link to SID"), cells[4]);
+        row.insertBefore(addCell(`<span>${category}</span>`, 'cat-col', "Category"), cells[4]);
 
         if (getWMFeed) {
             const parser = new DOMParser();
