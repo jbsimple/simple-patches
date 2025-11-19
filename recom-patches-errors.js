@@ -114,7 +114,7 @@ async function prettyLinkSkus() {
     }
 
     if (footerRow && !table.hasAttribute('patched')) {
-        headerRow.insertBefore(addTableHeadings("", 'cat-col'), headerRow.children[4]);
+        footerRow.insertBefore(addTableHeadings("", 'cat-col'), footerRow.children[4]);
         footerRow.insertBefore(addTableHeadings("", 'sid-col'), footerRow.children[4]);
         footerRow.insertBefore(addTableHeadings("", 'in-stock-col'), footerRow.children[4]);
     }
