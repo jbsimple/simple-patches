@@ -331,7 +331,6 @@ async function initErrorLogPatch() {
         observer.observe(wrapper, { childList: true, subtree: true });
     }
     initExport();
-    unsafeTableLength();
 }
 
 setTimeout(initErrorLogPatch, 150);
