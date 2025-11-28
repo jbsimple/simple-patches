@@ -47,3 +47,81 @@ async function unsafeTableLength() {
 }
 
 unsafeTableLength();
+
+function exportDtTable() {
+    const table = document.getElementById('dtTable');
+    if (!table) return;
+
+    let rows = [];
+
+    table.querySelectorAll("thead tr, tbody tr").forEach(tr => {
+        let cells = [];
+        tr.querySelectorAll("th, td").forEach(td => {
+            let text = td.innerText.trim();
+
+            const link = td.querySelector("a");
+            if (link) { text = link.textContent.trim(); }
+
+            const span = td.querySelector("span[title]");
+            if (span && span.getAttribute("title")) { text = span.getAttribute("title").trim(); }
+
+            if (text.includes(",") || text.includes("\"")) { text = `"${text.replace(/"/g, '""')}"`; }
+
+            cells.push(text);
+        });
+        rows.push(cells.join(","));
+    });
+
+    const csvContent = rows.join("\n");
+
+    const timestamp = Math.floor(Date.now() / 1000);
+
+    let page = '0';
+    const dtTable_wrapper = document.getElementById('dtTable_wrapper');
+    if (dtTable_wrapper) {
+        const pageEl = dtTable_wrapper.querySelector('.page-item.active');
+        page = pageEl ? pageEl.textContent.trim() : "all";
+    }
+    
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `integrationLog_${timestamp}_${page}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+// add button
+function initExportDtTable() {
+    const kt_app_content_container = document.getElementById('kt_app_content_container');
+    if (!kt_app_content_container) return;
+
+    const toolbar = kt_app_content_container.querySelector('.card-toolbar.flex-row-fluid.justify-content-end.gap-5');
+    if (!toolbar) return;
+
+    const button = document.createElement('a');
+    button.classList.add('btn', 'btn-info', 'btn-sm');
+    button.textContent = "Export CSV";
+    button.onclick = exportDtTable;
+
+    toolbar.insertBefore(button, toolbar.firstChild);
+}
+
+initExportDtTable();
+
+function toggleLDtTableoad(display = null) {
+    const dtTable_processing = document.getElementById('dtTable_processing');
+    if (dtTable_processing) {
+        if (display !== null) {
+            dtTable_processing.style.display = display
+        } else if (dtTable_processing.style.display === 'none') {
+            dtTable_processing.style.display = 'inherit';
+        } else {
+            dtTable_processing.style.display = 'none';
+        }
+    }
+}
