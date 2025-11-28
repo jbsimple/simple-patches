@@ -4,6 +4,7 @@ let currentuser = '';
 let settings = {};
 
 // empty defaults
+let pictureWarnings = [];
 let metals = [];
 let queueDelete = [];
 let customNames = {};

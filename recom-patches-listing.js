@@ -652,18 +652,8 @@ function handlePrefillPictureWarning() {
             const baseName = filename.substring(0, filename.lastIndexOf('.'));
             console.debug('PATCHES - Prefill IMG src:', imgsrc);
 
-            if (filename.includes('no-image.png')) {
-                handlePrefillWarning('No Image, Please send over for pictures.');
-                return;
-            }
-
-            if (filename.includes('deliberate')) {
-                handlePrefillWarning('Deliberate no pictures? Please verify.');
-                return;
-            }
-
-            if (filename.includes('stock')) {
-                handlePrefillWarning('Stock Photos, Please send over for pictures.');
+            if (pictureWarnings.some(w => filename.includes(w))) {
+                handlePrefillWarning('Bad or missing photo.');
                 return;
             }
 

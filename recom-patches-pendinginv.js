@@ -29,7 +29,8 @@ async function checkPics() {
                 </div>`;
                 const row = parent.parentElement;
                 const src = img.src.toLowerCase();
-                if (row && (src.includes('stock') || src.includes('no-image'))) {
+                
+                if (row && pictureWarnings.some(w => src.includes(w))) {
                     row.style.backgroundColor = `color-mix(in srgb, var(--bs-danger) 15%, transparent 85%)`;
                 }
 			} else {
