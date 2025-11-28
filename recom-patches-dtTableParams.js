@@ -88,7 +88,9 @@ function exportDtTable() {
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = `integrationLog_${timestamp}_${page}.csv`;
+    const uri = location.pathname.replace(/^\/+/, "");
+    const datatableName = uri.replace(/[^a-zA-Z0-9_-]/g, "_");
+    a.download = `${datatableName}_${timestamp}_${page}.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
