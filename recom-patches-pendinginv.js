@@ -27,12 +27,20 @@ async function checkPics() {
                     </a>
                     <div style="display: flex; flex-direction: column;">${parent.innerHTML}</div>
                 </div>`;
+
                 const row = parent.parentElement;
                 const src = img.src.toLowerCase();
-                
                 if (row && pictureWarnings.some(w => src.includes(w))) {
-                    row.classList.add('danger');
+                    const conditionSelect = doc.querySelector('select[name="item[condition_id]"');
+                    if (conditionSelect) {
+                        const selectedValue = parseInt(conditionSelect.value, 10);
+                        const flagConditions = [1,2,3,4,5,6,7,8,9,18,31,32,34,35,38,39,42,44,45,49,71,92,94,95,99];
+                        if (flagConditions.includes(selectedValue)) {
+                            row.classList.add('danger');
+                        }
+                    }
                 }
+                
 			} else {
 				console.log('No image found in response for URL:', url);
 			}
