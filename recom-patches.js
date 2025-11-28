@@ -155,7 +155,7 @@ function injectGoods() {
             loadPatchScript('recom-patches-productivity.js');
         }
 
-    } else if (location.pathname.includes('/tools') && !location.pathname.includes('/tools/import')) {
+    } else if (location.pathname.includes('/tools') && !location.pathname.includes('/tools/import') && !location.pathname.includes('/tools/skupricer')) {
 
         loadPatchScript('recom-patches-tools.js');
 
