@@ -28,7 +28,8 @@ async function checkPics() {
                     <div style="display: flex; flex-direction: column;">${parent.innerHTML}</div>
                 </div>`;
                 const row = parent.parentElement;
-                if (row && (img.src.includes('STOCK') || img.src.includes('no-image'))) {
+                const src = img.src.toLowerCase();
+                if (row && (src.includes('stock') || src.includes('no-image'))) {
                     row.style.backgroundColor = `color-mix(in srgb, var(--bs-danger) 15%, transparent 85%)`;
                 }
 			} else {
