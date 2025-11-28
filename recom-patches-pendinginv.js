@@ -3,12 +3,15 @@ async function checkPics() {
     if (!table) {
         return false;
     }
+    const items = table.querySelectorAll('a[href^="product/items/"]');
 
-	const products = table.querySelectorAll('[data-url^="ajax/modals/productitems/"]');
+	for (const item of items) {
+        let url = `${item.href}?v=${date()}`;
+        let itemId = item.href.split('/').pop();
 
-	for (const product of products) {
-		const url = product.getAttribute('data-url');
-        const id = url.split('/').pop();
+        let productModal = item.querySelector('[data-url^="ajax/modals/productitems/"]');
+        let productUrl = productModal.getAttribute('data-url');
+        let productId = productUrl.split('/').pop();
 
 		try {
 			const response = await fetch(url);
@@ -18,32 +21,38 @@ async function checkPics() {
 			const parser = new DOMParser();
 			const doc = parser.parseFromString(html, 'text/html');
 
-			const img = doc.querySelector('img');
-			if (img) {
-				let parent = product.parentElement;
-				parent.innerHTML = `<div style="display: flex; flex-direction: row; align-items: center;">
-                    <a href="/products/${id}" data-url="${url}" class="ajax-modal">
-                        <img src="${img.src}" style="width:42px; height:42px; display:inline-block; margin-right:1rem;">
-                    </a>
-                    <div style="display: flex; flex-direction: column;">${parent.innerHTML}</div>
-                </div>`;
+            const imgcont = doc.querySelector('a[data-type="image"]');
+            if (imgcont) {
+                const img = imgcont.querySelector('img');
+                if (img) {
+                    let parent = item.parentElement;
 
-                const row = parent.parentElement;
-                const src = img.src.toLowerCase();
-                if (row && pictureWarnings.some(w => src.includes(w))) {
-                    const conditionSelect = doc.querySelector('select[name="item[condition_id]"');
-                    if (conditionSelect) {
-                        const selectedValue = parseInt(conditionSelect.value, 10);
-                        const flagConditions = [1,2,3,4,5,6,7,8,9,18,31,32,34,35,38,39,42,44,45,49,71,92,94,95,99];
-                        if (flagConditions.includes(selectedValue)) {
-                            row.classList.add('danger');
+                    parent.innerHTML = `<div style="display: flex; flex-direction: row; align-items: center;">
+                        <a href="/products/${productId}" data-url="${productUrl}" class="ajax-modal">
+                            <img src="${img.src}" style="width:42px; height:42px; display:inline-block; margin-right:1rem;">
+                        </a>
+                        <div style="display: flex; flex-direction: column;">${parent.innerHTML}</div>
+                    </div>`;
+
+                    const row = parent.parentElement;
+                    const src = img.src.toLowerCase();
+                    if (row && pictureWarnings.some(w => src.includes(w))) {
+                        const conditionSelect = doc.querySelector('select[name="item[condition_id]"');
+                        if (conditionSelect) {
+                            const selectedValue = parseInt(conditionSelect.value, 10);
+                            const flagConditions = [1,2,3,4,5,6,7,8,9,18,31,32,34,35,38,39,42,44,45,49,71,92,94,95,99];
+                            if (flagConditions.includes(selectedValue)) {
+                                row.classList.add('danger');
+                            }
                         }
                     }
+                    
+                } else {
+                    console.log('No image found in querySelect for URL:', url);
                 }
-                
-			} else {
-				console.log('No image found in response for URL:', url);
-			}
+            } else {
+                console.log('No image found in response for URL:', url);
+            }
 		} catch (error) {
 			console.error('Failed to fetch or parse URL:', url, error);
 		}
