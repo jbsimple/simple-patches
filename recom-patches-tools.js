@@ -71,11 +71,36 @@ function addButtonCard(title, bullets, href) {
             </div>`;
     toolContainer.innerHTML += emailCard;
 
-    // fix the card sizing omg
-    const replacedTools = toolContainer.querySelectorAll('.card.card-flush');
-    replacedTools.forEach(tool => { tool.setAttribute('style', 'width: calc(33% - 2rem); height: unset !important;'); })
+    const style = document.createElement("style");
+    style.textContent = `
+    .tools-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+    }
+    .tool-card {
+        width: 100%;
+        height: auto !important;
+    }
+    @media (max-width: 900px) {
+        .tools-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    @media (max-width: 550px) {
+        .tools-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    `;
+    document.head.appendChild(style);
 
-    toolContainer.setAttribute('style', 'display: flex; flex-wrap: wrap; gap: 2rem; justify-content: space-around;');
+    toolContainer.classList.add("tools-grid");
+
+    const replacedTools = toolContainer.querySelectorAll('.card.card-flush');
+    replacedTools.forEach(tool => {
+        tool.classList.add("tool-card");
+    });
 }
 
 (async () => {
