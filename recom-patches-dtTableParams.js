@@ -89,7 +89,7 @@ function exportDtTable() {
     const a = document.createElement("a");
     a.href = url;
     const uri = location.pathname.replace(/^\/+/, "");
-    const datatableName = uri.replace(/[^a-zA-Z0-9_-]/g, "_");
+    const datatableName = uri.replace(/[^a-zA-Z0-9_-]/g, "-");
     a.download = `${datatableName}_${timestamp}_${page}.csv`;
     document.body.appendChild(a);
     a.click();
