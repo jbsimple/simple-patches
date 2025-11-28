@@ -6,7 +6,7 @@ async function checkPics() {
     const items = table.querySelectorAll('a[href^="product/items/"]');
 
 	for (const item of items) {
-        let url = `${item.href}?v=${date()}`;
+        let url = `${item.href}?v=${Date.now()}`;
         let itemId = item.href.split('/').pop();
 
         let productModal = item.querySelector('[data-url^="ajax/modals/productitems/"]');
