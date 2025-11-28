@@ -473,7 +473,7 @@ tr.selected.odd > * {
 
 /* dtTable fix */
 table.dataTable.table-striped>tbody>tr.odd>* {
-    background: transparent !important;
+    box-shadow: none !important;
 }
 
 table.dataTable.table-striped>tbody>tr.odd {
