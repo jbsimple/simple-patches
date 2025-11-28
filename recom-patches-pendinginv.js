@@ -21,11 +21,16 @@ async function checkPics() {
 			const img = doc.querySelector('img');
 			if (img) {
 				let parent = product.parentElement;
-				parent.innerHTML = `<a href="/products/${id}" data-url="${url}" class="ajax-modal">
-                    <img src="${img.src}" style="width:42px; height:42px; display:inline-block; margin-right:1rem;">
-                </a>
-                <div style="display: flex; flex-direction: column;">${parent.innerHTML}</div>`;
-				parent.setAttribute('style', 'display: inline-flex; flex-direction: row; align-items: center');
+				parent.innerHTML = `<div style="display: flex; flex-direction: row; align-items: center;">
+                    <a href="/products/${id}" data-url="${url}" class="ajax-modal">
+                        <img src="${img.src}" style="width:42px; height:42px; display:inline-block; margin-right:1rem;">
+                    </a>
+                    <div style="display: flex; flex-direction: column;">${parent.innerHTML}</div>
+                </div>`;
+                const row = parent.parentElement;
+                if (row && (img.src.contains('STOCK') || img.src.contains('no-image'))) {
+                    row.style.backgroundColor = `color-mix(in srgb, var(--bs-danger) 15%, transparent 85%)`;
+                }
 			} else {
 				console.log('No image found in response for URL:', url);
 			}
