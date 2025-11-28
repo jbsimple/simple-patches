@@ -479,3 +479,11 @@ table.dataTable.table-striped>tbody>tr.odd>* {
 table.dataTable.table-striped>tbody>tr.odd {
     background: var(--bs-table-striped-bg);
 }
+
+table.dataTable.table-striped>tbody>tr.danger {
+    background-color: color-mix(in srgb, var(--bs-danger) 15%, transparent 85%) !important;
+}
+
+table.dataTable.table-striped>tbody>tr.odd.danger {
+    background-color: color-mix(in srgb, var(--bs-danger) 25%, transparent 75%) !important;
+}

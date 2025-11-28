@@ -31,7 +31,7 @@ async function checkPics() {
                 const src = img.src.toLowerCase();
                 
                 if (row && pictureWarnings.some(w => src.includes(w))) {
-                    row.style.backgroundColor = `color-mix(in srgb, var(--bs-danger) 15%, transparent 85%)`;
+                    row.classList.add('danger');
                 }
 			} else {
 				console.log('No image found in response for URL:', url);
