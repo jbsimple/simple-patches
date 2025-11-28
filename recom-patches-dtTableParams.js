@@ -103,15 +103,33 @@ function initExportDtTable() {
     const toolbar = kt_app_content_container.querySelector('.card-toolbar.flex-row-fluid.justify-content-end.gap-5');
     if (!toolbar) return;
 
+    if (toolbar.querySelector('[data-export-btn]')) return;
+
     const button = document.createElement('a');
     button.classList.add('btn', 'btn-info', 'btn-sm');
+    button.dataset.exportBtn = "1";
     button.textContent = "Export CSV";
     button.onclick = exportDtTable;
 
     toolbar.insertBefore(button, toolbar.firstChild);
 }
 
-initExportDtTable();
+function observeExportDtTable() {
+    const container = document.getElementById('kt_app_content_container');
+    if (!container) return;
+
+    const observer = new MutationObserver(() => {
+        initExportDtTable();
+    });
+
+    observer.observe(container, {
+        childList: true,
+        subtree: true
+    });
+
+    initExportDtTable();
+}
+observeExportDtTable();
 
 function toggleLDtTableoad(display = null) {
     const dtTable_processing = document.getElementById('dtTable_processing');
