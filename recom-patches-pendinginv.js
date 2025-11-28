@@ -9,7 +9,9 @@ async function checkPics() {
         let url = `${item.href}?v=${Date.now()}`;
         let itemId = item.href.split('/').pop();
 
-        let productModal = item.querySelector('[data-url^="ajax/modals/productitems/"]');
+        let parent = item.parentElement;
+
+        let productModal = parent.querySelector('[data-url^="ajax/modals/productitems/"]');
         let productUrl = productModal.getAttribute('data-url');
         let productId = productUrl.split('/').pop();
 
@@ -25,8 +27,6 @@ async function checkPics() {
             if (imgcont) {
                 const img = imgcont.querySelector('img');
                 if (img) {
-                    let parent = item.parentElement;
-
                     parent.innerHTML = `<div style="display: flex; flex-direction: row; align-items: center;">
                         <a href="/products/${productId}" data-url="${productUrl}" class="ajax-modal">
                             <img src="${img.src}" style="width:42px; height:42px; display:inline-block; margin-right:1rem;">
