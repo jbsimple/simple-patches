@@ -130,10 +130,11 @@ function observeExportDtTable() {
     });
 
     initExportDtTable();
+    dtBulkDeleteInit();
 }
 observeExportDtTable();
 
-async function bulkDelete() {
+async function dtBulkDelete() {
     /* queries */
     const table = document.getElementById('dtTable');
     if (!table) {
@@ -230,7 +231,7 @@ async function bulkDelete() {
     return null;
 }
 
-function deleteButtonInit() {
+function dtBulkDeleteInit() {
     const kt_app_content_container = document.getElementById('kt_app_content_container');
     if (!kt_app_content_container) return;
 
@@ -243,11 +244,11 @@ function deleteButtonInit() {
     button.classList.add('btn', 'btn-danger', 'btn-sm');
     button.setAttribute('data-patches', 'dtTableBulkDelete');
     button.textContent = "Bulk Delete";
-    button.onclick = bulkDelete;
+    button.onclick = dtBulkDelete;
 
     toolbar.insertBefore(button, toolbar.firstChild.nextSibling);
 }
-deleteButtonInit();
+dtBulkDeleteInit();
 
 function toggleLDtTableoad(display = null) {
     const dtTable_processing = document.getElementById('dtTable_processing');
