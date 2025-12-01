@@ -105,11 +105,11 @@ function initExportDtTable() {
     const toolbar = kt_app_content_container.querySelector('.card-toolbar.flex-row-fluid.justify-content-end.gap-5');
     if (!toolbar) return;
 
-    if (toolbar.querySelector('[data-export-btn]')) return;
+    if (toolbar.querySelector('[data-patches="dtTableExport"]')) return;
 
     const button = document.createElement('a');
     button.classList.add('btn', 'btn-info', 'btn-sm');
-    button.dataset.exportBtn = "1";
+    button.setAttribute('data-patches', 'dtTableExport');
     button.textContent = "Export CSV";
     button.onclick = exportDtTable;
 
@@ -132,6 +132,122 @@ function observeExportDtTable() {
     initExportDtTable();
 }
 observeExportDtTable();
+
+async function bulkDelete() {
+    /* queries */
+    const table = document.getElementById('dtTable');
+    if (!table) {
+        fireSwal('UHOH!', 'Unable to find table.', 'error');
+        return null;
+    };
+
+    const deleteButtons = table.querySelectorAll('button[title="Delete"]');
+    if (!deleteButtons || deleteButtons.length <= 0) {
+        fireSwal('UHOH!', 'Unable to find delete queries.', 'error');
+        return null;
+    };
+
+    /* csrf */
+    const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
+    const csrfToken = csrfMeta?.getAttribute('content');
+    if (!csrfToken) {
+        fireSwal('UHOH!', 'Unable to find CSRF Token.', 'error');
+        return null;
+    }
+
+    /* pin */
+    let pin = null;
+    try {
+        const res = await fetch('/settings/general', { credentials: 'include' });
+        if (!res.ok) throw new Error('Failed to fetch settings page');
+
+        const html = await res.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+
+        const input = doc.querySelector('input[name="settings[admin_pin]"]');
+        pin = input?.value?.trim() || null;
+    } catch (err) {
+        console.error('Error fetching admin PIN:', err);
+    }
+
+    if (!pin) {
+        fireSwal('UHOH!', 'Unable to fetch the Admin Pin.', 'error');
+        return null;
+    }
+
+    const confirm = await confirmSwal(
+        'Confirm Bulk Delete',
+        [`You are about to delete <strong>${deleteButtons.length}</strong> items.`, 'This action cannot be undone.'],
+        'warning',
+        'Delete Them',
+        'Cancel'
+    );
+
+    if (!confirm) {
+        console.info('PATCHES - Bulk delete cancelled by user.');
+        return null;
+    }
+
+    let log = [];
+    for (const button of deleteButtons) {
+        const id = button.getAttribute('data-id');
+        const request = `/receiving/delete/${id}?pin=${encodeURIComponent(pin)}`;
+        const body = new URLSearchParams({ pin });
+
+        try {
+            const res = await fetch(request, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                    "x-csrf-token": csrfToken,
+                    "x-requested-with": "XMLHttpRequest"
+                },
+                body: body.toString()
+            });
+
+            const json = await res.json();
+            console.debug(`PATCHES - Deleted ${id}:`, json);
+            log.push({ item: id, response: json });
+        } catch (err) {
+            console.error(`PATCHES - Failed Deleting ${id}:`, err);
+            log.push({
+                item: id,
+                response: { success: false, message: "Failed to delete.", err: err.toString() }
+            });
+        }
+    };
+
+    const dtsearchbtns = document.getElementById('dtsearchbtns');
+    if (dtsearchbtns) {
+        const search = dtsearchbtns.querySelector('.btn.btn-primary');
+        if (search) { search.click(); }
+    }
+
+    fireSwal('Done', [`Processed ${log.length}.`, "Check console for detailed log."], 'success');
+    console.debug(`PATCHES - Log:`, log);
+    return null;
+}
+
+function deleteButtonInit() {
+    const kt_app_content_container = document.getElementById('kt_app_content_container');
+    if (!kt_app_content_container) return;
+
+    const toolbar = kt_app_content_container.querySelector('.card-toolbar.flex-row-fluid.justify-content-end.gap-5');
+    if (!toolbar) return;
+
+    if (toolbar.querySelector('[data-patches="dtTableBulkDelete"]')) return;
+
+    const button = document.createElement('a');
+    button.classList.add('btn', 'btn-danger', 'btn-sm');
+    button.setAttribute('data-patches', 'dtTableBulkDelete');
+    button.textContent = "Bulk Delete";
+    button.onclick = bulkDelete;
+
+    toolbar.insertBefore(button, toolbar.firstChild.nextSibling);
+}
+deleteButtonInit();
 
 function toggleLDtTableoad(display = null) {
     const dtTable_processing = document.getElementById('dtTable_processing');
