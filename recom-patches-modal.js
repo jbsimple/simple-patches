@@ -570,7 +570,7 @@ function patchesSettingsModal() {
             }
 
         </style>
-        <h3 class="page-heading d-flex flex-column justify-content-center text-dark fw-bold fs-3 m-0">Change various settings to customize your patching experience.</h3>
+        <h3 class="page-heading d-flex flex-column justify-content-center text-dark fw-bold fs-3" style="margin-bottom: 1.5rem; text-align: center;">Change various settings to customize your patching experience.</h3>
         <div class="d-flex mb-8 patches-twowrap">
             <div class="d-flex flex-column mb-8">
                 <label class="fs-6 fw-bold mb-2" for="patch_setting_panic">Panic Switch:</label>
