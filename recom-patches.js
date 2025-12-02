@@ -13,6 +13,7 @@ let logoAnimations = [];
 let autoLocationUpdate = true;
 let allowed_colors = [];
 let panic = false;
+let weatherEffects = false;
 let mockupProductivity = false;
 let mockupProductivityDepartment = null;
 
@@ -234,6 +235,8 @@ function loadPatchSettings() {
 
     function setupFromSettings() {
         panic = settings.panic ?? false;
+
+        weatherEffects = settings.weathereffects ?? false;
 
         const icon = (settings && settings.pfpurl && settings.pfpurl !== '') ? settings.pfpurl.trim() : null;
         if (!panic && icon !== null && icon !== '') {
@@ -754,7 +757,8 @@ function clockTaskVisualRefresh(ping = false) {
 
 async function checkWeatherAndCreateEffects() {
     if (panic) return null;
-    
+    if (!weatherEffects) return null;
+
     function setCookie(name, value, minutes) {
         const expires = new Date();
         expires.setMinutes(expires.getMinutes() + minutes);
