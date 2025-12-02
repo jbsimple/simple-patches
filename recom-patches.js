@@ -12,6 +12,7 @@ let rainbowAnnounce = [];
 let logoAnimations = [];
 let autoLocationUpdate = true;
 let allowed_colors = [];
+let panic = false;
 let mockupProductivity = false;
 let mockupProductivityDepartment = null;
 
@@ -232,8 +233,10 @@ function loadPatchSettings() {
     }
 
     function setupFromSettings() {
+        panic = settings.panic ?? false;
+
         const icon = (settings && settings.pfpurl && settings.pfpurl !== '') ? settings.pfpurl.trim() : null;
-        if (icon !== null && icon !== '') {
+        if (!panic && icon !== null && icon !== '') {
             const allImgs = document.getElementById('kt_app_header_container').querySelectorAll('img');
             allImgs.forEach(avatar => {
                 const src = avatar.getAttribute('src') || '';
@@ -251,7 +254,7 @@ function loadPatchSettings() {
         const bgpos = (settings && settings.bgpos && settings.bgpos !== '') ? settings.bgpos.trim() : null;
         const bgobf = (settings && settings.bgobf && settings.bgobf !== '') ? settings.bgobf.trim() : null;
         const bgopa = (settings && settings.bgopa && settings.bgopa !== '') ? settings.bgopa.trim() : null;
-        if (bgsrc !== null && bgsrc !== '') {
+        if (!panic && bgsrc !== null && bgsrc !== '') {
             const sidebar = document.getElementById("kt_app_sidebar");
             const header = document.getElementById("kt_app_header_navbar");
             const container = document.getElementById("kt_app_main");
@@ -750,6 +753,8 @@ function clockTaskVisualRefresh(ping = false) {
 }
 
 async function checkWeatherAndCreateEffects() {
+    if (panic) return null;
+    
     function setCookie(name, value, minutes) {
         const expires = new Date();
         expires.setMinutes(expires.getMinutes() + minutes);
