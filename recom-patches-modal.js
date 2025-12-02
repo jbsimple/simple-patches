@@ -568,20 +568,29 @@ function patchesSettingsModal() {
             .patches-threewrap > div {
                 width: calc(33% - 1rem);
             }
+            .patches-row {
+                display: flex;
+                flex-direction: row;
+                gap: 0.5rem;
+            }
 
         </style>
         <h3 class="page-heading d-flex flex-column justify-content-center text-dark fw-bold fs-3" style="margin-bottom: 1.5rem; text-align: center;">Change various settings to customize your patching experience.</h3>
         <div class="d-flex mb-8 patches-twowrap">
             <div class="d-flex flex-column mb-8">
-                <label class="fs-6 fw-bold mb-2" for="patch_setting_panic">Panic Switch:</label>
+                <div class="patches-row">
+                    <label class="fs-6 fw-bold mb-2" for="patch_setting_panic">Panic Switch:</label>
+                    <input type="checkbox" class="form-check-input" name="panic" id="patch_setting_panic">
+                </div>
                 <p class="fs-6 fw-semibold form-label mb-2">When turned on, any background, weather effect, sidebar name and profile icons don't apply.</p>
                 <p class="fs-6 fw-semibold form-label mb-2">Use this to make it look normal without needing to clear settings.</p>
-                <input type="checkbox" class="form-check-input" name="panic" id="patch_setting_panic">
             </div>
             <div class="d-flex flex-column mb-8">
-                <label class="fs-6 fw-bold mb-2" for="patch_setting_weathereffects">Weather Effects:</label>
+                <div class="patches-row">
+                    <label class="fs-6 fw-bold mb-2" for="patch_setting_weathereffects">Weather Effects:</label>
+                    <input type="checkbox" class="form-check-input" name="weathereffects" id="patch_setting_weathereffects">
+                </div>
                 <p class="fs-6 fw-semibold form-label mb-2">Toggle the weather effects.</p>
-                <input type="checkbox" class="form-check-input" name="weathereffects" id="patch_setting_weathereffects">
             </div>
         </div>
         
