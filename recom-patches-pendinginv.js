@@ -192,12 +192,12 @@ async function keywordSearch() {
                 const epData = await fetchEPReport(params);
                 console.debug('PATCHES - EP Report data:', epData);
                 const parsedEpData = Object.fromEntries(
-                    epData.data.map(item => [`${item.SID}_${item.Inspected_Condition}_${item.Units}`, item])
+                    epData.data.map(item => [`${item.Event_ID}`, item])
                 );
 
                 let parsedPiData = piData.data;
                 parsedPiData.forEach(line => {
-                    const key = `${line['SID']}_${line['Condition']}_${line['Quantity']}`;
+                    const key = `${line['ID']}`;
                     const epLine = parsedEpData[key];
 
                     if (epLine) {
@@ -242,10 +242,7 @@ async function keywordSearch() {
                 report: {
                     type: "user_clock",
                     columns: [
-                        "user_profile.user_id",
                         "user_clock_activity.activity_id",
-                        "user_clock_activity.units",
-                        "user_clock_activity.created_at",
                         "products.sid",
                         "product_items.sku",
                         "product_items.condition_id",
@@ -362,11 +359,13 @@ async function keywordSearch() {
                     type: "pending_inventory",
                     columns: [
                         "purchase_orders.id",
+                        "inventory_receiving.id",
                         "inventory_receiving.keyword",
                         "inventory_receiving.quantity",
                         "queue_inventory.quantity_approved",
                         "inventory_receiving.location",
                         "inventory_receiving.created_at",
+                        "user_profile.user_id",
                         "products.sid",
                         "products.name",
                         "inventory_receiving.condition_id",
@@ -479,6 +478,7 @@ async function keywordSearch() {
                 } else {
                     newrow.classList = 'even';
                 }
+                
                 newrow.innerHTML = `<!-- NEW THEAD -->
                 <td>
                     <div style="display: flex; flex-direction: column; gap: 0.25rem;">
@@ -490,9 +490,9 @@ async function keywordSearch() {
                 <td>${row['PO_Number']}</td>
                 <td>${row['Quantity'] ?? '-1'}</td>
                 <td>${row['Approved_Quantity'] ?? '0'}</td>
-                <td><a href="javascript:quickCreate('Update Sorting Location','ajax/actions/updateSortingLocation/${row['Event_ID']}', true);">{Set Location}</a></td>
+                <td><a href="javascript:quickCreate('Update Sorting Location','ajax/actions/updateSortingLocation/${row['Event_ID']}', true);">${$row['Sort_Location']}</a></td>
                 <td>${row['User'] ?? 'N/a'}</td>
-                <td>${row['Event_Date'] ?? 'N/a'}</td>
+                <td>${row['Created_Date'] ?? 'N/a'}</td>
                 <td></td>`;
                 tbody.appendChild(newrow);
                 i++;
