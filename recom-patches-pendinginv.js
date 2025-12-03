@@ -490,7 +490,7 @@ async function keywordSearch() {
                 <td>${row['PO_Number']}</td>
                 <td>${row['Quantity'] ?? '-1'}</td>
                 <td>${row['Approved_Quantity'] ?? '0'}</td>
-                <td><a href="javascript:quickCreate('Update Sorting Location','ajax/actions/updateSortingLocation/${row['Event_ID']}', true);">${$row['Sort_Location']}</a></td>
+                <td><a href="javascript:quickCreate('Update Sorting Location','ajax/actions/updateSortingLocation/${row['Event_ID']}', true);">${row['Sort_Location']}</a></td>
                 <td>${row['User'] ?? 'N/a'}</td>
                 <td>${row['Created_Date'] ?? 'N/a'}</td>
                 <td></td>`;
