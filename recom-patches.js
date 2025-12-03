@@ -179,6 +179,10 @@ function injectGoods() {
     } else if (location.pathname.includes('/po') && !location.pathname.includes('/po/')) {
 
         loadPatchScript('recom-patches-dtTableParams.js');
+        
+    }  else if (location.pathname.includes('/imei') && !location.pathname.includes('/imei/')) {
+
+        loadPatchScript('recom-patches-dtTableParams.js');
     }
 
     // get build info, might move around
