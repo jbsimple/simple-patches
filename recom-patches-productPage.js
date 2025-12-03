@@ -1495,6 +1495,44 @@ function extraMediaInit() {
 }
 waitForElement('#rc_product_media_tab', extraMediaInit);
 
+function jumpToTab() {
+    const params = new URLSearchParams(window.location.search);
+    let tab = params.get('tab');
+    if (!tab) return;
+    tab = tab.toLowerCase();
+
+    let button = null;
+    switch (tab) {
+        case 'general':
+            button = document.querySelector('a[href="#kt_ecommerce_add_product_general"]');
+            break;
+        case 'items':
+            button = document.querySelector('a[href="#kt_ecommerce_add_product_advanced"]');
+            break;
+        case 'media':
+            button = document.querySelector('a[href="#rc_product_media_tab"]');
+            break;
+        case 'activity':
+            button = document.querySelector('a[href="#rc_product_activity_tab"]');
+            break;
+        case 'inventory':
+            button = document.querySelector('a[href="#rc_product_inventory_tab"]');
+            break;
+        case 'store_listing':
+            button = document.querySelector('a[href="#rc_product_listing_tab"]');
+            break;
+        case 'fba_items':
+            button = document.querySelector('a[href="#rc_product_fba_tab"]');
+            break;
+            
+    }
+    
+    if (button) {
+        setTimeout(() => button.click(), 100);
+    }
+}
+waitForElement('#kt_app_content_container', jumpToTab);
+
 function wm_generateUPC() {
     let digits = [];
     for (let i = 0; i < 11; i++) {
