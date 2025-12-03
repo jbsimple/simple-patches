@@ -493,7 +493,12 @@ async function keywordSearch() {
                 <td><a href="javascript:quickCreate('Update Sorting Location','ajax/actions/updateSortingLocation/${row['Event_ID']}', true);">${row['Sort_Location']}</a></td>
                 <td>${row['User'] ?? 'N/a'}</td>
                 <td>${row['Created_Date'] ?? 'N/a'}</td>
-                <td></td>`;
+                <td>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.35rem;">
+                        <a class="btn btn-icon btn-info btn-sm my-sm-1 ms-1" data-bs-toggle="tooltip" aria-label="View in FBA Check" data-bs-original-title="View in FBA Check" data-kt-initialized="1" href="/receiving/queues/fba-check?column=0&amp;keyword=${row['SKU']}" target="_blank"><i class="fas fa-shipping-fast"></i></a>
+                        <a class="btn btn-icon btn-success btn-sm my-sm-1 ms-1" data-bs-toggle="tooltip" aria-label="View in Pending Inventory" data-bs-original-title="View in Pending Inventory" data-kt-initialized="1" href="/receiving/queues/inventory?column=1&amp;keyword=${row['SKU']}" target="_blank"><i class="fas fa-boxes"></i></a>
+                    </div>
+                </td>`;
                 tbody.appendChild(newrow);
                 i++;
             });
