@@ -423,8 +423,10 @@ function initBulkResubmitFamily() {
         const csrfToken = csrfMeta.getAttribute('content'); // this is needed in header as "x-csrf-token"
         const reload_aspects = document.getElementById('reload_aspects');
         if (reload_aspects) {
+            if (!reload_aspects.classList.contains('ms-2')) { reload_aspects.classList.add('ms-2'); }
+
             const bulkButton = document.createElement('button');
-            bulkButton.classList.add('btn', 'btn-sm', 'btn-primary');
+            bulkButton.classList.add('btn', 'btn-sm', 'btn-primary', 'ms-2');
             bulkButton.title = `Bulk Resubmit all In-Stock`;
             bulkButton.type = "button";
             bulkButton.id = "patches_bulkResubmit";
@@ -556,8 +558,10 @@ waitForElement('#reload_aspects', initBulkResubmitFamily);
 function initRemWmAttrib() {
     const reload_aspects = document.getElementById('reload_aspects');
     if (reload_aspects) {
+        if (!reload_aspects.classList.contains('ms-2')) { reload_aspects.classList.add('ms-2'); }
+        
         const wmRemButton = document.createElement('button');
-        wmRemButton.classList.add('btn', 'btn-sm', 'btn-danger');
+        wmRemButton.classList.add('btn', 'btn-sm', 'btn-danger', 'ms-2');
         wmRemButton.title = `Remove all Existing Walmart Attributes`;
         wmRemButton.type = "button";
         wmRemButton.id = "patches_remWmAttrib";
