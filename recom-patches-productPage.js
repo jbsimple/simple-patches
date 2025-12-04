@@ -553,6 +553,46 @@ function initBulkResubmitFamily() {
 }
 waitForElement('#reload_aspects', initBulkResubmitFamily);
 
+function initRemWmAttrib() {
+    const reload_aspects = document.getElementById('reload_aspects');
+    if (reload_aspects) {
+        const wmRemButton = document.createElement('button');
+        wmRemButton.classList.add('btn', 'btn-sm', 'btn-danger');
+        wmRemButton.title = `Remove all Existing Walmart Attributes`;
+        wmRemButton.type = "button";
+        wmRemButton.id = "patches_remWmAttrib";
+        wmRemButton.textContent = `Quick Remove`;
+        wmRemButton.onclick = remWmAttrib;
+        reload_aspects.parentNode.insertBefore(wmRemButton, reload_aspects);
+    }
+    
+    function remWmAttrib() {
+        const attribForm = document.getElementById('product-specs');
+        if (!attribForm) return;
+
+        const lines = Array.from(attribForm.querySelectorAll('div[data-repeater-item]'));
+        if (lines.length === 0) return;
+
+        function removeNext(index) {
+            if (index >= lines.length) return;
+
+            const line = lines[index];
+            const wmLabel = line.querySelector('label.form-label span.text-warning');
+
+            if (wmLabel) {
+                const removeBtn = line.querySelector('button[data-repeater-delete]');
+                if (removeBtn) {
+                    removeBtn.click();
+                }
+            }
+            setTimeout(() => removeNext(index + 1), 150);
+        }
+
+        removeNext(0);
+    }
+}
+waitForElement('#reload_aspects', initRemWmAttrib);
+
 /* photo stuff */
 function modifyMediaTable() {
     const product_images_container = document.getElementById('product-images-container');
