@@ -1681,8 +1681,19 @@ waitForElement('#el_item_form', wm_upcInit);
 function initDupeCheck() {
     const product_form = document.getElementById('el_product_form');
     if (product_form) {
-        duplicateMPN(product_form.querySelector('input[name="product[mpn]"]'), false);
-        duplicateAsin(product_form.querySelector('input[name="product[asin]"]'), false);
+
+        // handle self false flags
+        const sid = (
+            document
+                .querySelector('#kt_app_content_container a[data-fslightbox="gallery"]')
+                ?.closest('.card')
+                ?.querySelector('h2')
+                ?.textContent
+                ?.trim()
+        ) || null;
+
+        duplicateMPN(product_form.querySelector('input[name="product[mpn]"]'), false, sid);
+        duplicateAsin(product_form.querySelector('input[name="product[asin]"]'), false, sid);
     }
 }
 waitForElement('#el_product_form', initDupeCheck);

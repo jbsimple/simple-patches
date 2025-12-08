@@ -1,4 +1,4 @@
-async function duplicateMPN(mpn_input, swal = true) {
+async function duplicateMPN(mpn_input, swal = true, self = null) {
     if (!mpn_input) return false;
     console.debug('PATCHES - MPN Duplicate Check Attached:', mpn_input);
 
@@ -12,11 +12,9 @@ async function duplicateMPN(mpn_input, swal = true) {
             const value = mpn_input.value.trim();
             try {
                 const mpn_check = await fetchExistingMPN(value);
-
                 let products = [];
-                if (Array.isArray(mpn_check)) {
-                    products = products.concat(mpn_check);
-                }
+                if (Array.isArray(mpn_check)) { products = products.concat(mpn_check); }
+                if (self !== null) { products = products.filter(p => p.SID != self); }
                 console.debug(`PATCHES - MPN Check, Value: ${value}, Results:`, products);
                 if (products.length > 0) {
                     mpn_input.style.outline = "2px solid var(--bs-danger)";
@@ -89,7 +87,7 @@ async function duplicateMPN(mpn_input, swal = true) {
     }
 }
 
-async function duplicateAsin(asin_field, swal = true) {
+async function duplicateAsin(asin_field, swal = true, self = null) {
     if (!asin_field) return false;
     console.debug('PATCHES - MPN Duplicate Check Attached:', asin_field);
 
@@ -107,12 +105,9 @@ async function duplicateAsin(asin_field, swal = true) {
                     const renewed_asin = await fetchExistingRenewedAsins(value);
 
                     let products = [];
-                    if (Array.isArray(main_asin)) {
-                        products = products.concat(main_asin);
-                    }
-                    if (Array.isArray(renewed_asin)) {
-                        products = products.concat(renewed_asin);
-                    }
+                    if (Array.isArray(main_asin)) { products = products.concat(main_asin); }
+                    if (Array.isArray(renewed_asin)) { products = products.concat(renewed_asin); }
+                    if (self !== null) { products = products.filter(p => p.SID != self); }
                     console.debug(`PATCHES - Asin Check, Value: ${value}, Results:`, products);
                     if (products.length > 0) {
                         asin_field.style.outline = "2px solid var(--bs-danger)";
