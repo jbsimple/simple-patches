@@ -1,5 +1,6 @@
 async function duplicateMPN(mpn_input) {
     if (!mpn_input) return false;
+    console.debug('PATCHES - MPN Duplicate Check Attached:', mpn_input);
 
     let timeout = null;
     mpn_input.addEventListener('input', () => {
@@ -90,6 +91,7 @@ async function duplicateMPN(mpn_input) {
 
 async function duplicateAsin(asin_field) {
     if (!asin_field) return false;
+    console.debug('PATCHES - MPN Duplicate Check Attached:', asin_field);
 
     let timeout = null;
     asin_field.addEventListener('input', () => {
