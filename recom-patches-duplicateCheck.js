@@ -21,7 +21,14 @@ async function duplicateMPN(mpn_input) {
                     if (products.length > 0) {
                         mpn_input.style.outline = "2px solid var(--bs-danger)";
                         mpn_input.style.backgroundColor = "color-mix(in srgb, var(--bs-danger) 15%, rgb(255,255,255,0))";
-                        fireSwal('MPN CHECK?', ["Duplicate MPN Alert!", "This MPN appears on the products below:"], products, '60vw');
+                        let productListHTML = "<p>" +
+                            products
+                                .map(product =>
+                                    `<a class="text-info fw-bold fs-7" href="/products/${product.SID}" target="_blank">${product.SID}</a>`
+                                )
+                                .join("<br>") +
+                            "</p>";
+                        fireSwal('MPN CHECK?', ["Duplicate MPN Alert!", "This MPN appears on the products below:", productListHTML]);
                     }
                 } catch (err) {
                     console.error("Error fetching MPN data:", err);
@@ -108,7 +115,14 @@ async function duplicateAsin(asin_field) {
                     if (products.length > 0) {
                         asin_field.style.outline = "2px solid var(--bs-danger)";
                         asin_field.style.backgroundColor = "color-mix(in srgb, var(--bs-danger) 15%, rgb(255,255,255,0))";
-                        fireSwal('ASIN CHECK?', ["Duplicate ASIN Alert!", "This ASIN appears on the products below:"], products, '60vw');
+                        let productListHTML = "<p>" +
+                            products
+                                .map(product =>
+                                    `<a class="text-info fw-bold fs-7" href="/products/${product.SID}" target="_blank">${product.SID}</a>`
+                                )
+                                .join("<br>") +
+                            "</p>";
+                        fireSwal('ASIN CHECK?', ["Duplicate ASIN Alert!", "This ASIN appears on the products below:", productListHTML]);
                     }
                 } catch (err) {
                     console.error("Error fetching ASIN data:", err);
