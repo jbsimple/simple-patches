@@ -10,30 +10,28 @@ async function duplicateMPN(mpn_input) {
         clearTimeout(timeout);
         timeout = setTimeout(async () => {
             const value = mpn_input.value.trim();
-            if (value.length === 10) {
-                try {
-                    const mpn_check = await fetchExistingMPN(value);
+            try {
+                const mpn_check = await fetchExistingMPN(value);
 
-                    let products = [];
-                    if (Array.isArray(mpn_check)) {
-                        products = products.concat(mpn_check);
-                    }
-                    console.debug(`PATCHES - MPN Check, Value: ${value}, Results:`, products);
-                    if (products.length > 0) {
-                        mpn_input.style.outline = "2px solid var(--bs-danger)";
-                        mpn_input.style.backgroundColor = "color-mix(in srgb, var(--bs-danger) 15%, rgb(255,255,255,0))";
-                        let productListHTML = "<p>" +
-                            products
-                                .map(product =>
-                                    `<a class="text-info fw-bold fs-7" href="/products/${product.SID}" target="_blank">${product.SID}</a>`
-                                )
-                                .join("<br>") +
-                            "</p>";
-                        fireSwal('MPN CHECK?', ["Duplicate MPN Alert!", "This MPN appears on the products below:", productListHTML]);
-                    }
-                } catch (err) {
-                    console.error("Error fetching MPN data:", err);
+                let products = [];
+                if (Array.isArray(mpn_check)) {
+                    products = products.concat(mpn_check);
                 }
+                console.debug(`PATCHES - MPN Check, Value: ${value}, Results:`, products);
+                if (products.length > 0) {
+                    mpn_input.style.outline = "2px solid var(--bs-danger)";
+                    mpn_input.style.backgroundColor = "color-mix(in srgb, var(--bs-danger) 15%, rgb(255,255,255,0))";
+                    let productListHTML = "<p>" +
+                        products
+                            .map(product =>
+                                `<a class="text-info fw-bold fs-7" href="/products/${product.SID}" target="_blank">${product.SID}</a>`
+                            )
+                            .join("<br>") +
+                        "</p>";
+                    fireSwal('MPN CHECK?', ["Duplicate MPN Alert!", "This MPN appears on the products below:", productListHTML]);
+                }
+            } catch (err) {
+                console.error("Error fetching MPN data:", err);
             }
         }, 1500);
     });
