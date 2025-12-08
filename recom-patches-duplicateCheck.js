@@ -21,7 +21,7 @@ async function duplicateMPN(mpn_input) {
                     if (products.length > 0) {
                         mpn_input.style.outline = "2px solid var(--bs-danger)";
                         mpn_input.style.backgroundColor = "color-mix(in srgb, var(--bs-danger) 15%, rgb(255,255,255,0))";
-                        customModal('MPN CHECK?', ["Duplicate MPN Alert!", "This MPN appears on the products below:"], products, '60vw');
+                        fireSwal('MPN CHECK?', ["Duplicate MPN Alert!", "This MPN appears on the products below:"], products, '60vw');
                     }
                 } catch (err) {
                     console.error("Error fetching MPN data:", err);
@@ -108,7 +108,7 @@ async function duplicateAsin(asin_field) {
                     if (products.length > 0) {
                         asin_field.style.outline = "2px solid var(--bs-danger)";
                         asin_field.style.backgroundColor = "color-mix(in srgb, var(--bs-danger) 15%, rgb(255,255,255,0))";
-                        customModal('ASIN CHECK?', ["Duplicate ASIN Alert!", "This ASIN appears on the products below:"], products, '60vw');
+                        fireSwal('ASIN CHECK?', ["Duplicate ASIN Alert!", "This ASIN appears on the products below:"], products, '60vw');
                     }
                 } catch (err) {
                     console.error("Error fetching ASIN data:", err);
