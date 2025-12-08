@@ -876,13 +876,13 @@ async function initListingPatch() {
         }
 
         // i guess this goes here akkoShrug
-        (async () => { 
+        setTimeout(async function() {
             const listing_form =  document.getElementById('rc_create_listing_form');
             if (listing_form) {
                 duplicateMPN(listing_form.querySelector('input[name="product[mpn]"]'));
                 duplicateAsin(listing_form.querySelector('input[name="product[asin]"]'));
             }
-        })();
+        }, 500);
 
         function unloadWarning(e) {
             e.preventDefault();
