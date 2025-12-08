@@ -1679,12 +1679,10 @@ function wm_upcInit() {
 waitForElement('#el_item_form', wm_upcInit);
 
 function initDupeCheck() {
-    setTimeout(async function() {
-        const product_form =  document.getElementById('el_product_form');
-        if (product_form) {
-            duplicateMPN(product_form.querySelector('input[name="product[mpn]"]'), false);
-            duplicateAsin(product_form.querySelector('input[name="product[asin]"]'), false);
-        }
-    }, 500);
+    const product_form = document.getElementById('el_product_form');
+    if (product_form) {
+        duplicateMPN(product_form.querySelector('input[name="product[mpn]"]'), false);
+        duplicateAsin(product_form.querySelector('input[name="product[asin]"]'), false);
+    }
 }
-waitForElement('el_product_form', initDupeCheck);
+waitForElement('#el_product_form', initDupeCheck);
