@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GTIN Generator</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f4f6f9;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 40px;
+            color: #333;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            width: 420px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-align: center;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        input[type="number"] {
+            padding: 10px 12px;
+            width: 100px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+            margin-right: 10px;
+            transition: border 0.2s;
+        }
+        input[type="number"]:focus {
+            border-color: #007bff;
+        }
+
+        button {
+            padding: 10px 16px;
+            font-size: 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-right: 6px;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+        }
+
+        .generate-btn {
+            background: #007bff;
+            color: white;
+        }
+        .generate-btn:hover {
+            background: #0065d1;
+        }
+
+        .copy-btn {
+            background: #28a745;
+            color: white;
+        }
+        .copy-btn:hover {
+            background: #1f8a38;
+        }
+
+        textarea {
+            margin-top: 15px;
+            width: calc(100% - 2rem);
+            height: 260px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            padding: 12px;
+            font-size: 14px;
+            resize: vertical;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        textarea:focus {
+            border-color: #007bff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1>Epic GTIN Generator</h1>
+
+        <div>
+            <input id="gtinCount" type="number" value="100" min="1" />
+            <button class="generate-btn" onclick="generateValidGTINList();">Generate</button>
+            <button class="copy-btn" onclick="copyGTINList();">Copy</button>
+        </div>
+
+        <textarea id="list" placeholder="Generated GTINs will appear here..."></textarea>
+    </div>
+
+
+<script>
+function generateValidGTIN() {
+    let digits = [];
+    for (let i = 0; i < 11; i++) {
+        digits.push(Math.floor(Math.random() * 10));
+    }
+
+    let sum = 0;
+    for (let i = 0; i < 11; i++) {
+        sum += digits[i] * (i % 2 === 0 ? 3 : 1);
+    }
+    let checkDigit = (10 - (sum % 10)) % 10;
+    digits.push(checkDigit);
+    return digits.join('');
+}
+
+function generateValidGTINList() {
+    const count = parseInt(document.getElementById('gtinCount').value, 10);
+    const textarea = document.getElementById('list');
+
+    if (!count || count < 1) {
+        textarea.value = "Enter a valid number!";
+        return;
+    }
+
+    let results = [];
+    for (let i = 0; i < count; i++) {
+        results.push(generateValidGTIN());
+    }
+
+    textarea.value = results.join("\n");
+}
+
+function copyGTINList() {
+    const textarea = document.getElementById('list');
+
+    textarea.focus();
+    textarea.select();
+
+    try {
+        if (document.execCommand('copy')) {
+            console.log("Copied!");
+            return;
+        }
+    } catch (e) {}
+
+    navigator.clipboard.writeText(textarea.value)
+        .then(() => console.log("Copied!"))
+        .catch(err => console.error("Copy failed:", err));
+}
+</script>
+
+</body>
+</html>
