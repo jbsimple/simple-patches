@@ -35,6 +35,7 @@ function initQuickLinks() {
 }
 
 function replaceEngagewidget() {
+    if (panic) { return null; }
     const kt_app_content_container = document.getElementById('kt_app_content_container');
     const engagewidget = kt_app_content_container.querySelector('.card.bg-primary.card-flush.h-md-50.mb-xl-10');
     engagewidget.classList = '';
