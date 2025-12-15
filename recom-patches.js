@@ -17,9 +17,10 @@ let weatherEffects = false;
 let mockupProductivity = false;
 let mockupProductivityDepartment = null;
 
-// global references
+// sid modal handler
 let sidDetailReference = {};
 let sidDetailInProgress = {};
+const SID_DETAIL_TTL = 10 * 1000;
 
 async function loadEdgeConfig(key) {
     return new Promise(async (resolve, reject) => {
@@ -887,7 +888,14 @@ async function fetchSidDetails(SID, force = false) {
     }
 
     if (sidDetailReference[SID]) {
-        return sidDetailReference[SID];
+        const cached = sidDetailReference[SID];
+        if ((Date.now() - cached.fetchedAt) < SID_DETAIL_TTL) {
+            console.debug('PATCHES: Reusing cached SID Info:', SID);
+            return cached.data;
+        } else {
+            console.debug('PATCHES: SID cache expired, refetching:', SID);
+            delete sidDetailReference[SID];
+        }
     }
 
     if (sidDetailInProgress[SID]) {
@@ -911,7 +919,10 @@ async function fetchSidDetails(SID, force = false) {
             image_counts
         };
 
-        sidDetailReference[SID] = result;
+        sidDetailReference[SID] = {
+            data: result,
+            fetchedAt: Date.now()
+        };
         return result;
     })();
 
