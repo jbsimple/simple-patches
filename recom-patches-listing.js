@@ -645,6 +645,8 @@ async function handlePrefillLocationUpdate() {
         if (!sku) {
             alert('SKU is missing.');
             return;
+        } else if (sku.endsWith('-14') || sku.endsWith('-13') || sku.endsWith('-12')) {
+            return; 
         }
 
         try {
@@ -788,40 +790,44 @@ async function initListingPatch() {
                         if (getCreatedSKU && getCreatedSKU[0]) {
                             const sku = getCreatedSKU[0].textContent;
                             const justCreated = await getTimeSpentInMinutes(sku); // await here
-                            const timespent = justCreated.time_spent;
-                            const eventID = justCreated.event_id;
-                            code += `<br><br><p style="color: var(--bs-info);"><b>Time Spent in Minutes:</b>&nbsp;${timespent} minutes.</p>`;
-                            code += `<div class="patches-row patches-gap">
-                                <div class="patches-row" style="gap: 0.5rem; align-items: center; justify-content: center;">
-                                    <a class="btn btn-info btn-sm my-sm-1 ms-1" style="display: flex; flex-direction: row; gap: 0.25rem; align-items: center; justify-content: center;" title="View in Pending Inventory" aria-label="View in Pending Inventory" href="/receiving/queues/fba-check?column=0&keyword=${sku}" target="_blank">
-                                        <i class="fas fa-shipping-fast"></i>
-                                        <span>View In FBA Check</span>
-                                    </a>
-                                    <a class="btn btn-success btn-sm my-sm-1 ms-1" style="display: flex; flex-direction: row; gap: 0.25rem; align-items: center; justify-content: center;" title="View in Pending Inventory" aria-label="View in Pending Inventory" href="/receiving/queues/inventory?column=1&keyword=${sku}" target="_blank">
-                                        <i class="fas fa-boxes"></i>
-                                        <span>View In Pending Inventory</span>
-                                    </a>
-                                </div>`;
-                            if (!autoLocationUpdate) {
-                                code += `<div class="patches-row" style="gap: 0.5rem; align-items: center; justify-content: center;">
-                                    <a class="btn btn-info btn-sm my-sm-1 ms-1" style="display: flex; flex-direction: row; gap: 0.25rem; align-items: center; justify-content: center;" title="Add PICTURES to Location" aria-label="Add PICTURES to Location" data-sku="${sku}" data-eventID="${eventID}" onclick="handleLocationButton(this);">
-                                        <i class="fas fa-map-marker-alt"></i>
-                                        <span>Update Location</span>
-                                    </a>
-                                    <span></span>
-                                </div>`;
-                            } else {
-                                window.addEventListener('beforeunload', unloadWarning);
-                                const updateLocationResponse = await updateLocation(sku, eventID);
-                                window.removeEventListener('beforeunload', unloadWarning);
-                                if (updateLocationResponse.success) {
-                                    console.log('PATCHES - Location Updated');
+                            if (justCreated !== null && justCreated.time_spent && justCreated.event_id) {
+                                const timespent = justCreated.time_spent;
+                                const eventID = justCreated.event_id;
+                                code += `<br><br><p style="color: var(--bs-info);"><b>Time Spent in Minutes:</b>&nbsp;${timespent} minutes.</p>`;
+                                code += `<div class="patches-row patches-gap">
+                                    <div class="patches-row" style="gap: 0.5rem; align-items: center; justify-content: center;">
+                                        <a class="btn btn-info btn-sm my-sm-1 ms-1" style="display: flex; flex-direction: row; gap: 0.25rem; align-items: center; justify-content: center;" title="View in Pending Inventory" aria-label="View in Pending Inventory" href="/receiving/queues/fba-check?column=0&keyword=${sku}" target="_blank">
+                                            <i class="fas fa-shipping-fast"></i>
+                                            <span>View In FBA Check</span>
+                                        </a>
+                                        <a class="btn btn-success btn-sm my-sm-1 ms-1" style="display: flex; flex-direction: row; gap: 0.25rem; align-items: center; justify-content: center;" title="View in Pending Inventory" aria-label="View in Pending Inventory" href="/receiving/queues/inventory?column=1&keyword=${sku}" target="_blank">
+                                            <i class="fas fa-boxes"></i>
+                                            <span>View In Pending Inventory</span>
+                                        </a>
+                                    </div>`;
+                                if (!autoLocationUpdate) {
+                                    code += `<div class="patches-row" style="gap: 0.5rem; align-items: center; justify-content: center;">
+                                        <a class="btn btn-info btn-sm my-sm-1 ms-1" style="display: flex; flex-direction: row; gap: 0.25rem; align-items: center; justify-content: center;" title="Add PICTURES to Location" aria-label="Add PICTURES to Location" data-sku="${sku}" data-eventID="${eventID}" onclick="handleLocationButton(this);">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                            <span>Update Location</span>
+                                        </a>
+                                        <span></span>
+                                    </div>`;
+                                } else if (!sku.endsWith('-14')) {
+                                    window.addEventListener('beforeunload', unloadWarning);
+                                    const updateLocationResponse = await updateLocation(sku, eventID);
+                                    window.removeEventListener('beforeunload', unloadWarning);
+                                    if (updateLocationResponse.success) {
+                                        console.log('PATCHES - Location Updated');
+                                    } else {
+                                        console.error('PATCHES - Unable to Update Location:', updateLocationResponse);
+                                        alert(`Issue Updating Location: ${updateLocationResponse.message ?? 'Check Console'}`);
+                                    }
                                 } else {
-                                    console.error('PATCHES - Unable to Update Location:', updateLocationResponse);
-                                    alert(`Issue Updating Location: ${updateLocationResponse.message ?? 'Check Console'}`);
+                                    code += '<p>This entry is in the untested queue.</p>';
                                 }
+                                code += `<span class="spacer"></span></div>`;
                             }
-                            code += `<span class="spacer"></span></div>`;
                         }
 
                         if (initGTIN !== curGTIN) {
