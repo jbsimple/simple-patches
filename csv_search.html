@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>CSV Search - Simple Patches</title>
+    <title>CSV Search</title>
 
     <style>
         body {
@@ -10,11 +10,11 @@
             padding: 20px;
         }
 
-        input[type="text"] {
+        input {
             width: 100%;
             padding: 8px;
-            font-size: 16px;
             margin-bottom: 10px;
+            font-size: 16px;
         }
 
         table {
@@ -29,7 +29,7 @@
         }
 
         th {
-            background: #f2f2f2;
+            background: #eee;
         }
 
         .error {
@@ -47,9 +47,9 @@
 <h2>CSV Search</h2>
 
 <input
-    type="text"
     id="search"
-    placeholder="Search keywords..."
+    type="text"
+    placeholder="Search keywords…"
     disabled
 >
 
@@ -79,15 +79,48 @@
     }
 
     function parseCSV(text) {
-        var lines = text.trim().split(/\r?\n/);
-        headers = lines.shift().split(",");
+        var data = [];
+        var row = [];
+        var cell = "";
+        var inQuotes = false;
 
-        rows = lines.map(function (line) {
-            return line.split(",");
-        });
+        for (var i = 0; i < text.length; i++) {
+            var c = text[i];
+            var next = text[i + 1];
+
+            if (c === '"') {
+                if (inQuotes && next === '"') {
+                    cell += '"';
+                    i++;
+                } else {
+                    inQuotes = !inQuotes;
+                }
+            } else if (c === ',' && !inQuotes) {
+                row.push(cell);
+                cell = "";
+            } else if ((c === '\n' || c === '\r') && !inQuotes) {
+                if (cell.length || row.length) {
+                    row.push(cell);
+                    data.push(row);
+                }
+                row = [];
+                cell = "";
+                if (c === '\r' && next === '\n') i++;
+            } else {
+                cell += c;
+            }
+        }
+
+        if (cell.length || row.length) {
+            row.push(cell);
+            data.push(row);
+        }
+
+        headers = data.shift() || [];
+        return data;
     }
 
-    function renderTable(filteredRows) {
+    function renderTable(data) {
         thead.innerHTML = "";
         tbody.innerHTML = "";
 
@@ -99,7 +132,7 @@
         });
         thead.appendChild(tr);
 
-        filteredRows.forEach(function (row) {
+        data.forEach(function (row) {
             var tr = document.createElement("tr");
             row.forEach(function (cell) {
                 var td = document.createElement("td");
@@ -122,9 +155,12 @@
 
         var filtered = rows.filter(function (row) {
             var text = row.join(" ").toLowerCase();
-            return terms.every(function (term) {
-                return text.indexOf(term) !== -1;
-            });
+            for (var i = 0; i < terms.length; i++) {
+                if (text.indexOf(terms[i]) === -1) {
+                    return false;
+                }
+            }
+            return true;
         });
 
         renderTable(filtered);
@@ -133,12 +169,12 @@
     fetch(csvUrl)
         .then(function (res) {
             if (!res.ok) {
-                throw new Error("CSV not found");
+                throw new Error("CSV missing");
             }
             return res.text();
         })
         .then(function (text) {
-            parseCSV(text);
+            rows = parseCSV(text);
             renderTable(rows);
             searchInput.disabled = false;
         })
