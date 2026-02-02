@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CSV Search - Simple Patches</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 6px 8px;
+            text-align: left;
+        }
+
+        th {
+            background: #f2f2f2;
+        }
+
+        .error {
+            color: #b00020;
+            font-weight: bold;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<h2>CSV Search</h2>
+
+<input
+    type="text"
+    id="search"
+    placeholder="Search keywords..."
+    disabled
+>
+
+<p id="error" class="error hidden"></p>
+
+<table id="table" class="hidden">
+    <thead></thead>
+    <tbody></tbody>
+</table>
+
+<script>
+(function () {
+    var csvUrl = "/csv_search.csv";
+    var rows = [];
+    var headers = [];
+
+    var searchInput = document.getElementById("search");
+    var table = document.getElementById("table");
+    var thead = table.querySelector("thead");
+    var tbody = table.querySelector("tbody");
+    var errorEl = document.getElementById("error");
+
+    function showError(msg) {
+        errorEl.textContent = msg;
+        errorEl.className = "error";
+        searchInput.disabled = true;
+    }
+
+    function parseCSV(text) {
+        var lines = text.trim().split(/\r?\n/);
+        headers = lines.shift().split(",");
+
+        rows = lines.map(function (line) {
+            return line.split(",");
+        });
+    }
+
+    function renderTable(filteredRows) {
+        thead.innerHTML = "";
+        tbody.innerHTML = "";
+
+        var tr = document.createElement("tr");
+        headers.forEach(function (h) {
+            var th = document.createElement("th");
+            th.textContent = h;
+            tr.appendChild(th);
+        });
+        thead.appendChild(tr);
+
+        filteredRows.forEach(function (row) {
+            var tr = document.createElement("tr");
+            row.forEach(function (cell) {
+                var td = document.createElement("td");
+                td.textContent = cell;
+                tr.appendChild(td);
+            });
+            tbody.appendChild(tr);
+        });
+
+        table.className = "";
+    }
+
+    function filterRows(query) {
+        if (!query) {
+            renderTable(rows);
+            return;
+        }
+
+        var terms = query.toLowerCase().split(/\s+/);
+
+        var filtered = rows.filter(function (row) {
+            var text = row.join(" ").toLowerCase();
+            return terms.every(function (term) {
+                return text.indexOf(term) !== -1;
+            });
+        });
+
+        renderTable(filtered);
+    }
+
+    fetch(csvUrl)
+        .then(function (res) {
+            if (!res.ok) {
+                throw new Error("CSV not found");
+            }
+            return res.text();
+        })
+        .then(function (text) {
+            parseCSV(text);
+            renderTable(rows);
+            searchInput.disabled = false;
+        })
+        .catch(function () {
+            showError("No CSV file found at " + csvUrl);
+        });
+
+    searchInput.addEventListener("input", function () {
+        filterRows(this.value);
+    });
+})();
+</script>
+
+</body>
+</html>
