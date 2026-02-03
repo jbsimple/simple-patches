@@ -138,7 +138,16 @@ async function prettyLinkSkus() {
         const skuCell = cells[3];
         const text = skuCell.textContent.trim();
 
-        if (!(text.startsWith('SC-') || text.startsWith('RF_SC-') || text.startsWith('DF-') || text.startsWith('CP_0_SC-') || text.startsWith('CP_1_SC-'))) return;
+        const isItemSKU = text.startsWith('SC-') || text.startsWith('RF_SC-') || text.startsWith('DF-') || text.startsWith('CP_0_SC-') || text.startsWith('CP_1_SC-');
+        if (!isItemSKU) {
+            row.insertBefore(addCell('&nbsp;', 'in-stock-col', 'Not an item SKU'), cells[4]);
+            row.insertBefore(addCell('&nbsp;', 'sid-col', 'Not an item SKU'), cells[4]);
+            row.insertBefore(addCell('&nbsp;', 'cat-col', 'Not an item SKU'), cells[4]);
+            delete row.dataset.processing;
+            return;
+        }
+
+        // if (!(text.startsWith('SC-') || text.startsWith('RF_SC-') || text.startsWith('DF-') || text.startsWith('CP_0_SC-') || text.startsWith('CP_1_SC-'))) return;
 
         let cleanedSku = text.replace(/^RF_/, '').replace(/^CP_0_/, '').replace(/^CP_1_/, '')
         const href = `/product/items/${cleanedSku}`;
