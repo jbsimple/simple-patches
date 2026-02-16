@@ -1977,7 +1977,7 @@ async function fcsinstock_report() {
                 },
                 {
                     column: "item_inventory.quantity",
-                    opr: "{0} <= {1}",
+                    opr: "{0} >= {1}",
                     value: 1
                 },
                 {
