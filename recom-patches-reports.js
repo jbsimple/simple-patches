@@ -1992,7 +1992,7 @@ async function fcsinstock_report() {
     
     let warehouse_inventory_report = await report_getSpecial(request);
     console.debug('PATCHES - Final FCS List', warehouse_inventory_report);
-    generateDwnloadFromTable(warehouse_inventory_report, 'warehouse-inventory');
+    generateReportTableFromList(warehouse_inventory_report, 'warehouse-inventory', false);
 
 }
 
