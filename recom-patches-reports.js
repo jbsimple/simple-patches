@@ -1960,7 +1960,7 @@ async function fcsinstock_report() {
                 "product_items.sku",
                 "purchase_orders.id",
                 "product_items.condition_id",
-                "product_items.available",
+                "item_inventory.quantity",
                 "product_items.price",
                 "products.category_id",
                 "products.brand_id",
@@ -1976,7 +1976,7 @@ async function fcsinstock_report() {
                     value: ["main"]
                 },
                 {
-                    column: "product_items.available",
+                    column: "item_inventory.quantity",
                     opr: "{0} <= {1}",
                     value: 1
                 },
