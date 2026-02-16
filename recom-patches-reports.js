@@ -1933,10 +1933,14 @@ async function fcsinstock_report() {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
-        const data = await response.json();
-        data.forEach(line => {
-            fcs_po_id.push(line[0]);
-        });
+        const json = await response.json();
+        if (Array.isArray(json.data)) {
+            json.data.forEach(line => {
+                fcs_po_id.push(line[0]);
+            });
+        } else {
+            console.error("Unexpected response format:", json);
+        }
 
     } catch (error) {
         console.error("Fetch failed:", error);
