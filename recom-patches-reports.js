@@ -1961,13 +1961,18 @@ async function fcsinstock_report() {
                 "purchase_orders.id",
                 "product_items.condition_id",
                 "item_inventory.quantity",
+                "item_inventory.updated_at",
                 "product_items.price",
                 "products.category_id",
                 "products.brand_id",
                 "products.mpn",
                 "products.asin",
+                "product_items.is_scrap",
                 "product_items.has_fba",
-                "product_items.created_at"
+                "product_items.sold_at",
+                "product_items.priced_at",
+                "product_items.created_at",
+                "product_items.updated_at"
             ],
             filters: [
                 {
@@ -1992,7 +1997,7 @@ async function fcsinstock_report() {
     
     let warehouse_inventory_report = await report_getSpecial(request);
     console.debug('PATCHES - Final FCS List', warehouse_inventory_report);
-    generateReportTableFromList(warehouse_inventory_report, 'warehouse-inventory', false);
+    generateReportTableFromList(warehouse_inventory_report, 'warehouse-inventory', true);
 
 }
 
