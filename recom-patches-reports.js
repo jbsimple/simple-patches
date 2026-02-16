@@ -1949,6 +1949,51 @@ async function fcsinstock_report() {
 
     console.log(fcs_po_id);
 
+    const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
+    
+    var request = {
+        report: {
+            type: "warehouse_inventory",
+            columns: [
+                "products.sid",
+                "products.name",
+                "product_items.sku",
+                "purchase_orders.id",
+                "product_items.condition_id",
+                "product_items.available",
+                "product_items.price",
+                "products.category_id",
+                "products.brand_id",
+                "products.mpn",
+                "products.asin",
+                "product_items.has_fba",
+                "product_items.created_at"
+            ],
+            filters: [
+                {
+                    column: "warehouses.type",
+                    opr: "{0} IN {1}",
+                    value: ["main"]
+                },
+                {
+                    column: "product_items.available",
+                    opr: "{0} <= {1}",
+                    value: 1
+                },
+                {
+                    column: "purchase_orders.id",
+                    opr: "{0} IN {1}",
+                    value: fcs_po_id
+                }
+            ]
+        },
+        csrf_recom: csrfToken
+    };
+    
+    let warehouse_inventory_report = await report_getSpecial(request);
+    console.debug('PATCHES - Final FCS List', warehouse_inventory_report);
+    generateDwnloadFromTable(warehouse_inventory_report, 'warehouse-inventory');
+
 }
 
 
