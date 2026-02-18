@@ -1530,7 +1530,7 @@ function extraMediaInit() {
         if (!type) type = 'product';
 
         const allImages_container = document.getElementById('product-images-container');
-        if (!container) return null;
+        if (!allImages_container) return null;
 
         const image_containers = allImages_container.querySelectorAll('div.draggable[data-id]');
         if (!image_containers.length) return null;
