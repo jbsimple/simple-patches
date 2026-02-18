@@ -1526,20 +1526,19 @@ function extraMediaInit() {
             }
         }
 
-        if (id === null) { return null; }
-        if (type === null) { type = 'product'; }
+        if (!id) return null;
+        if (!type) type = 'product';
 
         const allImages_container = document.getElementById('product-images-container');
-        if (!allImages_container) { return null; }
+        if (!container) return null;
 
         const image_containers = allImages_container.querySelectorAll('div.draggable[data-id]');
-        if (!image_containers || image_containers.length < 1) { return null; }
+        if (!image_containers.length) return null;
 
         const sorted = Array.from(image_containers).sort((a, b) => {
             const nameA = a.querySelector('.text-muted')?.textContent?.trim().toLowerCase() || '';
             const nameB = b.querySelector('.text-muted')?.textContent?.trim().toLowerCase() || '';
-
-            return nameA.localeCompare(nameB);
+            return nameA.localeCompare(nameB, undefined, { numeric: true });
         });
 
         const formData = new FormData();
@@ -1547,15 +1546,10 @@ function extraMediaInit() {
 
         sorted.forEach((image_container, index) => {
             const newPos = index + 1;
-            allImages_container.appendChild(image_container);
-            const indicator = image_container.querySelector('.imgpos');
-            if (indicator) {
-                indicator.textContent = newPos;
-            }
+            const imgId = image_container.getAttribute('data-id');
 
-            const id = image_container.getAttribute('data-id');
-            if (id) {
-                formData.append(`inputs[${index}][id]`, id);
+            if (imgId) {
+                formData.append(`inputs[${index}][id]`, imgId);
                 formData.append(`inputs[${index}][position]`, newPos);
             }
         });
@@ -1569,7 +1563,19 @@ function extraMediaInit() {
         })
         .then(response => response.json())
         .then(result => {
-            if (!result.success) {
+            if (result.success) {
+                sorted.forEach((image_container, index) => {
+                    const newPos = index + 1;
+
+                    container.appendChild(image_container);
+
+                    const indicator = image_container.querySelector('.imgpos');
+                    if (indicator) {
+                        indicator.textContent = newPos;
+                    }
+                });
+                fireSwal('YAY', 'Positions Updated!', 'success');
+            } else {
                 fireSwal('UHOH', ['Something did NOT work.', 'See Console for More Details'], 'error');
                 console.error('PATCHES - Error sorting images:', result);
             }
