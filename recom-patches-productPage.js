@@ -1417,13 +1417,27 @@ function extraMediaInit() {
         // manage image buttons
         if (imageElements.length > 0) {
 
+            // SORT IMAGES BUTTON
+            var sortAllImagesButton = document.createElement('button');
+            sortAllImagesButton.classList.add('btn', 'btn-info', 'btn-warning');
+            sortAllImagesButton.id = 'sortAllImages';
+            sortAllImagesButton.textContent = 'Sort Images';
+            sortAllImagesButton.title = 'Sorts Images by Filenames.';
+            sortAllImagesButton.style.color = 'white';
+            sortAllImagesButton.style.border = 'none';
+            sortAllImagesButton.style.padding = '10px 20px';
+            sortAllImagesButton.style.cursor = 'pointer';
+            sortAllImagesButton.style.borderRadius = '5px';
+            sortAllImagesButton.onclick = sortAllImages;
+            newElement.appendChild(sortAllImagesButton);
+
+
+            // DELETE ALL IMAGES BUTTON
             var deleteAllButton = document.createElement('button');
-            deleteAllButton.classList.add('btn');
-            deleteAllButton.classList.add('btn-info');
-            deleteAllButton.classList.add('btn-warning');
-            deleteAllButton.id = 'sortAllImages';
-            deleteAllButton.textContent = 'Sort Images';
-            deleteAllButton.title = 'Sorts Images by Filenames.';
+            deleteAllButton.classList.add('btn', 'btn-info', 'btn-danger');
+            deleteAllButton.id = 'deleteAllImages';
+            deleteAllButton.textContent = 'Delete All Images';
+            deleteAllButton.title = 'Deletes All Images Below.';
             deleteAllButton.style.color = 'white';
             deleteAllButton.style.border = 'none';
             deleteAllButton.style.padding = '10px 20px';
@@ -1432,19 +1446,6 @@ function extraMediaInit() {
             deleteAllButton.onclick = deleteAllImages;
             newElement.appendChild(deleteAllButton);
 
-            var sortAllImagesButton = document.createElement('button');
-            sortAllImagesButton.classList.add('btn', 'btn-info', 'btn-danger');
-            sortAllImagesButton.id = 'deleteAllImages';
-            sortAllImagesButton.textContent = 'Delete All Images';
-            sortAllImagesButton.title = 'Deletes All Images Below.';
-            sortAllImagesButton.style.color = 'white';
-            sortAllImagesButton.style.border = 'none';
-            sortAllImagesButton.style.padding = '10px 20px';
-            sortAllImagesButton.style.cursor = 'pointer';
-            sortAllImagesButton.style.borderRadius = '5px';
-            sortAllImagesButton.onclick = sortAllImages;
-            newElement.appendChild(sortAllImagesButton);
-            
         }
 
         // nuke sku button
