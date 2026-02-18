@@ -1559,7 +1559,7 @@ function extraMediaInit() {
             if (id) {
                 payload.inputs.push({
                     id: id,
-                    position: newPos
+                    position: `${newPos}`
                 });
             }
         });
