@@ -1405,6 +1405,13 @@ function extraMediaInit() {
             newElement.appendChild(openAllButton);
         }
 
+        // spacer
+        var spacer = document.createElement('span');
+        spacer.setAttribute('style', 'flex: 1');
+        newElement.appendChild(spacer);
+        
+        media_tree_parent.insertBefore(newElement, media_tree);
+
         // delete all button
         if (imageElements.length > 0) {
             var deleteAllButton = document.createElement('button');
@@ -1422,13 +1429,6 @@ function extraMediaInit() {
             deleteAllButton.onclick = deleteAllImages;
             newElement.appendChild(deleteAllButton);
         }
-
-        // spacer
-        var spacer = document.createElement('span');
-        spacer.setAttribute('style', 'flex: 1');
-        newElement.appendChild(spacer);
-        
-        media_tree_parent.insertBefore(newElement, media_tree);
 
         // nuke sku button
         const url = window.location.href;
