@@ -1542,10 +1542,8 @@ function extraMediaInit() {
             return nameA.localeCompare(nameB);
         });
 
-        let payload = {
-            inputs: [],
-            type: type
-        };
+        const formData = new FormData();
+        formData.append('type', payload.type);
 
         sorted.forEach((image_container, index) => {
             const newPos = index + 1;
@@ -1557,17 +1555,31 @@ function extraMediaInit() {
 
             const id = image_container.getAttribute('data-id');
             if (id) {
-                payload.inputs.push({
-                    id: id,
-                    position: `${newPos}`
-                });
+                formData.append(`inputs[${i}][id]`, item.id);
+                formData.append(`inputs[${i}][position]`, item.position);
             }
         });
 
         console.log(payload);
 
-        const ajax = `/ajax/actions/productimageposition/${id}`;
-
+        fetch(`/ajax/actions/productimageposition/${id}`, {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": document.querySelector('meta[name="X-CSRF-TOKEN"]')?.content
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (!result.success) {
+                fireSwal('UHOH', ['Something did NOT work.', 'See Console for More Details'], 'error');
+                console.error('PATCHES - Error sorting images:', result);
+            }
+        })
+        .catch(() => {
+            fireSwal('UHOH', ['Something did NOT work.', 'Just... try again or refresh.'], 'error');
+            console.error('Fetch failed: In the catch.');
+        });
     }
 
     function checkPopup() {
