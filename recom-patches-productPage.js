@@ -1580,9 +1580,9 @@ function extraMediaInit() {
                 console.error('PATCHES - Error sorting images:', result);
             }
         })
-        .catch(() => {
+        .catch((error) => {
             fireSwal('UHOH', ['Something did NOT work.', 'Just... try again or refresh.'], 'error');
-            console.error('Fetch failed: In the catch.');
+            console.error('Fetch failed:', error);
         });
     }
 
