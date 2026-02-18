@@ -1543,7 +1543,7 @@ function extraMediaInit() {
         });
 
         const formData = new FormData();
-        formData.append('type', payload.type);
+        formData.append('type', type);
 
         sorted.forEach((image_container, index) => {
             const newPos = index + 1;
