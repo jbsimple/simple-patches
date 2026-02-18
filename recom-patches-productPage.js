@@ -1417,19 +1417,6 @@ function extraMediaInit() {
         // manage image buttons
         if (imageElements.length > 0) {
 
-            var sortAllImagesButton = document.createElement('button');
-            sortAllImagesButton.classList.add('btn', 'btn-info', 'btn-danger');
-            sortAllImagesButton.id = 'deleteAllImages';
-            sortAllImagesButton.textContent = 'Delete All Images';
-            sortAllImagesButton.title = 'Deletes All Images Below.';
-            sortAllImagesButton.style.color = 'white';
-            sortAllImagesButton.style.border = 'none';
-            sortAllImagesButton.style.padding = '10px 20px';
-            sortAllImagesButton.style.cursor = 'pointer';
-            sortAllImagesButton.style.borderRadius = '5px';
-            sortAllImagesButton.onclick = sortAllImages;
-            newElement.appendChild(sortAllImagesButton);
-
             var deleteAllButton = document.createElement('button');
             deleteAllButton.classList.add('btn');
             deleteAllButton.classList.add('btn-info');
@@ -1444,6 +1431,20 @@ function extraMediaInit() {
             deleteAllButton.style.borderRadius = '5px';
             deleteAllButton.onclick = deleteAllImages;
             newElement.appendChild(deleteAllButton);
+
+            var sortAllImagesButton = document.createElement('button');
+            sortAllImagesButton.classList.add('btn', 'btn-info', 'btn-danger');
+            sortAllImagesButton.id = 'deleteAllImages';
+            sortAllImagesButton.textContent = 'Delete All Images';
+            sortAllImagesButton.title = 'Deletes All Images Below.';
+            sortAllImagesButton.style.color = 'white';
+            sortAllImagesButton.style.border = 'none';
+            sortAllImagesButton.style.padding = '10px 20px';
+            sortAllImagesButton.style.cursor = 'pointer';
+            sortAllImagesButton.style.borderRadius = '5px';
+            sortAllImagesButton.onclick = sortAllImages;
+            newElement.appendChild(sortAllImagesButton);
+            
         }
 
         // nuke sku button
