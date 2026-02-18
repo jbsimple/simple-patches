@@ -1560,8 +1560,6 @@ function extraMediaInit() {
             }
         });
 
-        console.log(payload);
-
         fetch(`/ajax/actions/productimageposition/${id}`, {
             method: "POST",
             headers: {
