@@ -1555,8 +1555,8 @@ function extraMediaInit() {
 
             const id = image_container.getAttribute('data-id');
             if (id) {
-                formData.append(`inputs[${i}][id]`, item.id);
-                formData.append(`inputs[${i}][position]`, item.position);
+                formData.append(`inputs[${index}][id]`, item.id);
+                formData.append(`inputs[${index}][position]`, item.position);
             }
         });
 
