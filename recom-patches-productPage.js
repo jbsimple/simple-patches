@@ -1507,6 +1507,64 @@ function extraMediaInit() {
     }
 
     function sortAllImages() {
+        // get product or item id
+        let id = null;
+        let type = null;
+
+        const item_stats = document.getElementById('item-units-stats');
+        if (item_stats) {
+            type = 'item';
+            id = item_stats.querySelector('.fs-5.text-info.fw-bolder.lh-1')?.textContent?.trim();
+        } else {
+            for (const elem of document.querySelectorAll('.mb-5')) {
+                if (elem.textContent.includes("Product#")) {
+                    id = elem.querySelector('.text-info')?.textContent?.trim();
+                    break;
+                }
+            }
+        }
+
+        if (id === null) { return null; }
+        if (type === null) { type = 'product'; }
+
+        const allImages_container = document.getElementById('product-images-container');
+        if (!allImages_container) { return null; }
+
+        const image_containers = allImages_container.querySelectorAll('div.draggable[data-id]');
+        if (!image_containers || image_containers.length < 1) { return null; }
+
+        const sorted = Array.from(image_containers).sort((a, b) => {
+            const nameA = a.querySelector('.text-muted')?.textContent?.trim().toLowerCase() || '';
+            const nameB = b.querySelector('.text-muted')?.textContent?.trim().toLowerCase() || '';
+
+            return nameA.localeCompare(nameB);
+        });
+
+        let payload = {
+            inputs: [],
+            type: type
+        };
+
+        sorted.forEach((image_container, index) => {
+            const newPos = index + 1;
+            allImages_container.appendChild(image_container);
+            const indicator = image_container.querySelector('.imgpos');
+            if (indicator) {
+                indicator.textContent = newPos;
+            }
+
+            const id = image_container.getAttribute('data-id');
+            if (id) {
+                payload.inputs.push({
+                    id: id,
+                    position: newPos
+                });
+            }
+        });
+
+        console.log(payload);
+
+        const ajax = `/ajax/actions/productimageposition/${id}`;
 
     }
 
