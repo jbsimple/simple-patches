@@ -1412,15 +1412,31 @@ function extraMediaInit() {
         
         media_tree_parent.insertBefore(newElement, media_tree);
 
-        // delete all button
+
+
+        // manage image buttons
         if (imageElements.length > 0) {
+
+            var sortAllImagesButton = document.createElement('button');
+            sortAllImagesButton.classList.add('btn', 'btn-info', 'btn-danger');
+            sortAllImagesButton.id = 'deleteAllImages';
+            sortAllImagesButton.textContent = 'Delete All Images';
+            sortAllImagesButton.title = 'Deletes All Images Below.';
+            sortAllImagesButton.style.color = 'white';
+            sortAllImagesButton.style.border = 'none';
+            sortAllImagesButton.style.padding = '10px 20px';
+            sortAllImagesButton.style.cursor = 'pointer';
+            sortAllImagesButton.style.borderRadius = '5px';
+            sortAllImagesButton.onclick = sortAllImages;
+            newElement.appendChild(sortAllImagesButton);
+
             var deleteAllButton = document.createElement('button');
             deleteAllButton.classList.add('btn');
             deleteAllButton.classList.add('btn-info');
-            deleteAllButton.classList.add('btn-danger');
-            deleteAllButton.id = 'deleteAllImages';
-            deleteAllButton.textContent = 'Delete All Images';
-            deleteAllButton.title = 'Deletes All Images Below.';
+            deleteAllButton.classList.add('btn-warning');
+            deleteAllButton.id = 'sortAllImages';
+            deleteAllButton.textContent = 'Sort Images';
+            deleteAllButton.title = 'Sorts Images by Filenames.';
             deleteAllButton.style.color = 'white';
             deleteAllButton.style.border = 'none';
             deleteAllButton.style.padding = '10px 20px';
@@ -1488,6 +1504,10 @@ function extraMediaInit() {
                 }
             });
         });
+    }
+
+    function sortAllImages() {
+
     }
 
     function checkPopup() {
