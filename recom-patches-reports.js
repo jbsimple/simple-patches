@@ -1546,7 +1546,13 @@ async function report_pictureURLSComplete_init(checkResolution = false) {
             if (!new_item.URLS || !Array.isArray(new_item.URLS)) return;
 
             // GET COUNT
-            new_item.COUNT = new_item.URLS ? new_item.URLS.split(',').length : 0;
+            if (Array.isArray(new_item.URLS)) {
+                new_item.COUNT = new_item.URLS.length;
+            } else if (typeof new_item.URLS === 'string') {
+                new_item.COUNT = new_item.URLS.split(',').length;
+            } else {
+                new_item.COUNT = 0;
+            }
 
             // GET VALUE
             const newObj = {};
