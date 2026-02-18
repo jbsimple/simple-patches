@@ -1545,6 +1545,20 @@ async function report_pictureURLSComplete_init(checkResolution = false) {
 
             if (!new_item.URLS || !Array.isArray(new_item.URLS)) return;
 
+            // GET COUNT
+            new_item.COUNT = new_item.URLS ? new_item.URLS.split(',').length : 0;
+
+            // GET VALUE
+            const newObj = {};
+            for (const key in new_item) {
+                newObj[key] = new_item[key];
+
+                if (key === 'Price') {
+                    newObj.VALUE = Math.ceil((new_item.Price * new_item.MAIN_Qty) * 100) / 100;
+                }
+            }
+            new_item = newObj;
+
             if (!checkResolution) {
                 listObj[sku] = new_item;
                 return;
