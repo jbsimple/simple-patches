@@ -1567,7 +1567,7 @@ function extraMediaInit() {
                 sorted.forEach((image_container, index) => {
                     const newPos = index + 1;
 
-                    container.appendChild(image_container);
+                    allImages_container.appendChild(image_container);
 
                     const indicator = image_container.querySelector('.imgpos');
                     if (indicator) {
