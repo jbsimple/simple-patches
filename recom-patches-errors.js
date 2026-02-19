@@ -264,7 +264,7 @@ async function initExportAllRecords() {
     
     const exportAll = document.createElement('button');
     exportAll.type = 'button';
-    exportAll.classList.add('btn', 'btn-warning', 'btn-sm');
+    exportAll.classList.add('btn', 'btn-info', 'btn-sm');
     exportAll.title = 'This downloads all records, not just the page.';
     exportAll.textContent = 'Export All';
     exportAll.addEventListener('click', async () => {
