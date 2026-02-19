@@ -1,254 +1,283 @@
-/* only one time get this big report */
+async function initPrettyPrint() {
+    let itemData = null;
+    let manualData = {};
+    const fetchPromises = {};
+    const getWMFeed = false;
 
-let itemData = null;
-let manualData = {};
-const fetchPromises = {};
-const getWMFeed = false;
+    const actionButton = document.createElement('button');
+    actionButton.type = 'button';
+    actionButton.classList.add('btn', 'btn-info', 'btn-sm');
+    actionButton.title = 'This downloads all records, not just the page.';
+    actionButton.textContent = 'Export All';
+    actionButton.addEventListener('click', async () => {
+        actionButton.disabled = true;
+        try {
+            toggleLDtTableoad('inherit');
+            await itemDetailsInit();
+            prettyLinkSkus();
+            toggleLDtTableoad('none');
+            const wrapper = document.getElementById('dtTable_wrapper');
+            if (wrapper) {
+                const observer = new MutationObserver(() => {
+                    clearTimeout(observer._debounce);
+                    observer._debounce = setTimeout(prettyLinkSkus, 500);
+                });
 
-async function itemDetailsInit() {
-    const itemDataFetch = await fetchItemDetails();
-    if (itemDataFetch.data) {
-        itemData = Object.fromEntries(
-            itemDataFetch.data.map(item => [item.SKU, item])
-        );
-    }
-    return itemDataFetch.data;
-}
-
-async function fetchItemDetails(sku = null) {
-    // time to build a report
-    const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
-    if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
-        const csrfToken = csrfMeta.getAttribute('content');
-
-        let filters = [
-            {
-                column: "product_items.in_stock",
-                opr: "{0} >= {1}",
-                value: -100
+                observer.observe(wrapper, { childList: true, subtree: true });
             }
-        ];
-        
-        if (sku !== null) {
-            filters.push({
-                column: "product_items.sku",
-                opr: "{0} LIKE '%{1}%'",
-                value: sku
-            });
-        } else {
-            const today = new Date();
-            const past = new Date();
-            past.setDate(today.getDate() - 89);
+        } catch (err) {
+            console.error(err);
+        }
+        actionButton.disabled = false;
+    });
 
-            const formatDate = (date) => {
-                const mm = String(date.getMonth() + 1).padStart(2, '0');
-                const dd = String(date.getDate()).padStart(2, '0');
-                const yyyy = date.getFullYear();
-                return `${mm}/${dd}/${yyyy}`;
+    return actionButton;
+
+    async function itemDetailsInit() {
+        const itemDataFetch = await fetchItemDetails();
+        if (itemDataFetch.data) {
+            itemData = Object.fromEntries(
+                itemDataFetch.data.map(item => [item.SKU, item])
+            );
+        }
+        return itemDataFetch.data;
+    }
+
+    async function fetchItemDetails(sku = null) {
+        // time to build a report
+        const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
+        if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
+            const csrfToken = csrfMeta.getAttribute('content');
+
+            let filters = [
+                {
+                    column: "product_items.in_stock",
+                    opr: "{0} >= {1}",
+                    value: -100
+                }
+            ];
+            
+            if (sku !== null) {
+                filters.push({
+                    column: "product_items.sku",
+                    opr: "{0} LIKE '%{1}%'",
+                    value: sku
+                });
+            } else {
+                const today = new Date();
+                const past = new Date();
+                past.setDate(today.getDate() - 89);
+
+                const formatDate = (date) => {
+                    const mm = String(date.getMonth() + 1).padStart(2, '0');
+                    const dd = String(date.getDate()).padStart(2, '0');
+                    const yyyy = date.getFullYear();
+                    return `${mm}/${dd}/${yyyy}`;
+                };
+
+                const range = `${formatDate(past)} - ${formatDate(today)}`;
+
+                filters.push({
+                    column: "product_items.updated_at",
+                    opr: "between",
+                    value: range 
+                });
+            }
+
+            var request = {
+                report: {
+                    type: "active_inventory",
+                    columns: [
+                        "products.sid",
+                        "product_items.id",
+                        "product_items.sku",
+                        "product_items.in_stock",
+                        "products.category_id"
+                    ],
+                    filters: filters
+                },
+                csrf_recom: csrfToken
             };
 
-            const range = `${formatDate(past)} - ${formatDate(today)}`;
+            console.debug('PATCHES - Fetching Item Detials report:', request);
 
-            filters.push({
-                column: "product_items.updated_at",
-                opr: "between",
-                value: range 
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: "/reports/create",
+                    data: request,
+                }).done(function(data) {
+                    if (data.success && data.results.results && Array.isArray(data.results.results)) {
+                        resolve({
+                            data: data.results.results,
+                            download: `/renderfile/download?folder=reports&path=${data.results.filename}`,
+                            filename: data.results.filename
+                        });
+                    } else {
+                        resolve(null);
+                    }
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    console.error("Request failed: " + textStatus + ", " + errorThrown);
+                    reject(new Error("Request failed: " + textStatus + ", " + errorThrown));
+                });
             });
+        } else {
+            return null;
+        }
+    }
+
+    async function prettyLinkSkus() {
+        toggleLDtTableoad('inherit');
+        const table = document.getElementById('dtTable');
+        if (!table) return;
+
+        const headerRow = table.querySelector('thead>tr');
+        const footerRow = table.querySelector('tfoot>tr');
+
+        if (headerRow && !table.hasAttribute('patched')) {
+            headerRow.insertBefore(addTableHeadings("ENTRY CATEGORY", 'cat-col'), headerRow.children[4]);
+            headerRow.insertBefore(addTableHeadings("ENTRY SID", 'sid-col'), headerRow.children[4]);
+            headerRow.insertBefore(addTableHeadings("ENTRY IN STOCK", 'in-stock-col'), headerRow.children[4]);
         }
 
-        var request = {
-            report: {
-                type: "active_inventory",
-                columns: [
-                    "products.sid",
-                    "product_items.id",
-                    "product_items.sku",
-                    "product_items.in_stock",
-                    "products.category_id"
-                ],
-                filters: filters
-            },
-            csrf_recom: csrfToken
-        };
-
-        console.debug('PATCHES - Fetching Item Detials report:', request);
-
-        return new Promise((resolve, reject) => {
-            $.ajax({
-                type: "POST",
-                dataType: "json",
-                url: "/reports/create",
-                data: request,
-            }).done(function(data) {
-                if (data.success && data.results.results && Array.isArray(data.results.results)) {
-                    resolve({
-                        data: data.results.results,
-                        download: `/renderfile/download?folder=reports&path=${data.results.filename}`,
-                        filename: data.results.filename
-                    });
-                } else {
-                    resolve(null);
-                }
-            }).fail(function(jqXHR, textStatus, errorThrown) {
-                console.error("Request failed: " + textStatus + ", " + errorThrown);
-                reject(new Error("Request failed: " + textStatus + ", " + errorThrown));
-            });
-        });
-    } else {
-        return null;
-    }
-}
-
-async function prettyLinkSkus() {
-    toggleLDtTableoad('inherit');
-    const table = document.getElementById('dtTable');
-    if (!table) return;
-
-    const headerRow = table.querySelector('thead>tr');
-    const footerRow = table.querySelector('tfoot>tr');
-
-    if (headerRow && !table.hasAttribute('patched')) {
-        headerRow.insertBefore(addTableHeadings("ENTRY CATEGORY", 'cat-col'), headerRow.children[4]);
-        headerRow.insertBefore(addTableHeadings("ENTRY SID", 'sid-col'), headerRow.children[4]);
-        headerRow.insertBefore(addTableHeadings("ENTRY IN STOCK", 'in-stock-col'), headerRow.children[4]);
-    }
-
-    if (footerRow && !table.hasAttribute('patched')) {
-        footerRow.insertBefore(addTableHeadings("", 'cat-col'), footerRow.children[4]);
-        footerRow.insertBefore(addTableHeadings("", 'sid-col'), footerRow.children[4]);
-        footerRow.insertBefore(addTableHeadings("", 'in-stock-col'), footerRow.children[4]);
-    }
-
-    table.setAttribute('patched', 'true');
-
-    const rows = table.querySelectorAll('tbody tr');
-
-    for (const row of rows) {
-        await processRow(row);
-    }
-    toggleLDtTableoad('none');
-
-    async function processRow(row) {
-        if (row.dataset.processing === "true" || row.querySelector('td.in-stock-col')) return;
-        row.dataset.processing = "true";
-    
-        if (row.querySelector('td.in-stock-col')) return;
-
-        const cells = row.querySelectorAll('td');
-        const skuCell = cells[3];
-        if (!skuCell || !skuCell.textContent) return;
-        const text = skuCell.textContent?.trim();
-
-        const isItemSKU = text.startsWith('SC-') || text.startsWith('RF_SC-') || text.startsWith('DF-') || text.startsWith('CP_0_SC-') || text.startsWith('CP_1_SC-');
-        if (!isItemSKU) {
-            row.insertBefore(addCell('&nbsp;', 'in-stock-col', 'Not an item SKU'), cells[4]);
-            row.insertBefore(addCell('&nbsp;', 'sid-col', 'Not an item SKU'), cells[4]);
-            row.insertBefore(addCell('&nbsp;', 'cat-col', 'Not an item SKU'), cells[4]);
-            delete row.dataset.processing;
-            return;
+        if (footerRow && !table.hasAttribute('patched')) {
+            footerRow.insertBefore(addTableHeadings("", 'cat-col'), footerRow.children[4]);
+            footerRow.insertBefore(addTableHeadings("", 'sid-col'), footerRow.children[4]);
+            footerRow.insertBefore(addTableHeadings("", 'in-stock-col'), footerRow.children[4]);
         }
 
-        // if (!(text.startsWith('SC-') || text.startsWith('RF_SC-') || text.startsWith('DF-') || text.startsWith('CP_0_SC-') || text.startsWith('CP_1_SC-'))) return;
+        table.setAttribute('patched', 'true');
 
-        let cleanedSku = text.replace(/^RF_/, '').replace(/^CP_0_/, '').replace(/^CP_1_/, '')
-        const href = `/product/items/${cleanedSku}`;
-        skuCell.innerHTML = `<a href="${href}" target="_blank">${text}</a>`;
+        const rows = table.querySelectorAll('tbody tr');
 
-        let in_stock = null;
-        let sid = null;
-        let item_id = null;
-        let category = null;
-        let data = itemData[cleanedSku] || manualData[cleanedSku];
+        for (const row of rows) {
+            await processRow(row);
+        }
+        toggleLDtTableoad('none');
 
-        if (!data) {
-            console.warn(`PATCHES - Manually fetching data for ${cleanedSku}`);
-            if (!fetchPromises[cleanedSku]) {
-                fetchPromises[cleanedSku] = (async () => {
-                    try {
-                        const reportFetch = await fetchItemDetails(cleanedSku);
-                        console.debug(`PATCHES - Manually fetched data:`, reportFetch);
-                        const fetched = Array.isArray(reportFetch?.data)
-                            ? reportFetch.data[0]
-                            : reportFetch?.data;
+        async function processRow(row) {
+            if (row.dataset.processing === "true" || row.querySelector('td.in-stock-col')) return;
+            row.dataset.processing = "true";
+        
+            if (row.querySelector('td.in-stock-col')) return;
 
-                        if (fetched && (fetched['SID'] || fetched['In_Stock'] || fetched['MAIN_Qty'])) {
-                            manualData[cleanedSku] = fetched;
-                            console.debug(`PATCHES - Stored manualData for ${cleanedSku}`, fetched);
-                            return fetched;
-                        } else {
-                            console.warn(`PATCHES - No data returned for ${cleanedSku}:`, reportFetch);
+            const cells = row.querySelectorAll('td');
+            const skuCell = cells[3];
+            if (!skuCell || !skuCell.textContent) return;
+            const text = skuCell.textContent?.trim();
+
+            const isItemSKU = text.startsWith('SC-') || text.startsWith('RF_SC-') || text.startsWith('DF-') || text.startsWith('CP_0_SC-') || text.startsWith('CP_1_SC-');
+            if (!isItemSKU) {
+                row.insertBefore(addCell('&nbsp;', 'in-stock-col', 'Not an item SKU'), cells[4]);
+                row.insertBefore(addCell('&nbsp;', 'sid-col', 'Not an item SKU'), cells[4]);
+                row.insertBefore(addCell('&nbsp;', 'cat-col', 'Not an item SKU'), cells[4]);
+                delete row.dataset.processing;
+                return;
+            }
+
+            // if (!(text.startsWith('SC-') || text.startsWith('RF_SC-') || text.startsWith('DF-') || text.startsWith('CP_0_SC-') || text.startsWith('CP_1_SC-'))) return;
+
+            let cleanedSku = text.replace(/^RF_/, '').replace(/^CP_0_/, '').replace(/^CP_1_/, '')
+            const href = `/product/items/${cleanedSku}`;
+            skuCell.innerHTML = `<a href="${href}" target="_blank">${text}</a>`;
+
+            let in_stock = null;
+            let sid = null;
+            let item_id = null;
+            let category = null;
+            let data = itemData[cleanedSku] || manualData[cleanedSku];
+
+            if (!data) {
+                console.warn(`PATCHES - Manually fetching data for ${cleanedSku}`);
+                if (!fetchPromises[cleanedSku]) {
+                    fetchPromises[cleanedSku] = (async () => {
+                        try {
+                            const reportFetch = await fetchItemDetails(cleanedSku);
+                            console.debug(`PATCHES - Manually fetched data:`, reportFetch);
+                            const fetched = Array.isArray(reportFetch?.data)
+                                ? reportFetch.data[0]
+                                : reportFetch?.data;
+
+                            if (fetched && (fetched['SID'] || fetched['In_Stock'] || fetched['MAIN_Qty'])) {
+                                manualData[cleanedSku] = fetched;
+                                console.debug(`PATCHES - Stored manualData for ${cleanedSku}`, fetched);
+                                return fetched;
+                            } else {
+                                console.warn(`PATCHES - No data returned for ${cleanedSku}:`, reportFetch);
+                                return null;
+                            }
+                        } catch (err) {
+                            console.error(`PATCHES - Error fetching data for ${cleanedSku}:`, err);
                             return null;
+                        } finally {
+                            delete fetchPromises[cleanedSku];
+                        }
+                    })();
+                }
+                data = await fetchPromises[cleanedSku];
+            }
+
+            if (data) {
+                in_stock = data['MAIN_Qty'] ?? data['In_Stock'] ?? null;
+                sid = data['SID'] ?? null;
+                item_id = data['Item_ID'] ?? null;
+                category = data['Category'] ?? null;
+            }
+
+            row.insertBefore(addCell(`<span>${in_stock}</span>`, 'in-stock-col', "Main Quantity of SKU"), cells[4]);
+            row.insertBefore(addCell(`<a href="/products/${sid}" target="_blank">${sid}</a>`, 'sid-col', "Link to SID"), cells[4]);
+            row.insertBefore(addCell(`<span>${category}</span>`, 'cat-col', "Category"), cells[4]);
+
+            if (getWMFeed) {
+                const parser = new DOMParser();
+                const marketplaceCell = cells[1];
+                const marketplace = marketplaceCell.textContent.trim();
+                let wm_feedID = ""; 
+                if (marketplace === 'Walmart US' && item_id) {
+                    try {
+                        const feedRes = await fetch(`/integrations/stores/listing/item/${item_id}`);
+                        if (feedRes.ok) {
+                            const feedHtml = await feedRes.text();
+                            const feedDoc = parser.parseFromString(feedHtml, "text/html");
+
+                            const wmRow = [...feedDoc.querySelectorAll('tbody tr')].find(row => row.querySelector('td')?.textContent.trim() === 'Walmart US');
+
+                            if (wmRow) {
+                                const cols = wmRow.querySelectorAll('td');
+                                wm_feedID = cols[2]?.textContent.trim() || "";
+                            }
                         }
                     } catch (err) {
-                        console.error(`PATCHES - Error fetching data for ${cleanedSku}:`, err);
-                        return null;
-                    } finally {
-                        delete fetchPromises[cleanedSku];
+                        console.error("Error fetching feed ID", err);
                     }
-                })();
-            }
-            data = await fetchPromises[cleanedSku];
-        }
+                }
 
-        if (data) {
-            in_stock = data['MAIN_Qty'] ?? data['In_Stock'] ?? null;
-            sid = data['SID'] ?? null;
-            item_id = data['Item_ID'] ?? null;
-            category = data['Category'] ?? null;
-        }
-
-        row.insertBefore(addCell(`<span>${in_stock}</span>`, 'in-stock-col', "Main Quantity of SKU"), cells[4]);
-        row.insertBefore(addCell(`<a href="/products/${sid}" target="_blank">${sid}</a>`, 'sid-col', "Link to SID"), cells[4]);
-        row.insertBefore(addCell(`<span>${category}</span>`, 'cat-col', "Category"), cells[4]);
-
-        if (getWMFeed) {
-            const parser = new DOMParser();
-            const marketplaceCell = cells[1];
-            const marketplace = marketplaceCell.textContent.trim();
-            let wm_feedID = ""; 
-            if (marketplace === 'Walmart US' && item_id) {
-                try {
-                    const feedRes = await fetch(`/integrations/stores/listing/item/${item_id}`);
-                    if (feedRes.ok) {
-                        const feedHtml = await feedRes.text();
-                        const feedDoc = parser.parseFromString(feedHtml, "text/html");
-
-                        const wmRow = [...feedDoc.querySelectorAll('tbody tr')].find(row => row.querySelector('td')?.textContent.trim() === 'Walmart US');
-
-                        if (wmRow) {
-                            const cols = wmRow.querySelectorAll('td');
-                            wm_feedID = cols[2]?.textContent.trim() || "";
-                        }
-                    }
-                } catch (err) {
-                    console.error("Error fetching feed ID", err);
+                if (wm_feedID) {
+                    cells[2].title = cells[2].textContent.trim();
+                    cells[2].textContent = wm_feedID;
                 }
             }
 
-            if (wm_feedID) {
-                cells[2].title = cells[2].textContent.trim();
-                cells[2].textContent = wm_feedID;
-            }
+            delete row.dataset.processing;
+
         }
 
-        delete row.dataset.processing;
+        function addTableHeadings(textContent, className = 'patches_newHeader') {
+            const th = document.createElement('th');
+            th.textContent = textContent;
+            th.classList.add(className, 'min-w-100px');
+            return th;
+        }
 
-    }
-
-    function addTableHeadings(textContent, className = 'patches_newHeader') {
-        const th = document.createElement('th');
-        th.textContent = textContent;
-        th.classList.add(className, 'min-w-100px');
-        return th;
-    }
-
-    function addCell(innerHTML, className = 'patches_newcell', title = 'Patches New Cell', label = 'New Patch Cell') {
-        const newCell = document.createElement('td');
-        newCell.classList.add(className);
-        newCell.innerHTML = innerHTML;
-        newCell.title = title;
-        newCell.setAttribute('label', label);
-        return newCell;
+        function addCell(innerHTML, className = 'patches_newcell', title = 'Patches New Cell', label = 'New Patch Cell') {
+            const newCell = document.createElement('td');
+            newCell.classList.add(className);
+            newCell.innerHTML = innerHTML;
+            newCell.title = title;
+            newCell.setAttribute('label', label);
+            return newCell;
+        }
     }
 }
 
@@ -425,20 +454,16 @@ async function initExportAllRecords() {
 }
 
 async function initErrorLogPatch() {
-    toggleLDtTableoad('inherit');
-    await itemDetailsInit();
-    prettyLinkSkus();
-    toggleLDtTableoad('none');
-    const wrapper = document.getElementById('dtTable_wrapper');
-    if (wrapper) {
-        const observer = new MutationObserver(() => {
-            clearTimeout(observer._debounce);
-            observer._debounce = setTimeout(prettyLinkSkus, 500);
-        });
+    const tableWrapper = document.getElementById('dtTable_wrapper');
+    const card = tableWrapper.parentElement.parentElement;
+    const card_toolbar = card.querySelector('.card-header > .card-toolbar');
 
-        observer.observe(wrapper, { childList: true, subtree: true });
-    }
-    initExportAllRecords();
+    const spacer = document.createElement('span');
+    spacer.setAttribute('style', 'display:flex;flex:1;');
+    card_toolbar.prepend(spacer);
+
+    card_toolbar.prepend(initPrettyPrint());
+    card_toolbar.prepend(initExportAllRecords());
 }
 
 setTimeout(initErrorLogPatch, 150);
