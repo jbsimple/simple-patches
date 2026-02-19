@@ -251,6 +251,165 @@ async function prettyLinkSkus() {
     }
 }
 
+async function initExportAllRecords() {
+    const tableWrapper = document.getElementById('dtTable_wrapper');
+    const card = tableWrapper.parentElement.parentElement;
+    const card_toolbar = card.querySelector('.card-header > .card-toolbar');
+    
+    const exportAll = document.createElement('button');
+    exportAll.classList.push('btn', 'btn-warning', 'btn-sm');
+    exportAll.title = 'This downloads all records, not just the page.';
+    exportAll.textContent = 'Export All';
+    exportAll.onclick = downloadAllRecords;
+    card_toolbar.appendChild(exportAll);
+
+    async function downloadAllRecords() {
+        const CHUNK_SIZE = 3000;
+        const allData = [];
+        const buildParams = (start, length) => {
+
+            const params = new URLSearchParams();
+
+            params.append('draw', 1);
+            params.append('start', start);
+            params.append('length', length);
+
+            params.append('search[value]', '');
+            params.append('search[regex]', false);
+
+            const footerCells = document.querySelectorAll('#dtfoot th');
+
+            for (let i = 0; i < footerCells.length; i++) {
+
+                const input = footerCells[i].querySelector('input, select');
+                const value = input ? input.value.trim() : '';
+
+                params.append(`columns[${i}][data]`, i);
+                params.append(`columns[${i}][name]`, '');
+                params.append(`columns[${i}][searchable]`, true);
+                params.append(`columns[${i}][orderable]`, true);
+                params.append(`columns[${i}][search][value]`, value);
+                params.append(`columns[${i}][search][regex]`, false);
+            }
+
+            params.append('v', Date.now());
+
+            return params;
+        };
+
+        try {
+            const firstUrl = `/datatables/storelogs?${buildParams(0, 1).toString()}`;
+            const firstResponse = await fetch(firstUrl);
+
+            if (!firstResponse.ok) { throw new Error(`Initial fetch failed: ${firstResponse.status}`); }
+
+            const firstData = await firstResponse.json();
+            const totalRecords = firstData.recordsFiltered || firstData.recordsTotal;
+
+            console.debug('PATCHES Total records:', totalRecords);
+
+            let start = 0;
+            while (start < totalRecords) {
+                console.debug(`Fetching ${start} → ${start + CHUNK_SIZE}`);
+
+                const url = `/datatables/storelogs?${buildParams(start, CHUNK_SIZE).toString()}`;
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error(`Chunk fetch failed at ${start}: ${response.status}`);
+                }
+
+                const data = await response.json();
+                if (Array.isArray(data.data)) { allData.push(...data.data); }
+
+                start += CHUNK_SIZE;
+            }
+
+            console.debug('PATCHES - Finished fetching all records.', allData);
+            exportStoreLogsToCSV(allData);
+            return allData;
+
+        } catch (error) {
+            console.error('PATCHES - Download failed:', error);
+        }
+
+        function exportStoreLogsToCSV(allData) {
+
+            const rows = [];
+
+            rows.push(["Store","Store ID","Reference","Type","Details JSON","Timestamp"]);
+
+            for (const row of allData) {
+
+                const parser = new DOMParser();
+
+                const col1 = row[1];
+                const col2 = row[2];
+                const col3 = row[3];
+                const col4 = row[4];
+
+                let jsonString = '';
+                if (row[5]) {
+                    const doc = parser.parseFromString(row[5], 'text/html');
+                    const items = doc.querySelectorAll('.json__item');
+
+                    const obj = {};
+
+                    items.forEach(item => {
+                        const key = item.querySelector('.json__key')?.textContent?.trim();
+                        const value = item.querySelector('.json__value')?.textContent?.trim();
+                        if (key) obj[key] = value;
+                    });
+
+                    jsonString = JSON.stringify(obj);
+                }
+
+                let timestamp = '';
+                if (row[6]) {
+                    const doc = parser.parseFromString(row[6], 'text/html');
+                    const span = doc.querySelector('span');
+                    timestamp = span?.getAttribute('title') || '';
+                }
+
+                rows.push([
+                    col1,
+                    col2,
+                    col3,
+                    col4,
+                    jsonString,
+                    timestamp
+                ]);
+            }
+
+            const csvContent = rows
+                .map(r =>
+                    r.map(field => {
+                        if (field === null || field === undefined) return '';
+                        const escaped = String(field).replace(/"/g, '""');
+                        return `"${escaped}"`;
+                    }).join(',')
+                )
+                .join('\n');
+
+            const blob = new Blob([csvContent], {
+                type: 'text/csv;charset=utf-8;'
+            });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `storelogs_${Date.now()}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            URL.revokeObjectURL(url);
+
+            console.log('PATCHES - CSV export complete.');
+        }
+    }
+}
+
 async function initErrorLogPatch() {
     toggleLDtTableoad('inherit');
     await itemDetailsInit();

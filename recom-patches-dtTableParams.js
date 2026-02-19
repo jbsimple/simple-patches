@@ -110,7 +110,7 @@ function initExportDtTable() {
     const button = document.createElement('a');
     button.classList.add('btn', 'btn-info', 'btn-sm');
     button.setAttribute('data-patches', 'dtTableExport');
-    button.textContent = "Export CSV";
+    button.textContent = "Export Page";
     button.onclick = exportDtTable;
 
     toolbar.insertBefore(button, toolbar.firstChild);
