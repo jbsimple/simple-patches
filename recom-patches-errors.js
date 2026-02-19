@@ -1,4 +1,4 @@
-async function initPrettyPrint() {
+function initPrettyPrint() {
     let itemData = null;
     let manualData = {};
     const fetchPromises = {};
@@ -280,7 +280,7 @@ async function initPrettyPrint() {
     }
 }
 
-async function initExportAllRecords() {
+function initExportAllRecords() {
     const exportAll = document.createElement('button');
     exportAll.type = 'button';
     exportAll.classList.add('btn', 'btn-info', 'btn-sm');
