@@ -257,10 +257,11 @@ async function initExportAllRecords() {
     const card_toolbar = card.querySelector('.card-header > .card-toolbar');
     
     const exportAll = document.createElement('button');
-    exportAll.classList.push('btn', 'btn-warning', 'btn-sm');
+    exportAll.type = 'button';
+    exportAll.classList.add('btn', 'btn-warning', 'btn-sm');
     exportAll.title = 'This downloads all records, not just the page.';
     exportAll.textContent = 'Export All';
-    exportAll.onclick = downloadAllRecords;
+    exportAll.addEventListener('click', downloadAllRecords);
     card_toolbar.appendChild(exportAll);
 
     async function downloadAllRecords() {
