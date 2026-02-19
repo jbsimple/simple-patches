@@ -255,6 +255,10 @@ async function initExportAllRecords() {
     const tableWrapper = document.getElementById('dtTable_wrapper');
     const card = tableWrapper.parentElement.parentElement;
     const card_toolbar = card.querySelector('.card-header > .card-toolbar');
+
+    const spacer = document.createElement('span');
+    spacer.setAttribute('style', 'display:flex;flex:1;');
+    card_toolbar.prepend(spacer);
     
     const exportAll = document.createElement('button');
     exportAll.type = 'button';
@@ -262,7 +266,7 @@ async function initExportAllRecords() {
     exportAll.title = 'This downloads all records, not just the page.';
     exportAll.textContent = 'Export All';
     exportAll.addEventListener('click', downloadAllRecords);
-    card_toolbar.appendChild(exportAll);
+    card_toolbar.prepend(exportAll);
 
     async function downloadAllRecords() {
         const CHUNK_SIZE = 3000;
