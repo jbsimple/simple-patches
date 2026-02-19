@@ -6,9 +6,9 @@ function initPrettyPrint() {
 
     const actionButton = document.createElement('button');
     actionButton.type = 'button';
-    actionButton.classList.add('btn', 'btn-info', 'btn-sm');
-    actionButton.title = 'This downloads all records, not just the page.';
-    actionButton.textContent = 'Export All';
+    actionButton.classList.add('btn', 'btn-primary', 'btn-sm');
+    actionButton.title = 'This adds SKU Links, In Stock Count, SID Links and Categories.';
+    actionButton.textContent = 'Pretty Print';
     actionButton.addEventListener('click', async () => {
         actionButton.disabled = true;
         try {
