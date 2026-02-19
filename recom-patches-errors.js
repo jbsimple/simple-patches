@@ -265,7 +265,15 @@ async function initExportAllRecords() {
     exportAll.classList.add('btn', 'btn-warning', 'btn-sm');
     exportAll.title = 'This downloads all records, not just the page.';
     exportAll.textContent = 'Export All';
-    exportAll.addEventListener('click', downloadAllRecords);
+    exportAll.addEventListener('click', async () => {
+        exportAll.disabled = true;
+        try {
+            await downloadAllRecords();
+        } catch (err) {
+            console.error(err);
+        }
+        exportAll.disabled = false;
+    });
     card_toolbar.prepend(exportAll);
 
     async function downloadAllRecords() {
