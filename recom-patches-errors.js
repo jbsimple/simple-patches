@@ -424,6 +424,7 @@ async function initErrorLogPatch() {
 
         observer.observe(wrapper, { childList: true, subtree: true });
     }
+    initExportAllRecords();
 }
 
 setTimeout(initErrorLogPatch, 150);
