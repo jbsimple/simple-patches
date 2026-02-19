@@ -30,7 +30,6 @@ async function initPrettyPrint() {
         }
         actionButton.disabled = false;
     });
-
     return actionButton;
 
     async function itemDetailsInit() {
@@ -282,14 +281,6 @@ async function initPrettyPrint() {
 }
 
 async function initExportAllRecords() {
-    const tableWrapper = document.getElementById('dtTable_wrapper');
-    const card = tableWrapper.parentElement.parentElement;
-    const card_toolbar = card.querySelector('.card-header > .card-toolbar');
-
-    const spacer = document.createElement('span');
-    spacer.setAttribute('style', 'display:flex;flex:1;');
-    card_toolbar.prepend(spacer);
-    
     const exportAll = document.createElement('button');
     exportAll.type = 'button';
     exportAll.classList.add('btn', 'btn-info', 'btn-sm');
@@ -304,7 +295,7 @@ async function initExportAllRecords() {
         }
         exportAll.disabled = false;
     });
-    card_toolbar.prepend(exportAll);
+    return exportAll;
 
     async function downloadAllRecords() {
         const CHUNK_SIZE = 3000;
