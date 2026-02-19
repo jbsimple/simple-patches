@@ -136,7 +136,9 @@ async function prettyLinkSkus() {
 
         const cells = row.querySelectorAll('td');
         const skuCell = cells[3];
-        const text = skuCell.textContent.trim();
+        if (skuCell.textContent === null) return;
+
+        const text = skuCell.textContent?.trim();
 
         const isItemSKU = text.startsWith('SC-') || text.startsWith('RF_SC-') || text.startsWith('DF-') || text.startsWith('CP_0_SC-') || text.startsWith('CP_1_SC-');
         if (!isItemSKU) {
