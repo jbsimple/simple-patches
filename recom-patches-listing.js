@@ -542,6 +542,8 @@ function handlePrefillPictureWarning() {
             const conditionId = parseInt(condition.value, 10);
             if (conditionId === 6 || conditionId === 8 || conditionId === 18) {
                 handlePrefillWarning('This condition requires custom pictures.');
+            } else if (conditionId === 1) {
+                handlePrefillWarning('This is a new condition item, please update SID info with box/new info.');
             }
         } else {
             console.error('PATCHES - Unable to find condition?', condition);
