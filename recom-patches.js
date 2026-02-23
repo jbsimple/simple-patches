@@ -325,8 +325,13 @@ function loadPatchSettings() {
                         background-color: color-mix(in srgb,var(--bs-gray-200) 50%, transparent 50%) !important;
                     }
 
-                    .ql-container.ql-snow, .form-control.form-control-solid {
+                    .ql-container.ql-snow, .form-control.form-control-solid, .form-select.form-select-solid {
                         background-color: color-mix(in srgb, var(--bs-gray-100) 50%, transparent 50%) !important;
+                    }
+
+                    .dropzone {
+                        background-color: color-mix(in srgb, var(--bs-primary-light) 50%, transparent 50%) !important;
+
                     }
                 `;
                 document.head.appendChild(styleTag);
