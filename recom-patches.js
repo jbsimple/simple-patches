@@ -321,8 +321,12 @@ function loadPatchSettings() {
                         background-color: color-mix(in srgb, var(--bs-card-bg) 85%, transparent 15%) !important;
                     }
 
-                    .dropdown.show>.form-control.form-control-solid, .form-control.form-control-solid.active, .form-control.form-control-solid.focus, .form-control.form-control-solid:active, .form-control.form-control-solid:focus, .ql-container.ql-snow {
+                    .dropdown.show>.form-control.form-control-solid, .form-control.form-control-solid.active, .form-control.form-control-solid.focus, .form-control.form-control-solid:active, .form-control.form-control-solid:focus {
                         background-color: color-mix(in srgb,var(--bs-gray-200) 50%, transparent 50%) !important;
+                    }
+
+                    .ql-container.ql-snow, .form-control.form-control-solid {
+                        background-color: color-mix(in srgb, var(--bs-gray-100) 50%, transparent 50%) !important;
                     }
                 `;
                 document.head.appendChild(styleTag);
