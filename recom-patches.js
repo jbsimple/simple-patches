@@ -333,6 +333,10 @@ function loadPatchSettings() {
                         background-color: color-mix(in srgb, var(--bs-primary-light) 50%, transparent 50%) !important;
 
                     }
+
+                    .form-control {
+                        background-color: color-mix(in srgb, var--bs-body-bg) 50%, transparent 50%) !important;
+                    }
                 `;
                 document.head.appendChild(styleTag);
 
