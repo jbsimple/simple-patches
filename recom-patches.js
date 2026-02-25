@@ -709,6 +709,42 @@ async function confirmSwal(title, message, icon = 'warning', confirmText = 'Yes'
     return result.isConfirmed === true;
 }
 
+async function fireToast(title, message, color = 'primary', icon = 'warning') {
+    const existing = document.querySelector('.custom-toast');
+    if (existing) {
+        existing.classList.remove('show');
+        setTimeout(() => existing.remove(), 300);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `custom-toast ${color}`;
+    toast.innerHTML = `
+        <div class="toast-icon">
+            <div class="swal2-icon swal2-${icon}" style="margin:0; transform:scale(.55);"></div>
+        </div>
+        <div class="toast-body">
+            <strong class="toast-title">${title}</strong>
+            <span class="toast-message">${message}</span>
+        </div>
+    `;
+
+    document.body.appendChild(toast);
+
+    requestAnimationFrame(() => {
+        toast.classList.add('show');
+    });
+
+    toast.addEventListener('click', () => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 350);
+    });
+
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 350);
+    }, 5000);
+}
+
 function clockTaskVisualRefresh(ping = false) {
     const href = '/user/me';
     const checkButtonSelector = 'a[href^="javascript:clockInOut"]';
