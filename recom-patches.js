@@ -750,6 +750,7 @@ async function fireToast(title, message, color = 'primary', icon = 'warning') {
         iconClone.style.height = '32px';
         iconClone.style.fontSize = '10px';
         iconClone.style.margin = '0';
+        iconClone.style.marginRight = '0.75rem';
         toast.querySelector('.toast-icon').appendChild(iconClone);
     }
 
