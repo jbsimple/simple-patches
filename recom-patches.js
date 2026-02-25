@@ -830,10 +830,10 @@ function clockTaskVisualRefresh(ping = false) {
                 const newParentDiv = newButton.closest('div');
                 if (currentParentDiv && newParentDiv) {
                     currentParentDiv.replaceWith(newParentDiv);
-                    modifiedClockInit();
                 } else {
                     console.warn('Could not find parent <div> to replace.');
                 }
+                modifiedClockInit();
             } else {
                 console.debug('Patches - Clock In Task the same.');
             }
