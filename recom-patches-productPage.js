@@ -644,6 +644,30 @@ function modifyMediaTable() {
                     new_card_title.setAttribute('style', 'flex: 1; padding-top: 0.315rem;');
                     new_card_title.innerHTML = `<strong class="card-label" style="font-size: 1.5rem;">New Image</strong>`;
                 }
+
+                const copy_url = card_toolbar.querySelector('a[aria-label="Copy URL"]');
+                if (copy_url) {
+                    copy_url.onclick = null;
+                    copy_url.removeAttribute('onclick');
+
+                    copy_url.addEventListener('click', async (e) => {
+                        e.preventDefault();
+
+                        const text = copy_url.getAttribute('data-clipboard-text');
+                        if (!text) return;
+
+                        navigator.clipboard.writeText(text).then(() => {
+                            copy_url.innerHTML = '<i class="fas fa-clipboard fs-2"></i>';
+                            copy_url.title = 'Copied!';
+                            copy_url.classList.add('btn-primary');
+                            setTimeout(() => {
+                                copy_url.innerHTML = '<i class="fas fa-copy fs-2"></i>';
+                                copy_url.classList.remove('btn-primary');
+                                copy_url.removeAttribute('title');
+                            }, 2000);
+                        }).catch(err => console.error('Failed to copy:', err));
+                    });
+                }
                 
                 subContRow1.appendChild(card_toolbar);
                 
@@ -1411,8 +1435,6 @@ function extraMediaInit() {
         newElement.appendChild(spacer);
         
         media_tree_parent.insertBefore(newElement, media_tree);
-
-
 
         // manage image buttons
         if (imageElements.length > 0) {
