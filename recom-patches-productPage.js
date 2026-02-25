@@ -688,15 +688,16 @@ function modifyMediaTable() {
 
                         if (image) {
                             // add a button after copy url
-                            const copyImage = document.createElement('a');
-                            copyImage.classList.add('btn', 'btn-icon', 'btn-hover-light-info');
-                            copyImage.dataset.bsToggle = "tooltip";
-                            copyImage.setAttribute("aria-label", "Copy Image");
-                            copyImage.dataset.bsOriginalTitle = "Copy Image";
-                            copyImage.dataset.ktInitialized = "0";
-                            copy_url.insertAdjacentElement('afterend', copyImage);
+                            const copy_image = document.createElement('a');
+                            copy_image.classList.add('btn', 'btn-icon', 'btn-hover-light-info');
+                            copy_image.dataset.bsToggle = "tooltip";
+                            copy_image.setAttribute("aria-label", "Copy Image");
+                            copy_image.dataset.bsOriginalTitle = "Copy Image";
+                            copy_image.dataset.ktInitialized = "0";
+                            copy_image.innerHTML = '<i class="fas fa-image fs-2"></i>';
+                            copy_url.insertAdjacentElement('afterend', copy_image);
 
-                            copyImage.addEventListener('click', async (e) => {
+                            copy_image.addEventListener('click', async (e) => {
                                 e.preventDefault();
 
                                 const domimg = image.querySelector('img');
@@ -745,13 +746,13 @@ function modifyMediaTable() {
                                         })
                                     ]);
 
-                                    copy_url.innerHTML = '<i class="fas fa-clipboard fs-2"></i>';
-                                    copy_url.title = 'Copied!';
-                                    copy_url.classList.add('btn-primary');
+                                    copy_image.innerHTML = '<i class="fas fa-clipboard fs-2"></i>';
+                                    copy_image.title = 'Copied!';
+                                    copy_image.classList.add('btn-primary');
                                     setTimeout(() => {
-                                        copy_url.innerHTML = '<i class="fas fa-copy fs-2"></i>';
-                                        copy_url.classList.remove('btn-primary');
-                                        copy_url.removeAttribute('title');
+                                        copy_image.innerHTML = '<i class="fas fa-image fs-2"></i>';
+                                        copy_image.classList.remove('btn-primary');
+                                        copy_image.removeAttribute('title');
                                     }, 2000);
 
                                 } catch (err) {
