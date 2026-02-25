@@ -54,21 +54,49 @@ function exportDtTable() {
 
     let rows = [];
 
-    table.querySelectorAll("thead tr, tbody tr").forEach(tr => {
+    table.querySelectorAll("thead tr, tbody tr").forEach((tr) => {
         let cells = [];
-        tr.querySelectorAll("th, td").forEach(td => {
+        const isBodyRow = tr.closest("tbody") !== null;
+
+        tr.querySelectorAll("th, td").forEach((td, colIndex) => {
             let text = td.innerText.trim();
 
+            if (isBodyRow && colIndex === 0) {
+                const checkbox = td.querySelector('input[type="checkbox"]');
+
+                if (checkbox) {
+                    const tds = tr.querySelectorAll('td');
+                    const lastTd = tds[tds.length - 1];
+
+                    if (lastTd) {
+                        const idElement = lastTd.querySelector('[data-id]');
+                        if (idElement && idElement.dataset.id) { text = idElement.dataset.id.trim(); }
+                    } else {
+                        const idElement = tr.querySelector('[data-id]');
+                        if (idElement && idElement.dataset.id) { text = idElement.dataset.id.trim(); }
+                    }
+                } else {
+                    text = "";
+                }
+            }
+
             const link = td.querySelector("a");
-            if (link) { text = link.textContent.trim(); }
+            if (link) {
+                text = link.textContent.trim();
+            }
 
             const span = td.querySelector("span[title]");
-            if (span && span.getAttribute("title")) { text = span.getAttribute("title").trim(); }
+            if (span && span.getAttribute("title")) {
+                text = span.getAttribute("title").trim();
+            }
 
-            if (text.includes(",") || text.includes("\"")) { text = `"${text.replace(/"/g, '""')}"`; }
+            if (text.includes(",") || text.includes("\"")) {
+                text = `"${text.replace(/"/g, '""')}"`;
+            }
 
             cells.push(text);
         });
+
         rows.push(cells.join(","));
     });
 
@@ -88,9 +116,12 @@ function exportDtTable() {
 
     const a = document.createElement("a");
     a.href = url;
+
     const uri = location.pathname.replace(/^\/+/, "");
     const datatableName = uri.replace(/[^a-zA-Z0-9_-]/g, "-");
+
     a.download = `${datatableName}_${timestamp}_${page}.csv`;
+
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

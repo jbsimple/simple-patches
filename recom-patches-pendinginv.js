@@ -529,7 +529,7 @@ function initToolbarButtons() {
     if (!picontainer) return;
 
     const checkImgButton = document.createElement('button');
-    checkImgButton.classList.add('btn', 'btn-info');
+    checkImgButton.classList.add('btn', 'btn-info', 'btn-sm');
     checkImgButton.id = 'patch_openAllImages';
     checkImgButton.textContent = 'Check Images';
     checkImgButton.disabled = true;
@@ -544,7 +544,7 @@ function initToolbarButtons() {
     checkImgButton.onclick = checkPics;
 
     const addPictureLocationButton = document.createElement('button');
-    addPictureLocationButton.classList.add('btn', 'btn-secondary');
+    addPictureLocationButton.classList.add('btn', 'btn-secondary', 'btn-sm');
     addPictureLocationButton.id = 'patch_adjustPictureLocation';
     addPictureLocationButton.textContent = 'Add Picture Locations';
     addPictureLocationButton.disabled = true;
@@ -559,7 +559,7 @@ function initToolbarButtons() {
     addPictureLocationButton.onclick = () => updateLocations('PICTURES');
 
     const updatePictureLocationButton = document.createElement('button');
-    updatePictureLocationButton.classList.add('btn', 'btn-secondary');
+    updatePictureLocationButton.classList.add('btn', 'btn-secondary', 'btn-sm');
     updatePictureLocationButton.id = 'patch_adjustPictureLocation';
     updatePictureLocationButton.textContent = 'Update Picture Locations';
     updatePictureLocationButton.disabled = true;
@@ -602,10 +602,6 @@ function initToolbarButtons() {
             keywordSearchButton.title = "Searches by listing keywords.";
             keywordSearchButton.style.cssText = `
                 color: white;
-                border: none;
-                padding: 10px 20px;
-                cursor: pointer;
-                border-radius: 5px;
                 margin-top: 0.5rem;
             `;
             keywordSearchButton.onclick = keywordSearch;
