@@ -499,12 +499,13 @@ table.dataTable.table-striped>tbody>tr.odd.danger {
     padding: 14px 18px;
     border-radius: 8px;
     font-size: 14px;
-    color: #fff;
     box-shadow: 0 8px 24px rgba(0,0,0,0.25);
     z-index: 9999;
     opacity: 0;
     transition: all 0.35s ease;
-    background: color-mix(in srgb, var(--toastBG) 25%, var(--bs-light) 75%);
+    border-color: var(--toast-accent);
+    color: var(--toast-accent);
+    background: var(--bs-app-bg-color);
 
     display: flex;
     flex-direction: row;
@@ -529,7 +530,7 @@ table.dataTable.table-striped>tbody>tr.odd.danger {
     gap: 0.25rem;
 }
 
-.custom-toast.warning { --toastBG: var(--bs-warning); }
-.custom-toast.primary { --toastBG: var(--bs-primary); }
-.custom-toast.danger { --toastBG: var(--bs-danger); }
-.custom-toast.info { --toastBG: var(--bs-info); }
+.custom-toast.warning { --toast-accent: var(--bs-warning); }
+.custom-toast.primary { --toast-accent: var(--bs-primary); }
+.custom-toast.danger { --toast-accent: var(--bs-danger); }
+.custom-toast.info { --toast-accent: var(--bs-info); }
