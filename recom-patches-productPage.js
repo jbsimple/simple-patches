@@ -713,10 +713,35 @@ function modifyMediaTable() {
                                         throw new Error('Failed to fetch image.');
                                     }
 
-                                    const blob = await response.blob();
+                                    const originalBlob = await response.blob();
+                                    let finalBlob = originalBlob;
+                                    if (!originalBlob.type.includes('png')) {
+                                        const img = document.createElement('img');
+                                        const objectURL = URL.createObjectURL(originalBlob);
+
+                                        await new Promise((resolve, reject) => {
+                                            img.onload = resolve;
+                                            img.onerror = reject;
+                                            img.src = objectURL;
+                                        });
+
+                                        const canvas = document.createElement('canvas');
+                                        canvas.width = img.width;
+                                        canvas.height = img.height;
+
+                                        const ctx = canvas.getContext('2d');
+                                        ctx.drawImage(img, 0, 0);
+
+                                        finalBlob = await new Promise(resolve =>
+                                            canvas.toBlob(resolve, 'image/png')
+                                        );
+
+                                        URL.revokeObjectURL(objectURL);
+                                    }
+                                                                        
                                     await navigator.clipboard.write([
                                         new ClipboardItem({
-                                            [blob.type]: blob
+                                            [finalBlob.type]: finalBlob
                                         })
                                     ]);
 
