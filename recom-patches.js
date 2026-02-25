@@ -746,7 +746,10 @@ async function fireToast(title, message, color = 'primary', icon = 'warning') {
 
     if (iconClone) {
         iconClone.style.margin = '0';
-        iconClone.style.transform = 'scale(.6)';
+        iconClone.style.width = '32px';
+        iconClone.style.height = '32px';
+        iconClone.style.fontSize = '10px';
+        iconClone.style.margin = '0';
         toast.querySelector('.toast-icon').appendChild(iconClone);
     }
 
