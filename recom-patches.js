@@ -549,6 +549,7 @@ function scheduleRun(hour, minute, callback) {
     }, delay);
 }
 
+let currentTask = null;
 function modifiedClockInit() {
 	const recordTime_button = document.querySelector('a[data-url="productivity/record"]');
 	if (recordTime_button) {
@@ -560,6 +561,10 @@ function modifiedClockInit() {
 			const tempDiv = document.createElement("div");
 			tempDiv.innerHTML = taskHTML;
 			const task = tempDiv.textContent.trim().replace("Clock out -", "").trim();
+
+            if (task !== null && task !== '') {
+                currentTask = task;
+            }
 
             clockButton.innerHTML = `<i class="bi bi-stopwatch-fill fs-2 mobilefix"></i><span class="mobilefix">Clock Out - ${task}</span>`;
 			
