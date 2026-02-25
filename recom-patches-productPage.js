@@ -645,28 +645,49 @@ function modifyMediaTable() {
                     new_card_title.innerHTML = `<strong class="card-label" style="font-size: 1.5rem;">New Image</strong>`;
                 }
 
-                const copy_url = card_toolbar.querySelector('a[aria-label="Copy URL"]');
-                if (copy_url) {
-                    copy_url.onclick = null;
-                    copy_url.removeAttribute('onclick');
+                if (card_toolbar) {
+                    const copy_url = card_toolbar.querySelector('a[aria-label="Copy URL"]');
 
-                    copy_url.addEventListener('click', async (e) => {
-                        e.preventDefault();
+                    if (copy_url && !copy_url.dataset.clipboardPatched) {
 
-                        const text = copy_url.getAttribute('data-clipboard-text');
-                        if (!text) return;
+                        copy_url.dataset.clipboardPatched = "true";
 
-                        navigator.clipboard.writeText(text).then(() => {
-                            copy_url.innerHTML = '<i class="fas fa-clipboard fs-2"></i>';
-                            copy_url.title = 'Copied!';
-                            copy_url.classList.add('btn-primary');
-                            setTimeout(() => {
-                                copy_url.innerHTML = '<i class="fas fa-copy fs-2"></i>';
-                                copy_url.classList.remove('btn-primary');
-                                copy_url.removeAttribute('title');
-                            }, 2000);
-                        }).catch(err => console.error('Failed to copy:', err));
-                    });
+                        copy_url.onclick = null;
+                        copy_url.removeAttribute('onclick');
+
+                        if (copy_url.dataset.clipboardText) {
+                            copy_url.dataset.patchClipboard = copy_url.dataset.clipboardText;
+                            delete copy_url.dataset.clipboardText;
+                        }
+
+                        if (copy_url.classList.contains('copy-url')) {
+                            copy_url.classList.remove('copy-url');
+                        }
+
+                        copy_url.addEventListener('click', async (e) => {
+                            e.preventDefault();
+
+                            const text = copy_url.dataset.patchClipboard;
+                            if (!text) return;
+
+                            try {
+                                await navigator.clipboard.writeText(text);
+
+                                copy_url.innerHTML = '<i class="fas fa-clipboard fs-2"></i>';
+                                copy_url.title = 'Copied!';
+                                copy_url.classList.add('btn-primary');
+
+                                setTimeout(() => {
+                                    copy_url.innerHTML = '<i class="fas fa-copy fs-2"></i>';
+                                    copy_url.classList.remove('btn-primary');
+                                    copy_url.removeAttribute('title');
+                                }, 2000);
+
+                            } catch (err) {
+                                console.error('Failed to copy:', err);
+                            }
+                        });
+                    }
                 }
                 
                 subContRow1.appendChild(card_toolbar);
