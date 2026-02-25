@@ -503,7 +503,7 @@ table.dataTable.table-striped>tbody>tr.odd.danger {
     z-index: 9999;
     opacity: 0;
     transition: all 0.35s ease;
-    border-color: var(--toast-accent);
+    border: 1px solid var(--toast-accent);
     color: var(--toast-accent);
     background: var(--bs-app-bg-color);
 

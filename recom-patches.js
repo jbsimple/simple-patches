@@ -770,11 +770,10 @@ async function fireToast(title, message, color = 'primary', icon = 'warning') {
         setTimeout(() => toast.remove(), 350);
     });
 
-    /*
     setTimeout(() => {
         toast.classList.remove('show');
         setTimeout(() => toast.remove(), 350);
-    }, 5000); */
+    }, 5000);
 }
 
 function clockTaskVisualRefresh(ping = false) {
