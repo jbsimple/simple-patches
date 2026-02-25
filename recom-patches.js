@@ -710,23 +710,45 @@ async function confirmSwal(title, message, icon = 'warning', confirmText = 'Yes'
 }
 
 async function fireToast(title, message, color = 'primary', icon = 'warning') {
+
     const existing = document.querySelector('.custom-toast');
     if (existing) {
         existing.classList.remove('show');
         setTimeout(() => existing.remove(), 300);
     }
 
+    const { value: dummy } = await Swal.fire({
+        title: '',
+        text: '',
+        icon: icon,
+        showConfirmButton: false,
+        timer: 1,
+        backdrop: false,
+        didOpen: (el) => {
+            el.style.display = 'none';
+        }
+    });
+
+    const swalIcon = document.querySelector('.swal2-icon');
+    const iconClone = swalIcon ? swalIcon.cloneNode(true) : null;
+
+    Swal.close();
+
     const toast = document.createElement('div');
     toast.className = `custom-toast ${color}`;
     toast.innerHTML = `
-        <div class="toast-icon">
-            <div class="swal2-icon swal2-${icon}" style="margin:0; transform:scale(.55);"></div>
-        </div>
+        <div class="toast-icon"></div>
         <div class="toast-body">
             <strong class="toast-title">${title}</strong>
             <span class="toast-message">${message}</span>
         </div>
     `;
+
+    if (iconClone) {
+        iconClone.style.margin = '0';
+        iconClone.style.transform = 'scale(.6)';
+        toast.querySelector('.toast-icon').appendChild(iconClone);
+    }
 
     document.body.appendChild(toast);
 

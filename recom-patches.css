@@ -511,7 +511,6 @@ table.dataTable.table-striped>tbody>tr.odd.danger {
     gap: 0.75rem;
 }
 
-
 .custom-toast.show {
     bottom: 30px;
     opacity: 1;
