@@ -672,11 +672,9 @@ function modifyMediaTable() {
 
                             try {
                                 await navigator.clipboard.writeText(text);
-
                                 copy_url.innerHTML = '<i class="fas fa-clipboard fs-2"></i>';
                                 copy_url.title = 'Copied!';
                                 copy_url.classList.add('btn-primary');
-
                                 setTimeout(() => {
                                     copy_url.innerHTML = '<i class="fas fa-copy fs-2"></i>';
                                     copy_url.classList.remove('btn-primary');
@@ -687,6 +685,57 @@ function modifyMediaTable() {
                                 console.error('Failed to copy:', err);
                             }
                         });
+
+                        if (image) {
+                            // add a button after copy url
+                            const copyImage = document.createElement('a');
+                            copyImage.classList.add('btn', 'btn-icon', 'btn-hover-light-info');
+                            copyImage.dataset.bsToggle = "tooltip";
+                            copyImage.setAttribute("aria-label", "Copy Image");
+                            copyImage.dataset.bsOriginalTitle = "Copy Image";
+                            copyImage.dataset.ktInitialized = "0";
+                            copy_url.insertAdjacentElement('afterend', copyImage);
+
+                            copyImage.addEventListener('click', async (e) => {
+                                e.preventDefault();
+
+                                const domimg = image.querySelector('img');
+                                if (!domimg) return;
+
+                                try {
+                                    // this has to be done with the vercel proxy used on the transfer img tool
+                                    const imageURL = domimg.src;
+                                    const filenameFromURL = imageURL.split('/').pop()?.split('?')[0] || '';
+                                    const response = await fetch(`https://simple-patches.vercel.app/api/proxy-image?url=${encodeURIComponent(imageURL)}&filename=${encodeURIComponent(filenameFromURL)}`);
+
+                                    if (!response.ok) {
+                                        fireSwal('ERROR', 'Unable to get image BLOB for clipboard.', 'error');
+                                        throw new Error('Failed to fetch image.');
+                                    }
+
+                                    const blob = await response.blob();
+                                    await navigator.clipboard.write([
+                                        new ClipboardItem({
+                                            [blob.type]: blob
+                                        })
+                                    ]);
+
+                                    copy_url.innerHTML = '<i class="fas fa-clipboard fs-2"></i>';
+                                    copy_url.title = 'Copied!';
+                                    copy_url.classList.add('btn-primary');
+                                    setTimeout(() => {
+                                        copy_url.innerHTML = '<i class="fas fa-copy fs-2"></i>';
+                                        copy_url.classList.remove('btn-primary');
+                                        copy_url.removeAttribute('title');
+                                    }, 2000);
+
+                                } catch (err) {
+                                    console.error('Failed to copy:', err);
+                                }
+                            });
+
+                        }
+
                     }
                 }
                 
