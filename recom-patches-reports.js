@@ -211,6 +211,7 @@ function initPreset() {
     
     card_body.appendChild(report_preset('listing_productivity'));
     //card_body.appendChild(report_preset('marketing_productivity'));
+    card_body.appendChild(report_preset('productivity_meetingNotes'));
     card_body.appendChild(report_preset('product_stockandvalue'));
     card_body.appendChild(report_preset('product_highQty'));
     card_body.appendChild(report_preset('items_createdRecent'));
@@ -473,6 +474,14 @@ function report_preset(name) {
         details.desc = "Gets Image URLs and Resolutions for each Item->Product.<br>DO NOT RUN. This report takes 30 minutes to run and a ton of resources.";
         details.title = "Picture URLs + Resolutions";
         return report_initHTML(details);
+    } else if (name === 'productivity_meetingNotes') {
+        var details = {};
+        details.id = `patches-reports-meetingNotes`;
+        details.name = `patches-reports-meetingNotes`;
+        details.func = `report_meetingNotes();`;
+        details.desc = "Get all meeting notes in one report with timestamps.<br>For just user 38.";
+        details.title = "Meeting Notes Collection";
+        return report_initHTML(details);
     } else {
         return null;
     }
@@ -608,6 +617,60 @@ function report_marketingProducivity_submit() {
     };
     
     getReport(request);
+}
+
+async function report_meetingNotes() {
+
+    const createButton = document.querySelector(`button[data-id="patches-reports-meetingNotes"]`);
+    if (createButton) {
+        createButton.textContent = 'Loading...';
+        createButton.setAttribute('style', 'background-color: gray !important;');
+    }
+	
+	const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
+	
+	const today = new Date();
+    const date = `${String(today.getMonth() + 1).padStart(2, '0')}/${String(today.getDate()).padStart(2, '0')}/${today.getFullYear()}`;
+	
+	let employee_productivity = await report_getSpecial({
+        report: {
+            type: "user_clock",
+            columns: [
+                "user_profile.user_id",
+                "user_clocks.task_id",
+                "user_clock_activity.activity_code",
+                "user_clock_activity.notes",
+                "user_clock_activity.created_at",
+                "user_clock_activity.time_spent",
+                "user_clocks.time_in",
+                "user_clocks.time_out",
+                "user_clocks.user_id",
+                "user_clocks.clock_date"
+            ],
+            filters: [
+                {
+                    column: "user_clocks.clock_date",
+                    opr: "between",
+                    value: `08/01/2025 - ${date}`
+                },
+                {
+                    column: "user_profile.user_id",
+                    opr: "{0} = '{1}'",
+                    value: "38"
+                },
+                {
+                    column: "user_clock_activity.activity_code",
+                    opr: "{0} = '{1}'",
+                    value: "Meeting"
+                }
+            ]
+        },
+        csrf_recom: csrfToken
+    });
+  
+    console.debug('PATCHES - Final Meeting Notes Collection', employee_productivity);
+    generateReportTableFromList(employee_productivity, 'meeting-notes-collection', true);
+  
 }
 
 function report_pictureMissingSpecial_submit() {
