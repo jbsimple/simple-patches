@@ -670,7 +670,7 @@ waitForElement('#reload_aspects', initAttributeExtraActions);
 function initBetterDescriptionCopy() {
 
     const html_editor = document.getElementById('html-editor');
-    if (!html-editor) return;
+    if (!html_editor) return;
 
     const container = document.createElement('div');
     container.setAttribute('style', 'display:flex;flex-drection:row;justify-content:end;align-items:end');
