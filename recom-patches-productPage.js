@@ -423,13 +423,23 @@ function initAttributeExtraActions() {
 
             // update reload_aspects icon
             reload_aspects.classList.add('btn-icon');
-            reload_aspects.innerHTML = `<i class="fas fa-sync-alt"></i>`;
+            reload_aspects.innerHTML = `
+                <span class="fa-stack">
+                    <i class="fas fa-list fa-stack-2x"></i>
+                    <i class="fas fa-sync-alt fa-stack-1x"
+                    style="font-size: 0.7em; transform: translate(6px,6px);"></i>
+                </span>`;
 
             // update append_aspects
             const append_aspects = document.getElementById('append_aspects');
             if (append_aspects) {
                 append_aspects.classList.add('btn-icon');
-                append_aspects.innerHTML = '<i class="fas fa-plus"></i>';
+                append_aspects.innerHTML = `
+                    <span class="fa-stack">
+                        <i class="fas fa-list fa-stack-2x"></i>
+                        <i class="fas fa-plus fa-stack-1x"
+                        style="font-size: 0.7em; transform: translate(6px,6px);"></i>
+                    </span>`;
             }
 
             const exportButton = document.createElement('button');
@@ -455,7 +465,12 @@ function initAttributeExtraActions() {
             wmRemButton.title = `Remove all Existing Walmart Attributes`;
             wmRemButton.type = "button";
             wmRemButton.id = "patches_remWmAttrib";
-            wmRemButton.innerHTML = `<i class="fas fa-minus"></i>`;
+            wmRemButton.innerHTML = `
+            <span class="fa-stack">
+                <i class="fas fa-list fa-stack-2x"></i>
+                <i class="fas fa-minus fa-stack-1x"
+                style="font-size: 0.7em; transform: translate(6px,6px);"></i>
+            </span>`;
             wmRemButton.onclick = remWmAttrib;
             reload_aspects.parentNode.insertBefore(wmRemButton, reload_aspects);
         }
