@@ -642,11 +642,12 @@ function initAttributeExtraActions() {
                 let value = '';
 
                 // PAIN
-                if (valueDom.tagName === 'SELECT' && valueDom.multiple) {
+                if (valueDom.classList.contains('select2-hidden-accessible')) {
                     value = Array.from(valueDom.selectedOptions)
                         .map(opt => opt.value.trim())
                         .filter(Boolean)
                         .join(', ');
+                    
                 }
                 else {
                     value = valueDom.value?.trim();
