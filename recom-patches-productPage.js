@@ -447,12 +447,7 @@ function initAttributeExtraActions() {
             exportButton.title = `Export Attributes into a list.`;
             exportButton.type = "button";
             exportButton.id = "patches_exportAttribs";
-            exportButton.innerHTML = `
-                    <span class="fa-stack" style="height:1em;">
-                        <i class="fa-solid fa-list fa-stack-2x" style="opacity:0.5"></i>
-                        <i class="fa-solid fa-download fa-stack-1x"
-                        style="font-size: 0.7em; transform: translate(6px,6px);"></i>
-                    </span>`;
+            exportButton.innerHTML = `<i class="fa-solid fa-copy"></i>`;
             exportButton.onclick = listAttribForWM;
             reload_aspects.parentNode.insertBefore(exportButton, reload_aspects);
 
@@ -669,6 +664,44 @@ function initAttributeExtraActions() {
 
     }
 
+}
+waitForElement('#reload_aspects', initAttributeExtraActions);
+
+function initBetterDescriptionCopy() {
+
+    const html_editor = document.getElementById('html-editor');
+    if (!html-editor) return;
+
+    const container = document.createElement('div');
+    container.setAttribute('style', 'display:flex;flex-drection:row;justify-content:end;align-items:end');
+
+    const exportButton = document.createElement('button');
+    exportButton.classList.add('btn', 'btn-icon', 'btn-sm', 'btn-success', 'ms-2');
+    exportButton.title = `Non-html copy of the description.`;
+    exportButton.type = "button";
+    exportButton.id = "patches_exportAttribs";
+    exportButton.innerHTML = `<i class="fa-solid fa-copy"></i>`;
+    exportButton.onclick = getPlainTextDesc;
+    container.appendChild(exportButton);
+
+    html_editor.parentElement.appendChild(container);
+    
+    function getPlainTextDesc() {
+
+        const ql_editor = html_editor.querySelector('.ql-editor');
+        if (!ql_editor) return;
+
+        const clone = ql_editor.cloneNode(true);
+        clone.querySelectorAll('li').forEach(li => { li.innerHTML = '- ' + li.innerHTML; });
+        clone.querySelectorAll('br').forEach(br => { br.replaceWith('\n'); });
+        clone.querySelectorAll('p, div, li').forEach(el => { el.insertAdjacentText('afterend', '\n'); });
+        let plaintext = clone.textContent || '';
+        plaintext = plaintext
+            .replace(/\n{3,}/g, '\n\n')
+            .trim();
+        fireSwal('Copy This!', `<textarea class="form-control form-control-solid" style="max-height:50vh;font-size:14px;text-align:left;">${plaintext}</textarea>`, 'success', false);
+
+    }
 }
 waitForElement('#reload_aspects', initAttributeExtraActions);
 
