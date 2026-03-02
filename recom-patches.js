@@ -193,28 +193,6 @@ function injectGoods() {
     script_version.src = "https://simple-patches.vercel.app/buildInfo.js?v=" + Date.now();
     script_version.onload = function() { console.debug('Patch Loaded: buildInfo.js'); };
     document.body.appendChild(script_version);
-
-    // font awesome newer for better icons
-    setTimeout(() => {
-        document.querySelectorAll('link[rel="stylesheet"]').forEach(link => {
-            if (link.href.includes('font-awesome') || link.href.includes('fontawesome')) {
-                console.log('PATCHES - Removing old FA:', link.href);
-                link.remove();
-            }
-        });
-
-        const newLink = document.createElement('link');
-        newLink.id = 'fa6-css';
-        newLink.rel = 'stylesheet';
-        newLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css';
-
-        newLink.onload = () => {
-            console.log('PATCHES - Font Awesome 6.5.1 loaded');
-        };
-
-        document.head.appendChild(newLink);
-
-    }, 1000);
 }
 
 function loadPatchScript(script) {
