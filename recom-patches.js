@@ -193,6 +193,20 @@ function injectGoods() {
     script_version.src = "https://simple-patches.vercel.app/buildInfo.js?v=" + Date.now();
     script_version.onload = function() { console.debug('Patch Loaded: buildInfo.js'); };
     document.body.appendChild(script_version);
+
+    // font awesome newer for better icons
+    if (!document.getElementById('fa6-css')) {
+        const link = document.createElement('link');
+        link.id = 'fa6-css';
+        link.rel = 'stylesheet';
+        link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css';
+
+        link.onload = () => {
+            console.log('PATCHES - Font Awesome Updated loaded');
+        };
+
+        document.head.appendChild(link);
+    }
 }
 
 function loadPatchScript(script) {
