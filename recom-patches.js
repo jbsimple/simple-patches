@@ -650,7 +650,7 @@ async function fetchJsonWithTimeout(url, options = {}, { timeoutMs = TIMEOUT_MS,
     return { ok: false, timedOut: false, status: null, data: null, error: new Error('Unexpected fetch loop exit') };
 }
 
-function fireSwal(title, message, icon = 'warning', refresh = false, width = null) {
+function fireSwal(title, message, icon = 'warning', refresh = false) {
     const isArray = Array.isArray(message);
     const htmlMessage = isArray ? message.join('<br>') : message;
 
@@ -660,12 +660,12 @@ function fireSwal(title, message, icon = 'warning', refresh = false, width = nul
         icon = 'warning';
     }
 
-    const swalOptions = {
+    Swal.fire({
         title: title,
         html: htmlMessage,
         icon: icon,
         showCancelButton: refresh,
-        confirmButtonText: (refresh ? 'Refresh' : 'Okay'),
+        confirmButtonText: (refresh ? 'Refresh' : 'Okay-ing'),
         cancelButtonText: "Close",
         customClass: {
             confirmButton: 'btn btn-primary',
@@ -675,14 +675,7 @@ function fireSwal(title, message, icon = 'warning', refresh = false, width = nul
         reverseButtons: true,
         allowOutsideClick: false,
         allowEscapeKey: true
-    };
-
-    // Only add width if provided
-    if (width) {
-        swalOptions.width = width;
-    }
-
-    Swal.fire(swalOptions).then((result) => {
+    }).then((result) => {
         console.debug('PATCHES - Swal response:', result);
         if (result.isConfirmed && refresh) {
             location.reload();
