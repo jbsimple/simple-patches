@@ -631,8 +631,8 @@ function initAttributeExtraActions() {
             let attributes = [];
 
             domRows.forEach(domRow => {
-                const nameDom = domRow.querySelector('[name^="product[specs]"][name$="[name]"]');
-                const valueDom = domRow.querySelector('[name^="product[specs]"][name$="[values]"]');
+                const nameDom = domRow.querySelector('[name*="[name]"]');
+                const valueDom = domRow.querySelector('[name*="[values]"]');
 
                 if (!nameDom || !valueDom) return;
 
