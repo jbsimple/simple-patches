@@ -597,6 +597,30 @@ function initRemWmAttrib() {
 }
 waitForElement('#reload_aspects', initRemWmAttrib);
 
+let lastSave = null;
+const SAVE_COOLDOWN = 3000;
+function initKeyboardSaveShortcut() {
+    document.addEventListener('keydown', function (e) {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+            const savebutton = document.querySelector('.cardActions button.cardActionsBtn[type="button"]');
+            if (!savebutton) return;
+
+            e.preventDefault();
+
+            const now = Date.now();
+            if (now - lastSave < SAVE_COOLDOWN) {
+                console.error('PATCHES - Save Cooldown Kicked in.');
+                fireSwal('WOAH!', 'Slow Down, Buddy!');
+                return;
+            }
+            lastSave = now;
+            
+            savebutton.click();
+        }
+    });
+}
+waitForElement('#el_product_form', initKeyboardSaveShortcut);
+
 /* photo stuff */
 function modifyMediaTable() {
     const product_images_container = document.getElementById('product-images-container');
