@@ -654,8 +654,6 @@ function initAttributeExtraActions() {
                     value = valueDom.value?.trim();
                 }
 
-                if (!value) return;
-
                 attributes.push({ name, value });
             });
 
