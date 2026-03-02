@@ -661,7 +661,7 @@ function initAttributeExtraActions() {
                     attributes.forEach(attribute => {
                         FancyList += `${attribute.name}: ${attribute.value}` + "\n";
                     })
-                    fireSwal('Copy This!', `<textarea style="font-size:14px;text-align:left;">${FancyList}</div>`, 'success', false);
+                    fireSwal('Copy This!', `<textarea class="form-control form-control-solid" style="max-height:50vh;font-size:14px;text-align:left;">${FancyList}</textarea>`, 'success', false);
                 }
             });
 
