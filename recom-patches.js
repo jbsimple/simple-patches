@@ -195,18 +195,26 @@ function injectGoods() {
     document.body.appendChild(script_version);
 
     // font awesome newer for better icons
-    if (!document.getElementById('fa6-css')) {
-        const link = document.createElement('link');
-        link.id = 'fa6-css';
-        link.rel = 'stylesheet';
-        link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css';
+    setTimeout(() => {
+        document.querySelectorAll('link[rel="stylesheet"]').forEach(link => {
+            if (link.href.includes('font-awesome') || link.href.includes('fontawesome')) {
+                console.log('PATCHES - Removing old FA:', link.href);
+                link.remove();
+            }
+        });
 
-        link.onload = () => {
-            console.log('PATCHES - Font Awesome Updated loaded');
+        const newLink = document.createElement('link');
+        newLink.id = 'fa6-css';
+        newLink.rel = 'stylesheet';
+        newLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css';
+
+        newLink.onload = () => {
+            console.log('PATCHES - Font Awesome 6.5.1 loaded');
         };
 
-        document.head.appendChild(link);
-    }
+        document.head.appendChild(newLink);
+
+    }, 1000);
 }
 
 function loadPatchScript(script) {
