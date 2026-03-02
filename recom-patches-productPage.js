@@ -655,6 +655,14 @@ function initAttributeExtraActions() {
                 }
 
                 attributes.push({ name, value });
+
+                if (attributes.length > 0) {
+                    let FancyList = [];
+                    attributes.forEach(attribute => {
+                        FancyList.push(`${attribute.name}:${attribute.value}`);
+                    })
+                    fireSwal('Copy This!', FancyList, 'success', false);
+                }
             });
 
             console.log(attributes);
