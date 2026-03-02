@@ -703,7 +703,7 @@ function initBetterDescriptionCopy() {
 
     }
 }
-waitForElement('#reload_aspects', initBetterDescriptionCopy);
+waitForElement('#html-editor', initBetterDescriptionCopy);
 
 let lastSave = null;
 const SAVE_COOLDOWN = 3000;
