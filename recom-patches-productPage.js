@@ -657,10 +657,9 @@ function initAttributeExtraActions() {
                 attributes.push({ name, value });
 
                 if (attributes.length > 0) {
-                    let FancyList = '';
-                    attributes.forEach(attribute => {
-                        FancyList += `${attribute.name}: ${attribute.value}` + "\n";
-                    })
+                    const FancyList = attributes
+                        .map(attribute => `${attribute.name}: ${attribute.value}`)
+                        .join('\n');
                     fireSwal('Copy This!', `<textarea class="form-control form-control-solid" style="max-height:50vh;font-size:14px;text-align:left;">${FancyList}</textarea>`, 'success', false);
                 }
             });
