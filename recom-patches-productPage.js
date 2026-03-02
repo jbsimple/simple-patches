@@ -412,12 +412,8 @@ function modifyColorAttribute() {
 //waitForElement('#el_product_form', modifyColorAttribute);
 // disabling this because somehing happened in the backend which broke this and I don't feel like fixing it right now until we need it.
 
-function initBulkResubmitFamily() {
-    // marketplace to bulk resubmit for
-
+function initAttributeExtraActions() {
     const parser = new DOMParser();
-    let log = [];
-
     const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
     if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
         const csrfToken = csrfMeta.getAttribute('content'); // this is needed in header as "x-csrf-token"
@@ -425,14 +421,41 @@ function initBulkResubmitFamily() {
         if (reload_aspects) {
             if (!reload_aspects.classList.contains('ms-2')) { reload_aspects.classList.add('ms-2'); }
 
+            // update reload_aspects icon
+            reload_aspects.innerHTML = `<span class="fa-stack">
+                <i class="fa-solid fa-list fa-stack-1x"></i>
+                <i class="fa-solid fa-rotate fa-stack-1x" style="font-size: 0.6em; transform: translate(6px,6px);"></i>
+            </span>`;
+
+            // update append_aspects
+            document.getElementById('append_aspects')?.innerHTML = '<i class="fa-solid fa-list-plus"></i>';
+
+            const exportButton = document.createElement('button');
+            exportButton.classList.add('btn', 'btn-icon', 'btn-sm', 'btn-success', 'ms-2');
+            exportButton.title = `Export Attributes into a list.`;
+            exportButton.type = "button";
+            exportButton.id = "patches_exportAttribs";
+            exportButton.innerHTML = `<i class="fa-solid fa-floppy-disk"></i>`;
+            exportButton.onclick = listAttribForWM;
+            reload_aspects.parentNode.insertBefore(exportButton, reload_aspects);
+
             const bulkButton = document.createElement('button');
-            bulkButton.classList.add('btn', 'btn-sm', 'btn-primary', 'ms-2');
+            bulkButton.classList.add('btn', 'btn-icon', 'btn-sm', 'btn-primary', 'ms-2');
             bulkButton.title = `Bulk Resubmit all In-Stock`;
             bulkButton.type = "button";
             bulkButton.id = "patches_bulkResubmit";
-            bulkButton.textContent = `Bulk Resubmit`;
+            bulkButton.innerHTML = `<i class="fa-solid fa-paper-plane"></i>`;
             bulkButton.onclick = bulkResubmitFamily;
             reload_aspects.parentNode.insertBefore(bulkButton, reload_aspects);
+
+            const wmRemButton = document.createElement('button');
+            wmRemButton.classList.add('btn', 'btn-icon', 'btn-sm', 'btn-danger', 'ms-2');
+            wmRemButton.title = `Remove all Existing Walmart Attributes`;
+            wmRemButton.type = "button";
+            wmRemButton.id = "patches_remWmAttrib";
+            wmRemButton.innerHTML = `<i class="fa-solid fa-list-minus"></i>`;
+            wmRemButton.onclick = remWmAttrib;
+            reload_aspects.parentNode.insertBefore(wmRemButton, reload_aspects);
         }
 
         async function bulkResubmitFamily() {
@@ -551,51 +574,39 @@ function initBulkResubmitFamily() {
             }
         }
 
-    }
-}
-waitForElement('#reload_aspects', initBulkResubmitFamily);
+        function remWmAttrib() {
+            const attribForm = document.getElementById('product-specs');
+            if (!attribForm) return;
 
-function initRemWmAttrib() {
-    const reload_aspects = document.getElementById('reload_aspects');
-    if (reload_aspects) {
-        if (!reload_aspects.classList.contains('ms-2')) { reload_aspects.classList.add('ms-2'); }
-        
-        const wmRemButton = document.createElement('button');
-        wmRemButton.classList.add('btn', 'btn-sm', 'btn-danger', 'ms-2');
-        wmRemButton.title = `Remove all Existing Walmart Attributes`;
-        wmRemButton.type = "button";
-        wmRemButton.id = "patches_remWmAttrib";
-        wmRemButton.textContent = `Quick Remove`;
-        wmRemButton.onclick = remWmAttrib;
-        reload_aspects.parentNode.insertBefore(wmRemButton, reload_aspects);
-    }
-    
-    function remWmAttrib() {
-        const attribForm = document.getElementById('product-specs');
-        if (!attribForm) return;
+            const lines = Array.from(attribForm.querySelectorAll('div[data-repeater-item]'));
+            if (lines.length === 0) return;
 
-        const lines = Array.from(attribForm.querySelectorAll('div[data-repeater-item]'));
-        if (lines.length === 0) return;
+            function removeNext(index) {
+                if (index >= lines.length) return;
 
-        function removeNext(index) {
-            if (index >= lines.length) return;
+                const line = lines[index];
+                const wmLabel = line.querySelector('label.form-label span.text-warning');
 
-            const line = lines[index];
-            const wmLabel = line.querySelector('label.form-label span.text-warning');
-
-            if (wmLabel) {
-                const removeBtn = line.querySelector('button[data-repeater-delete]');
-                if (removeBtn) {
-                    removeBtn.click();
+                if (wmLabel) {
+                    const removeBtn = line.querySelector('button[data-repeater-delete]');
+                    if (removeBtn) {
+                        removeBtn.click();
+                    }
                 }
+                setTimeout(() => removeNext(index + 1), 150);
             }
-            setTimeout(() => removeNext(index + 1), 150);
+
+            removeNext(0);
         }
 
-        removeNext(0);
+        function listAttribForWM() {
+
+        }
+
     }
+
 }
-waitForElement('#reload_aspects', initRemWmAttrib);
+waitForElement('#reload_aspects', initAttributeExtraActions);
 
 let lastSave = null;
 const SAVE_COOLDOWN = 3000;
@@ -1815,6 +1826,13 @@ function jumpToTab() {
 }
 waitForElement('#kt_app_content_container', jumpToTab);
 
+function initExportAttributes() {
+    const appendMissingButton = document.getElementById('reload_aspects');
+    if (!appendMissingButton) return;
+
+
+}
+
 function wm_generateUPC() {
     let digits = [];
     for (let i = 0; i < 11; i++) {
@@ -1853,38 +1871,37 @@ function wm_generateButton() {
     }
 }
 function wm_resubmitAll() {
-		let ajax = '/integrations/stores/listing/resubmit/';
-		let itemid = document.querySelector('.fs-5.text-info.fw-bolder.lh-1');
-		const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
-		if (itemid && csrfMeta && csrfMeta.getAttribute('content').length > 0) {
-			const csrfToken = csrfMeta.getAttribute('content');
-			itemid = itemid.textContent;
-			ajax += itemid;
-			
-			const body = new URLSearchParams();
-      body.append("store", "all");
-      
-      return fetch(ajax, {
-          method: "POST",
-          credentials: "include",
-          headers: {
-              "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-              "x-csrf-token": csrfToken,
-              "x-requested-with": "XMLHttpRequest"
-          },
-          body: body.toString()
-      })
-          .then(r => r.json())
-          .then(json => {
-              console.debug(`PATCHES - Resubmitted ${itemid}:`, json);
-              fireSwal('Yay!', `Resubmitted All Channels.`, 'success', true);
-          })
-          .catch(err => {
-              console.error(`PATCHES - Failed resubmitting ${itemid}:`, err);
-              fireSwal('UHOH!', ['Something Failed:',`${err}`], 'error', false);
-          });
-			
-		}
+    let ajax = '/integrations/stores/listing/resubmit/';
+    let itemid = document.querySelector('.fs-5.text-info.fw-bolder.lh-1');
+    const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
+    if (itemid && csrfMeta && csrfMeta.getAttribute('content').length > 0) {
+        const csrfToken = csrfMeta.getAttribute('content');
+        itemid = itemid.textContent;
+        ajax += itemid;
+        
+        const body = new URLSearchParams();
+        body.append("store", "all");
+        
+        return fetch(ajax, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "x-csrf-token": csrfToken,
+                "x-requested-with": "XMLHttpRequest"
+            },
+            body: body.toString()
+        })
+        .then(r => r.json())
+        .then(json => {
+            console.debug(`PATCHES - Resubmitted ${itemid}:`, json);
+            fireSwal('Yay!', `Resubmitted All Channels.`, 'success', true);
+        })
+        .catch(err => {
+            console.error(`PATCHES - Failed resubmitting ${itemid}:`, err);
+            fireSwal('UHOH!', ['Something Failed:',`${err}`], 'error', false);
+        });
+    }
 }
 function wm_upcInit() {
     const link = document.querySelector('a[href*="/docs/read?search=Walmart+UPC"]');
