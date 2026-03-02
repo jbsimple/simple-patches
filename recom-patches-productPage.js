@@ -447,7 +447,12 @@ function initAttributeExtraActions() {
             exportButton.title = `Export Attributes into a list.`;
             exportButton.type = "button";
             exportButton.id = "patches_exportAttribs";
-            exportButton.innerHTML = `<i class="fa-solid fa-floppy-disk"></i>`;
+            exportButton.innerHTML = `
+                    <span class="fa-stack" style="height:1em;">
+                        <i class="fa-solid fa-list fa-stack-2x" style="opacity:0.5"></i>
+                        <i class="fa-solid fa-download fa-stack-1x"
+                        style="font-size: 0.7em; transform: translate(6px,6px);"></i>
+                    </span>`;
             exportButton.onclick = listAttribForWM;
             reload_aspects.parentNode.insertBefore(exportButton, reload_aspects);
 
