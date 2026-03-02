@@ -425,8 +425,8 @@ function initAttributeExtraActions() {
             reload_aspects.classList.add('btn-icon');
             reload_aspects.innerHTML = `
                 <span class="fa-stack" style="height:1em;">
-                    <i class="fa fa-list fa-stack-2x" style="opacity:0.5"></i>
-                    <i class="fa fa-sync-alt fa-stack-1x"
+                    <i class="fa-solid fa-list fa-stack-2x" style="opacity:0.5"></i>
+                    <i class="fa-solid fa-sync-alt fa-stack-1x"
                     style="font-size: 0.7em; transform: translate(6px,6px);"></i>
                 </span>`;
 
@@ -436,8 +436,8 @@ function initAttributeExtraActions() {
                 append_aspects.classList.add('btn-icon');
                 append_aspects.innerHTML = `
                     <span class="fa-stack" style="height:1em;">
-                        <i class="fa fa-list fa-stack-2x" style="opacity:0.5"></i>
-                        <i class="fa fa-plus fa-stack-1x"
+                        <i class="fa-solid fa-list fa-stack-2x" style="opacity:0.5"></i>
+                        <i class="fa-solid fa-plus fa-stack-1x"
                         style="font-size: 0.7em; transform: translate(6px,6px);"></i>
                     </span>`;
             }
@@ -467,8 +467,8 @@ function initAttributeExtraActions() {
             wmRemButton.id = "patches_remWmAttrib";
             wmRemButton.innerHTML = `
             <span class="fa-stack" style="height:1em;">
-                <i class="fa fa-list fa-stack-2x" style="opacity:0.5"></i>
-                <i class="fa fa-minus fa-stack-1x"
+                <i class="fa-solid fa-list fa-stack-2x" style="opacity:0.5"></i>
+                <i class="fa-solid fa-minus fa-stack-1x"
                 style="font-size: 0.7em; transform: translate(6px,6px);"></i>
             </span>`;
             wmRemButton.onclick = remWmAttrib;
