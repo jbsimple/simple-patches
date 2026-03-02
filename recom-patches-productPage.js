@@ -428,7 +428,10 @@ function initAttributeExtraActions() {
             </span>`;
 
             // update append_aspects
-            document.getElementById('append_aspects')?.innerHTML = '<i class="fa-solid fa-list-plus"></i>';
+            const append_aspects = document.getElementById('append_aspects');
+            if (append_aspects) {
+                append_aspects.innerHTML = '<i class="fa-solid fa-list-plus"></i>';
+            }
 
             const exportButton = document.createElement('button');
             exportButton.classList.add('btn', 'btn-icon', 'btn-sm', 'btn-success', 'ms-2');
