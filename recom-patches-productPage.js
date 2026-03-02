@@ -636,15 +636,25 @@ function initAttributeExtraActions() {
 
                 if (!nameDom || !valueDom) return;
 
-                const name = nameDom.value.trim();
-                const value = valueDom.value.trim();
+                const name = nameDom.value?.trim();
+                if (!name) return;
 
-                if (!name && !value) return;
+                let value = '';
 
-                attributes.push({
-                    name: name,
-                    value: value
-                });
+                // PAIN
+                if (valueDom.tagName === 'SELECT' && valueDom.multiple) {
+                    value = Array.from(valueDom.selectedOptions)
+                        .map(opt => opt.value.trim())
+                        .filter(Boolean)
+                        .join(', ');
+                }
+                else {
+                    value = valueDom.value?.trim();
+                }
+
+                if (!value) return;
+
+                attributes.push({ name, value });
             });
 
             console.log(attributes);
