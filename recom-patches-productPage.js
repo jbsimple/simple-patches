@@ -622,6 +622,21 @@ function initAttributeExtraActions() {
         }
 
         function listAttribForWM() {
+            const product_specs = document.getElementById('product-specs');
+            if (!product_specs) return;
+
+            const domRows = product_specs.querySelectorAll('div.form-group');
+            if (!domRows || domRows.length < 1) return;
+
+            let attributes = [];
+
+            domRows.forEach(domRow => {
+                const nameDom = domRow.querySelector('[name^="product[specs]"][name$="[name]"]');
+                const valueDom = domRow.querySelector('[name^="product[specs]"][name$="[values]"]');
+                attributes.push({'name': nameDom.value.trim(), 'value': valueDom.value.trim()});
+            });
+
+            console.log(attributes);
 
         }
 
