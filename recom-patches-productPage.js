@@ -657,11 +657,11 @@ function initAttributeExtraActions() {
                 attributes.push({ name, value });
 
                 if (attributes.length > 0) {
-                    let FancyList = [];
+                    let FancyList = '';
                     attributes.forEach(attribute => {
-                        FancyList.push(`${attribute.name}:${attribute.value}`);
+                        FancyList += `<b>${attribute.name}</b>: ${attribute.value}<br>`;
                     })
-                    fireSwal('Copy This!', FancyList, 'success', false);
+                    fireSwal('Copy This!', `<div style="font-size:14px;text-align:left;">${FancyList}</div>`, 'success', false);
                 }
             });
 
