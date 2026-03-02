@@ -626,18 +626,28 @@ function initAttributeExtraActions() {
             if (!product_specs) return;
 
             const domRows = product_specs.querySelectorAll('div.form-group');
-            if (!domRows || domRows.length < 1) return;
+            if (!domRows.length) return;
 
             let attributes = [];
 
             domRows.forEach(domRow => {
                 const nameDom = domRow.querySelector('[name^="product[specs]"][name$="[name]"]');
                 const valueDom = domRow.querySelector('[name^="product[specs]"][name$="[values]"]');
-                attributes.push({'name': nameDom.value.trim(), 'value': valueDom.value.trim()});
+
+                if (!nameDom || !valueDom) return;
+
+                const name = nameDom.value.trim();
+                const value = valueDom.value.trim();
+
+                if (!name && !value) return;
+
+                attributes.push({
+                    name: name,
+                    value: value
+                });
             });
 
             console.log(attributes);
-
         }
 
     }
