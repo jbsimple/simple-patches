@@ -643,7 +643,7 @@ function initAttributeExtraActions() {
 
                 // PAIN
                 if (valueDom.classList.contains('select2-hidden-accessible')) {
-                    value = Array.from(valueDom.options)
+                    value = Array.from(valueDom.querySelectorAll('option'))
                         .filter(opt => opt.selected)
                         .map(opt => opt.value.trim())
                         .filter(Boolean)
