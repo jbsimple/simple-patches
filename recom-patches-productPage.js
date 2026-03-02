@@ -703,7 +703,7 @@ function initBetterDescriptionCopy() {
 
     }
 }
-waitForElement('#reload_aspects', initAttributeExtraActions);
+waitForElement('#reload_aspects', initBetterDescriptionCopy);
 
 let lastSave = null;
 const SAVE_COOLDOWN = 3000;
