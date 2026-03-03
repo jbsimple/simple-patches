@@ -118,14 +118,9 @@ function injectGoods() {
         loadPatchStyle('recom-patches-listing.css');
         loadPatchScript('recom-patches-listing.js');
 
-        if (location.pathname === '/receiving/queues/listing') {
-            loadPatchScript('recom-patches-dtTableParams.js');
-        }
-
     } else if (location.pathname.includes('/queues/conditions/')) {
         
         loadPatchScript('recom-patches-condqueue.js');
-        loadPatchScript('recom-patches-dtTableParams.js');
 
     } else if ((location.pathname.includes('/products/') || location.pathname.includes('/product/items/')) && !location.pathname.includes('/products/new')) {
         // ending slash is needed to ensure that the code only applies the patch for the sku and sid pages
@@ -151,7 +146,6 @@ function injectGoods() {
     } else if (location.pathname.includes('/integrations/store/logs')) {
 
         loadPatchScript('recom-patches-errors.js');
-        loadPatchScript('recom-patches-dtTableParams.js');
 
     } else if (location.pathname.includes('/productivity') && !location.pathname.includes('/productivity/board')) {
 
@@ -168,23 +162,16 @@ function injectGoods() {
     } else if (location.pathname.includes('/receiving/queues/inventory')) {
 
         loadPatchScript('recom-patches-pendinginv.js');
-        loadPatchScript('recom-patches-dtTableParams.js');
-
-    } else if (location.pathname.includes('/receiving/queues/fba-check')) {
-
-        loadPatchScript('recom-patches-dtTableParams.js');
 
     } else if (document.title.includes('Dashboard - ')) {
 
         loadPatchStyle('recom-patches-dashboard.css');
         loadPatchScript('recom-patches-dashboard.js');
 
-    } else if (location.pathname.includes('/po') && !location.pathname.includes('/po/')) {
+    }
 
-        loadPatchScript('recom-patches-dtTableParams.js');
-        
-    }  else if (location.pathname.includes('/imei') && !location.pathname.includes('/imei/')) {
-
+    const dtTable_wrapper = document.getElementById('dtTable_wrapper');
+    if (dtTable_wrapper) {
         loadPatchScript('recom-patches-dtTableParams.js');
     }
 
