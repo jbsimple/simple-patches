@@ -271,13 +271,18 @@ function dtBulkDeleteInit() {
 
     if (toolbar.querySelector('[data-patches="dtTableBulkDelete"]')) return;
 
-    const button = document.createElement('a');
-    button.classList.add('btn', 'btn-danger', 'btn-sm');
-    button.setAttribute('data-patches', 'dtTableBulkDelete');
-    button.textContent = "Bulk Delete";
-    button.onclick = dtBulkDelete;
+    const dtTable_wrapper = document.getElementById('dtTable_wrapper');
+    const delete_buttons = dtTable_wrapper.querySelectorAll('button.delete-queue-entry');
+    if (delete_buttons && delete_buttons.length > 0) {
+        const button = document.createElement('a');
+        button.classList.add('btn', 'btn-danger', 'btn-sm');
+        button.setAttribute('data-patches', 'dtTableBulkDelete');
+        button.textContent = "Bulk Delete";
+        button.onclick = dtBulkDelete;
 
-    toolbar.insertBefore(button, toolbar.firstChild.nextSibling);
+        toolbar.insertBefore(button, toolbar.firstChild.nextSibling);
+    }
+    
 }
 dtBulkDeleteInit();
 
