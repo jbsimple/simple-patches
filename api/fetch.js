@@ -32,32 +32,34 @@ export default async function handler(req, res) {
             return res.status(500).json({success: false, error: 'Missing API token' });
         }
 
-        const requestId = req.query.request;
-        if (!requestId) {
-            return res.status(400).json({
-                success: false,
-                error: 'Missing request parameter'
-            });
+        const endpoint = req.query.endpoint;
+        if (!endpoint) {
+            return res.status(400).json({ success:false, error:'Missing endpoint' });
         }
+
+        const params = { ...req.query };
+        delete params.endpoint;
+
+        const query = new URLSearchParams(params).toString();
+
+        const apiURL = `https://${hostname}/api/v1/reports/${endpoint}${query ? '?' + query : ''}`;
         
 
-       const response = await fetch(
-            `https://${referrer}/api/v1/reports/${requestId}`,
-            {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
+        const response = await fetch(apiURL, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    }
                 }
-            }
-        );
+            );
 
-        if (!response.ok) {
-            return res.status(response.status).json({
-                success: false,
-                error: "API request failed"
-            });
-        }
+            if (!response.ok) {
+                return res.status(response.status).json({
+                    success: false,
+                    error: "API request failed"
+                });
+            }
 
         const data = await response.json();
 

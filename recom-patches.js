@@ -1828,3 +1828,31 @@ async function patchInit() {
     console.log('PATCHES - Loading Complete');
 }
 window.onload = patchInit;
+
+
+// api fetch
+async function fetchAPI(endpoint, params = {}, options = {}) {
+
+    const query = new URLSearchParams(params).toString();
+
+    const url = `https://simple-patches.vercel.app/api/fetch?endpoint=${encodeURIComponent(endpoint)}${query ? '&' + query : ''}`;
+
+    const res = await fetch(url, {
+        ...options,
+        headers: {
+            ...(options.headers || {})
+        }
+    });
+
+    if (!res.ok) {
+        const text = await res.text();
+        console.error("API Error:", res.status, text);
+        throw new Error(`API Error ${res.status}`);
+    }
+
+    const data = await res.json();
+
+    console.log("API Response:", data);
+
+    return data;
+}
