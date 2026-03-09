@@ -1,3 +1,5 @@
+const checkTimeout = 4000; // this was 1.5s LOL
+
 async function duplicateMPN(mpn_input, swal = true, self = null) {
     if (!mpn_input) return false;
     console.debug('PATCHES - MPN Duplicate Check Attached:', mpn_input);
@@ -33,7 +35,7 @@ async function duplicateMPN(mpn_input, swal = true, self = null) {
             } catch (err) {
                 console.error("Error fetching MPN data:", err);
             }
-        }, 1500);
+        }, checkTimeout);
     });
 
     async function fetchExistingMPN(mpn) {
@@ -127,7 +129,7 @@ async function duplicateAsin(asin_field, swal = true, self = null) {
                     console.error("Error fetching ASIN data:", err);
                 }
             }
-        }, 1500);
+        }, checkTimeout);
     });
 
     async function fetchExistingAsins(asin) {
