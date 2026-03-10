@@ -162,6 +162,8 @@ function injectGoods() {
     } else if (location.pathname.includes('/receiving/queues/inventory')) {
 
         loadPatchScript('recom-patches-pendinginv.js');
+        // ensure this loads since dt is not in source
+        loadPatchScript('recom-patches-dtTableParams.js');
 
     } else if (document.title.includes('Dashboard - ')) {
 
