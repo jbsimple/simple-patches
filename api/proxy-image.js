@@ -1,4 +1,17 @@
 export default async function handler(req, res) {
+	const allowedOrigins = (process.env.ALLOWED_ORIGINS || "")
+        .split(",")
+        .map(o => o.trim())
+        .filter(Boolean);
+
+    const origin = req.headers.origin;
+
+    if (!origin || !allowedOrigins.includes(origin)) {
+        return res.status(403).json({ error: "Origin not allowed" });
+    }
+
+    res.setHeader("Access-Control-Allow-Origin", origin);
+
 	const { url, filename } = req.query;
 
 	if (!url) {
