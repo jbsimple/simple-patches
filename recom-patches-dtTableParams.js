@@ -272,7 +272,7 @@ function dtBulkDeleteInit() {
     if (toolbar.querySelector('[data-patches="dtTableBulkDelete"]')) return;
 
     const dtTable_wrapper = document.getElementById('dtTable_wrapper');
-    const delete_buttons = dtTable_wrapper.querySelectorAll('button.delete-queue-entry');
+    const delete_buttons = dtTable_wrapper.querySelectorAll('button[title="Delete"]');
     if (delete_buttons && delete_buttons.length > 0) {
         const button = document.createElement('a');
         button.classList.add('btn', 'btn-danger', 'btn-sm');
