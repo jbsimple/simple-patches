@@ -68,6 +68,19 @@ These are patches added to a special settings box the user can edit.
 - Change to UI-block loading wheel so it appears at the top of the div instead of the middle, and made it larger, so you can see that it is actually loading and not just sitting there.
 - When clocked into the pictures task, there is an activity buster to prevent the logout, always sending system activity useage.
 
+### Table Patches:
+- Added an "unsafe" number of results option.
+  - This doesn't take site performance since the interagtions tab just pulls from one datatable, no operations on the table.
+  - The unsafe options adds additional options to have more results per page printout.
+- Added export button
+  - Exports everything that is in the table as it appears.
+  - If the first column is a checkbox, any unique action id numbers appear there instead.
+  - It is a textContent, so whatever is in the cell is printed as is.
+- On tables with delete as an action, button to bulk delete.
+  - Select with checkboxes or clear entire page.
+  - Deleted each item a single at a time.
+- Parameters in the URL to auto search in the table.
+
 #### Product and Item Page Patches:
 - CSS fix for layout of cards.
 - CSS fix for image box being too small.
@@ -84,6 +97,7 @@ These are patches added to a special settings box the user can edit.
 - Added button to open all images in new tabs (enable popups in browser for it to work).
 - Added a popups check message on above button hover.
 - Added a 'copy to clipboard' button to copy unique identifier code for photo filenames.
+- Added a button to sort all images by filename.
 - Added a delete all images button.
 - On Products, added container above the dropzone for images on children items.
   - A table prints with the item SKU and image count.
@@ -91,20 +105,29 @@ These are patches added to a special settings box the user can edit.
   - Checkbox to toggle between a delete all and a safe delete.
     - Safe delete skips conditions that should have images on them (Defective, Incomplete, etc.)
 - Modified the image list to be an actual list instead of a grid.
+- Added a button to images in the image grid to copy the image itself to the clipboard; uses vercel image proxy; for pasting into photoshop.
 - On all ASIN inputs, a link is generated under the input field to go to the ASIN on Amazon.
 - Added approved drop down options to existing color attribute field.
 - CSS change to increase the maximum height of the inventory table.
 - Added a button in the tools to open the product/item in FBA check or Pending Inventory, using GET parameters patch.
 - Added a new button above the attributes form to bulk resubmit all channels for in stock skus under the sid.
 - Added a button under the Walmart UPC metafield to generate a GTIN (an actual valid gtin). Added a button next to it to resubmit all for that SKU.
+- Added a button to strip html tags and formatting from the product description to copy.
+- Added a button to make a list of attributes names and values to copy. (For Walmart).
 
 #### Listing Patches:
 - Custom feature to prepend "PICTURES" to all newly-created SKUs Locations.
 - A warning for when the GTIN is invalid and needs to be regenerated before going to the last step. (12 chars error)
 - A warning for when the GTIN is changed to remind the user to replace the old label with a new one.
 - when a GTIN is generated/replaced from the original, an option appears to replace the product's GTIN back to the originally listed GTIN and the generated GTIN as the secondary.
+- Checks, warns and lists when a model number is entered that is used on another product.
+- Checks, warns and lists when an ASIN is entered that is used on another product.
 - A warning appears when the user is not clocked into the Listing taks.
-- When prefill creating, if there is no picture, the picture is stock or has invalid dimensions, a warning appears.
+- Warnings on prefills:
+  - If there is no picture, a warning appears.
+  - If it is an "old image" (based on filename), a warning appears.
+  - If the image dimensions are not square (or really close to square), a warning appears.
+  - When creating a brand new item from a prefill, a warning appears.
 
 #### New Inventory Page Patches:
 - When a result appears that's In Catalog, the text is replaced with a link to open the SID modal.
@@ -118,8 +141,6 @@ These are patches added to a special settings box the user can edit.
 - Added a button to load icons of product images into the table.
   - There is no way to get a reduced sized image from the image cdn.
   - The process is resource heavy so it has to be a button so it can be used when it is needed.
-- Added GET parameters to auto-do a search.
-  - Now links to search in pending inventory can be used throughout the patch.
 - Added a special "Keywords" search option.
   - Provided you have the keyword and a PO#.
   - Will modify the table to have results based on keywords.
@@ -132,30 +153,32 @@ These are patches added to a special settings box the user can edit.
   - Links for products and items are automatically added into the report preview for convenience.
 - Aadded a card to generate a preset report.
   - Added Listing department productivity reporting preset.
-  - Added Marketing department productivity reporting preset.
+  - Added Marketing department productivity reporting preset (disabled).
+  - Added a meeting notes collector.
+  - Added a report to get all high quantity items with over QTY 50.
   - Added a report for all created items (filtered) from a specified date.
+  - Added a report to get all missing pictures; looks at products and items with stock for photos.
   - Added Missing Picture report for Defective, Incomplete and Imaging Issues (Created last 30 days).
-  - Added a Complete Missing Picture report for all items and products in the system.
-  - Added a Product Items list of products over QTY 50 with ASIN column.
-  - Added a report that gets total inventory stock by SID.
+  - Added a report that gets total inventory stock by SID (disabled).
   - Added a tool to look up the history of a sid's skus.
   - Added a tool to look up the history of a sku.
   - Added a tool to look up the history of an event id.
-  - Added a list of products that have incorrect color attributes.
+  - Added a list of products that have incorrect color attributes (disabled).
+  - Added a picture url report, gets all picture urls for all instock items comma separated.
+  - Added a picture resolution check report, gets all picture urls for all instock items comma separated, gets the picture's resolution.
 - Added a css fix to correct the resize on narrow screens happening too late.
 - Added css rule to flip the order of recents and main reporting tool because recents aren't THAT important.
 
 #### Intergations Errors Page:
-- Added a button to download the table into a csv.
-- Modified the table printout.
+- Added a button to download all search term results into one csv.
+  - Formats error log message into an actual JSON
+  - Does not include pretty print options.
+- Added a button to toggle "pretty print" on the table.
   - Generates a big report of every SKU edited in the last 30 days, fetches individual ones as needed.
   - Added links for SKUs.
-  - Added an In Stock count for each SKU Line.
-  - Added a SID link for each SKU line.
-- Added an "unsafe" number of results option.
-  - This doesn't take site performance since the interagtions tab just pulls from one datatable, no operations on the table.
-  - The unsafe options adds additional options to have more results per page printout.
-  - This can be used in tandem with the export button to download an entire search result error log.
+  - Added an In Stock count for each error Line.
+  - Added a SID link for each error line.
+  - Added categry for each error line.
 
 #### Other Page Patches:
 - On Dashboard; Added quick link buttons to commonly used functions in the system (that are usually hidden behind a cascade menu).
@@ -168,6 +191,7 @@ These are patches added to a special settings box the user can edit.
 - In Conditions Queues; Get Total button to ge the total quantity of all visible line items.
 - On user profile pages; Added a download button to the events tab. It tries to fetch all activity from the user in the last 3 days.
   - List takes a while to generate since the user log only shows 5 entries per page.
+- Added a csv search site, just a better way to search inside of a csv file.
 
 #### Additional Patches:
 - Replaced unfinished producivity pages.
@@ -179,10 +203,6 @@ These are patches added to a special settings box the user can edit.
   - Added a date selector to look at any producivity report within the last year.
 
 #### Future Patches:
-- Revamp the productivity page:
-  - This patch is going to be used as a mockup for the real implementation of the productivity pages.
-  - So this means changing the producivity table to better represent what is actually needed for all.
-  - Handling more than one department.
-  - Combining producitvity pages split now into one page, the extra tools are marked better.
+- Build a cache/autosave/download tool for the listing wizard.
 - Create a proper set of CSS rules for dark mode.
 - Overhaul of CSS sizing, everything is so large that the page requires it to be zoomed out in order to be used.
