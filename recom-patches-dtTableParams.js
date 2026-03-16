@@ -308,7 +308,7 @@ function dtBulkDeleteInit() {
         subtree: true
     });
 
-    dtBulkDeleteUpdate();
+    dtBulkDeleteButton();
 }
 dtBulkDeleteInit();
 
