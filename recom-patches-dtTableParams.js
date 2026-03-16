@@ -262,31 +262,53 @@ async function dtBulkDelete() {
     return null;
 }
 
-function dtBulkDeleteInit() {
+function dtBulkDeleteButton() {
     const kt_app_content_container = document.getElementById('kt_app_content_container');
     if (!kt_app_content_container) return;
 
     const toolbar = kt_app_content_container.querySelector('.card-toolbar.flex-row-fluid.justify-content-end.gap-5');
     if (!toolbar) return;
 
-    if (toolbar.querySelector('[data-patches="dtTableBulkDelete"]')) return;
-
     const dtTable_wrapper = document.getElementById('dtTable_wrapper');
-    const delete_buttons = dtTable_wrapper.querySelectorAll('button[title="Delete"]');
-    if (delete_buttons && delete_buttons.length > 0) {
-        const button = document.createElement('a');
-        button.classList.add('btn', 'btn-danger', 'btn-sm');
-        button.setAttribute('data-patches', 'dtTableBulkDelete');
-        button.textContent = "Bulk Delete";
-        button.onclick = dtBulkDelete;
+    if (!dtTable_wrapper) return;
 
-        toolbar.insertBefore(button, toolbar.firstChild.nextSibling);
+    const delete_buttons = dtTable_wrapper.querySelectorAll('button[title="Delete"]');
+    const existing = toolbar.querySelector('[data-patches="dtTableBulkDelete"]');
+
+    if (delete_buttons.length > 0) {
+
+        if (!existing) {
+            const button = document.createElement('a');
+            button.classList.add('btn', 'btn-danger', 'btn-sm');
+            button.setAttribute('data-patches', 'dtTableBulkDelete');
+            button.textContent = "Bulk Delete";
+            button.onclick = dtBulkDelete;
+
+            toolbar.insertBefore(button, toolbar.firstChild.nextSibling);
+        }
+
     } else {
-        console.warn('No Delete Buttons, not showing Delete Bulk Button');
-        console.debug('dtTable_wrapper', dtTable_wrapper);
-        console.debug('delete_buttons', delete_buttons);
+        if (existing) {
+            existing.remove();
+        }
     }
-    
+}
+
+function dtBulkDeleteInit() {
+
+    const tbody = document.querySelector('#dtTable > tbody');
+    if (!tbody) return;
+
+    const observer = new MutationObserver(() => {
+        dtBulkDeleteButton();
+    });
+
+    observer.observe(tbody, {
+        childList: true,
+        subtree: true
+    });
+
+    dtBulkDeleteUpdate();
 }
 dtBulkDeleteInit();
 
