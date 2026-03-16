@@ -283,6 +283,8 @@ function dtBulkDeleteInit() {
         toolbar.insertBefore(button, toolbar.firstChild.nextSibling);
     } else {
         console.warn('No Delete Buttons, not showing Delete Bulk Button');
+        console.debug('dtTable_wrapper', dtTable_wrapper);
+        console.debug('delete_buttons', delete_buttons);
     }
     
 }
