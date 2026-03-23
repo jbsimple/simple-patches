@@ -66,8 +66,6 @@ export default async function handler(req, res) {
                 return res.status(405).json({ success: false, error: "Meta requires GET" });
             }
 
-            apiURL += "/meta";
-
             const response = await fetch(apiURL, {
                 method: "GET",
                 headers: {
