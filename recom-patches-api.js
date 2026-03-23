@@ -1,9 +1,12 @@
 // api fetch
 async function fetchAPI(route, { params = {}, body = null } = {}, options = {}) {
 
-    if (!["meta", "reports"].includes(route)) { throw new Error("Invalid route"); }
+    if (!["meta", "reports"].includes(route)) {
+        throw new Error("Invalid route");
+    }
 
     let url = `https://simple-patches.vercel.app/api/fetch?route=${route}`;
+
     if (route === "meta" && params && Object.keys(params).length > 0) {
         const query = new URLSearchParams(params).toString();
         url += `&${query}`;
@@ -22,6 +25,8 @@ async function fetchAPI(route, { params = {}, body = null } = {}, options = {}) 
         if (!body || !body.type) {
             throw new Error("Missing report body or type");
         }
+
+        body.filters = Array.isArray(body.filters) ? body.filters : [];
 
         fetchOptions.body = JSON.stringify(body);
     }
@@ -43,15 +48,16 @@ async function fetchAPI(route, { params = {}, body = null } = {}, options = {}) 
 
 async function meta() { return await fetchAPI("meta"); }
 
-async function api_soldItemsWithFBA(to, from = to) {
+async function api_soldItemsWithFBA(range) {
     return fetchAPI("reports", {
         body: {
             type: "extended_sold_items",
+            limit: 200,
             filters: [
                 {
-                    "field": "order_shipped_at",
-                    "operator": "between",
-                    "value": [to, from]
+                    field: "order_shipped_at",
+                    operator: "between",
+                    value: range // ["2026-03-21", "2026-03-23"]
                 }
             ],
             columns: [
@@ -112,7 +118,7 @@ async function api_ordersReport(range) {
             {
                 "field": "orders.date_ordered",
                 "operator": "between",
-                "value": ["2026-03-23", "2026-03-23"]
+                "value": range // ["2026-03-23", "2026-03-23"]
             }
         ],
         columns: [

@@ -45,8 +45,7 @@ export default async function handler(req, res) {
         return res.status(500).json({ success: false, error: "Missing API token" });
     }
 
-    // 🔥 NEW: route type
-    const route = req.query.route; // "meta" OR "reports"
+    const route = req.query.route;
 
     if (!route || !["meta", "reports"].includes(route)) {
         return res.status(400).json({ success: false, error: "Invalid route" });
@@ -55,10 +54,6 @@ export default async function handler(req, res) {
     let apiURL = `https://${hostname}/api/v1/reports`;
 
     try {
-
-        // =========================
-        // 📦 META (GET)
-        // =========================
         if (route === "meta") {
 
             if (req.method !== "GET") {
@@ -82,9 +77,6 @@ export default async function handler(req, res) {
             });
         }
 
-        // =========================
-        // 📊 REPORTS (POST)
-        // =========================
         if (route === "reports") {
 
             if (req.method !== "POST") {
