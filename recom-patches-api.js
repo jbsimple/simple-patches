@@ -55,9 +55,9 @@ async function api_test() {
     const results = {};
     const entries = Object.entries(reports);
 
-    const CONCURRENCY = 2;
-    const DELAY = 300;
-    const MAX_RETRIES = 3;
+    const CONCURRENCY = 1;
+    const DELAY = 1000;
+    const MAX_RETRIES = 5;
 
     let index = 0;
 
