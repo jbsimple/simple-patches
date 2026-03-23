@@ -1833,18 +1833,39 @@ window.onload = patchInit;
 
 
 // api fetch
-async function fetchAPI(endpoint, params = {}, options = {}) {
+async function fetchAPI(route, { params = {}, body = null } = {}, options = {}) {
 
-    const query = new URLSearchParams(params).toString();
+    if (!["meta", "reports"].includes(route)) {
+        throw new Error("Invalid route");
+    }
 
-    const url = `https://simple-patches.vercel.app/api/fetch?endpoint=${encodeURIComponent(endpoint)}${query ? '&' + query : ''}`;
+    let url = `https://simple-patches.vercel.app/api/fetch?route=${route}`;
 
-    const res = await fetch(url, {
+    // only attach query params for GET/meta
+    if (route === "meta" && params && Object.keys(params).length > 0) {
+        const query = new URLSearchParams(params).toString();
+        url += `&${query}`;
+    }
+
+    const fetchOptions = {
+        method: route === "meta" ? "GET" : "POST",
         ...options,
         headers: {
+            "Content-Type": "application/json",
             ...(options.headers || {})
         }
-    });
+    };
+
+    // attach body ONLY for reports
+    if (route === "reports") {
+        if (!body || !body.type) {
+            throw new Error("Missing report body or type");
+        }
+
+        fetchOptions.body = JSON.stringify(body);
+    }
+
+    const res = await fetch(url, fetchOptions);
 
     if (!res.ok) {
         const text = await res.text();

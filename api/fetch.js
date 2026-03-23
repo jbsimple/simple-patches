@@ -8,25 +8,25 @@ export default async function handler(req, res) {
     const origin = req.headers.origin;
 
     if (!origin || !allowedOrigins.includes(origin)) {
-        return res.status(403).json({ success:false, error:"Origin not allowed" });
+        return res.status(403).json({ success: false, error: "Origin not allowed" });
     }
 
     res.setHeader("Access-Control-Allow-Origin", origin);
-    res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS");
+    res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
     if (req.method === "OPTIONS") {
         return res.status(200).end();
     }
 
-    if (req.method !== "GET") {
-        return res.status(405).json({ success:false, error:"Method not allowed" });
+    if (!["GET", "POST"].includes(req.method)) {
+        return res.status(405).json({ success: false, error: "Method not allowed" });
     }
 
     const referrerHeader = req.headers.referer || req.headers.origin;
 
     if (!referrerHeader) {
-        return res.status(403).json({ success:false, error:"Missing referrer" });
+        return res.status(403).json({ success: false, error: "Missing referrer" });
     }
 
     let hostname;
@@ -34,63 +34,92 @@ export default async function handler(req, res) {
     try {
         hostname = new URL(referrerHeader).hostname;
     } catch {
-        return res.status(400).json({ success:false, error:"Invalid referrer" });
+        return res.status(400).json({ success: false, error: "Invalid referrer" });
     }
 
-    let token;
-
-    if (hostname.startsWith("dev.")) {
-        token = process.env.DEV_API_KEY;
-    } else {
-        token = process.env.PROD_API_KEY;
-    }
+    let token = hostname.startsWith("dev.")
+        ? process.env.DEV_API_KEY
+        : process.env.PROD_API_KEY;
 
     if (!token) {
-        return res.status(500).json({ success:false, error:"Missing API token" });
+        return res.status(500).json({ success: false, error: "Missing API token" });
     }
 
-    const endpoint = req.query.endpoint;
+    // 🔥 NEW: route type
+    const route = req.query.route; // "meta" OR "reports"
 
-    if (!endpoint) {
-        return res.status(400).json({ success:false, error:"Missing endpoint" });
+    if (!route || !["meta", "reports"].includes(route)) {
+        return res.status(400).json({ success: false, error: "Invalid route" });
     }
 
-    const allowedEndpoints = ["orders", "returns", "refunds"];
-
-    if (!allowedEndpoints.includes(endpoint)) {
-        return res.status(403).json({ success:false, error:"Endpoint not allowed" });
-    }
-
-    const params = { ...req.query };
-    delete params.endpoint;
-
-    const query = new URLSearchParams(params).toString();
-
-    const apiURL = `https://${hostname}/api/v1/reports/${endpoint}${query ? "?" + query : ""}`;
+    let apiURL = `https://${hostname}/api/v1/reports`;
 
     try {
 
-        const response = await fetch(apiURL, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
+        // =========================
+        // 📦 META (GET)
+        // =========================
+        if (route === "meta") {
+
+            if (req.method !== "GET") {
+                return res.status(405).json({ success: false, error: "Meta requires GET" });
             }
-        });
 
-        const data = await response.json();
+            apiURL += "/meta";
 
-        return res.status(response.status).json({
-            success: response.ok,
-            data
-        });
+            const response = await fetch(apiURL, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            const data = await response.json();
+
+            return res.status(response.status).json({
+                success: response.ok,
+                data
+            });
+        }
+
+        // =========================
+        // 📊 REPORTS (POST)
+        // =========================
+        if (route === "reports") {
+
+            if (req.method !== "POST") {
+                return res.status(405).json({ success: false, error: "Reports require POST" });
+            }
+
+            apiURL += "";
+
+            const body = req.body;
+
+            if (!body || !body.type) {
+                return res.status(400).json({ success: false, error: "Missing report type" });
+            }
+
+            const response = await fetch(apiURL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(body)
+            });
+
+            const data = await response.json();
+
+            return res.status(response.status).json({
+                success: response.ok,
+                data
+            });
+        }
 
     } catch (err) {
-
         return res.status(500).json({
-            success:false,
-            error:err.message
+            success: false,
+            error: err.message
         });
-
     }
 }
