@@ -49,87 +49,107 @@ async function fetchAPI(route, { params = {}, body = null } = {}, options = {}) 
 async function meta() { return await fetchAPI("meta"); }
 
 async function api_test() {
-    const metaRes = await meta();
+    const metaRes = await fetchAPI("meta");
     const reports = metaRes.data?.data || {};
 
     const results = {};
+    const entries = Object.entries(reports);
 
-    const promises = Object.entries(reports).map(async ([key, report]) => {
+    const CONCURRENCY = 2;
+    const DELAY = 300;
+    const MAX_RETRIES = 3;
 
+    let index = 0;
+
+    const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+    async function fetchWithRetry(body, attempt = 1) {
         try {
-            const filters = (report.required_filters || []).map(field => {
+            return await fetchAPI("reports", { body });
+        } catch (err) {
 
-                if (field.includes("date") || field.includes("created") || field.includes("updated")) {
-                    return {
-                        field,
-                        operator: "between",
-                        value: ["2026-03-21", "2026-03-23"]
-                    };
-                }
+            const isRetryable =
+                err.message.includes("429") ||
+                err.message.includes("500") ||
+                err.message.includes("fetch");
 
-                if (field.includes("status")) {
-                    return {
-                        field,
-                        operator: "not_null"
-                    };
-                }
+            if (isRetryable && attempt < MAX_RETRIES) {
+                const wait = 500 * attempt; // simple backoff
+                console.warn(`PATCHES - Retry ${attempt} (${wait}ms)`);
 
-                if (field.includes("in_stock")) {
-                    return {
-                        field,
-                        operator: "gte",
-                        value: 0
-                    };
-                }
+                await sleep(wait);
+                return fetchWithRetry(body, attempt + 1);
+            }
 
-                if (field.includes("id")) {
-                    return {
-                        field,
-                        operator: "not_null"
-                    };
-                }
+            throw err;
+        }
+    }
 
-                return {
-                    field,
-                    operator: "not_null"
-                };
-            });
+    async function worker() {
+        while (index < entries.length) {
+            const currentIndex = index++;
+            const [key, report] = entries[currentIndex];
 
-            const columns = (report.columns || [])
-                .slice(0, 5)
-                .map(c => c.id);
+            try {
+                const filters = (report.required_filters || []).map(field => {
 
-            const res = await fetchAPI("reports", {
-                body: {
+                    if (field.includes("date") || field.includes("created") || field.includes("updated")) {
+                        return {
+                            field,
+                            operator: "between",
+                            value: ["2026-03-21", "2026-03-23"]
+                        };
+                    }
+
+                    if (field.includes("status")) {
+                        return { field, operator: "not_null" };
+                    }
+
+                    if (field.includes("in_stock")) {
+                        return { field, operator: "gte", value: 0 };
+                    }
+
+                    return { field, operator: "not_null" };
+                });
+
+                const columns = (report.columns || [])
+                    .slice(0, 5)
+                    .map(c => c.id);
+
+                const body = {
                     type: key,
                     limit: 10,
                     filters,
                     columns
-                }
-            });
+                };
 
-            console.log(`PATCHES - Success with ${key}`, res);
+                const res = await fetchWithRetry(body);
 
-            results[key] = {
-                success: true,
-                count: res?.data?.meta?.count ?? 0
-            };
+                console.log(`PATCHES - Success ${key}`);
 
-        } catch (err) {
+                results[key] = {
+                    success: true,
+                    count: res?.data?.meta?.count ?? 0
+                };
 
-            console.error(`PATCHES - API test Failed for ${key}`, err.message);
+            } catch (err) {
 
-            results[key] = {
-                success: false,
-                error: err.message
-            };
+                console.error(`PATCHES - Fail ${key}`, err.message);
+
+                results[key] = {
+                    success: false,
+                    error: err.message
+                };
+            }
+
+            await sleep(DELAY);
         }
+    }
 
-    });
+    const workers = Array.from({ length: CONCURRENCY }, () => worker());
+    await Promise.all(workers);
 
-    await Promise.all(promises);
-
-    console.log("FINAL RESULTS:", results);
+    console.log("PATCHES - FINAL RESULTS", results);
 
     return results;
 }
