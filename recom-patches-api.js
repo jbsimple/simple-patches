@@ -43,13 +43,17 @@ async function fetchAPI(route, { params = {}, body = null } = {}, options = {}) 
 
 async function meta() { return await fetchAPI("meta"); }
 
-async function api_soldItemsWithFBA(range) {
+async function api_soldItemsWithFBA(to, from = to) {
     return fetchAPI("reports", {
         body: {
             type: "extended_sold_items",
-            filters: {
-                "order_shipped_at": range
-            },
+            filters: [
+                {
+                    "field": "order_shipped_at",
+                    "operator": "between",
+                    "value": [to, from]
+                }
+            ],
             columns: [
                 "orders.number",
                 "order_lines.line_sku",
@@ -104,9 +108,13 @@ async function api_ordersReport(range) {
     body: {
         type: "orders_report",
         limit: 200,
-        filters: {
-            "orders.date_ordered": range
-        },
+        filters: [
+            {
+                "field": "orders.date_ordered",
+                "operator": "between",
+                "value": ["2026-03-23", "2026-03-23"]
+            }
+        ],
         columns: [
             "orders.number",
             "orders.total",
