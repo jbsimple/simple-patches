@@ -1,13 +1,9 @@
 // api fetch
 async function fetchAPI(route, { params = {}, body = null } = {}, options = {}) {
 
-    if (!["meta", "reports"].includes(route)) {
-        throw new Error("Invalid route");
-    }
+    if (!["meta", "reports"].includes(route)) { throw new Error("Invalid route"); }
 
     let url = `https://simple-patches.vercel.app/api/fetch?route=${route}`;
-
-    // only attach query params for GET/meta
     if (route === "meta" && params && Object.keys(params).length > 0) {
         const query = new URLSearchParams(params).toString();
         url += `&${query}`;
@@ -22,7 +18,6 @@ async function fetchAPI(route, { params = {}, body = null } = {}, options = {}) 
         }
     };
 
-    // attach body ONLY for reports
     if (route === "reports") {
         if (!body || !body.type) {
             throw new Error("Missing report body or type");
@@ -48,7 +43,7 @@ async function fetchAPI(route, { params = {}, body = null } = {}, options = {}) 
 
 async function meta() { return await fetchAPI("meta"); }
 
-async function soldItemsWithFBA(range) {
+async function api_soldItemsWithFBA(range) {
     return fetchAPI("reports", {
         body: {
             type: "extended_sold_items",
@@ -102,4 +97,32 @@ async function soldItemsWithFBA(range) {
             ]
         }
     });
+}
+
+async function api_ordersReport(range) {
+    return fetchAPI("reports", {
+    body: {
+        type: "orders_report",
+        limit: 200,
+        filters: {
+            "orders.date_ordered": range
+        },
+        columns: [
+            "orders.number",
+            "orders.total",
+            "orders.shipping_total",
+            "orders.tax_total",
+            "orders.status",
+            "customer_full_name",
+            "customers.email",
+            "customer_address.phone_number",
+            "customer_address.name",
+            "customer_address.state",
+            "stores.name",
+            "orders.store_id",
+            "orders.date_ordered",
+            "orders.updated_at"
+        ]
+    }
+});
 }
