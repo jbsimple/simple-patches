@@ -48,95 +48,88 @@ async function fetchAPI(route, { params = {}, body = null } = {}, options = {}) 
 
 async function meta() { return await fetchAPI("meta"); }
 
-async function api_soldItemsWithFBA(range) {
-    return fetchAPI("reports", {
-        body: {
-            type: "extended_sold_items",
-            limit: 200,
-            filters: [
-                {
-                    field: "order_shipped_at",
-                    operator: "between",
-                    value: range // ["2026-03-21", "2026-03-23"]
-                }
-            ],
-            columns: [
-                "orders.number",
-                "order_lines.line_sku",
-                "products.name",
-                "products.mpn",
-                "order_lines.line_quantity",
-                "order_lines.line_price",
-                "shipment_fee",
-                "fba_fee",
-                "store_fee",
-                "order_lines.line_discount",
-                "other_fee",
-                "refunded_fee",
-                "purchase_orders.number",
-                "purchase_orders.id",
-                "stores.name",
-                "orders.store_id",
-                "order_shipment.created_at",
-                "orders.shipping_total",
-                "customer_address.name",
-                "customer_address.state",
-                "customer_address.country",
-                "order_lines.line_refund_quantity",
-                "orders.tags",
-                "orders.date_ordered",
-                "orders.updated_at",
-                "purchase_orders.type",
-                "po_vendors.name",
-                "purchase_orders.vendor_id",
-                "product_items.id",
-                "conditions.name",
-                "product_items.condition_id",
-                "products.category_id",
-                "categories.type",
-                "product_items.in_stock",
-                "product_items.price",
-                "purchase_orders.unit_cost",
-                "po_items_cost.cost",
-                "po_category_cost.cost",
-                "brands.name",
-                "products.brand_id",
-                "products.weight",
-                "products.gtin",
-                "products.asin"
-            ]
-        }
-    });
-}
+async function api_test() {
+    const metaRes = await meta();
+    const reports = metaRes.data?.data || {};
 
-async function api_ordersReport(range) {
-    return fetchAPI("reports", {
-        body: {
-            type: "orders_report",
-            limit: 200,
-            filters: [
-                {
-                    "field": "orders.date_ordered",
-                    "operator": "between",
-                    "value": range // ["2026-03-23", "2026-03-23"]
+    const results = {};
+
+    const promises = Object.entries(reports).map(async ([key, report]) => {
+
+        try {
+            const filters = (report.required_filters || []).map(field => {
+
+                if (field.includes("date") || field.includes("created") || field.includes("updated")) {
+                    return {
+                        field,
+                        operator: "between",
+                        value: ["2026-03-21", "2026-03-23"]
+                    };
                 }
-            ],
-            columns: [
-                "orders.number",
-                "orders.total",
-                "orders.shipping_total",
-                "orders.tax_total",
-                "orders.status",
-                "customer_full_name",
-                "customers.email",
-                "customer_address.phone_number",
-                "customer_address.name",
-                "customer_address.state",
-                "stores.name",
-                "orders.store_id",
-                "orders.date_ordered",
-                "orders.updated_at"
-            ]
+
+                if (field.includes("status")) {
+                    return {
+                        field,
+                        operator: "not_null"
+                    };
+                }
+
+                if (field.includes("in_stock")) {
+                    return {
+                        field,
+                        operator: "gte",
+                        value: 0
+                    };
+                }
+
+                if (field.includes("id")) {
+                    return {
+                        field,
+                        operator: "not_null"
+                    };
+                }
+
+                return {
+                    field,
+                    operator: "not_null"
+                };
+            });
+
+            const columns = (report.columns || [])
+                .slice(0, 5)
+                .map(c => c.id);
+
+            const res = await fetchAPI("reports", {
+                body: {
+                    type: key,
+                    limit: 10,
+                    filters,
+                    columns
+                }
+            });
+
+            console.log(`PATCHES - Success with ${key}`, res);
+
+            results[key] = {
+                success: true,
+                count: res?.data?.meta?.count ?? 0
+            };
+
+        } catch (err) {
+
+            console.error(`PATCHES - API test Failed for ${key}`, err.message);
+
+            results[key] = {
+                success: false,
+                error: err.message
+            };
         }
+
     });
+
+    await Promise.all(promises);
+
+    console.log("FINAL RESULTS:", results);
+
+    return results;
 }
