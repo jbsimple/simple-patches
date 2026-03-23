@@ -496,20 +496,23 @@ function initAttributeExtraActions() {
                     if (cols.length >= 6) {
                         const link = cols[0].querySelector('a');
                         let item_id = "";
+                        let sku = "";
+
                         if (link && link.href) {
                             item_id = link.href.split("/").pop();
+                            sku = Array.from(link.childNodes).find(n => n.nodeType === Node.TEXT_NODE)?.textContent.trim() || "";
                         }
+                        
 
                         items.push({
                             item_id,
-                            sku: cols[0].textContent.trim(),
+                            sku,
                             in_stock: parseInt(cols[3].textContent.trim(), 10) || 0,
                             available: parseInt(cols[4].textContent.trim(), 10) || 0,
                             price: cols[5].textContent.trim()
                         });
                     }
                 });
-
                 console.debug('PATCHES - Modal Info:', items);
 
                 const log = [];
