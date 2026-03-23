@@ -109,6 +109,9 @@ function injectGoods() {
     script_patch.name = 'n/a';
     script_patch.onload = function() { console.debug('Patch Loaded:', script_patch.name); };
 
+    // api
+    loadPatchScript('recom-patches-api.js');
+
     // new modal handler
     loadPatchScript('recom-patches-modal.js');
 
@@ -1830,52 +1833,3 @@ async function patchInit() {
     console.log('PATCHES - Loading Complete');
 }
 window.onload = patchInit;
-
-
-// api fetch
-async function fetchAPI(route, { params = {}, body = null } = {}, options = {}) {
-
-    if (!["meta", "reports"].includes(route)) {
-        throw new Error("Invalid route");
-    }
-
-    let url = `https://simple-patches.vercel.app/api/fetch?route=${route}`;
-
-    // only attach query params for GET/meta
-    if (route === "meta" && params && Object.keys(params).length > 0) {
-        const query = new URLSearchParams(params).toString();
-        url += `&${query}`;
-    }
-
-    const fetchOptions = {
-        method: route === "meta" ? "GET" : "POST",
-        ...options,
-        headers: {
-            "Content-Type": "application/json",
-            ...(options.headers || {})
-        }
-    };
-
-    // attach body ONLY for reports
-    if (route === "reports") {
-        if (!body || !body.type) {
-            throw new Error("Missing report body or type");
-        }
-
-        fetchOptions.body = JSON.stringify(body);
-    }
-
-    const res = await fetch(url, fetchOptions);
-
-    if (!res.ok) {
-        const text = await res.text();
-        console.error("API Error:", res.status, text);
-        throw new Error(`API Error ${res.status}`);
-    }
-
-    const data = await res.json();
-
-    console.log("API Response:", data);
-
-    return data;
-}
