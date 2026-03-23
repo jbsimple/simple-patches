@@ -53,18 +53,15 @@ export default async function handler(req, res) {
 
     let apiURL;
 
-    if (route === "meta") {
-        apiURL = `https://${hostname}/v1/reports/meta`;
-    } else if (route === "reports") {
-        apiURL = `https://${hostname}/api/v1/reports`;
-    }
-
     try {
         if (route === "meta") {
 
             if (req.method !== "GET") {
                 return res.status(405).json({ success: false, error: "Meta requires GET" });
             }
+
+            //apiURL = `https://${hostname}/v1/reports/meta`;
+            apiURL = `https://${hostname}/api/v1/reports/meta`;
 
             const response = await fetch(apiURL, {
                 method: "GET",
@@ -87,7 +84,7 @@ export default async function handler(req, res) {
                 return res.status(405).json({ success: false, error: "Reports require POST" });
             }
 
-            apiURL += "";
+            apiURL = `https://${hostname}/api/v1/reports`;
 
             const body = req.body;
 
