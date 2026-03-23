@@ -111,32 +111,32 @@ async function api_soldItemsWithFBA(range) {
 
 async function api_ordersReport(range) {
     return fetchAPI("reports", {
-    body: {
-        type: "orders_report",
-        limit: 200,
-        filters: [
-            {
-                "field": "orders.date_ordered",
-                "operator": "between",
-                "value": range // ["2026-03-23", "2026-03-23"]
-            }
-        ],
-        columns: [
-            "orders.number",
-            "orders.total",
-            "orders.shipping_total",
-            "orders.tax_total",
-            "orders.status",
-            "customer_full_name",
-            "customers.email",
-            "customer_address.phone_number",
-            "customer_address.name",
-            "customer_address.state",
-            "stores.name",
-            "orders.store_id",
-            "orders.date_ordered",
-            "orders.updated_at"
-        ]
-    }
-});
+        body: {
+            type: "orders_report",
+            limit: 200,
+            filters: [
+                {
+                    "field": "orders.date_ordered",
+                    "operator": "between",
+                    "value": range // ["2026-03-23", "2026-03-23"]
+                }
+            ],
+            columns: [
+                "orders.number",
+                "orders.total",
+                "orders.shipping_total",
+                "orders.tax_total",
+                "orders.status",
+                "customer_full_name",
+                "customers.email",
+                "customer_address.phone_number",
+                "customer_address.name",
+                "customer_address.state",
+                "stores.name",
+                "orders.store_id",
+                "orders.date_ordered",
+                "orders.updated_at"
+            ]
+        }
+    });
 }
