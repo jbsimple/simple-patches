@@ -51,7 +51,8 @@ export default async function handler(req, res) {
         return res.status(400).json({ success: false, error: "Invalid route" });
     }
 
-    let apiURL = `https://${hostname}/api/v1/reports`;
+    // let apiURL = `https://${hostname}/api/v1/reports`;
+    let apiURL = `https://${hostname}/v1/reports`;
 
     try {
         if (route === "meta") {
