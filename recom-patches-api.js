@@ -46,32 +46,10 @@ async function fetchAPI(route, { params = {}, body = null } = {}, options = {}) 
     return data;
 }
 
-async function fetchAPI_GET_TEST(route, body = {}) {
-
-    const params = new URLSearchParams({
-        route,
-        ...body,
-        filters: JSON.stringify(body.filters || {}),
-        columns: JSON.stringify(body.columns || [])
-    });
-
-    const url = `https://simple-patches.vercel.app/api/fetch?${params}`;
-
-    const res = await fetch(url, {
-        method: "GET"
-    });
-
-    const data = await res.json();
-
-    console.log(data);
-
-    return data;
-}
-
 async function meta() { return await fetchAPI("meta"); }
 
 async function soldItemsWithFBA(range) {
-    return fetchAPI_GET_TEST("reports", {
+    return fetchAPI("reports", {
         body: {
             type: "extended_sold_items",
             filters: {
