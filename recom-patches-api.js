@@ -45,3 +45,83 @@ async function fetchAPI(route, { params = {}, body = null } = {}, options = {}) 
 
     return data;
 }
+
+async function fetchAPI_GET_TEST(route, body = {}) {
+
+    const params = new URLSearchParams({
+        route,
+        ...body,
+        filters: JSON.stringify(body.filters || {}),
+        columns: JSON.stringify(body.columns || [])
+    });
+
+    const url = `https://simple-patches.vercel.app/api/fetch?${params}`;
+
+    const res = await fetch(url, {
+        method: "GET"
+    });
+
+    const data = await res.json();
+
+    console.log(data);
+
+    return data;
+}
+
+async function meta() { return await fetchAPI("meta"); }
+
+async function soldItemsWithFBA(range) {
+    return fetchAPI_GET_TEST("reports", {
+        body: {
+            type: "extended_sold_items",
+            filters: {
+                "order_shipped_at": range
+            },
+            columns: [
+                "orders.number",
+                "order_lines.line_sku",
+                "products.name",
+                "products.mpn",
+                "order_lines.line_quantity",
+                "order_lines.line_price",
+                "shipment_fee",
+                "fba_fee",
+                "store_fee",
+                "order_lines.line_discount",
+                "other_fee",
+                "refunded_fee",
+                "purchase_orders.number",
+                "purchase_orders.id",
+                "stores.name",
+                "orders.store_id",
+                "order_shipment.created_at",
+                "orders.shipping_total",
+                "customer_address.name",
+                "customer_address.state",
+                "customer_address.country",
+                "order_lines.line_refund_quantity",
+                "orders.tags",
+                "orders.date_ordered",
+                "orders.updated_at",
+                "purchase_orders.type",
+                "po_vendors.name",
+                "purchase_orders.vendor_id",
+                "product_items.id",
+                "conditions.name",
+                "product_items.condition_id",
+                "products.category_id",
+                "categories.type",
+                "product_items.in_stock",
+                "product_items.price",
+                "purchase_orders.unit_cost",
+                "po_items_cost.cost",
+                "po_category_cost.cost",
+                "brands.name",
+                "products.brand_id",
+                "products.weight",
+                "products.gtin",
+                "products.asin"
+            ]
+        }
+    });
+}
