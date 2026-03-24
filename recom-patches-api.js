@@ -733,7 +733,7 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'returns_report':
+        case 'returns_report': // 422: All Required (*) filters are needed for this Report
             return fetchAPI("reports", {
                 body: {
                     type: "returns_report",
@@ -769,6 +769,31 @@ async function api_test(type = null) {
                         "purchase_orders.unit_cost",
                         "po_items_cost.cost",
                         "po_category_cost.cost"
+                    ]
+                }
+            });
+            break;
+        case 'listings_report':
+            return fetchAPI("reports", {
+                body: {
+                    type: "listings_report",
+                    limit: 200,
+                    filters: [
+                        {
+                            "field": "store_live_listing.status",
+                            "operator": "eq",
+                            "value": "online"
+                        },
+                        {
+                            "field": "store_live_listing.store_id",
+                            "operator": "eq",
+                            "value": "24" // amazon
+                        }
+                    ],
+                    columns: [
+                        "store_live_listing.status",
+                        "stores.name",
+                        "orders.store_id"
                     ]
                 }
             });
