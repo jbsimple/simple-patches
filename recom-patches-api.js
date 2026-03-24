@@ -466,7 +466,7 @@ async function api_test(type = null) {
                     limit: 200,
                     filters: [
                         {
-                            "field": "order_date",
+                            "field": "orders.date_ordered", //theory
                             "operator": "between",
                             "value": ["2026-03-23", "2026-03-23"]
                         }
