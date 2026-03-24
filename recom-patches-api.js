@@ -527,7 +527,7 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'warehouse_inventory':
+        case 'warehouse_inventory': // works, respects limit
             return fetchAPI("reports", {
                 body: {
                     type: "warehouse_inventory",
@@ -571,6 +571,41 @@ async function api_test(type = null) {
                         "product_items.priced_at",
                         "product_items.created_at",
                         "product_items.updated_at"
+                    ]
+                }
+            });
+            break;
+        case 'pending_inventory':
+            return fetchAPI("reports", {
+                body: {
+                    type: "pending_inventory",
+                    limit: 200,
+                    filters: [
+                        {
+                            "field": "purchase_orders.id",
+                            "operator": "eq",
+                            "value": "2369" // example is ASUR-3502
+                        }
+                    ],
+                    columns: [
+                        "purchase_orders.number",
+                        "purchase_orders.id",
+                        "inventory_receiving.id",
+                        "inventory_receiving.keyword",
+                        "inventory_receiving.quantity",
+                        "queue_inventory.quantity_approved",
+                        "inventory_receiving.location",
+                        "inventory_receiving.created_at",
+                        "user_full_name",
+                        "user_profile.user_id",
+                        "products.sid",
+                        "products.name",
+                        "conditions.name",
+                        "inventory_receiving.condition_id",
+                        "products.category_id",
+                        "products.mpn",
+                        "products.gtin",
+                        "products.asin"
                     ]
                 }
             });
