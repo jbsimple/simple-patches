@@ -575,7 +575,7 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'pending_inventory':
+        case 'pending_inventory': // works, respects limit
             return fetchAPI("reports", {
                 body: {
                     type: "pending_inventory",
@@ -606,6 +606,31 @@ async function api_test(type = null) {
                         "products.mpn",
                         "products.gtin",
                         "products.asin"
+                    ]
+                }
+            });
+            break;
+        case 'store_weekly_sales':
+            return fetchAPI("reports", {
+                body: {
+                    type: "store_weekly_sales",
+                    limit: 200,
+                    filters: [
+                        {
+                            "field": "orders.store_id",
+                            "operator": "eq",
+                            "value": "24" // example is Amazon
+                        }
+                    ],
+                    columns: [
+                        "stores.name",
+                        "orders.store_id",
+                        "total_orders_amount",
+                        "total_orders_count",
+                        "date_ordered",
+                        "YEAR(orders.date_ordered)",
+                        "MONTH(orders.date_ordered)",
+                        "week"
                     ]
                 }
             });
