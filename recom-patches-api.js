@@ -644,7 +644,7 @@ async function api_test(type = null) {
                         {
                             "field": "created_at",
                             "operator": "between",
-                            "value": ["2026-02-01", "2026-02-14"] // pos are not created that often
+                            "value": ["2025-12-16", "2025-12-16"] // 5 purcahse orders in this range
                         }
                     ],
                     columns: [
