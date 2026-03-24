@@ -773,7 +773,7 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'listings_report':
+        case 'listings_report': // works, does not respect limit, hard coded limit of 5,000
             return fetchAPI("reports", {
                 body: {
                     type: "listings_report",
@@ -794,6 +794,44 @@ async function api_test(type = null) {
                         "store_live_listing.status",
                         "stores.name",
                         "orders.store_id"
+                    ]
+                }
+            });
+            break;
+        case 'esn_sales_report':
+            return fetchAPI("reports", {
+                body: {
+                    type: "esn_sales_report",
+                    limit: 200,
+                    filters: [
+                        {
+                            "field": "orders.date_ordered",
+                            "operator": "between",
+                            "value": ["2026-03-23", "2026-03-23"]
+                        }
+                    ],
+                    columns: [
+                        "product_items.id",
+                        "products.name",
+                        "order_lines.line_sku",
+                        "order_line_codes.code",
+                        "order_line_codes.type",
+                        "orders.number",
+                        "stores.name",
+                        "orders.store_id",
+                        "order_lines.line_price",
+                        "order_lines.line_discount",
+                        "store_fee",
+                        "shipment_fee",
+                        "other_fee",
+                        "refunded_fee",
+                        "orders.shipping_total",
+                        "orders.date_ordered",
+                        "orders.status",
+                        "purchase_orders.type",
+                        "purchase_orders.number",
+                        "purchase_orders.id",
+                        "products.category_id"
                     ]
                 }
             });
