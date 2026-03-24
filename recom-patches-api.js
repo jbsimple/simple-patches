@@ -50,7 +50,7 @@ async function meta() { return await fetchAPI("meta"); }
 
 async function api_test(type = null) {
     switch (type) {
-        case 'active_inventory':
+        case 'active_inventory':  // does not respect limit
             return fetchAPI("reports", {
                 body: {
                     type: "active_inventory",
@@ -84,9 +84,9 @@ async function api_test(type = null) {
                         "product_items.updated_at"
                     ]
                 }
-            }); // does not respect limit
+            });
             break;
-        case 'catalog_report':
+        case 'catalog_report':  // 422: Object of class stdClass could not be converted to string
             return fetchAPI("reports", {
                 body: {
                     type: "catalog_report",
@@ -112,8 +112,8 @@ async function api_test(type = null) {
                     ]
                 }
             });
-            break; // 422: Object of class stdClass could not be converted to string
-        case 'orders_report':
+            break;
+        case 'orders_report':  // works, respects limit
             return fetchAPI("reports", {
                 body: {
                     type: "orders_report",
@@ -142,9 +142,9 @@ async function api_test(type = null) {
                         "orders.updated_at"
                     ]
                 }
-            }); // works, respects limit
+            });
             break;
-        case 'extended_sold_items':
+        case 'extended_sold_items': // 422: All Required (*) filters are needed for this Report
             return fetchAPI("reports", {
                 body: {
                     type: "extended_sold_items",
@@ -203,7 +203,61 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'active_inventory':
-
+        case 'extended_returned_items':
+            return fetchAPI("reports", {
+                body: {
+                    type: "extended_returned_items",
+                    limit: 200,
+                    filters: [
+                        {
+                            "field": "order_shipped_at",
+                            "operator": "between",
+                            "value": ["2026-03-23", "2026-03-23"]
+                        }
+                    ],
+                    columns: [
+                        "order_returns.return_status",
+                        "order_returns.return_quantity",
+                        "order_returns.return_amount",
+                        "order_returns.return_reason",
+                        "order_returns.created_at",
+                        "order_lines.line_sku",
+                        "orders.number",
+                        "order_lines.line_quantity",
+                        "order_lines.line_price",
+                        "order_lines.line_discount",
+                        "return_fee",
+                        "refunded_fee",
+                        "orders.status",
+                        "orders.date_ordered",
+                        "customers.first_name",
+                        "customers.last_name",
+                        "customers.user_name",
+                        "customer_address.state",
+                        "customer_address.country",
+                        "stores.name",
+                        "orders.store_id",
+                        "orders.tags",
+                        "purchase_orders.type",
+                        "purchase_orders.number",
+                        "purchase_orders.id",
+                        "po_vendors.name",
+                        "purchase_orders.vendor_id",
+                        "products.name",
+                        "product_items.id",
+                        "conditions.name",
+                        "product_items.condition_id",
+                        "products.category_id",
+                        "product_items.in_stock",
+                        "brands.name",
+                        "products.brand_id",
+                        "products.weight",
+                        "products.mpn",
+                        "products.gtin",
+                        "products.asin"
+                    ]
+                }
+            });
+            break;
     }
 }
