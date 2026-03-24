@@ -836,7 +836,7 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'user_daily_activity_report':
+        case 'user_daily_activity_report': // works, respects limit
             return fetchAPI("reports", {
                 body: {
                     type: "user_daily_activity_report",
@@ -854,6 +854,33 @@ async function api_test(type = null) {
                         "user_daily_activity.date",
                         "user_daily_activity.total_minutes",
                         "user_daily_activity.updated_at"
+                    ]
+                }
+            });
+            break;
+        case 'imei_report':
+            return fetchAPI("reports", {
+                body: {
+                    type: "imei_report",
+                    limit: 200,
+                    filters: [],
+                    columns: [
+                        "po_imei.imei",
+                        "products.name",
+                        "product_items.sku",
+                        "conditions.name",
+                        "product_items.condition_id",
+                        "product_items.price",
+                        "product_items.available",
+                        "product_items.in_stock",
+                        "product_items.location",
+                        "products.category_id",
+                        "purchase_orders.type",
+                        "purchase_orders.number",
+                        "purchase_orders.id",
+                        "po_imei.cost",
+                        "po_imei.location",
+                        "po_imei.notes"
                     ]
                 }
             });
