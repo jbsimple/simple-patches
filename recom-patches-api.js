@@ -635,7 +635,7 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'po_overview_report':
+        case 'po_overview_report': // 504: times out
             return fetchAPI("reports", {
                 body: {
                     type: "po_overview_report",
@@ -654,6 +654,43 @@ async function api_test(type = null) {
                         "purchase_orders.r2_status",
                         "purchase_orders.status",
                         "purchase_orders.created_at"
+                    ]
+                }
+            });
+            break;
+        case 'sales_report':
+            return fetchAPI("reports", {
+                body: {
+                    type: "sales_report",
+                    limit: 200,
+                    filters: [
+                        {
+                            "field": "order_date",
+                            "operator": "between",
+                            "value": ["2026-03-23", "2026-03-23"]
+                        }
+                    ],
+                    columns: [
+                        "orders.number",
+                        "customer_address.state",
+                        "order_lines.line_sku",
+                        "order_lines.line_quantity",
+                        "order_lines.line_price",
+                        "order_lines.line_discount",
+                        "stores.name",
+                        "orders.store_id",
+                        "orders.date_ordered",
+                        "purchase_orders.type",
+                        "purchase_orders.number",
+                        "purchase_orders.id",
+                        "po_vendors.name",
+                        "purchase_orders.vendor_id",
+                        "products.name",
+                        "products.category_id",
+                        "product_items.price",
+                        "purchase_orders.unit_cost",
+                        "po_items_cost.cost",
+                        "po_category_cost.cost"
                     ]
                 }
             });
