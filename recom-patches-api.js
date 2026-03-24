@@ -365,7 +365,7 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'wfs_shipments':
+        case 'wfs_shipments': // works, respects limit
             return fetchAPI("reports", {
                 body: {
                     type: "wfs_shipments",
@@ -378,20 +378,50 @@ async function api_test(type = null) {
                         }
                     ],
                     columns: [
-                    "wfs_shipments.wfs_shipment_id",
-                    "wfs_shipments.name",
-                    "wfs_shipments.status",
-                    "wfs_shipment_items.seller_sku",
-                    "wfs_shipment_items.fnsku",
-                    "wfs_shipment_items.quantity",
-                    "products.name",
-                    "product_items.sku",
-                    "wfs_shipment_locations",
-                    "products.gtin",
-                    "wfs_shipments.created_at",
-                    "wfs_shipments.notes"
-                ]
+                        "wfs_shipments.wfs_shipment_id",
+                        "wfs_shipments.name",
+                        "wfs_shipments.status",
+                        "wfs_shipment_items.seller_sku",
+                        "wfs_shipment_items.fnsku",
+                        "wfs_shipment_items.quantity",
+                        "products.name",
+                        "product_items.sku",
+                        "wfs_shipment_locations",
+                        "products.gtin",
+                        "wfs_shipments.created_at",
+                        "wfs_shipments.notes"
+                    ]
                 }
             });
+        case 'product_images': // 
+            return fetchAPI("reports", {
+                body: {
+                    type: "product_images",
+                    limit: 200,
+                    filters: [
+                        {
+                            "field": "products.status",
+                            "operator": "eq",
+                            "value": "1" // 1 is PUBLISHED, 2 is INACTIVE
+                        }
+                    ],
+                    columns: [
+                        "products.sid",
+                        "products.name",
+                        "product_images.url",
+                        "brands.name",
+                        "products.brand_id",
+                        "categories.name",
+                        "products.category_id",
+                        "products.weight",
+                        "products.mpn",
+                        "products.gtin",
+                        "products.asin",
+                        "products.status",
+                        "products.created_at"
+                    ]
+                }
+            });
+            break;
     }
 }
