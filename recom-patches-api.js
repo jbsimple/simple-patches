@@ -59,7 +59,7 @@ async function api_test(type = null) {
                         {
                             "field": "product_items.in_stock",
                             "operator": "gte",
-                            "value": [1000]
+                            "value": "1000"
                         }
                     ],
                     columns: [
