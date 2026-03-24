@@ -91,7 +91,6 @@ async function api_test(type = null) {
                 body: {
                     type: "catalog_report",
                     limit: 200,
-                    filters: [],
                     columns: [
                         "products.sid",
                         "products.name",
