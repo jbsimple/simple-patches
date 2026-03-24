@@ -86,6 +86,33 @@ async function api_test(type = null) {
                 }
             });
             break;
+        case 'catalog_report':
+            return fetchAPI("reports", {
+                body: {
+                    type: "catalog_report",
+                    limit: 200,
+                    filters: [],
+                    columns: [
+                        "products.sid",
+                        "products.name",
+                        "products.description",
+                        "first_image",
+                        "brands.name",
+                        "products.brand_id",
+                        "categories.name",
+                        "products.category_id",
+                        "categories.type",
+                        "products.gtin",
+                        "products.asin",
+                        "products.msrp",
+                        "products.dimensions",
+                        "products.specs",
+                        "products.status",
+                        "products.created_at"
+                    ]
+                }
+            });
+            break;
         case 'extended_sold_items':
             return fetchAPI("reports", {
                 body: {
