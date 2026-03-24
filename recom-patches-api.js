@@ -71,15 +71,34 @@ async function api_test(type = null) {
                         "product_items.condition_id",
                         "product_items.title",
                         "products.description",
+                        "first_image",
                         "product_items.available",
                         "product_items.in_stock",
                         "product_items.price",
+                        "product_items.min_price",
+                        "product_items.max_price",
+                        "product_items.bulk_price",
+                        "product_items.seller_price",
+                        "products.msrp",
                         "product_items.location",
                         "brands.name",
                         "products.brand_id",
                         "categories.name",
                         "products.category_id",
                         "categories.type",
+                        "products.weight",
+                        "products.mpn",
+                        "products.gtin",
+                        "products.asin",
+                        "products.dimensions",
+                        "product_items.store_settings",
+                        "products.specs",
+                        "product_items.flags",
+                        "product_items.is_scrap",
+                        "product_items.has_fba",
+                        "product_items.status",
+                        "product_items.sold_at",
+                        "product_items.priced_at",
                         "product_items.created_at",
                         "product_items.updated_at"
                     ]
@@ -101,7 +120,8 @@ async function api_test(type = null) {
                         "products.brand_id",
                         "categories.name",
                         "products.category_id",
-                        "categories.type",
+                        "products.weight",
+                        "products.mpn",
                         "products.gtin",
                         "products.asin",
                         "products.msrp",
@@ -259,7 +279,7 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'user_clock':
+        case 'user_clock': // works, respects limit
             return fetchAPI("reports", {
                 body: {
                     type: "user_clock",
