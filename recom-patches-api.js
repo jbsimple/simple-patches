@@ -798,7 +798,7 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'esn_sales_report':
+        case 'esn_sales_report': // works, respects limit
             return fetchAPI("reports", {
                 body: {
                     type: "esn_sales_report",
@@ -832,6 +832,28 @@ async function api_test(type = null) {
                         "purchase_orders.number",
                         "purchase_orders.id",
                         "products.category_id"
+                    ]
+                }
+            });
+            break;
+        case 'user_daily_activity_report':
+            return fetchAPI("reports", {
+                body: {
+                    type: "user_daily_activity_report",
+                    limit: 200,
+                    filters: [
+                        {
+                            "field": "user_daily_activity.date",
+                            "operator": "between",
+                            "value": ["2026-03-23", "2026-03-23"]
+                        }
+                    ],
+                    columns: [
+                        "user_full_name",
+                        "user_profile.user_id",
+                        "user_daily_activity.date",
+                        "user_daily_activity.total_minutes",
+                        "user_daily_activity.updated_at"
                     ]
                 }
             });
