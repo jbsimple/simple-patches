@@ -84,13 +84,14 @@ async function api_test(type = null) {
                         "product_items.updated_at"
                     ]
                 }
-            });
+            }); // does not respect limit
             break;
         case 'catalog_report':
             return fetchAPI("reports", {
                 body: {
                     type: "catalog_report",
                     limit: 200,
+                    filters: [],
                     columns: [
                         "products.sid",
                         "products.name",
@@ -111,6 +112,37 @@ async function api_test(type = null) {
                     ]
                 }
             });
+            break; // 422: Object of class stdClass could not be converted to string
+        case 'orders_report':
+            return fetchAPI("reports", {
+                body: {
+                    type: "orders_report",
+                    limit: 200,
+                    filters: [
+                        {
+                            "field": "orders.date_ordered",
+                            "operator": "between",
+                            "value": ["2026-03-23", "2026-03-23"]
+                        }
+                    ],
+                    columns: [
+                        "orders.number",
+                        "orders.total",
+                        "orders.shipping_total",
+                        "orders.tax_total",
+                        "orders.status",
+                        "customer_full_name",
+                        "customers.email",
+                        "customer_address.phone_number",
+                        "customer_address.name",
+                        "customer_address.state",
+                        "stores.name",
+                        "orders.store_id",
+                        "orders.date_ordered",
+                        "orders.updated_at"
+                    ]
+                }
+            }); // works, respects limit
             break;
         case 'extended_sold_items':
             return fetchAPI("reports", {
@@ -120,7 +152,7 @@ async function api_test(type = null) {
                         {
                             "field": "order_shipped_at",
                             "operator": "between",
-                            "value": [to, from]
+                            "value": ["2026-03-23", "2026-03-23"]
                         }
                     ],
                     columns: [
@@ -167,37 +199,6 @@ async function api_test(type = null) {
                         "products.weight",
                         "products.gtin",
                         "products.asin"
-                    ]
-                }
-            });
-            break;
-        case 'orders_report':
-            return fetchAPI("reports", {
-                body: {
-                    type: "orders_report",
-                    limit: 200,
-                    filters: [
-                        {
-                            "field": "orders.date_ordered",
-                            "operator": "between",
-                            "value": ["2026-03-23", "2026-03-23"]
-                        }
-                    ],
-                    columns: [
-                        "orders.number",
-                        "orders.total",
-                        "orders.shipping_total",
-                        "orders.tax_total",
-                        "orders.status",
-                        "customer_full_name",
-                        "customers.email",
-                        "customer_address.phone_number",
-                        "customer_address.name",
-                        "customer_address.state",
-                        "stores.name",
-                        "orders.store_id",
-                        "orders.date_ordered",
-                        "orders.updated_at"
                     ]
                 }
             });
