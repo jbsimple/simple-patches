@@ -335,7 +335,7 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'fba_shipments':
+        case 'fba_shipments': // works, respects limit
             return fetchAPI("reports", {
                 body: {
                     type: "fba_shipments",
@@ -365,5 +365,33 @@ async function api_test(type = null) {
                 }
             });
             break;
+        case 'wfs_shipments':
+            return fetchAPI("reports", {
+                body: {
+                    type: "wfs_shipments",
+                    limit: 200,
+                    filters: [
+                        {
+                            "field": "wfs_shipments.status",
+                            "operator": "eq",
+                            "value": "completed"
+                        }
+                    ],
+                    columns: [
+                    "wfs_shipments.wfs_shipment_id",
+                    "wfs_shipments.name",
+                    "wfs_shipments.status",
+                    "wfs_shipment_items.seller_sku",
+                    "wfs_shipment_items.fnsku",
+                    "wfs_shipment_items.quantity",
+                    "products.name",
+                    "product_items.sku",
+                    "wfs_shipment_locations",
+                    "products.gtin",
+                    "wfs_shipments.created_at",
+                    "wfs_shipments.notes"
+                ]
+                }
+            });
     }
 }
