@@ -696,9 +696,9 @@ async function api_test(type = null) {
             });
             break;
         case 'refunds_report' :
-            return fetchAPI("refunds_report", {
+            return fetchAPI("reports", {
                 body: {
-                    type: "sales_report",
+                    type: "refunds_report",
                     limit: 200,
                     filters: [
                         {
