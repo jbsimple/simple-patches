@@ -494,7 +494,7 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'po_category_cost_value':
+        case 'po_category_cost_value': // 422: PO Status, Type and Date are required for this report!
             return fetchAPI("reports", {
                 body: {
                     type: "po_category_cost_value",
@@ -523,6 +523,54 @@ async function api_test(type = null) {
                         "purchase_orders.type",
                         "purchase_orders.status",
                         "purchase_orders.created_at"
+                    ]
+                }
+            });
+            break;
+        case 'warehouse_inventory':
+            return fetchAPI("reports", {
+                body: {
+                    type: "warehouse_inventory",
+                    limit: 200,
+                    filters: [
+                        {
+                            "field": "warehouses.type",
+                            "operator": "eq",
+                            "value": "main" // main, virtual, fba
+                        }
+                    ],
+                    columns: [
+                        "warehouses.type",
+                        "warehouses.name",
+                        "products.sid",
+                        "products.name",
+                        "product_items.sku",
+                        "warehouse_locations.full_location",
+                        "purchase_orders.number",
+                        "purchase_orders.id",
+                        "purchase_orders.type",
+                        "conditions.name",
+                        "product_items.condition_id",
+                        "product_items.available",
+                        "item_inventory.quantity",
+                        "item_inventory.total_quantity",
+                        "pending_fba",
+                        "item_inventory.updated_at",
+                        "item_inventory.created_at",
+                        "product_items.price",
+                        "product_items.bulk_price",
+                        "products.category_id",
+                        "brands.name",
+                        "products.brand_id",
+                        "products.mpn",
+                        "products.gtin",
+                        "products.asin",
+                        "product_items.is_scrap",
+                        "product_items.has_fba",
+                        "product_items.sold_at",
+                        "product_items.priced_at",
+                        "product_items.created_at",
+                        "product_items.updated_at"
                     ]
                 }
             });
