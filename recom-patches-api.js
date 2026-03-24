@@ -393,7 +393,7 @@ async function api_test(type = null) {
                     ]
                 }
             });
-        case 'product_images': // 
+        case 'product_images': // works, respects limit, just as cursed as the report
             return fetchAPI("reports", {
                 body: {
                     type: "product_images",
@@ -419,6 +419,42 @@ async function api_test(type = null) {
                         "products.asin",
                         "products.status",
                         "products.created_at"
+                    ]
+                }
+            });
+            break;
+        case 'item_images': // 
+            return fetchAPI("reports", {
+                body: {
+                    type: "product_images",
+                    limit: 200,
+                    filters: [
+                        {
+                            "field": "product_items.status",
+                            "operator": "eq",
+                            "value": "1" // 1 is PUBLISHED, 2 is INACTIVE
+                        }
+                    ],
+                    columns: [
+                        "product_items.sku",
+                        "products.sid",
+                        "products.name",
+                        "item_images.url",
+                        "brands.name",
+                        "products.brand_id",
+                        "categories.name",
+                        "products.category_id",
+                        "conditions.name",
+                        "product_items.condition_id",
+                        "product_items.in_stock",
+                        "product_items.location",
+                        "product_items.price",
+                        "products.weight",
+                        "products.mpn",
+                        "products.gtin",
+                        "products.asin",
+                        "product_items.status",
+                        "product_items.created_at"
                     ]
                 }
             });
