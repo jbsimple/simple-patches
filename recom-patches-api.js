@@ -49,151 +49,134 @@ async function fetchAPI(route, { params = {}, body = null } = {}, options = {}) 
 async function meta() { return await fetchAPI("meta"); }
 
 async function api_test(type = null) {
-    const metaRes = await fetchAPI("meta");
-    const reports = metaRes.data?.data || {};
-
-    let entries = Object.entries(reports);
-
-    if (type) {
-        if (Array.isArray(type)) {
-            entries = entries.filter(([key]) => type.includes(key));
-        } else {
-            entries = entries.filter(([key]) => key === type);
-        }
-    }
-
-    if (entries.length === 0) {
-        console.warn("PATCHES - No matching report types");
-        return {};
-    }
-
-    const results = {};
-
-    const DELAY = 800;
-    const MAX_RETRIES = 5;
-    const COLUMN_CHUNK = 10;
-
-    const sleep = (ms) => new Promise(r => setTimeout(r, ms));
-
-    function buildFilter(field) {
-        if (field.includes("date") || field.includes("created") || field.includes("updated")) {
-            return {
-                field,
-                operator: "between",
-                value: ["2026-03-21", "2026-03-23"]
-            };
-        }
-
-        if (field.includes("status")) {
-            return { field, operator: "not_null" };
-        }
-
-        if (field.includes("in_stock")) {
-            return { field, operator: "gte", value: 0 };
-        }
-
-        if (field.includes("id")) {
-            return { field, operator: "not_null" };
-        }
-
-        return { field, operator: "not_null" };
-    }
-
-    async function fetchWithRetry(body, attempt = 1) {
-        try {
-            return await fetchAPI("reports", { body });
-        } catch (err) {
-            const isRetryable =
-                err.message.includes("429") ||
-                err.message.includes("500") ||
-                err.message.includes("fetch");
-
-            if (isRetryable && attempt < MAX_RETRIES) {
-                const wait = 500 * attempt;
-                console.warn(`PATCHES - Retry ${attempt} (${wait}ms)`);
-                await sleep(wait);
-                return fetchWithRetry(body, attempt + 1);
-            }
-
-            throw err;
-        }
-    }
-
-    for (const [key, report] of entries) {
-
-        results[key] = {
-            base: null,
-            filters: {},
-            columns: {}
-        };
-
-        const requiredFilters = (report.required_filters || []).map(buildFilter);
-        const allColumns = (report.columns || []).map(c => c.id);
-
-        try {
-            await fetchWithRetry({
-                type: key,
-                limit: 10,
-                filters: requiredFilters,
-                columns: allColumns.slice(0, 5)
+    switch (type) {
+        case 'active_inventory':
+            return fetchAPI("reports", {
+                body: {
+                    type: "active_inventory",
+                    limit: 200,
+                    filters: [
+                        {
+                            "field": "product_items.in_stock",
+                            "operator": "gte",
+                            "value": [1000]
+                        }
+                    ],
+                    columns: [
+                        "products.sid",
+                        "products.name",
+                        "product_items.id",
+                        "product_items.sku",
+                        "conditions.name",
+                        "product_items.condition_id",
+                        "product_items.title",
+                        "products.description",
+                        "product_items.available",
+                        "product_items.in_stock",
+                        "product_items.price",
+                        "product_items.location",
+                        "brands.name",
+                        "products.brand_id",
+                        "categories.name",
+                        "products.category_id",
+                        "categories.type",
+                        "product_items.created_at",
+                        "product_items.updated_at"
+                    ]
+                }
             });
+            break;
+        case 'extended_sold_items':
+            return fetchAPI("reports", {
+                body: {
+                    type: "extended_sold_items",
+                    filters: [
+                        {
+                            "field": "order_shipped_at",
+                            "operator": "between",
+                            "value": [to, from]
+                        }
+                    ],
+                    columns: [
+                        "orders.number",
+                        "order_lines.line_sku",
+                        "products.name",
+                        "products.mpn",
+                        "order_lines.line_quantity",
+                        "order_lines.line_price",
+                        "shipment_fee",
+                        "fba_fee",
+                        "store_fee",
+                        "order_lines.line_discount",
+                        "other_fee",
+                        "refunded_fee",
+                        "purchase_orders.number",
+                        "purchase_orders.id",
+                        "stores.name",
+                        "orders.store_id",
+                        "order_shipment.created_at",
+                        "orders.shipping_total",
+                        "customer_address.name",
+                        "customer_address.state",
+                        "customer_address.country",
+                        "order_lines.line_refund_quantity",
+                        "orders.tags",
+                        "orders.date_ordered",
+                        "orders.updated_at",
+                        "purchase_orders.type",
+                        "po_vendors.name",
+                        "purchase_orders.vendor_id",
+                        "product_items.id",
+                        "conditions.name",
+                        "product_items.condition_id",
+                        "products.category_id",
+                        "categories.type",
+                        "product_items.in_stock",
+                        "product_items.price",
+                        "purchase_orders.unit_cost",
+                        "po_items_cost.cost",
+                        "po_category_cost.cost",
+                        "brands.name",
+                        "products.brand_id",
+                        "products.weight",
+                        "products.gtin",
+                        "products.asin"
+                    ]
+                }
+            });
+            break;
+        case 'orders_report':
+            return fetchAPI("reports", {
+                body: {
+                    type: "orders_report",
+                    limit: 200,
+                    filters: [
+                        {
+                            "field": "orders.date_ordered",
+                            "operator": "between",
+                            "value": ["2026-03-23", "2026-03-23"]
+                        }
+                    ],
+                    columns: [
+                        "orders.number",
+                        "orders.total",
+                        "orders.shipping_total",
+                        "orders.tax_total",
+                        "orders.status",
+                        "customer_full_name",
+                        "customers.email",
+                        "customer_address.phone_number",
+                        "customer_address.name",
+                        "customer_address.state",
+                        "stores.name",
+                        "orders.store_id",
+                        "orders.date_ordered",
+                        "orders.updated_at"
+                    ]
+                }
+            });
+            break;
+        case 'active_inventory':
 
-            console.log(`PATCHES - Success base ${key}`);
-            results[key].base = true;
-
-        } catch (err) {
-            console.error(`PATCHES - Fail base ${key}`, err.message);
-            results[key].base = false;
-        }
-
-        await sleep(DELAY);
-
-        const filterFields = report.required_filters || [];
-
-        for (const field of filterFields) {
-            try {
-                await fetchWithRetry({
-                    type: key,
-                    limit: 10,
-                    filters: [buildFilter(field)],
-                    columns: allColumns.slice(0, 5)
-                });
-
-                console.log(`PATCHES - Success filter ${key} ${field}`);
-                results[key].filters[field] = true;
-
-            } catch (err) {
-                console.error(`PATCHES - Fail filter ${key} ${field}`, err.message);
-                results[key].filters[field] = false;
-            }
-
-            await sleep(DELAY);
-        }
-
-        for (let i = 0; i < allColumns.length; i += COLUMN_CHUNK) {
-            const chunk = allColumns.slice(i, i + COLUMN_CHUNK);
-
-            try {
-                await fetchWithRetry({
-                    type: key,
-                    limit: 10,
-                    filters: requiredFilters,
-                    columns: chunk
-                });
-
-                console.log(`PATCHES - Success columns ${key} [${i}-${i + chunk.length}]`);
-                results[key].columns[`${i}-${i + chunk.length}`] = true;
-
-            } catch (err) {
-                console.error(`PATCHES - Fail columns ${key} [${i}-${i + chunk.length}]`, err.message);
-                results[key].columns[`${i}-${i + chunk.length}`] = false;
-            }
-
-            await sleep(DELAY);
-        }
     }
-
-    console.log("PATCHES - FINAL RESULTS", results);
-
-    return results;
 }
