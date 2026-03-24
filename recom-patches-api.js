@@ -48,35 +48,69 @@ async function fetchAPI(route, { params = {}, body = null } = {}, options = {}) 
 
 async function meta() { return await fetchAPI("meta"); }
 
-async function api_test() {
+async function api_test(type = null) {
     const metaRes = await fetchAPI("meta");
     const reports = metaRes.data?.data || {};
 
+    let entries = Object.entries(reports);
+
+    if (type) {
+        if (Array.isArray(type)) {
+            entries = entries.filter(([key]) => type.includes(key));
+        } else {
+            entries = entries.filter(([key]) => key === type);
+        }
+    }
+
+    if (entries.length === 0) {
+        console.warn("PATCHES - No matching report types");
+        return {};
+    }
+
     const results = {};
-    const entries = Object.entries(reports);
 
-    const CONCURRENCY = 1;
-    const DELAY = 1000;
+    const DELAY = 800;
     const MAX_RETRIES = 5;
-
-    let index = 0;
+    const COLUMN_CHUNK = 10;
 
     const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+    function buildFilter(field) {
+        if (field.includes("date") || field.includes("created") || field.includes("updated")) {
+            return {
+                field,
+                operator: "between",
+                value: ["2026-03-21", "2026-03-23"]
+            };
+        }
+
+        if (field.includes("status")) {
+            return { field, operator: "not_null" };
+        }
+
+        if (field.includes("in_stock")) {
+            return { field, operator: "gte", value: 0 };
+        }
+
+        if (field.includes("id")) {
+            return { field, operator: "not_null" };
+        }
+
+        return { field, operator: "not_null" };
+    }
 
     async function fetchWithRetry(body, attempt = 1) {
         try {
             return await fetchAPI("reports", { body });
         } catch (err) {
-
             const isRetryable =
                 err.message.includes("429") ||
                 err.message.includes("500") ||
                 err.message.includes("fetch");
 
             if (isRetryable && attempt < MAX_RETRIES) {
-                const wait = 500 * attempt; // simple backoff
+                const wait = 500 * attempt;
                 console.warn(`PATCHES - Retry ${attempt} (${wait}ms)`);
-
                 await sleep(wait);
                 return fetchWithRetry(body, attempt + 1);
             }
@@ -85,69 +119,79 @@ async function api_test() {
         }
     }
 
-    async function worker() {
-        while (index < entries.length) {
-            const currentIndex = index++;
-            const [key, report] = entries[currentIndex];
+    for (const [key, report] of entries) {
 
+        results[key] = {
+            base: null,
+            filters: {},
+            columns: {}
+        };
+
+        const requiredFilters = (report.required_filters || []).map(buildFilter);
+        const allColumns = (report.columns || []).map(c => c.id);
+
+        try {
+            await fetchWithRetry({
+                type: key,
+                limit: 10,
+                filters: requiredFilters,
+                columns: allColumns.slice(0, 5)
+            });
+
+            console.log(`PATCHES - Success base ${key}`);
+            results[key].base = true;
+
+        } catch (err) {
+            console.error(`PATCHES - Fail base ${key}`, err.message);
+            results[key].base = false;
+        }
+
+        await sleep(DELAY);
+
+        const filterFields = report.required_filters || [];
+
+        for (const field of filterFields) {
             try {
-                const filters = (report.required_filters || []).map(field => {
-
-                    if (field.includes("date") || field.includes("created") || field.includes("updated")) {
-                        return {
-                            field,
-                            operator: "between",
-                            value: ["2026-03-21", "2026-03-23"]
-                        };
-                    }
-
-                    if (field.includes("status")) {
-                        return { field, operator: "not_null" };
-                    }
-
-                    if (field.includes("in_stock")) {
-                        return { field, operator: "gte", value: 0 };
-                    }
-
-                    return { field, operator: "not_null" };
-                });
-
-                const columns = (report.columns || [])
-                    .slice(0, 5)
-                    .map(c => c.id);
-
-                const body = {
+                await fetchWithRetry({
                     type: key,
                     limit: 10,
-                    filters,
-                    columns
-                };
+                    filters: [buildFilter(field)],
+                    columns: allColumns.slice(0, 5)
+                });
 
-                const res = await fetchWithRetry(body);
-
-                console.log(`PATCHES - Success ${key}`);
-
-                results[key] = {
-                    success: true,
-                    count: res?.data?.meta?.count ?? 0
-                };
+                console.log(`PATCHES - Success filter ${key} ${field}`);
+                results[key].filters[field] = true;
 
             } catch (err) {
+                console.error(`PATCHES - Fail filter ${key} ${field}`, err.message);
+                results[key].filters[field] = false;
+            }
 
-                console.error(`PATCHES - Fail ${key}`, err.message);
+            await sleep(DELAY);
+        }
 
-                results[key] = {
-                    success: false,
-                    error: err.message
-                };
+        for (let i = 0; i < allColumns.length; i += COLUMN_CHUNK) {
+            const chunk = allColumns.slice(i, i + COLUMN_CHUNK);
+
+            try {
+                await fetchWithRetry({
+                    type: key,
+                    limit: 10,
+                    filters: requiredFilters,
+                    columns: chunk
+                });
+
+                console.log(`PATCHES - Success columns ${key} [${i}-${i + chunk.length}]`);
+                results[key].columns[`${i}-${i + chunk.length}`] = true;
+
+            } catch (err) {
+                console.error(`PATCHES - Fail columns ${key} [${i}-${i + chunk.length}]`, err.message);
+                results[key].columns[`${i}-${i + chunk.length}`] = false;
             }
 
             await sleep(DELAY);
         }
     }
-
-    const workers = Array.from({ length: CONCURRENCY }, () => worker());
-    await Promise.all(workers);
 
     console.log("PATCHES - FINAL RESULTS", results);
 
