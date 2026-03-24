@@ -658,7 +658,7 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'sales_report':
+        case 'sales_report': // 422: All Required (*) filters are needed for this Report
             return fetchAPI("reports", {
                 body: {
                     type: "sales_report",
@@ -675,6 +675,44 @@ async function api_test(type = null) {
                         "customer_address.state",
                         "order_lines.line_sku",
                         "order_lines.line_quantity",
+                        "order_lines.line_price",
+                        "order_lines.line_discount",
+                        "stores.name",
+                        "orders.store_id",
+                        "orders.date_ordered",
+                        "purchase_orders.type",
+                        "purchase_orders.number",
+                        "purchase_orders.id",
+                        "po_vendors.name",
+                        "purchase_orders.vendor_id",
+                        "products.name",
+                        "products.category_id",
+                        "product_items.price",
+                        "purchase_orders.unit_cost",
+                        "po_items_cost.cost",
+                        "po_category_cost.cost"
+                    ]
+                }
+            });
+            break;
+        case 'refunds_report' :
+            return fetchAPI("refunds_report", {
+                body: {
+                    type: "sales_report",
+                    limit: 200,
+                    filters: [
+                        {
+                            "field": "order_date",
+                            "operator": "between",
+                            "value": ["2026-03-23", "2026-03-23"]
+                        }
+                    ],
+                    columns: [
+                        "orders.number",
+                        "customer_address.state",
+                        "order_lines.line_sku",
+                        "order_lines.line_quantity",
+                        "order_lines.line_refund_quantity",
                         "order_lines.line_price",
                         "order_lines.line_discount",
                         "stores.name",
