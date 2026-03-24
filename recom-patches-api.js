@@ -858,7 +858,7 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'imei_report':
+        case 'imei_report': // works, does not respect limit
             return fetchAPI("reports", {
                 body: {
                     type: "imei_report",
