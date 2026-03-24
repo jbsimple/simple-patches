@@ -335,5 +335,35 @@ async function api_test(type = null) {
                 }
             });
             break;
+        case 'fba_shipments':
+            return fetchAPI("reports", {
+                body: {
+                    type: "fba_shipments",
+                    limit: 200,
+                    filters: [
+                        {
+                            "field": "fba_shipments.status",
+                            "operator": "eq",
+                            "value": "completed"
+                        }
+                    ],
+                    columns: [
+                        "fba_shipments.fba_shipment_id",
+                        "fba_shipments.name",
+                        "fba_shipments.status",
+                        "fba_shipment_items.seller_sku",
+                        "fba_shipment_items.fnsku",
+                        "fba_shipment_items.quantity",
+                        "fba_shipment_items.prep_instruction",
+                        "products.name",
+                        "product_items.sku",
+                        "fba_shipment_locations",
+                        "products.asin",
+                        "fba_shipments.created_at",
+                        "fba_shipments.notes"
+                    ]
+                }
+            });
+            break;
     }
 }
