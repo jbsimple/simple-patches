@@ -402,7 +402,7 @@ async function api_test(type = null) {
                         {
                             "field": "products.status",
                             "operator": "eq",
-                            "value": "1" // 1 is PUBLISHED, 2 is INACTIVE
+                            "value": "1" // 1 is PUBLISHED, 0 is INACTIVE
                         }
                     ],
                     columns: [
@@ -426,13 +426,13 @@ async function api_test(type = null) {
         case 'item_images': // 
             return fetchAPI("reports", {
                 body: {
-                    type: "product_images",
+                    type: "item_images",
                     limit: 200,
                     filters: [
                         {
                             "field": "product_items.status",
                             "operator": "eq",
-                            "value": "1" // 1 is PUBLISHED, 2 is INACTIVE
+                            "value": "1" // 1 is PUBLISHED, 0 is INACTIVE
                         }
                     ],
                     columns: [
