@@ -203,14 +203,14 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'extended_returned_items':
+        case 'extended_returned_items':  // 422: All Required (*) filters are needed for this Report
             return fetchAPI("reports", {
                 body: {
                     type: "extended_returned_items",
                     limit: 200,
                     filters: [
                         {
-                            "field": "order_shipped_at",
+                            "field": "return_date",
                             "operator": "between",
                             "value": ["2026-03-23", "2026-03-23"]
                         }
@@ -252,6 +252,62 @@ async function api_test(type = null) {
                         "brands.name",
                         "products.brand_id",
                         "products.weight",
+                        "products.mpn",
+                        "products.gtin",
+                        "products.asin"
+                    ]
+                }
+            });
+            break;
+        case 'user_clock':
+            return fetchAPI("reports", {
+                body: {
+                    type: "user_clock",
+                    limit: 200,
+                    filters: [
+                        {
+                            "field": "user_clocks.clock_date",
+                            "operator": "between",
+                            "value": ["2026-03-23", "2026-03-23"]
+                        }
+                    ],
+                    columns: [
+                        "user_full_name",
+                        "user_profile.user_id",
+                        "departments.name",
+                        "user_profile.department_id",
+                        "clock_tasks.name",
+                        "user_clocks.task_id",
+                        "purchase_orders.number",
+                        "purchase_orders.id",
+                        "purchase_orders.type",
+                        "user_clock_activity.activity_id",
+                        "user_clock_activity.activity_code",
+                        "user_clock_activity.notes",
+                        "user_clock_activity.units",
+                        "user_clock_activity.created_at",
+                        "user_clock_activity.time_spent",
+                        "user_clocks.time_in",
+                        "user_clocks.time_out",
+                        "user_clocks.user_id",
+                        "user_clocks.clock_date",
+                        "products.sid",
+                        "products.name",
+                        "product_items.sku",
+                        "conditions.name",
+                        "product_items.condition_id",
+                        "inventory_receiving.condition_id",
+                        "inventory_receiving.imei",
+                        "categories.name",
+                        "products.category_id",
+                        "categories.type",
+                        "brands.name",
+                        "products.brand_id",
+                        "order_lines.line_sku",
+                        "orders.number",
+                        "order_lines.line_quantity",
+                        "order_lines.line_price",
+                        "product_items.bulk_price",
                         "products.mpn",
                         "products.gtin",
                         "products.asin"
