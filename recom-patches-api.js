@@ -459,14 +459,14 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'extended_items_demands':
+        case 'extended_items_demands': // 422: All Required (*) filters are needed for this Report
             return fetchAPI("reports", {
                 body: {
                     type: "extended_items_demands",
                     limit: 200,
                     filters: [
                         {
-                            "field": "orders.date_ordered", //theory
+                            "field": "order_date",
                             "operator": "between",
                             "value": ["2026-03-23", "2026-03-23"]
                         }
@@ -490,6 +490,39 @@ async function api_test(type = null) {
                         "products.mpn",
                         "products.gtin",
                         "products.asin"
+                    ]
+                }
+            });
+            break;
+        case 'po_category_cost_value':
+            return fetchAPI("reports", {
+                body: {
+                    type: "po_category_cost_value",
+                    limit: 200,
+                    filters: [
+                        {
+                            "field": "purchase_orders.type",
+                            "operator": "eq",
+                            "value": "purchase" // purchase, d2c, shared, sort_settle
+                        },
+                        {
+                            "field": "purchase_orders.status",
+                            "operator": "eq",
+                            "value": "IN PROGRESS" // IN TRANSIT, RECEIVED, IN PROGRESS, PENDING, CANCELLED, COMPLETED, PARTIALLY RECEIVED, CHECKED IN
+                        },
+                        {
+                            "field": "purchase_orders.created_at",
+                            "operator": "between",
+                            "value": ["2026-02-01", "2026-02-28"] // pos are not created that often
+                        }
+                    ],
+                    columns: [
+                        "products.category_id",
+                        "purchase_orders.number",
+                        "purchase_orders.id",
+                        "purchase_orders.type",
+                        "purchase_orders.status",
+                        "purchase_orders.created_at"
                     ]
                 }
             });
