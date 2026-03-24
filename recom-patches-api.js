@@ -50,7 +50,7 @@ async function meta() { return await fetchAPI("meta"); }
 
 async function api_test(type = null) {
     switch (type) {
-        case 'active_inventory':  // does not respect limit
+        case 'active_inventory':  // works, does not respect limit
             return fetchAPI("reports", {
                 body: {
                     type: "active_inventory",
@@ -610,7 +610,7 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'store_weekly_sales':
+        case 'store_weekly_sales': // works, respects limit
             return fetchAPI("reports", {
                 body: {
                     type: "store_weekly_sales",
@@ -631,6 +631,29 @@ async function api_test(type = null) {
                         "YEAR(orders.date_ordered)",
                         "MONTH(orders.date_ordered)",
                         "week"
+                    ]
+                }
+            });
+            break;
+        case 'po_overview_report':
+            return fetchAPI("reports", {
+                body: {
+                    type: "po_overview_report",
+                    limit: 200,
+                    filters: [
+                        {
+                            "field": "created_at",
+                            "operator": "between",
+                            "value": ["2026-02-01", "2026-02-28"] // pos are not created that often
+                        }
+                    ],
+                    columns: [
+                        "purchase_orders.number",
+                        "purchase_orders.id",
+                        "purchase_orders.type",
+                        "purchase_orders.r2_status",
+                        "purchase_orders.status",
+                        "purchase_orders.created_at"
                     ]
                 }
             });
