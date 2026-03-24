@@ -423,7 +423,7 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'item_images': // 
+        case 'item_images': // works, respects limit, just as cursed as the report
             return fetchAPI("reports", {
                 body: {
                     type: "item_images",
@@ -455,6 +455,41 @@ async function api_test(type = null) {
                         "products.asin",
                         "product_items.status",
                         "product_items.created_at"
+                    ]
+                }
+            });
+            break;
+        case 'extended_items_demands':
+            return fetchAPI("reports", {
+                body: {
+                    type: "extended_items_demands",
+                    limit: 200,
+                    filters: [
+                        {
+                            "field": "order_date",
+                            "operator": "between",
+                            "value": ["2026-03-23", "2026-03-23"]
+                        }
+                    ],
+                    columns: [
+                        "orders.date_ordered",
+                        "order_lines.line_sku",
+                        "total_orders",
+                        "total_units",
+                        "total_price",
+                        "purchase_orders.type",
+                        "products.name",
+                        "conditions.name",
+                        "product_items.condition_id",
+                        "product_items.in_stock",
+                        "product_items.price",
+                        "brands.name",
+                        "products.brand_id",
+                        "products.category_id",
+                        "products.weight",
+                        "products.mpn",
+                        "products.gtin",
+                        "products.asin"
                     ]
                 }
             });
