@@ -164,10 +164,11 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'extended_sold_items': // 422: All Required (*) filters are needed for this Report
+        case 'extended_sold_items': // works, does not respect limit
             return fetchAPI("reports", {
                 body: {
                     type: "extended_sold_items",
+                    limit: 200,
                     filters: [
                         {
                             "field": "order_shipped_at",
@@ -223,7 +224,7 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'extended_returned_items':  // 422: All Required (*) filters are needed for this Report
+        case 'extended_returned_items':  // works, does not respect limit
             return fetchAPI("reports", {
                 body: {
                     type: "extended_returned_items",
@@ -459,7 +460,7 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'extended_items_demands': // 422: All Required (*) filters are needed for this Report
+        case 'extended_items_demands': // works, does not respect limit
             return fetchAPI("reports", {
                 body: {
                     type: "extended_items_demands",
@@ -658,7 +659,7 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'sales_report': // 422: All Required (*) filters are needed for this Report
+        case 'sales_report': // works, does not respect limit
             return fetchAPI("reports", {
                 body: {
                     type: "sales_report",
@@ -695,7 +696,7 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'refunds_report': // 422: All Required (*) filters are needed for this Report
+        case 'refunds_report': // works, does not respect limit
             return fetchAPI("reports", {
                 body: {
                     type: "refunds_report",
@@ -704,7 +705,7 @@ async function api_test(type = null) {
                         {
                             "field": "order_date",
                             "operator": "between",
-                            "value": ["2026-03-23", "2026-03-23"]
+                            "value": ["2026-02-01", "2026-02-28"]
                         }
                     ],
                     columns: [
@@ -733,7 +734,7 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'returns_report': // 422: All Required (*) filters are needed for this Report
+        case 'returns_report': // works, does not respect limit
             return fetchAPI("reports", {
                 body: {
                     type: "returns_report",
