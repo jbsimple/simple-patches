@@ -105,7 +105,7 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'catalog_report':  // 422: Object of class stdClass could not be converted to string
+        case 'catalog_report':  // works, respects limit
             return fetchAPI("reports", {
                 body: {
                     type: "catalog_report",
@@ -636,7 +636,7 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'po_overview_report': // 504: times out
+        case 'po_overview_report': // works, does not respect limit
             return fetchAPI("reports", {
                 body: {
                     type: "po_overview_report",
