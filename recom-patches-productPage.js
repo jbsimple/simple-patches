@@ -2116,7 +2116,8 @@ function smallNotesPopulator() {
         
         const meta_id_hiddens = form.querySelectorAll('input[type="hidden"][name*="[meta]"][name$="[meta_id]"]');
         meta_id_hiddens.forEach(elem => {
-            if (elem.value.trim() === 21 || elem.value.trim() === 24) {
+            const id = parseInt(elem.value.trim(), 10);
+            if (id === 21 || id === 24) {
                 const valueName = elem.name.replace('[meta_id]', '[value]');
                 const valueInput = form.querySelector(`[name="${valueName}"]`);
 
@@ -2125,7 +2126,7 @@ function smallNotesPopulator() {
                     console.debug('PATCHES - Updated', valueName, '=>', unixtime);
                 }
             } else {
-                console.debug('PATCHES - Uhh:', elem.value.trim());
+                console.debug('PATCHES - Uhh:', id);
             }
         })
     };
