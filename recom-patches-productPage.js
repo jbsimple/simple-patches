@@ -2147,4 +2147,4 @@ function smallNotesPopulator() {
     }
 
 }
-waitForElement('#kt_app_content_container', alwaysSaveMetaNotes);
+waitForElement('#kt_app_content_container', smallNotesPopulator);
