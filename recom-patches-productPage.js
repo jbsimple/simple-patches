@@ -2114,8 +2114,8 @@ function smallNotesPopulator() {
         console.log('Change detected:', e?.target);
         const unixtime = Math.floor(Date.now() / 1000);
         
-        const meta_id_hiddens = form.querySelectorAll('input[type="hidden"][name*="[meta]"][name$="[meta_id]"]');
-        meta_id_hiddens.forEach(elem => {
+        const metaInputs_id = form.querySelectorAll('input[type="hidden"][name*="[meta]"][name$="[meta_id]"]');
+        metaInputs_id.forEach(elem => {
             const id = parseInt(elem.value.trim(), 10);
             if (id === 21 || id === 24) {
                 const valueName = elem.name.replace('[meta_id]', '[value]');
@@ -2125,29 +2125,16 @@ function smallNotesPopulator() {
                     valueInput.value = unixtime;
                     console.debug('PATCHES - Updated', valueName, '=>', unixtime);
                 }
-            } else {
-                console.debug('PATCHES - Uhh:', id);
             }
         })
     };
 
-    form.addEventListener('input', trigger, true);
-    form.addEventListener('change', trigger, true);
-    form.addEventListener('keyup', trigger, true);
-
-    $(form).on('select2:select select2:unselect', 'select', trigger);
-    const editor = form.querySelector('.ql-editor');
-    if (editor) {
-        const observer = new MutationObserver(() => {
-            trigger({ target: editor });
-        });
-
-        observer.observe(editor, {
-            childList: true,
-            subtree: true,
-            characterData: true
-        });
-    }
+    const metaInputs_value = form.querySelectorAll('input[type="hidden"][name*="[meta]"][name$="[value]"]');
+    metaInputs_value.forEach(elem => {
+        elem.addEventListener('input', trigger, true);
+        elem.addEventListener('change', trigger, true);
+        elem.addEventListener('keyup', trigger, true);
+    })
 
 }
 waitForElement('#kt_app_content_container', smallNotesPopulator);
