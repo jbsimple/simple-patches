@@ -2111,22 +2111,37 @@ function smallNotesPopulator() {
     if (!form) return false;
     
     const trigger = (e) => {
-        console.log('Change detected:', e?.target);
+        const target = e?.target;
+        if (!target?.name || !target.name.includes('[meta]') || !target.name.endsWith('[value]')) {
+            return;
+        }
+
+        console.log('Change detected:', target);
+
         const unixtime = Math.floor(Date.now() / 1000);
-        
-        const metaInputs_id = form.querySelectorAll('input[type="hidden"][name*="[meta]"][name$="[meta_id]"]');
+
+        const metaInputs_id = form.querySelectorAll(
+            'input[type="hidden"][name*="[meta]"][name$="[meta_id]"]'
+        );
+
         metaInputs_id.forEach(elem => {
             const id = parseInt(elem.value.trim(), 10);
+
             if (id === 21 || id === 24) {
                 const valueName = elem.name.replace('[meta_id]', '[value]');
                 const valueInput = form.querySelector(`[name="${valueName}"]`);
 
-                if (valueInput) {
+                if (valueInput && valueInput.value != unixtime) {
                     valueInput.value = unixtime;
+
+                    if ($(valueInput).hasClass('select2-hidden-accessible')) {
+                        $(valueInput).trigger('change.select2');
+                    }
+
                     console.debug('PATCHES - Updated', valueName, '=>', unixtime);
                 }
             }
-        })
+        });
     };
 
     const metaInputs_value = form.querySelectorAll(
@@ -2139,11 +2154,13 @@ function smallNotesPopulator() {
         elem.addEventListener('keyup', trigger, true);
 
         if (elem.tagName === 'SELECT') {
-            $(elem).on('select2:select select2:unselect', trigger);
+            $(elem).on('select2:select select2:unselect change', function () {
+                trigger({ target: this });
+            });
         }
     });
 
     return true;
-
 }
+
 waitForElement('#kt_app_content_container', smallNotesPopulator);
