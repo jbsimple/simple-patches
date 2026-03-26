@@ -2129,12 +2129,21 @@ function smallNotesPopulator() {
         })
     };
 
-    const metaInputs_value = form.querySelectorAll('input[type="hidden"][name*="[meta]"][name$="[value]"]');
+    const metaInputs_value = form.querySelectorAll(
+        'input[name*="[meta]"][name$="[value]"], select[name*="[meta]"][name$="[value]"]'
+    );
+
     metaInputs_value.forEach(elem => {
         elem.addEventListener('input', trigger, true);
         elem.addEventListener('change', trigger, true);
         elem.addEventListener('keyup', trigger, true);
-    })
+
+        if (elem.tagName === 'SELECT') {
+            $(elem).on('select2:select select2:unselect', trigger);
+        }
+    });
+
+    return true;
 
 }
 waitForElement('#kt_app_content_container', smallNotesPopulator);
