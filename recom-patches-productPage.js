@@ -162,7 +162,7 @@ function prettyPrintMeta() {
                             pad(date.getMinutes()) + ':' +
                             pad(date.getSeconds());
 
-                        lastValue.textContent = formatted;
+                        lastValue.textContent = `(${lastValue.textContent}) ${formatted}`;
                     }
                 }
             }
