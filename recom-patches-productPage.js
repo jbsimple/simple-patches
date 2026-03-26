@@ -126,14 +126,44 @@ function prettyPrintMeta() {
         return metaItem ? metaItem.meta_name : null;
     }
 
-    function injectMetaKeys() {
-        document.querySelectorAll('.json__key').forEach(async function(keyDiv) {
+    function prettyPrintIt() {
+        const log_table = document.getElementById('LogEntriesTable');
+        if (!log_table) return;
+
+        log_table.querySelectorAll('.json__key').forEach(async function(keyDiv) {
+            let meta_id = null;
+            let meta_name = null;
+            let meta_value = null;
             if (keyDiv.textContent.trim() === 'meta_id') {
                 let nextDiv = keyDiv.nextElementSibling;
                 if (nextDiv && nextDiv.classList.contains('json__value') && nextDiv.classList.contains('json__value--update')) {
-                    const meta_id = parseInt(nextDiv.textContent, 10);
-                    const meta_name = await getMetaName(meta_id);
+                    meta_id = parseInt(nextDiv.textContent, 10);
+                    meta_name = await getMetaName(meta_id);
                     nextDiv.textContent = `(${meta_id}) ${meta_name}`;
+                }
+
+                let grandParent = keyDiv.parentElement.parentElement;
+                const values = grandParent.querySelectorAll('.json__value');
+                const lastValue = values.length ? values[values.length - 1] : null;
+
+                if (lastValue) {
+                    meta_value = lastValue.textContent.trim();
+                    const ts = parseInt(meta_value, 10);
+                    if (!isNaN(ts) && ts > 1000000000 && ts < 9999999999) {
+                        const date = new Date(ts * 1000);
+
+                        const pad = (n) => n.toString().padStart(2, '0');
+
+                        const formatted =
+                            date.getFullYear() + '-' +
+                            pad(date.getMonth() + 1) + '-' +
+                            pad(date.getDate()) + ' ' +
+                            pad(date.getHours()) + ':' +
+                            pad(date.getMinutes()) + ':' +
+                            pad(date.getSeconds());
+
+                        lastValue.textContent = formatted;
+                    }
                 }
             }
         });
@@ -142,12 +172,12 @@ function prettyPrintMeta() {
     const loadMoreButton = document.getElementById('logEntriesLoadMore');
     if (loadMoreButton) {
         loadMoreButton.addEventListener('click', function() {
-            setTimeout(function() { injectMetaKeys() }, 500);
+            setTimeout(function() { prettyPrintIt() }, 500);
         });
     }
 
     // default run
-    setTimeout(function() { injectMetaKeys() }, 500);
+    setTimeout(function() { prettyPrintIt() }, 500);
 }
 waitForElement('#LogEntriesTable', prettyPrintMeta);
 
@@ -1926,13 +1956,6 @@ function jumpToTab() {
 }
 waitForElement('#kt_app_content_container', jumpToTab);
 
-function initExportAttributes() {
-    const appendMissingButton = document.getElementById('reload_aspects');
-    if (!appendMissingButton) return;
-
-
-}
-
 function wm_generateUPC() {
     let digits = [];
     for (let i = 0; i < 11; i++) {
@@ -2055,6 +2078,7 @@ function initDupeCheck() {
 }
 waitForElement('#el_product_form', initDupeCheck);
 
+// i am going to keep this here incase I want to use it later, but it is not being used now.
 function recordNote(note) {
     const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
 
@@ -2106,6 +2130,7 @@ function recordNote(note) {
     }
 }
 
+// get around metafields not always logging when saved
 function smallNotesPopulator() {
     const form = document.getElementById('el_product_form') ?? document.getElementById('el_item_form');
     if (!form) return false;
