@@ -2122,8 +2122,10 @@ function smallNotesPopulator() {
 
                 if (valueInput) {
                     valueInput.value = unixtime;
-                    console.log('Updated', valueName, '=>', unixtime);
+                    console.debug('PATCHES - Updated', valueName, '=>', unixtime);
                 }
+            } else {
+                console.debug('PATCHES - Uhh:', elem.value.trim());
             }
         })
     };
