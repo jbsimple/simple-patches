@@ -2105,3 +2105,25 @@ function recordNote(note) {
         return {"success":false,"message":"Unable to save meta note."};
     }
 }
+
+function smallNotePopulator() {
+    const form = document.getElementById('el_product_form') ?? document.getElementById('el_item_form');
+    if (!form) return false;
+    
+    let isSubmitting = false;
+    form.addEventListener('submit', async (e) => {
+        if (isSubmitting) return;
+        e.preventDefault();
+        console.debug('PATCHES - Intercepted Save');
+        isSubmitting = true;
+        try {
+            await new Promise(r => setTimeout(r, 100));
+            form.submit();
+        } catch (err) {
+            console.error('Save failed, blocking submit:', err);
+            isSubmitting = false;
+        }
+    });
+
+}
+waitForElement('#kt_app_content_container', smallNotePopulator);
