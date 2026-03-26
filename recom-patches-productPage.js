@@ -2106,24 +2106,45 @@ function recordNote(note) {
     }
 }
 
-function smallNotePopulator() {
+function smallNotesPopulator() {
     const form = document.getElementById('el_product_form') ?? document.getElementById('el_item_form');
     if (!form) return false;
     
-    let isSubmitting = false;
-    form.addEventListener('submit', async (e) => {
-        if (isSubmitting) return;
-        e.preventDefault();
-        console.debug('PATCHES - Intercepted Save');
-        isSubmitting = true;
-        try {
-            await new Promise(r => setTimeout(r, 100));
-            form.submit();
-        } catch (err) {
-            console.error('Save failed, blocking submit:', err);
-            isSubmitting = false;
-        }
-    });
+    const trigger = (e) => {
+        console.log('Change detected:', e?.target);
+        const unixtime = Math.floor(Date.now() / 1000);
+        
+        const meta_id_hiddens = form.querySelectorAll('input[type="hidden"][name*="[meta]"][name$="[meta_id]"]');
+        meta_id_hiddens.forEach(elem => {
+            if (id === 21 || id === 24) {
+                const valueName = elem.name.replace('[meta_id]', '[value]');
+                const valueInput = form.querySelector(`[name="${valueName}"]`);
+
+                if (valueInput) {
+                    valueInput.value = unixtime;
+                    console.log('Updated', valueName, '=>', unixtime);
+                }
+            }
+        })
+    };
+
+    form.addEventListener('input', trigger, true);
+    form.addEventListener('change', trigger, true);
+    form.addEventListener('keyup', trigger, true);
+
+    $(form).on('select2:select select2:unselect', 'select', trigger);
+    const editor = form.querySelector('.ql-editor');
+    if (editor) {
+        const observer = new MutationObserver(() => {
+            trigger({ target: editor });
+        });
+
+        observer.observe(editor, {
+            childList: true,
+            subtree: true,
+            characterData: true
+        });
+    }
 
 }
-waitForElement('#kt_app_content_container', smallNotePopulator);
+waitForElement('#kt_app_content_container', alwaysSaveMetaNotes);
