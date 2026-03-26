@@ -534,18 +534,18 @@ function initAttributeExtraActions() {
                             },
                             body: body.toString()
                         })
-                            .then(r => r.json())
-                            .then(json => {
-                                console.debug(`PATCHES - Resubmitted ${item.sku}:`, json);
-                                log.push({ sku: item.sku, response: json });
-                            })
-                            .catch(err => {
-                                console.error(`PATCHES - Failed resubmitting ${item.sku}:`, err);
-                                log.push({
-                                    sku: item.sku,
-                                    response: { success: false, message: "Failed to resubmit.", err: err.toString() }
-                                });
+                        .then(r => r.json())
+                        .then(json => {
+                            console.debug(`PATCHES - Resubmitted ${item.sku}:`, json);
+                            log.push({ sku: item.sku, response: json });
+                        })
+                        .catch(err => {
+                            console.error(`PATCHES - Failed resubmitting ${item.sku}:`, err);
+                            log.push({
+                                sku: item.sku,
+                                response: { success: false, message: "Failed to resubmit.", err: err.toString() }
                             });
+                        });
                     }
                 });
 
@@ -2054,3 +2054,54 @@ function initDupeCheck() {
     }, 500); // bruh
 }
 waitForElement('#el_product_form', initDupeCheck);
+
+function recordNote(note) {
+    const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
+
+    // fetch id and type
+    let id = null;
+    let type = null;
+    const item_units_stats = document.getElementById('item-units-stats');
+    if (item_units_stats) {
+        id = item_units_stats.querySelector('div.text-info')?.textContent.trim();
+        type = 'item';
+    } else {
+        const container = document.getElementById('kt_app_content_container');
+        for (const el of container.querySelectorAll('.mb-5')) {
+            if (el.textContent.includes('Product# ')) {
+                const productIdEl = el.querySelector('.text-info');
+                id = productIdEl ? productIdEl.textContent.trim() : null;
+                type = 'product';
+            }
+        }
+    }
+
+    if (id && type && csrfMeta && csrfMeta.getAttribute('content').length > 0) {
+
+        const body = new URLSearchParams();
+        body.append('note', note);
+        body.append('id', id);
+        body.append('type', type);
+
+        return fetch(`ajax/actions/createlognote`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "x-csrf-token": csrfMeta.getAttribute('content'),
+                "x-requested-with": "XMLHttpRequest"
+            },
+            body: body.toString()
+        })
+        .then(r => r.json())
+        .then(json => {
+            console.log('PATCHES - Meta Note Saved, response:', json);
+        })
+        .catch(err => {
+            console.error(`PATCHES - Failed recording note:`, err);
+            fireSwal('ERROR!', 'Issue recording the meta note!', 'error');
+        });
+    } else {
+        return {"success":false,"message":"Unable to save meta note."};
+    }
+}
