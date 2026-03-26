@@ -2116,7 +2116,7 @@ function smallNotesPopulator() {
         
         const meta_id_hiddens = form.querySelectorAll('input[type="hidden"][name*="[meta]"][name$="[meta_id]"]');
         meta_id_hiddens.forEach(elem => {
-            if (id === 21 || id === 24) {
+            if (elem.value.trim() === 21 || elem.value.trim() === 24) {
                 const valueName = elem.name.replace('[meta_id]', '[value]');
                 const valueInput = form.querySelector(`[name="${valueName}"]`);
 
