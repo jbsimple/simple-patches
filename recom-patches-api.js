@@ -894,6 +894,8 @@ async function allSkusEver() {
         fetchAPI("reports", {
             body: {
                 type: "active_inventory",
+                page: 1,
+                per_page: 1000,
                 filters: [
                     {
                         "field": "product_items.in_stock",
@@ -947,6 +949,8 @@ async function allSkusEver() {
         fetchAPI("reports", {
             body: {
                 type: "active_inventory",
+                page: 1,
+                per_page: 1000,
                 filters: [
                     {
                         "field": "product_items.in_stock",
