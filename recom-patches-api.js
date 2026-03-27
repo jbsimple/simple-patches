@@ -897,7 +897,7 @@ async function allSkusEver() {
                 {
                     "field": "product_items.in_stock",
                     "operator": "gte",
-                    "value": "1"
+                    "value": 1
                 }
             ],
             columns: [
@@ -949,7 +949,7 @@ async function allSkusEver() {
                 {
                     "field": "product_items.in_stock",
                     "operator": "lte",
-                    "value": "0"
+                    "value": 0
                 }
             ],
             columns: [
@@ -997,7 +997,7 @@ async function allSkusEver() {
 
     const instockData = instock?.data?.data || [];
     const outofstockData = outofstock?.data?.data || [];
-    
+
     const merged = [...instockData, ...outofstockData];
 
     return merged;
