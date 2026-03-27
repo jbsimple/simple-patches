@@ -955,7 +955,7 @@ async function allSkusEver() {
     ];
 
     const [instockData, outofstockData] = await Promise.all([
-        fetchAllPages({
+        fetchAllPages("INSTOCK", {
             type: "active_inventory",
             filters: [
                 {
@@ -966,7 +966,7 @@ async function allSkusEver() {
             ],
             columns
         }),
-        fetchAllPages({
+        fetchAllPages("OUTOFSTOCK", {
             type: "active_inventory",
             filters: [
                 {
@@ -981,29 +981,54 @@ async function allSkusEver() {
 
     return [...instockData, ...outofstockData];
 
-    async function fetchAllPages(baseBody) {
+    async function fetchAllPages(label, baseBody) {
         let page = 1;
         let results = [];
-
         while (true) {
-            const res = await fetchAPI("reports", {
-                body: {
-                    ...baseBody,
-                    page,
-                    per_page: 5000
-                }
-            });
-
+            console.debug(`PATCHES - [${label}] Fetching page ${page}...`);
+            const res = await fetchWithRetry(() => 
+                fetchAPI("reports", {
+                    body: {
+                        ...baseBody,
+                        page,
+                        per_page: 5000
+                    }
+                }),
+                3,
+                label,
+                page
+            );
             const data = res?.data?.data || [];
             const meta = res?.data?.meta || {};
-
             results.push(...data);
-
+            console.debug( `PATCHES - [${label}] Page ${page} done | +${data.length} items | total=${results.length} | has_more=${meta.has_more}`);
             if (!meta.has_more) break;
-
             page++;
+            await sleep(200);
         }
-
+        console.debug(`PATCHES - [${label}] COMPLETE | total=${results.length}`);
         return results;
     }
+
+    async function fetchWithRetry(fn, maxRetries = 3, label = "", page = 0) {
+        let attempt = 1;
+        while (true) {
+            try {
+                return await fn();
+            } catch (err) {
+                const retryable = err?.message?.includes("429") || err?.message?.includes("500") || err?.message?.includes("fetch");
+                console.debug(`PATCHES - [${label}] Page ${page} failed (attempt ${attempt}/${maxRetries})`, err?.message);
+                if (!retryable || attempt >= maxRetries) {
+                    console.debug(`[${label}] Page ${page} FAILED permanently`);
+                    throw err;
+                }
+                attempt++;
+                await sleep(500 * attempt);
+            }
+        }
     }
+
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+}
