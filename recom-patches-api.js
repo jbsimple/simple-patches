@@ -651,7 +651,7 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'po_overview_report':
+        case 'po_overview_report': // this is still a 504? does it matter if it is?
             return fetchAPI("reports", {
                 body: {
                     type: "po_overview_report",
@@ -793,7 +793,7 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'listings_report':
+        case 'listings_report': // does not respect pagination
             return fetchAPI("reports", {
                 body: {
                     type: "listings_report",
@@ -913,120 +913,97 @@ async function api_test(type = null) {
 }
 
 async function allSkusEver() {
-    const [instock, outofstock] = await Promise.all([
-        fetchAPI("reports", {
-            body: {
-                type: "active_inventory",
-                page: 1,
-                per_page: 1000,
-                filters: [
-                    {
-                        "field": "product_items.in_stock",
-                        "operator": "gte",
-                        "value": 1
-                    }
-                ],
-                columns: [
-                    "products.sid",
-                    "products.name",
-                    "product_items.id",
-                    "product_items.sku",
-                    "conditions.name",
-                    "product_items.condition_id",
-                    "product_items.title",
-                    "products.description",
-                    "first_image",
-                    "product_items.available",
-                    "product_items.in_stock",
-                    "product_items.price",
-                    "product_items.min_price",
-                    "product_items.max_price",
-                    "product_items.bulk_price",
-                    "product_items.seller_price",
-                    "products.msrp",
-                    "product_items.location",
-                    "brands.name",
-                    "products.brand_id",
-                    "categories.name",
-                    "products.category_id",
-                    "categories.type",
-                    "products.weight",
-                    "products.mpn",
-                    "products.gtin",
-                    "products.asin",
-                    "products.dimensions",
-                    "product_items.store_settings",
-                    "products.specs",
-                    "product_items.flags",
-                    "product_items.is_scrap",
-                    "product_items.has_fba",
-                    "product_items.status",
-                    "product_items.sold_at",
-                    "product_items.priced_at",
-                    "product_items.created_at",
-                    "product_items.updated_at"
-                ]
-            }
-        }),
+    const columns = [
+        "products.sid",
+        "products.name",
+        "product_items.id",
+        "product_items.sku",
+        "conditions.name",
+        "product_items.condition_id",
+        "product_items.title",
+        "products.description",
+        "first_image",
+        "product_items.available",
+        "product_items.in_stock",
+        "product_items.price",
+        "product_items.min_price",
+        "product_items.max_price",
+        "product_items.bulk_price",
+        "product_items.seller_price",
+        "products.msrp",
+        "product_items.location",
+        "brands.name",
+        "products.brand_id",
+        "categories.name",
+        "products.category_id",
+        "categories.type",
+        "products.weight",
+        "products.mpn",
+        "products.gtin",
+        "products.asin",
+        "products.dimensions",
+        "product_items.store_settings",
+        "products.specs",
+        "product_items.flags",
+        "product_items.is_scrap",
+        "product_items.has_fba",
+        "product_items.status",
+        "product_items.sold_at",
+        "product_items.priced_at",
+        "product_items.created_at",
+        "product_items.updated_at"
+    ];
 
-        fetchAPI("reports", {
-            body: {
-                type: "active_inventory",
-                page: 1,
-                per_page: 1000,
-                filters: [
-                    {
-                        "field": "product_items.in_stock",
-                        "operator": "lte",
-                        "value": 0
-                    }
-                ],
-                columns: [
-                    "products.sid",
-                    "products.name",
-                    "product_items.id",
-                    "product_items.sku",
-                    "conditions.name",
-                    "product_items.condition_id",
-                    "product_items.title",
-                    "products.description",
-                    "first_image",
-                    "product_items.available",
-                    "product_items.in_stock",
-                    "product_items.price",
-                    "product_items.min_price",
-                    "product_items.max_price",
-                    "product_items.bulk_price",
-                    "product_items.seller_price",
-                    "products.msrp",
-                    "product_items.location",
-                    "brands.name",
-                    "products.brand_id",
-                    "categories.name",
-                    "products.category_id",
-                    "categories.type",
-                    "products.weight",
-                    "products.mpn",
-                    "products.gtin",
-                    "products.asin",
-                    "products.dimensions",
-                    "product_items.store_settings",
-                    "products.specs",
-                    "product_items.flags",
-                    "product_items.is_scrap",
-                    "product_items.has_fba",
-                    "product_items.status",
-                    "product_items.sold_at",
-                    "product_items.priced_at",
-                    "product_items.created_at",
-                    "product_items.updated_at"
-                ]
-            }
+    const [instockData, outofstockData] = await Promise.all([
+        fetchAllPages({
+            type: "active_inventory",
+            filters: [
+                {
+                    field: "product_items.in_stock",
+                    operator: "gte",
+                    value: 1
+                }
+            ],
+            columns
+        }),
+        fetchAllPages({
+            type: "active_inventory",
+            filters: [
+                {
+                    field: "product_items.in_stock",
+                    operator: "lte",
+                    value: 0
+                }
+            ],
+            columns
         })
     ]);
 
-    const instockData = instock?.data?.data || [];
-    const outofstockData = outofstock?.data?.data || [];
-
     return [...instockData, ...outofstockData];
-}
+
+    async function fetchAllPages(baseBody) {
+        let page = 1;
+        let results = [];
+
+        while (true) {
+            const res = await fetchAPI("reports", {
+                body: {
+                    ...baseBody,
+                    page,
+                    per_page: 5000
+                }
+            });
+
+            const data = res?.data?.data || [];
+            const meta = res?.data?.meta || {};
+
+            results.push(...data);
+
+            if (!meta.has_more) break;
+
+            page++;
+        }
+
+        return results;
+    }
+    }
