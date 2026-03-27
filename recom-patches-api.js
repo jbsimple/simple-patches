@@ -50,11 +50,12 @@ async function meta() { return await fetchAPI("meta"); }
 
 async function api_test(type = null) {
     switch (type) {
-        case 'active_inventory':  // works, does not respect limit
+        case 'active_inventory':
             return fetchAPI("reports", {
                 body: {
                     type: "active_inventory",
-                    limit: 200,
+                    page: 1,
+                    per_page: 200,
                     filters: [
                         {
                             "field": "product_items.in_stock",
@@ -105,11 +106,12 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'catalog_report':  // works, respects limit
+        case 'catalog_report':
             return fetchAPI("reports", {
                 body: {
                     type: "catalog_report",
-                    limit: 200,
+                    page: 1,
+                    per_page: 200,
                     filters: [],
                     columns: [
                         "products.sid",
@@ -133,11 +135,12 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'orders_report':  // works, respects limit
+        case 'orders_report':
             return fetchAPI("reports", {
                 body: {
                     type: "orders_report",
-                    limit: 200,
+                    page: 1,
+                    per_page: 200,
                     filters: [
                         {
                             "field": "orders.date_ordered",
@@ -164,11 +167,12 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'extended_sold_items': // works, does not respect limit
+        case 'extended_sold_items':
             return fetchAPI("reports", {
                 body: {
                     type: "extended_sold_items",
-                    limit: 200,
+                    page: 1,
+                    per_page: 200,
                     filters: [
                         {
                             "field": "order_shipped_at",
@@ -224,11 +228,12 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'extended_returned_items':  // works, does not respect limit
+        case 'extended_returned_items':
             return fetchAPI("reports", {
                 body: {
                     type: "extended_returned_items",
-                    limit: 200,
+                    page: 1,
+                    per_page: 200,
                     filters: [
                         {
                             "field": "return_date",
@@ -280,11 +285,12 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'user_clock': // works, respects limit
+        case 'user_clock':
             return fetchAPI("reports", {
                 body: {
                     type: "user_clock",
-                    limit: 200,
+                    page: 1,
+                    per_page: 200,
                     filters: [
                         {
                             "field": "user_clocks.clock_date",
@@ -336,11 +342,12 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'fba_shipments': // works, respects limit
+        case 'fba_shipments':
             return fetchAPI("reports", {
                 body: {
                     type: "fba_shipments",
-                    limit: 200,
+                    page: 1,
+                    per_page: 200,
                     filters: [
                         {
                             "field": "fba_shipments.status",
@@ -366,11 +373,12 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'wfs_shipments': // works, respects limit
+        case 'wfs_shipments':
             return fetchAPI("reports", {
                 body: {
                     type: "wfs_shipments",
-                    limit: 200,
+                    page: 1,
+                    per_page: 200,
                     filters: [
                         {
                             "field": "wfs_shipments.status",
@@ -394,11 +402,12 @@ async function api_test(type = null) {
                     ]
                 }
             });
-        case 'product_images': // works, respects limit, just as cursed as the report
+        case 'product_images':
             return fetchAPI("reports", {
                 body: {
                     type: "product_images",
-                    limit: 200,
+                    page: 1,
+                    per_page: 200,
                     filters: [
                         {
                             "field": "products.status",
@@ -424,11 +433,12 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'item_images': // works, respects limit, just as cursed as the report
+        case 'item_images':
             return fetchAPI("reports", {
                 body: {
                     type: "item_images",
-                    limit: 200,
+                    page: 1,
+                    per_page: 200,
                     filters: [
                         {
                             "field": "product_items.status",
@@ -460,11 +470,12 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'extended_items_demands': // works, does not respect limit
+        case 'extended_items_demands':
             return fetchAPI("reports", {
                 body: {
                     type: "extended_items_demands",
-                    limit: 200,
+                    page: 1,
+                    per_page: 200,
                     filters: [
                         {
                             "field": "order_date",
@@ -495,11 +506,12 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'po_category_cost_value': // 422: PO Status, Type and Date are required for this report!
+        case 'po_category_cost_value':
             return fetchAPI("reports", {
                 body: {
                     type: "po_category_cost_value",
-                    limit: 200,
+                    page: 1,
+                    per_page: 200,
                     filters: [
                         {
                             "field": "purchase_orders.type",
@@ -528,11 +540,12 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'warehouse_inventory': // works, respects limit
+        case 'warehouse_inventory':
             return fetchAPI("reports", {
                 body: {
                     type: "warehouse_inventory",
-                    limit: 200,
+                    page: 1,
+                    per_page: 200,
                     filters: [
                         {
                             "field": "warehouses.type",
@@ -576,11 +589,12 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'pending_inventory': // works, respects limit
+        case 'pending_inventory':
             return fetchAPI("reports", {
                 body: {
                     type: "pending_inventory",
-                    limit: 200,
+                    page: 1,
+                    per_page: 200,
                     filters: [
                         {
                             "field": "purchase_orders.id",
@@ -611,11 +625,12 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'store_weekly_sales': // works, respects limit
+        case 'store_weekly_sales':
             return fetchAPI("reports", {
                 body: {
                     type: "store_weekly_sales",
-                    limit: 200,
+                    page: 1,
+                    per_page: 200,
                     filters: [
                         {
                             "field": "orders.store_id",
@@ -636,11 +651,12 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'po_overview_report': // works, does not respect limit
+        case 'po_overview_report':
             return fetchAPI("reports", {
                 body: {
                     type: "po_overview_report",
-                    limit: 200,
+                    page: 1,
+                    per_page: 200,
                     filters: [
                         {
                             "field": "created_at",
@@ -659,11 +675,12 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'sales_report': // works, does not respect limit
+        case 'sales_report':
             return fetchAPI("reports", {
                 body: {
                     type: "sales_report",
-                    limit: 200,
+                    page: 1,
+                    per_page: 200,
                     filters: [
                         {
                             "field": "order_date",
@@ -696,11 +713,12 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'refunds_report': // works, does not respect limit
+        case 'refunds_report':
             return fetchAPI("reports", {
                 body: {
                     type: "refunds_report",
-                    limit: 200,
+                    page: 1,
+                    per_page: 200,
                     filters: [
                         {
                             "field": "order_date",
@@ -734,11 +752,12 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'returns_report': // works, does not respect limit
+        case 'returns_report':
             return fetchAPI("reports", {
                 body: {
                     type: "returns_report",
-                    limit: 200,
+                    page: 1,
+                    per_page: 200,
                     filters: [
                         {
                             "field": "return_date",
@@ -774,11 +793,12 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'listings_report': // works, does not respect limit, hard coded limit of 5,000
+        case 'listings_report':
             return fetchAPI("reports", {
                 body: {
                     type: "listings_report",
-                    limit: 200,
+                    page: 1,
+                    per_page: 200,
                     filters: [
                         {
                             "field": "store_live_listing.status",
@@ -799,11 +819,12 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'esn_sales_report': // works, respects limit
+        case 'esn_sales_report':
             return fetchAPI("reports", {
                 body: {
                     type: "esn_sales_report",
-                    limit: 200,
+                    page: 1,
+                    per_page: 200,
                     filters: [
                         {
                             "field": "orders.date_ordered",
@@ -837,11 +858,12 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'user_daily_activity_report': // works, respects limit
+        case 'user_daily_activity_report':
             return fetchAPI("reports", {
                 body: {
                     type: "user_daily_activity_report",
-                    limit: 200,
+                    page: 1,
+                    per_page: 200,
                     filters: [
                         {
                             "field": "user_daily_activity.date",
@@ -859,11 +881,12 @@ async function api_test(type = null) {
                 }
             });
             break;
-        case 'imei_report': // works, does not respect limit
+        case 'imei_report':
             return fetchAPI("reports", {
                 body: {
                     type: "imei_report",
-                    limit: 200,
+                    page: 1,
+                    per_page: 200,
                     filters: [],
                     columns: [
                         "po_imei.imei",
