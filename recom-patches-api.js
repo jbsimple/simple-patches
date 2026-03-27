@@ -948,8 +948,8 @@ async function allSkusEver() {
             filters: [
                 {
                     "field": "product_items.in_stock",
-                    "operator": "lte",
-                    "value": 0
+                    "operator": "lt",
+                    "value": 1
                 }
             ],
             columns: [
