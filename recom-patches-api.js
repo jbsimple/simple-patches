@@ -890,115 +890,116 @@ async function api_test(type = null) {
 }
 
 async function allSkusEver() {
-    const instock = fetchAPI("reports", {
-        body: {
-            type: "active_inventory",
-            filters: [
-                {
-                    "field": "product_items.in_stock",
-                    "operator": "gt",
-                    "value": 0
-                }
-            ],
-            columns: [
-                "products.sid",
-                "products.name",
-                "product_items.id",
-                "product_items.sku",
-                "conditions.name",
-                "product_items.condition_id",
-                "product_items.title",
-                "products.description",
-                "first_image",
-                "product_items.available",
-                "product_items.in_stock",
-                "product_items.price",
-                "product_items.min_price",
-                "product_items.max_price",
-                "product_items.bulk_price",
-                "product_items.seller_price",
-                "products.msrp",
-                "product_items.location",
-                "brands.name",
-                "products.brand_id",
-                "categories.name",
-                "products.category_id",
-                "categories.type",
-                "products.weight",
-                "products.mpn",
-                "products.gtin",
-                "products.asin",
-                "products.dimensions",
-                "product_items.store_settings",
-                "products.specs",
-                "product_items.flags",
-                "product_items.is_scrap",
-                "product_items.has_fba",
-                "product_items.status",
-                "product_items.sold_at",
-                "product_items.priced_at",
-                "product_items.created_at",
-                "product_items.updated_at"
-            ]
-        }
-    });
-    const outofstock = fetchAPI("reports", {
-        body: {
-            type: "active_inventory",
-            filters: [
-                {
-                    "field": "product_items.in_stock",
-                    "operator": "lte",
-                    "value": 1
-                }
-            ],
-            columns: [
-                "products.sid",
-                "products.name",
-                "product_items.id",
-                "product_items.sku",
-                "conditions.name",
-                "product_items.condition_id",
-                "product_items.title",
-                "products.description",
-                "first_image",
-                "product_items.available",
-                "product_items.in_stock",
-                "product_items.price",
-                "product_items.min_price",
-                "product_items.max_price",
-                "product_items.bulk_price",
-                "product_items.seller_price",
-                "products.msrp",
-                "product_items.location",
-                "brands.name",
-                "products.brand_id",
-                "categories.name",
-                "products.category_id",
-                "categories.type",
-                "products.weight",
-                "products.mpn",
-                "products.gtin",
-                "products.asin",
-                "products.dimensions",
-                "product_items.store_settings",
-                "products.specs",
-                "product_items.flags",
-                "product_items.is_scrap",
-                "product_items.has_fba",
-                "product_items.status",
-                "product_items.sold_at",
-                "product_items.priced_at",
-                "product_items.created_at",
-                "product_items.updated_at"
-            ]
-        }
-    });
+    const [instock, outofstock] = await Promise.all([
+        fetchAPI("reports", {
+            body: {
+                type: "active_inventory",
+                filters: [
+                    {
+                        "field": "product_items.in_stock",
+                        "operator": "gte",
+                        "value": 1
+                    }
+                ],
+                columns: [
+                    "products.sid",
+                    "products.name",
+                    "product_items.id",
+                    "product_items.sku",
+                    "conditions.name",
+                    "product_items.condition_id",
+                    "product_items.title",
+                    "products.description",
+                    "first_image",
+                    "product_items.available",
+                    "product_items.in_stock",
+                    "product_items.price",
+                    "product_items.min_price",
+                    "product_items.max_price",
+                    "product_items.bulk_price",
+                    "product_items.seller_price",
+                    "products.msrp",
+                    "product_items.location",
+                    "brands.name",
+                    "products.brand_id",
+                    "categories.name",
+                    "products.category_id",
+                    "categories.type",
+                    "products.weight",
+                    "products.mpn",
+                    "products.gtin",
+                    "products.asin",
+                    "products.dimensions",
+                    "product_items.store_settings",
+                    "products.specs",
+                    "product_items.flags",
+                    "product_items.is_scrap",
+                    "product_items.has_fba",
+                    "product_items.status",
+                    "product_items.sold_at",
+                    "product_items.priced_at",
+                    "product_items.created_at",
+                    "product_items.updated_at"
+                ]
+            }
+        }),
+
+        fetchAPI("reports", {
+            body: {
+                type: "active_inventory",
+                filters: [
+                    {
+                        "field": "product_items.in_stock",
+                        "operator": "lte",
+                        "value": 0
+                    }
+                ],
+                columns: [
+                    "products.sid",
+                    "products.name",
+                    "product_items.id",
+                    "product_items.sku",
+                    "conditions.name",
+                    "product_items.condition_id",
+                    "product_items.title",
+                    "products.description",
+                    "first_image",
+                    "product_items.available",
+                    "product_items.in_stock",
+                    "product_items.price",
+                    "product_items.min_price",
+                    "product_items.max_price",
+                    "product_items.bulk_price",
+                    "product_items.seller_price",
+                    "products.msrp",
+                    "product_items.location",
+                    "brands.name",
+                    "products.brand_id",
+                    "categories.name",
+                    "products.category_id",
+                    "categories.type",
+                    "products.weight",
+                    "products.mpn",
+                    "products.gtin",
+                    "products.asin",
+                    "products.dimensions",
+                    "product_items.store_settings",
+                    "products.specs",
+                    "product_items.flags",
+                    "product_items.is_scrap",
+                    "product_items.has_fba",
+                    "product_items.status",
+                    "product_items.sold_at",
+                    "product_items.priced_at",
+                    "product_items.created_at",
+                    "product_items.updated_at"
+                ]
+            }
+        })
+    ]);
 
     const instockData = instock?.data?.data || [];
     const outofstockData = outofstock?.data?.data || [];
 
-    const merged = [...instockData, ...outofstockData];
-
-    return merged;
+    return [...instockData, ...outofstockData];
 }
