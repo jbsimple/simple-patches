@@ -1023,7 +1023,7 @@ async function allSkusEver() {
                     throw err;
                 }
                 attempt++;
-                await sleep(500 * attempt);
+                await sleep(3000 * attempt);
             }
         }
     }
