@@ -896,8 +896,8 @@ async function allSkusEver() {
             filters: [
                 {
                     "field": "product_items.in_stock",
-                    "operator": "gte",
-                    "value": 1
+                    "operator": "gt",
+                    "value": 0
                 }
             ],
             columns: [
@@ -948,7 +948,7 @@ async function allSkusEver() {
             filters: [
                 {
                     "field": "product_items.in_stock",
-                    "operator": "lt",
+                    "operator": "lte",
                     "value": 1
                 }
             ],
