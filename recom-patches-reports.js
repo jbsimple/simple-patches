@@ -223,6 +223,7 @@ function initPreset() {
     //card_body.appendChild(report_preset('attributes_color'));
     card_body.appendChild(report_preset('picture_imagecount'));
     card_body.appendChild(report_preset('picture_resolution'));
+    card_body.appendChild(report_preset('pendinginventory_all'));
     
     const nextStepButton = document.getElementById('rc_reports_new_wizard').querySelectorAll('button[data-kt-stepper-action="next"]');
     const patchesPresentsDiv = document.getElementById('patches-presents');
@@ -481,6 +482,14 @@ function report_preset(name) {
         details.func = `report_meetingNotes();`;
         details.desc = "Get all meeting notes in one report with timestamps.<br>For just user 38.";
         details.title = "Meeting Notes Collection";
+        return report_initHTML(details);
+    } else if (name === 'pendinginventory_all') {
+        var details = {};
+        details.id = `patches-reports-pending-inventory-all`;
+        details.name = `patches-reports-pending-inventory-all`;
+        details.func = `activePendingInventoryReport();`;
+        details.desc = "Yeah, this will give you everything that has ever been in pending inventory.<br>This is the mother of all reports, so don't generate it on a whim.";
+        details.title = "All Pending Inventory";
         return report_initHTML(details);
     } else {
         return null;
@@ -1888,6 +1897,87 @@ function generateDwnloadFromTable(list, name) {
 
         URL.revokeObjectURL(url);
     };
+}
+
+async function activePendingInventoryReport(page = 1, max_pages = null) {
+	
+		let createButton = document.querySelector(`button[data-id="patches-reports-pending-inventory-all"]`);
+		if (createButton) {
+        createButton.textContent = 'Loading...';
+        createButton.setAttribute('style', 'background-color: gray !important;');
+    }
+	
+		const allReports = [];
+    let more = true;
+    let fetched = 0; // how many pages we've fetched
+
+    while (more && (max_pages === null || fetched < max_pages)) {
+        const result = await getReportPage(page);
+
+        console.log(`Page ${page}`, result);
+
+        if (result.report) { allReports.push(...result.report); }
+
+        more = result.more;
+        page++;
+        fetched++;
+
+        if (more && (max_pages === null || fetched < max_pages)) {
+            await new Promise(res => setTimeout(res, 500));
+        }
+    }
+    
+    console.debug('PATCHES - Final Pending Inventory Report:', allReports);
+    generateReportTableFromList(allReports, 'pending-inventory-all', false); // do NOT try to render this
+    return allReports;
+    
+    async function getReportPage(page) {
+    	const purchase_order_url = `/ajax/datalist/PurchaseOrders?page=${page}&_type=query`;
+    	const res = await fetch(purchase_order_url);
+    	const data = await res.json();
+    	const ids = (data.results || []).map(item => item.id);
+    	
+    	if (!ids.length) {
+          return { report: null, more: false };
+      }
+    	
+    	const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
+    	let report = await report_getSpecial({
+	        report: {
+	            type: "pending_inventory",
+	            columns: [
+	                "purchase_orders.id",
+	                "inventory_receiving.id",
+	                "inventory_receiving.keyword",
+	                "inventory_receiving.quantity",
+	                "queue_inventory.quantity_approved",
+	                "inventory_receiving.location",
+	                "inventory_receiving.created_at",
+	                "user_profile.user_id",
+	                "products.sid",
+	                "products.name",
+	                "inventory_receiving.condition_id",
+	                "products.category_id",
+	                "products.mpn",
+	                "products.gtin",
+	                "products.asin"
+	            ],
+	            filters: [
+	                {
+	                    column: "purchase_orders.id",
+	                    opr: "{0} IN {1}",
+	                    value: ids
+	                }
+	            ]
+	        },
+	        csrf_recom: csrfToken
+	    });
+	    
+	    return {
+	        report: report,
+	        more: data?.pagination?.more ?? false
+	    };
+    }
 }
 
 function generateReportTableFromList(list, name, display = true) {
