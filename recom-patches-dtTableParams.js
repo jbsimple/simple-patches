@@ -76,7 +76,7 @@ function exportDtTable() {
                         if (idElement && idElement.dataset.id) { text = idElement.dataset.id.trim(); }
                     }
                 } else {
-                    text = "";
+                    text = td.textContent.trim();
                 }
             }
 
