@@ -576,7 +576,7 @@ function patchesSettingsModal() {
 
         </style>
         <h3 class="page-heading d-flex flex-column justify-content-center text-dark fw-bold fs-3" style="margin-bottom: 1.5rem; text-align: center;">Change various settings to customize your patching experience.</h3>
-        <div class="d-flex mb-8 patches-twowrap">
+        <div class="d-flex mb-8 patches-threewrap">
             <div class="d-flex flex-column mb-8">
                 <div class="patches-row">
                     <label class="fs-6 fw-bold mb-2" for="patch_setting_panic">Panic Switch:</label>
@@ -584,6 +584,14 @@ function patchesSettingsModal() {
                 </div>
                 <p class="fs-6 fw-semibold form-label mb-2">When turned on, any background, weather effect, sidebar name and profile icons don't apply.</p>
                 <p class="fs-6 fw-semibold form-label mb-2">Use this to make it look normal without needing to clear settings.</p>
+            </div>
+            <div class="d-flex flex-column mb-8">
+                <div class="patches-row">
+                    <label class="fs-6 fw-bold mb-2" for="patch_setting_logoAnimationsToggle">Logo Animations:</label>
+                    <input type="checkbox" class="form-check-input" name="logoAnimationsToggle" id="patch_setting_logoAnimationsToggle">
+                </div>
+                <p class="fs-6 fw-semibold form-label mb-2">Toggle if the logo animations on hover actually animate.</p>
+                <p class="fs-6 fw-semibold form-label mb-2">This exists because of a browser bug, built up animations and middle click not working.</p>
             </div>
             <div class="d-flex flex-column mb-8">
                 <div class="patches-row">

@@ -14,6 +14,7 @@ let autoLocationUpdate = true;
 let allowed_colors = [];
 let panic = false;
 let weatherEffects = false;
+let logoAnimationsToggle = false;
 let mockupProductivity = false;
 let mockupProductivityDepartment = null;
 
@@ -85,7 +86,7 @@ function setupFromConfig() {
 
     /* cool logo animations */
     const logo = document.querySelector("#kt_app_sidebar .app-sidebar-logo");
-    if (logo) {
+    if (logo && logoAnimationsToggle && !panic) {
         const day = new Date().getDay();
         if (logoAnimations && logoAnimations[day]) {
             logo.style.setProperty("--logo-animation", logoAnimations[day]);
