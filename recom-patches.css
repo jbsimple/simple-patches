@@ -534,3 +534,7 @@ table.dataTable.table-striped>tbody>tr.odd.danger {
 .custom-toast.primary { --toast-accent: var(--bs-primary); }
 .custom-toast.danger { --toast-accent: var(--bs-danger); }
 .custom-toast.info { --toast-accent: var(--bs-info); }
+
+#kt_drawer_chat_toggle { display: none !important; }
+
+#kt_app_header_navbar a[aria-label="System Updates"] { display: none !important; }
