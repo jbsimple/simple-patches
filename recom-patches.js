@@ -236,6 +236,7 @@ function loadPatchSettings() {
     function setupFromSettings() {
         panic = settings.panic ?? false;
 
+        logoAnimationsToggle = settings.logoAnimationsToggle ?? false;
         weatherEffects = settings.weathereffects ?? false;
 
         const icon = (settings && settings.pfpurl && settings.pfpurl !== '') ? settings.pfpurl.trim() : null;
