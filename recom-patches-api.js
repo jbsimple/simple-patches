@@ -48,13 +48,13 @@ async function fetchAPI(route, { params = {}, body = null } = {}, options = {}) 
 
 async function meta() { return await fetchAPI("meta"); }
 
-async function api_test(type = null) {
+async function api_test(type = null, page = 1) {
     switch (type) {
         case 'active_inventory':
             return fetchAPI("reports", {
                 body: {
                     type: "active_inventory",
-                    page: 1,
+                    page: page,
                     per_page: 200,
                     filters: [
                         {
@@ -110,7 +110,7 @@ async function api_test(type = null) {
             return fetchAPI("reports", {
                 body: {
                     type: "catalog_report",
-                    page: 1,
+                    page: page,
                     per_page: 200,
                     filters: [],
                     columns: [
@@ -139,7 +139,7 @@ async function api_test(type = null) {
             return fetchAPI("reports", {
                 body: {
                     type: "orders_report",
-                    page: 1,
+                    page: page,
                     per_page: 200,
                     filters: [
                         {
@@ -171,7 +171,7 @@ async function api_test(type = null) {
             return fetchAPI("reports", {
                 body: {
                     type: "extended_sold_items",
-                    page: 1,
+                    page: page,
                     per_page: 200,
                     filters: [
                         {
@@ -232,7 +232,7 @@ async function api_test(type = null) {
             return fetchAPI("reports", {
                 body: {
                     type: "extended_returned_items",
-                    page: 1,
+                    page: page,
                     per_page: 200,
                     filters: [
                         {
@@ -289,7 +289,7 @@ async function api_test(type = null) {
             return fetchAPI("reports", {
                 body: {
                     type: "user_clock",
-                    page: 1,
+                    page: page,
                     per_page: 200,
                     filters: [
                         {
@@ -346,7 +346,7 @@ async function api_test(type = null) {
             return fetchAPI("reports", {
                 body: {
                     type: "fba_shipments",
-                    page: 1,
+                    page: page,
                     per_page: 200,
                     filters: [
                         {
@@ -377,7 +377,7 @@ async function api_test(type = null) {
             return fetchAPI("reports", {
                 body: {
                     type: "wfs_shipments",
-                    page: 1,
+                    page: page,
                     per_page: 200,
                     filters: [
                         {
@@ -406,7 +406,7 @@ async function api_test(type = null) {
             return fetchAPI("reports", {
                 body: {
                     type: "product_images",
-                    page: 1,
+                    page: page,
                     per_page: 200,
                     filters: [
                         {
@@ -437,7 +437,7 @@ async function api_test(type = null) {
             return fetchAPI("reports", {
                 body: {
                     type: "item_images",
-                    page: 1,
+                    page: page,
                     per_page: 200,
                     filters: [
                         {
@@ -474,7 +474,7 @@ async function api_test(type = null) {
             return fetchAPI("reports", {
                 body: {
                     type: "extended_items_demands",
-                    page: 1,
+                    page: page,
                     per_page: 200,
                     filters: [
                         {
@@ -510,7 +510,7 @@ async function api_test(type = null) {
             return fetchAPI("reports", {
                 body: {
                     type: "po_category_cost_value",
-                    page: 1,
+                    page: page,
                     per_page: 200,
                     filters: [
                         {
@@ -544,7 +544,7 @@ async function api_test(type = null) {
             return fetchAPI("reports", {
                 body: {
                     type: "warehouse_inventory",
-                    page: 1,
+                    page: page,
                     per_page: 200,
                     filters: [
                         {
@@ -593,7 +593,7 @@ async function api_test(type = null) {
             return fetchAPI("reports", {
                 body: {
                     type: "pending_inventory",
-                    page: 1,
+                    page: page,
                     per_page: 200,
                     filters: [
                         {
@@ -629,7 +629,7 @@ async function api_test(type = null) {
             return fetchAPI("reports", {
                 body: {
                     type: "store_weekly_sales",
-                    page: 1,
+                    page: page,
                     per_page: 200,
                     filters: [
                         {
@@ -655,7 +655,7 @@ async function api_test(type = null) {
             return fetchAPI("reports", {
                 body: {
                     type: "po_overview_report",
-                    page: 1,
+                    page: page,
                     per_page: 200,
                     filters: [
                         {
@@ -679,7 +679,7 @@ async function api_test(type = null) {
             return fetchAPI("reports", {
                 body: {
                     type: "sales_report",
-                    page: 1,
+                    page: page,
                     per_page: 200,
                     filters: [
                         {
@@ -717,7 +717,7 @@ async function api_test(type = null) {
             return fetchAPI("reports", {
                 body: {
                     type: "refunds_report",
-                    page: 1,
+                    page: page,
                     per_page: 200,
                     filters: [
                         {
@@ -756,7 +756,7 @@ async function api_test(type = null) {
             return fetchAPI("reports", {
                 body: {
                     type: "returns_report",
-                    page: 1,
+                    page: page,
                     per_page: 200,
                     filters: [
                         {
@@ -797,7 +797,7 @@ async function api_test(type = null) {
             return fetchAPI("reports", {
                 body: {
                     type: "listings_report",
-                    page: 1,
+                    page: page,
                     per_page: 200,
                     filters: [
                         {
@@ -823,7 +823,7 @@ async function api_test(type = null) {
             return fetchAPI("reports", {
                 body: {
                     type: "esn_sales_report",
-                    page: 1,
+                    page: page,
                     per_page: 200,
                     filters: [
                         {
@@ -862,7 +862,7 @@ async function api_test(type = null) {
             return fetchAPI("reports", {
                 body: {
                     type: "user_daily_activity_report",
-                    page: 1,
+                    page: page,
                     per_page: 200,
                     filters: [
                         {
@@ -885,7 +885,7 @@ async function api_test(type = null) {
             return fetchAPI("reports", {
                 body: {
                     type: "imei_report",
-                    page: 1,
+                    page: page,
                     per_page: 200,
                     filters: [],
                     columns: [
