@@ -25,6 +25,15 @@ function initAddTools() {
         ],
         "/tools?tool=desc"
     );
+
+    addButtonCard(
+        'Valid GTIN Generator',
+        [
+            "Generate random GTINS that are actually valid, or at least pass GTIN checks for validity.",
+            "Simple Patches Tool"
+        ],
+        "/tools?tool=desc"
+    );
 }
 
 function addButtonCard(title, bullets, href) {
