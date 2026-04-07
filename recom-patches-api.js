@@ -177,7 +177,7 @@ async function api_test(type = null) {
                         {
                             "field": "order_shipped_at",
                             "operator": "between",
-                            "value": ["2026-03-23", "2026-03-23"]
+                            "value": ["2026-04-06", "2026-04-06"]
                         }
                     ],
                     columns: [
