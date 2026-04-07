@@ -48,14 +48,14 @@ async function fetchAPI(route, { params = {}, body = null } = {}, options = {}) 
 
 async function meta() { return await fetchAPI("meta"); }
 
-async function api_test(type = null, page = 1) {
+async function api_test(type = null, page = 1, per_page = 200) {
     switch (type) {
         case 'active_inventory':
             return fetchAPI("reports", {
                 body: {
                     type: "active_inventory",
                     page: page,
-                    per_page: 200,
+                    per_page: per_page,
                     filters: [
                         {
                             "field": "product_items.in_stock",
@@ -111,7 +111,7 @@ async function api_test(type = null, page = 1) {
                 body: {
                     type: "catalog_report",
                     page: page,
-                    per_page: 200,
+                    per_page: per_page,
                     filters: [],
                     columns: [
                         "products.sid",
@@ -140,7 +140,7 @@ async function api_test(type = null, page = 1) {
                 body: {
                     type: "orders_report",
                     page: page,
-                    per_page: 200,
+                    per_page: per_page,
                     filters: [
                         {
                             "field": "orders.date_ordered",
@@ -172,7 +172,7 @@ async function api_test(type = null, page = 1) {
                 body: {
                     type: "extended_sold_items",
                     page: page,
-                    per_page: 200,
+                    per_page: per_page,
                     filters: [
                         {
                             "field": "order_shipped_at",
@@ -233,7 +233,7 @@ async function api_test(type = null, page = 1) {
                 body: {
                     type: "extended_returned_items",
                     page: page,
-                    per_page: 200,
+                    per_page: per_page,
                     filters: [
                         {
                             "field": "return_date",
@@ -290,7 +290,7 @@ async function api_test(type = null, page = 1) {
                 body: {
                     type: "user_clock",
                     page: page,
-                    per_page: 200,
+                    per_page: per_page,
                     filters: [
                         {
                             "field": "user_clocks.clock_date",
@@ -347,7 +347,7 @@ async function api_test(type = null, page = 1) {
                 body: {
                     type: "fba_shipments",
                     page: page,
-                    per_page: 200,
+                    per_page: per_page,
                     filters: [
                         {
                             "field": "fba_shipments.status",
@@ -378,7 +378,7 @@ async function api_test(type = null, page = 1) {
                 body: {
                     type: "wfs_shipments",
                     page: page,
-                    per_page: 200,
+                    per_page: per_page,
                     filters: [
                         {
                             "field": "wfs_shipments.status",
@@ -407,7 +407,7 @@ async function api_test(type = null, page = 1) {
                 body: {
                     type: "product_images",
                     page: page,
-                    per_page: 200,
+                    per_page: per_page,
                     filters: [
                         {
                             "field": "products.status",
@@ -438,7 +438,7 @@ async function api_test(type = null, page = 1) {
                 body: {
                     type: "item_images",
                     page: page,
-                    per_page: 200,
+                    per_page: per_page,
                     filters: [
                         {
                             "field": "product_items.status",
@@ -475,7 +475,7 @@ async function api_test(type = null, page = 1) {
                 body: {
                     type: "extended_items_demands",
                     page: page,
-                    per_page: 200,
+                    per_page: per_page,
                     filters: [
                         {
                             "field": "order_date",
@@ -511,7 +511,7 @@ async function api_test(type = null, page = 1) {
                 body: {
                     type: "po_category_cost_value",
                     page: page,
-                    per_page: 200,
+                    per_page: per_page,
                     filters: [
                         {
                             "field": "purchase_orders.type",
@@ -545,7 +545,7 @@ async function api_test(type = null, page = 1) {
                 body: {
                     type: "warehouse_inventory",
                     page: page,
-                    per_page: 200,
+                    per_page: per_page,
                     filters: [
                         {
                             "field": "warehouses.type",
@@ -594,7 +594,7 @@ async function api_test(type = null, page = 1) {
                 body: {
                     type: "pending_inventory",
                     page: page,
-                    per_page: 200,
+                    per_page: per_page,
                     filters: [
                         {
                             "field": "purchase_orders.id",
@@ -630,7 +630,7 @@ async function api_test(type = null, page = 1) {
                 body: {
                     type: "store_weekly_sales",
                     page: page,
-                    per_page: 200,
+                    per_page: per_page,
                     filters: [
                         {
                             "field": "orders.store_id",
@@ -656,7 +656,7 @@ async function api_test(type = null, page = 1) {
                 body: {
                     type: "po_overview_report",
                     page: page,
-                    per_page: 200,
+                    per_page: per_page,
                     filters: [
                         {
                             "field": "created_at",
@@ -680,7 +680,7 @@ async function api_test(type = null, page = 1) {
                 body: {
                     type: "sales_report",
                     page: page,
-                    per_page: 200,
+                    per_page: per_page,
                     filters: [
                         {
                             "field": "order_date",
@@ -718,7 +718,7 @@ async function api_test(type = null, page = 1) {
                 body: {
                     type: "refunds_report",
                     page: page,
-                    per_page: 200,
+                    per_page: per_page,
                     filters: [
                         {
                             "field": "order_date",
@@ -757,7 +757,7 @@ async function api_test(type = null, page = 1) {
                 body: {
                     type: "returns_report",
                     page: page,
-                    per_page: 200,
+                    per_page: per_page,
                     filters: [
                         {
                             "field": "return_date",
@@ -798,7 +798,7 @@ async function api_test(type = null, page = 1) {
                 body: {
                     type: "listings_report",
                     page: page,
-                    per_page: 200,
+                    per_page: per_page,
                     filters: [
                         {
                             "field": "store_live_listing.status",
@@ -824,7 +824,7 @@ async function api_test(type = null, page = 1) {
                 body: {
                     type: "esn_sales_report",
                     page: page,
-                    per_page: 200,
+                    per_page: per_page,
                     filters: [
                         {
                             "field": "orders.date_ordered",
@@ -863,7 +863,7 @@ async function api_test(type = null, page = 1) {
                 body: {
                     type: "user_daily_activity_report",
                     page: page,
-                    per_page: 200,
+                    per_page: per_page,
                     filters: [
                         {
                             "field": "user_daily_activity.date",
@@ -886,7 +886,7 @@ async function api_test(type = null, page = 1) {
                 body: {
                     type: "imei_report",
                     page: page,
-                    per_page: 200,
+                    per_page: per_page,
                     filters: [],
                     columns: [
                         "po_imei.imei",
