@@ -44,7 +44,7 @@ async function unsafeTableLength() {
         option.textContent = value;
         select.appendChild(option);
     });
-}
+} 
 
 unsafeTableLength();
 
@@ -60,6 +60,19 @@ function exportDtTable() {
 
         tr.querySelectorAll("th, td").forEach((td, colIndex) => {
             let text = td.innerText.trim();
+
+            const jsonItems = td.querySelectorAll('.json__item');
+            if (jsonItems.length > 0) {
+                const obj = {};
+
+                jsonItems.forEach(item => {
+                    const key = item.querySelector('.json__key')?.textContent?.trim();
+                    const value = item.querySelector('.json__value')?.textContent?.trim();
+                    if (key) obj[key] = value;
+                });
+
+                text = JSON.stringify(obj);
+            }
 
             if (isBodyRow && colIndex === 0) {
                 const checkbox = td.querySelector('input[type="checkbox"]');
@@ -90,7 +103,7 @@ function exportDtTable() {
                 text = span.getAttribute("title").trim();
             }
 
-            if (text.includes(",") || text.includes("\"")) {
+            if (text.includes(",") || text.includes("\"") || text.includes("\n")) {
                 text = `"${text.replace(/"/g, '""')}"`;
             }
 
