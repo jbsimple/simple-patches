@@ -264,7 +264,11 @@ function loadPatchSettings() {
             const container = document.getElementById("kt_app_main");
             if (container) {
                 const bgImg = document.createElement("img");
-                bgImg.src = bgsrc;
+                if (bgsrc.startsWith('https://')) {
+                    bgImg.src = bgsrc;
+                } else {
+                    bgImg.src = `https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/${bgsrc}`;
+                }
                 if (bgpos !== null && bgpos !== '') { bgImg.style.objectPosition = bgpos; } else { bgImg.style.objectPosition = 'center center'; }
                 if (bgobf !== null && bgobf !== '') { bgImg.style.objectFit = bgobf; } else { bgImg.style.objectFit = 'cover'; }
 
