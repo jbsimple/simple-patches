@@ -79,7 +79,7 @@ function setupFromConfig() {
 
     const today = new Date();
     rainbowAnnounce.forEach(announcement => {
-        if (today.getDate() === announcement.day && today.getMonth() === (announcement.month - 1)) {
+        if (today.getDate() === announcement.day && today.getMonth() === (announcement.month - 1) && !panic) {
             rainbowMessage(announcement.message);
         }
     });
