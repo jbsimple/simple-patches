@@ -246,7 +246,11 @@ function loadPatchSettings() {
                 const src = avatar.getAttribute('src') || '';
                 if (src.includes('assets') && src.includes('avatars')) {
                     console.debug('PATCHES - Swapping Avatar:', src);
-                    avatar.src = icon;
+                    if (icon.startsWith('https://')) {
+                        avatar.src = icon;
+                    } else {
+                        avatar.src = `https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/${icon}`;
+                    }
                 }
             });
             // change hover menu pfp size
