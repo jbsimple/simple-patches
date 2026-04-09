@@ -95,7 +95,10 @@ async function dashboardAlerts() {
     const warningContainer = document.createElement('div');
     warningContainer.setAttribute('style', 'display:flex; flex-direction:wrap; align-items:center; justify-content:center; gap:2rem;');
 
-    if (urrentTask.toLowerCase() !== 'pictures') { await warning_photoRecent(); }
+    if (urrentTask.toLowerCase() !== 'pictures') {
+        await warning_photoRecent();
+        // add missing photos warning
+    }
 
     if (warningContainer.hasChildNodes()) {
         const content_container = document.getElementById('kt_app_content_container');
