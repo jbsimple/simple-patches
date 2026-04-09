@@ -198,7 +198,7 @@ async function dashboardAlerts() {
             There ${count === 1 ? 'is' : 'are'} ${count} ${count === 1 ? 'item' : 'items'} that need${count === 1 ? 's' : ''} attention.</h4>
         <div style="display:flex; flex-direction:row;">
             <span style="flex:1;"></span>
-            <a href="${link}" target="_blank" class="btn btn-light">More Details</a>
+            <a href="${link}" target="_blank" class="btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-danger">More Details</a>
             <span style="flex:1;"></span>
         </div>
         `;
