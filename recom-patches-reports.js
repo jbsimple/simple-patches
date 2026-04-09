@@ -1871,6 +1871,11 @@ async function report_findImgUrlsFromKeyword() {
     const keywordInput = document.getElementById('patches-reports-findImgUrlsFromKeyword-input');
     const keyword = keywordInput?.value;
 
+    if (keyword === '.jpg') {
+        fireSwal("No you don't.", ["This will literally fetch every image ever.", "There is literally a report template to do that, use that please."], 'error', true);
+        return null;
+    }
+
     const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
     
     const [inactiveProducts, activeProducts, inactiveItems, activeItems] = await Promise.all([
@@ -1881,10 +1886,10 @@ async function report_findImgUrlsFromKeyword() {
     ]);
 
     const combined = [
-        ...(inactiveProducts || []),
-        ...(activeProducts || []),
-        ...(inactiveItems || []),
-        ...(activeItems || [])
+        ...normalizeProducts(inactiveProducts || []),
+        ...normalizeProducts(activeProducts || []),
+        ...normalizeItems(inactiveItems || []),
+        ...normalizeItems(activeItems || [])
     ];
 
     console.log('combined:', combined);
@@ -1938,6 +1943,23 @@ async function report_findImgUrlsFromKeyword() {
             },
             csrf_recom: csrfToken
         });
+    }
+
+    // normalize everything
+    function normalizeProducts(arr) {
+        return (arr || []).map(row => ({
+            sku: '', // force empty
+            sid: row.SID,
+            url: row.URL
+        }));
+    }
+
+    function normalizeItems(arr) {
+        return (arr || []).map(row => ({
+            sku: row.SKU,
+            sid: row.SID,
+            url: row.URL
+        }));
     }
 }
 
