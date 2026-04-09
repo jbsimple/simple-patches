@@ -324,7 +324,6 @@ async function dashboardAlerts() {
 
 setTimeout(async function () { 
     fixStatCards();
-    await dashboardAlerts();
     try {
         await loadEdgeConfig('dashboard');
         console.debug('PATCHES - Dashboard Edge Config Loaded.');
@@ -334,4 +333,5 @@ setTimeout(async function () {
     } catch (err) {
         console.error('PATCHES - Dashboard Edge config failed:', err);
     }
+    await dashboardAlerts();
 }, 200);
