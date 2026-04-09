@@ -208,24 +208,46 @@ function initPreset() {
     
     card.appendChild(card_body);
     right.appendChild(card);
-    
-    card_body.appendChild(report_preset('listing_productivity'));
-    //card_body.appendChild(report_preset('marketing_productivity'));
-    card_body.appendChild(report_preset('productivity_meetingNotes'));
-    card_body.appendChild(report_preset('product_stockandvalue'));
-    card_body.appendChild(report_preset('product_highQty'));
-    card_body.appendChild(report_preset('items_createdRecent'));
-    card_body.appendChild(report_preset('picture_missingFull'));
-    card_body.appendChild(report_preset('picture_missingSpecial'));
-    card_body.appendChild(report_preset('findImgUrlsFromKeyword'));
-    card_body.appendChild(report_preset('productivity_eventSIDLookup'));
-    card_body.appendChild(report_preset('productivity_eventSKULookup'));
-    card_body.appendChild(report_preset('productivity_eventIDLookup'));
-    //card_body.appendChild(report_preset('attributes_color'));
-    card_body.appendChild(report_preset('picture_imagecount'));
-    card_body.appendChild(report_preset('picture_resolution'));
-    card_body.appendChild(report_preset('pendinginventory_all'));
-    
+
+    const params = new URLSearchParams(window.location.search);
+    let template = params.get('template') || '';
+    if (template && template !== '') {
+        const html = report_preset(template);
+        if (html) {
+            const inputCheck = html.querySelectorAll('input');
+            const submitButton = html.querySelector('.btn.btn-large.btn-primary');
+            if (inputCheck.length === 0 && submitButton) {
+                card_body.appendChild(html);
+                submitButton.dispatchEvent(new MouseEvent('click', {
+                    bubbles: true,
+                    cancelable: true,
+                    view: window
+                }));
+            } else {
+                console.error(`PATCHES - Template cannot be initiated from URL.`);
+            }
+        } else {
+            console.error(`PATCHES - Invalid Template ${template}`);
+        }
+    } else {
+        card_body.appendChild(report_preset('listing_productivity'));
+        //card_body.appendChild(report_preset('marketing_productivity'));
+        card_body.appendChild(report_preset('productivity_meetingNotes'));
+        card_body.appendChild(report_preset('product_stockandvalue'));
+        card_body.appendChild(report_preset('product_highQty'));
+        card_body.appendChild(report_preset('items_createdRecent'));
+        card_body.appendChild(report_preset('picture_missingFull'));
+        card_body.appendChild(report_preset('picture_missingSpecial'));
+        card_body.appendChild(report_preset('findImgUrlsFromKeyword'));
+        card_body.appendChild(report_preset('productivity_eventSIDLookup'));
+        card_body.appendChild(report_preset('productivity_eventSKULookup'));
+        card_body.appendChild(report_preset('productivity_eventIDLookup'));
+        //card_body.appendChild(report_preset('attributes_color'));
+        card_body.appendChild(report_preset('picture_imagecount'));
+        card_body.appendChild(report_preset('picture_resolution'));
+        card_body.appendChild(report_preset('pendinginventory_all'));
+    }
+
     const nextStepButton = document.getElementById('rc_reports_new_wizard').querySelectorAll('button[data-kt-stepper-action="next"]');
     const patchesPresentsDiv = document.getElementById('patches-presents');
 
