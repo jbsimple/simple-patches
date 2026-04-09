@@ -183,9 +183,17 @@ async function dashboardAlerts() {
     function parseAndPrintWarning(name, count, link) {
         if (count === null || count === 0) { return; }
         const warning_box = document.createElement('div');
-        warning_box.setAttribute('class', 'alert alert-danger my-5');
-        warning_box.setAttribute('style', 'display:flex;flex-direction:column;gap:0.25rem;');
-        warning_box.innerHTML = `<strong>Warning: ${name}</strong><p style="margin:0;padding:0;">There are ${count} items that need attention.</p><a href="${link}" target="_blank" class="btn btn-light">More Details</a>`;
+        warning_box.setAttribute('class', 'card-body d-flex justify-content-between flex-column px-0 pb-0');
+        warning_box.setAttribute('style', '--bs-card-border-color:var(--bs-danger-border-subtle); display:flex; flex-wrap: wrap; align-items:center; justify-content:center; gap:0.25rem; margin:0;');
+        warning_box.innerHTML = `
+        <h3>Warning: ${name}</h3>
+        <h4 style="margin:0;padding:0;">There are ${count} items that need attention.</h4>
+        <div style="display:flex; flex-direction:row;">
+            <span style="flex:1;"></span>
+            <a href="${link}" target="_blank" class="btn btn-light">More Details</a>
+            <span style="flex:1;"></span>
+        </div>
+        `;
         warningContainer.appendChild(warning_box);
     }
 
