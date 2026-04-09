@@ -1870,6 +1870,8 @@ async function report_findImgUrlsFromKeyword() {
 
     const keywordInput = document.getElementById('patches-reports-findImgUrlsFromKeyword-input');
     const keyword = keywordInput?.value;
+
+    const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
     
     const [inactiveProducts, activeProducts, inactiveItems, activeItems] = await Promise.all([
         fetchProductImages(0),
