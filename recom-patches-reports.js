@@ -1295,7 +1295,7 @@ async function report_pictureMissingFull_init() {
 
         console.log('final list:', list);
 
-        generateReportTableFromList(combined, 'images-missing', true);
+        generateReportTableFromList(list, 'images-missing', true);
 
     }
 }
