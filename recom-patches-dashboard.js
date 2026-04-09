@@ -187,20 +187,14 @@ async function dashboardAlerts() {
 
     function parseAndPrintWarning(name, count, link) {
         if (count === null || count === 0) { return; }
-        const warning_box = document.createElement('div');
+        const warning_box = document.createElement('a');
         warning_box.setAttribute('class', 'card card-flush h-md-50 mb-xl-10 blockui item red');
+        warning_box.setAttribute('href', link);
+        warning_box.setAttribute('target', '_blank');
         warning_box.setAttribute('style', 'width:calc(25% - 2rem);');
         warning_box.innerHTML = `
-        <h3 class="text-gray-800">
-            Warning: ${name}
-        </h3>
-        <h4 class="fw-bolder text-gray-800 m-0" style="margin:0;padding:0;">
-            There ${count === 1 ? 'is' : 'are'} ${count} ${count === 1 ? 'item' : 'items'} that need${count === 1 ? 's' : ''} attention.</h4>
-        <div style="display:flex; flex-direction:row;">
-            <span style="flex:1;"></span>
-            <a href="${link}" target="_blank" class="btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-danger">More Details</a>
-            <span style="flex:1;"></span>
-        </div>
+        <h3 class="text-gray-800">Warning: ${name}</h3>
+        <h4 class="fw-bolder text-gray-800 m-0" style="margin:0;padding:0;">There ${count === 1 ? 'is' : 'are'} ${count} ${count === 1 ? 'item' : 'items'} that need${count === 1 ? 's' : ''} attention.</h4>
         `;
         warningContainer.appendChild(warning_box);
     }
@@ -215,7 +209,7 @@ async function dashboardAlerts() {
 
 setTimeout(async function () { 
     fixStatCards();
-
+    await dashboardAlerts();
     try {
         await loadEdgeConfig('dashboard');
         console.debug('PATCHES - Dashboard Edge Config Loaded.');
@@ -225,6 +219,4 @@ setTimeout(async function () {
     } catch (err) {
         console.error('PATCHES - Dashboard Edge config failed:', err);
     }
-
-    await dashboardAlerts(); // always run last
 }, 200);
