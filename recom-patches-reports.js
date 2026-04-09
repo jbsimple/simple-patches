@@ -212,7 +212,6 @@ function initPreset() {
     const params = new URLSearchParams(window.location.search);
     let template = params.get('template') || '';
     if (template && template !== '') {
-        card_body.innetHTML = '<p>Loading...</p>';
         const html = report_preset(template);
         if (html) {
             const inputCheck = html.querySelectorAll('input');
