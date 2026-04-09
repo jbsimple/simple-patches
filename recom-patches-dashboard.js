@@ -186,8 +186,11 @@ async function dashboardAlerts() {
         warning_box.setAttribute('class', 'card overflow-hidden card-flush h-md-50 mb-5 mb-xl-10 patches_warning');
         warning_box.setAttribute('style', 'width:calc(25% - 2rem);');
         warning_box.innerHTML = `
-        <h3>Warning: ${name}</h3>
-        <h4 style="margin:0;padding:0;">There are ${count} items that need attention.</h4>
+        <h3>
+            Warning: ${name}
+        </h3>
+        <h4 style="margin:0;padding:0;">
+            There ${count === 1 ? 'is' : 'are'} ${count} ${count === 1 ? 'item' : 'items'} that need${count === 1 ? 's' : ''} attention.</h4>
         <div style="display:flex; flex-direction:row;">
             <span style="flex:1;"></span>
             <a href="${link}" target="_blank" class="btn btn-light">More Details</a>
