@@ -97,7 +97,9 @@ async function dashboardAlerts() {
 
     const container = document.getElementById('productsStats').querySelector('.card-body');
     container.style.setProperty('min-height', '200px', 'important');
-    container.querySelectorAll('div').forEach(elem => { elem.style.setProperty('display', 'none', 'important'); })
+    container.querySelectorAll(':scope > div:nth-child(2)').forEach(elem => {
+        elem.style.setProperty('display', 'none', 'important');
+    });
 
     await warning_photoRecent();
     await warning_photosMissing();
