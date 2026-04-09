@@ -2,6 +2,8 @@ let quicklinks = [];
 let randomImages = [];
 
 function initQuickLinks() {
+    if (panic) { return null; }
+    
     const content_container = document.getElementById('kt_app_content_container');
 
     // add separator
@@ -36,6 +38,7 @@ function initQuickLinks() {
 
 function replaceEngagewidget() {
     if (panic) { return null; }
+
     const kt_app_content_container = document.getElementById('kt_app_content_container');
     const engagewidget = kt_app_content_container.querySelector('.card.bg-primary.card-flush.h-md-50.mb-xl-10');
     engagewidget.classList = '';
@@ -90,7 +93,8 @@ function fixStatCards() {
 }
 
 async function dashboardAlerts() {
-    if (typeof currentTask !== 'string') return;
+    if (typeof currentTask !== 'string') { return null; }
+    if (panic) { return null; }
 
     const warningContainer = document.createElement('div');
     warningContainer.id = 'patches-dashboard-warnings';
