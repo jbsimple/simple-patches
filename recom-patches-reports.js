@@ -1247,9 +1247,7 @@ async function report_pictureMissingFull_init() {
     }
 
     if (items_images_report === null) { items_images_report = []; }
-
-    if (product_images_report === null) { product_images_report = []; }
-
+    if (product_images_report === null) {  product_images_report = []; }
     if (items_images_qunique_report === null) { items_images_qunique_report = [] }
 
     if (items_images_report && Array.isArray(items_images_report) && product_images_report && Array.isArray(product_images_report) && items_images_qunique_report && Array.isArray(items_images_qunique_report)) {
@@ -1295,7 +1293,163 @@ async function report_pictureMissingFull_init() {
 
         console.log('final list:', list);
 
-        generateReportTableFromList(list, 'images-missing', true);
+        goToLastStep();
+
+        const button = document.getElementById('report_download');
+        button.removeAttribute('href');  
+        button.classList.remove('d-none');
+        button.setAttribute('onclick', 'event.preventDefault(); parseTableToCSV(\'missing-pictures\');');
+
+        const table = document.createElement('table');
+        table.style.width = '100%';
+        table.style.maxWidth = '100%';
+        table.style.overflow = 'auto';
+        table.id = 'recompatches-customreportTable';
+        table.classList.add('table', 'table-striped');
+
+        const thead = document.createElement('thead');
+        const tbody = document.createElement('tbody');
+
+        const headerRow = document.createElement('tr');
+
+        const thID = document.createElement('th');
+        thID.innerHTML = `<span data="ID Link">ID</span>`;
+        thID.style.minWidth = '200px';
+        thID.style.padding = '2rem';
+        thID.style.fontWeight = '700';
+        headerRow.appendChild(thID);
+
+        const thProductName = document.createElement('th');
+        thProductName.textContent = `Product Name`;
+        thProductName.style.minWidth = '200px';
+        thProductName.style.padding = '2rem';
+        thProductName.style.fontWeight = '700';
+        headerRow.appendChild(thProductName);
+
+        const thCreatedAt = document.createElement('th');
+        thCreatedAt.innerHTML = `<span data="SKU Created At">ID Created At</span>`;
+        thCreatedAt.style.minWidth = '200px';
+        thCreatedAt.style.padding = '2rem';
+        thCreatedAt.style.fontWeight = '700';
+        headerRow.appendChild(thCreatedAt);
+
+        const thValue = document.createElement('th');
+        thValue.textContent = `Value ($)`;
+        thValue.style.minWidth = '200px';
+        thValue.style.padding = '2rem';
+        thValue.style.fontWeight = '700';
+        headerRow.appendChild(thValue);
+
+        const thLocation = document.createElement('th');
+        thLocation.innerHTML = `<span data="SKU Link">(SKU) Location</span>`;
+        thLocation.style.minWidth = '200px';
+        thLocation.style.padding = '2rem';
+        thLocation.style.fontWeight = '700';
+        headerRow.appendChild(thLocation);
+
+        thead.appendChild(headerRow);
+
+        list.forEach(item => {
+            let skus = null;
+            if (item.items && Array.isArray(item.items) && item.items.length > 0) {
+                skus = item.items.sort((a, b) => {
+                    const conditionA = parseInt(a.Condition.split('-')[0], 10);
+                    const conditionB = parseInt(b.Condition.split('-')[0], 10);
+
+                    return conditionA - conditionB;
+                });
+            }
+
+            const row = document.createElement('tr');
+
+            const idCell = document.createElement('td');
+            if (item.SKU) {
+                const skuLink = document.createElement('a');
+                skuLink.title = `View SKU ${item.SKU}`;
+                skuLink.href = `/product/items/${item.SKU}`;
+                skuLink.textContent = item.SKU;
+                skuLink.target = "_blank";
+                idCell.appendChild(skuLink);
+            } else if (item.SID) {
+                const sidLink = document.createElement('a');
+                sidLink.title = `View SID ${item.SID}`;
+                sidLink.href = `/products/${item.SID}`;
+                sidLink.textContent = item.SID;
+                sidLink.target = "_blank";
+                idCell.appendChild(sidLink);
+            } else {
+                idCell.textContent = item.SKU || item.SID;
+            }
+            idCell.style.minWidth = '200px';
+            idCell.style.padding = '0.75rem 2rem'; // top-bottom then left-right to make it look better
+            row.appendChild(idCell);
+
+            const nameCell = document.createElement('td');
+            nameCell.textContent = item.Product_Name;
+            nameCell.style.minWidth = '200px';
+            nameCell.style.padding = '0.75rem 2rem';
+            row.appendChild(nameCell);
+
+            const dateCell = document.createElement('td');
+            if (skus !== null) {
+                dateCell.innerHTML = `<span data="${skus[0].Created_Date}">${item.Created_Date}</span>`
+            } else {
+                dateCell.textContent = item.Created_Date;
+            }
+            dateCell.style.minWidth = '200px';
+            dateCell.style.padding = '0.75rem 2rem';
+            row.appendChild(dateCell);
+
+            const valueCell = document.createElement('td');
+            valueCell.textContent = `$${parseFloat(item.Value).toFixed(2)}`;
+            valueCell.style.minWidth = '200px';
+            valueCell.style.padding = '0.75rem 2rem';
+            row.appendChild(valueCell);
+
+            const locationCell = document.createElement('td');
+            if (skus !== null) {
+                locationCell.innerHTML = `(<a title="View SKU ${skus[0].SKU}" href="/product/items/${skus[0].SKU}" target="_blank">${skus[0].SKU}</a>) ${skus[0].Full_Location}`;
+            } else if (item.SKU) {
+                locationCell.textContent = `${item.Full_Location}`;
+            } else {
+                locationCell.textContent = `N/a`;
+            }
+            locationCell.style.minWidth = '200px';
+            locationCell.style.padding = '0.75rem 2rem';
+            row.appendChild(locationCell);
+
+            tbody.appendChild(row);
+        });
+
+        table.appendChild(thead);
+        table.appendChild(tbody);
+
+        const card = document.createElement('div');
+        card.classList = "card";
+        card.style.display = "none";  // normally flex
+        card.id = 'patches-table';
+
+        const card_body = document.createElement('div');
+        card_body.setAttribute('style', 'padding: 0 !important; flex: 1; width: 100%; max-width: 100%; max-height: 60rem; overflow: scroll;');
+        card_body.classList = "card-body";
+
+        const content = document.createElement('div');
+        card_body.appendChild(content);
+
+        // show number of things
+        const lengthLabel = document.createElement('p');
+        lengthLabel.setAttribute('style', 'width: 100%; text-align: center; font-size: 0.9rem; color: var(--bs-gray-600);')
+        lengthLabel.textContent = `Total number of rows: ${list.length}`;
+        card.appendChild(lengthLabel);
+
+        card.appendChild(card_body);
+        right.appendChild(card);
+
+        content.innerHTML = '';
+        content.appendChild(table);
+
+        content.removeAttribute('style');
+        card.setAttribute('style', 'display: flex;');
 
     }
 }
