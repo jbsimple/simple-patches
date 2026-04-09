@@ -217,6 +217,7 @@ function initPreset() {
     card_body.appendChild(report_preset('items_createdRecent'));
     card_body.appendChild(report_preset('picture_missingFull'));
     card_body.appendChild(report_preset('picture_missingSpecial'));
+    card_body.appendChild(report_preset('findImgUrlsFromKeyword'));
     card_body.appendChild(report_preset('productivity_eventSIDLookup'));
     card_body.appendChild(report_preset('productivity_eventSKULookup'));
     card_body.appendChild(report_preset('productivity_eventIDLookup'));
@@ -490,6 +491,15 @@ function report_preset(name) {
         details.func = `activePendingInventoryReport();`;
         details.desc = "Yeah, this will give you everything that has ever been in pending inventory.<br>This is the mother of all reports, so don't generate it on a whim.";
         details.title = "All Pending Inventory";
+        return report_initHTML(details);
+    } else if (name === 'findImgUrlsFromKeyword') {
+        var details = {};
+        details.id = `patches-reports-findImgUrlsFromKeyword`;
+        details.name = `patches-reports-findImgUrlsFromKeyword`;
+        details.func = `report_findImgUrlsFromKeyword();`;
+        details.input = "string";
+        details.desc = "Because I am lazy and tired of pressing the Copy URL Button";
+        details.title = "Image URL Fetcher";
         return report_initHTML(details);
     } else {
         return null;
@@ -1848,6 +1858,85 @@ async function report_attributesColorCheck() {
 
     console.debug('PATCHES - Final Color List', list);
     generateDwnloadFromTable(list, 'product-attributes-colors');
+}
+
+async function report_findImgUrlsFromKeyword() {
+
+    const createButton = document.querySelector(`button[data-id="patches-reports-findImgUrlsFromKeyword"]`);
+    if (createButton) {
+        createButton.textContent = 'Loading...';
+        createButton.setAttribute('style', 'background-color: gray !important;');
+    }
+
+    const keywordInput = document.getElementById('patches-reports-findImgUrlsFromKeyword-input');
+    const keyword = keywordInput?.value;
+    
+    const [inactiveProducts, activeProducts, inactiveItems, activeItems] = await Promise.all([
+        fetchProductImages(0),
+        fetchProductImages(1),
+        fetchItemImages(0),
+        fetchItemImages(1)
+    ]);
+
+    const combined = [
+        ...(inactiveProducts || []),
+        ...(activeProducts || []),
+        ...(inactiveItems || []),
+        ...(activeItems || [])
+    ];
+
+    console.log('combined:', combined);
+
+    async function fetchProductImages(status) {
+        return await report_getSpecial({
+            report: {
+                type: "product_images",
+                columns: [
+                    "products.sid",
+                    "product_images.url"
+                ],
+                filters: [
+                    {
+                        column: "product_images.url",
+                        opr: "{0} LIKE '%{1}%'",
+                        value: keyword
+                    },
+                    {
+                        column: "products.status",
+                        opr: "{0} = '{1}'",
+                        value: status
+                    }
+                ]
+            },
+            csrf_recom: csrfToken
+        });
+    }
+
+    async function fetchItemImages(status) {
+        return await report_getSpecial({
+            report: {
+                type: "item_images",
+                columns: [
+                    "product_items.sku",
+                    "products.sid",
+                    "item_images.url"
+                ],
+                filters: [
+                    {
+                        column: "item_images.url",
+                        opr: "{0} LIKE '%{1}%'",
+                        value: keyword
+                    },
+                    {
+                        column: "product_items.status",
+                        opr: "{0} = '{1}'",
+                        value: status
+                    }
+                ]
+            },
+            csrf_recom: csrfToken
+        });
+    }
 }
 
 function generateDwnloadFromTable(list, name) {
