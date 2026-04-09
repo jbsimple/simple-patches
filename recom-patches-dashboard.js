@@ -177,7 +177,7 @@ async function dashboardAlerts() {
     function parseAndPrintWarning(name, count, link) {
         if (count === null || count === 0) { return; }
 
-        const container = document.getElementById('productsStats');
+        const container = document.getElementById('productsStats').querySelector('.card-body');
 
         const separator = document.createElement('div');
         separator.setAttribute('class', 'separator separator-dashed my-3');
