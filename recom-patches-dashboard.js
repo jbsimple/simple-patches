@@ -96,6 +96,7 @@ async function dashboardAlerts() {
     document.getElementById('productsStats').querySelector('.card-title').textContent = 'Stats';
 
     const container = document.getElementById('productsStats').querySelector('.card-body');
+    container.style.setProperty('min-height', '200px', 'important');
     container.querySelectorAll('div').forEach(elem => { elem.style.setProperty('display', 'none', 'important'); })
 
     await warning_photoRecent();
