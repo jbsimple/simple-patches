@@ -1869,9 +1869,9 @@ async function report_findImgUrlsFromKeyword() {
     }
 
     const keywordInput = document.getElementById('patches-reports-findImgUrlsFromKeyword-input');
-    const keyword = keywordInput?.value;
+    const keyword = keywordInput?.value?.trim();
 
-    if (keyword === '.jpg') {
+    if (!keyword || keyword.length < 4 || keyword === '.jpg') {
         fireSwal("No you don't.", ["This will literally fetch every image ever.", "There is literally a report template to do that, use that please."], 'error', true);
         return null;
     }
