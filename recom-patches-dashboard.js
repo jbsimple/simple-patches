@@ -94,12 +94,9 @@ function fixStatCards() {
 
 async function dashboardAlerts() {
     document.getElementById('productsStats').querySelector('.card-title').textContent = 'Stats';
-    if (typeof currentTask !== 'string') { return null; }
 
-    if (currentTask.toLowerCase() === 'pictures') {
-        await warning_photoRecent();
-        await warning_photosMissing();
-    }
+    await warning_photoRecent();
+    await warning_photosMissing();
     
     async function warning_photoRecent() {
         // Get today's date
