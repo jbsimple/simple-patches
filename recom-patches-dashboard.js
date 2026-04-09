@@ -188,6 +188,13 @@ async function dashboardAlerts() {
         warning_box.innerHTML = `<strong>Warning: ${name}</strong><p style="margin:0;padding:0;">There are ${count} items that need attention.</p><a href="${link}" target="_blank" class="btn btn-light">More Details</a>`;
         warningContainer.appendChild(warning_box);
     }
+
+    function formatDate(date) {
+        let month = (date.getMonth() + 1).toString().padStart(2, '0');
+        let day = date.getDate().toString().padStart(2, '0');
+        let year = date.getFullYear();
+        return `${month}/${day}/${year}`;
+    }
 }
 
 setTimeout(async function () { 
