@@ -2132,21 +2132,28 @@ function generateReportTableFromList(list, name, display = true) {
                 td.style.minWidth = '200px';
                 td.style.padding = '0.75rem 2rem';
 
-                if (key === 'SID') {
+                const k = key.toUpperCase();
+                if (k === 'SID') {
                     const a = document.createElement('a');
                     a.href = `/products/${encodeURIComponent(value)}`;
                     a.textContent = value;
                     a.target = '_blank';
                     td.appendChild(a);
-                } else if (key === 'SKU') {
+                } else if (k === 'SKU') {
                     const a = document.createElement('a');
                     a.href = `/product/items/${encodeURIComponent(value)}`;
                     a.textContent = value;
                     a.target = '_blank';
                     td.appendChild(a);
-                } else if (key === 'ASIN') {
+                } else if (k === 'ASIN') {
                     const a = document.createElement('a');
                     a.href = `https://www.amazon.com/dp/${encodeURIComponent(value)}`;
+                    a.textContent = value;
+                    a.target = '_blank';
+                    td.appendChild(a);
+                } else if (k === 'URL') {
+                    const a = document.createElement('a');
+                    a.href = encodeURIComponent(value);
                     a.textContent = value;
                     a.target = '_blank';
                     td.appendChild(a);
