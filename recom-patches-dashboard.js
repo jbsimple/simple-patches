@@ -95,7 +95,6 @@ function fixStatCards() {
 async function dashboardAlerts() {
     document.getElementById('productsStats').querySelector('.card-title').textContent = 'Stats';
     if (typeof currentTask !== 'string') { return null; }
-    if (panic) { return null; }
 
     if (currentTask.toLowerCase() === 'pictures') {
         await warning_photoRecent();
