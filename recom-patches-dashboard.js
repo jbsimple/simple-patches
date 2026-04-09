@@ -102,7 +102,7 @@ async function dashboardAlerts() {
 
     function hide(n) {
         const child = container.querySelector(`:scope > div:nth-child(${n})`);
-        child.elem.style.setProperty('display', 'none', 'important');
+        child.style.setProperty('display', 'none', 'important');
         child.querySelectorAll('div').forEach(elem => { elem.style.setProperty('display', 'none', 'important'); });
     }
 
