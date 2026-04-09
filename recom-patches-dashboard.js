@@ -95,6 +95,9 @@ function fixStatCards() {
 async function dashboardAlerts() {
     document.getElementById('productsStats').querySelector('.card-title').textContent = 'Stats';
 
+    const container = document.getElementById('productsStats').querySelector('.card-body');
+    container.querySelectorAll('div').forEach(elem => { elem.style.display = 'none'; })
+
     await warning_photoRecent();
     await warning_photosMissing();
     
@@ -295,8 +298,6 @@ async function dashboardAlerts() {
 
     function parseAndPrintWarning(name, count, link) {
         if (count === null || count === 0) { return; }
-
-        const container = document.getElementById('productsStats').querySelector('.card-body');
 
         const separator = document.createElement('div');
         separator.setAttribute('class', 'separator separator-dashed my-3');
