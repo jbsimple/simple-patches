@@ -33,3 +33,15 @@
 
 #patches-dashboard-quicklinks .item.red { --bs-card-bg: rgba(65,40,50); }
 #patches-dashboard-quicklinks .item.red:hover { --bs-card-bg: rgba(90,50,60); }
+
+.patches_warning {
+    --bs-card-bg: rgba(65,40,50);
+    --bs-card-border-color: var(--bs-danger-border-subtle);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: 0;
+    padding: 1rem;
+}
