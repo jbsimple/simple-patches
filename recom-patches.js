@@ -169,6 +169,10 @@ function injectGoods() {
         // ensure this loads since dt is not in source
         loadPatchScript('recom-patches-dtTableParams.js');
 
+    } else if (location.pathname.includes('/order/lines')) {
+
+        loadPatchScript('recom-patches-dtTableParams.js');
+
     } else if (document.title.includes('Dashboard - ')) {
 
         loadPatchStyle('recom-patches-dashboard.css');
