@@ -3,7 +3,7 @@ let randomImages = [];
 
 function initQuickLinks() {
     if (panic) { return null; }
-    
+
     const content_container = document.getElementById('kt_app_content_container');
 
     // add separator
@@ -96,24 +96,9 @@ async function dashboardAlerts() {
     if (typeof currentTask !== 'string') { return null; }
     if (panic) { return null; }
 
-    const warningContainer = document.createElement('div');
-    warningContainer.id = 'patches-dashboard-warnings';
-
     if (currentTask.toLowerCase() === 'pictures') {
         await warning_photoRecent();
         // add missing photos warning
-    }
-
-    if (warningContainer.hasChildNodes()) {
-        const content_container = document.getElementById('kt_app_content_container');
-        
-        // add separator
-        const separator = document.createElement('div');
-        separator.setAttribute('class', 'separator separator-dashed');
-        separator.setAttribute('style', 'margin-bottom: 2.25rem;')
-        content_container.prepend(separator);
-
-        content_container.prepend(warningContainer);
     }
     
     async function warning_photoRecent() {
@@ -191,16 +176,20 @@ async function dashboardAlerts() {
 
     function parseAndPrintWarning(name, count, link) {
         if (count === null || count === 0) { return; }
-        const warning_box = document.createElement('a');
-        warning_box.setAttribute('class', 'card card-flush h-md-50 mb-xl-10 blockui item red');
-        warning_box.setAttribute('href', link);
-        warning_box.setAttribute('target', '_blank');
-        warning_box.setAttribute('style', 'width:calc(25% - 2rem);');
-        warning_box.innerHTML = `
-        <h3 class="text-gray-800">Warning: ${name}</h3>
-        <h4 class="fw-bolder text-gray-800 m-0" style="margin:0;padding:0;">There ${count === 1 ? 'is' : 'are'} ${count} ${count === 1 ? 'item' : 'items'} that need${count === 1 ? 's' : ''} attention.</h4>
-        `;
-        warningContainer.appendChild(warning_box);
+        const separator = document.createElement('div');
+        separator.setAttribute('class', 'separator separator-dashed my-3');
+        container.appendChild(separator);
+
+        const row = document.createElement('a');
+        row.setAttribute('href', link);
+        row.setAttribute('target', '_blank');
+        row.setAttribute('class', 'd-flex flex-stack');
+        row.innerHTML = `<div class="text-gray-700 fw-bold fs-6 me-2">${name}</div>
+        <div class="d-flex align-items-senter">
+            <span class="text-gray-900 fw-boldest fs-6">${count}</span>
+        </div>`;
+        container.appendChild(row);
+
     }
 
     function formatDate(date) {

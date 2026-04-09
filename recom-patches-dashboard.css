@@ -1,5 +1,4 @@
-#patches-dashboard-quicklinks,
-#patches-dashboard-warnings {
+#patches-dashboard-quicklinks {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
@@ -7,8 +6,7 @@
     margin-bottom: 2rem;
 }
 
-#patches-dashboard-quicklinks .item,
-#patches-dashboard-warnings .item {
+#patches-dashboard-quicklinks .item {
     width: calc(25% - 2rem) !important;
     margin: 0 !important;
     margin-top: 0 !important;
@@ -17,33 +15,21 @@
     transition: all 0.1s ease;
 }
 
-#patches-dashboard-warnings .item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    margin: 0;
-    padding: 2.25rem;
-}
-
-#patches-dashboard-quicklinks .item.green, #patches-dashboard-warnings .item.green { --bs-card-bg: rgba(15,50,50); }
-#patches-dashboard-quicklinks .item.green:hover, #patches-dashboard-warnings .item.green:hover { --bs-card-bg: rgba(25,60,60); }
-
-#patches-dashboard-quicklinks .item.blue, #patches-dashboard-warnings .item.blue { --bs-card-bg: rgba(50,60,85); }
-#patches-dashboard-quicklinks .item.blue:hover, #patches-dashboard-warnings .item.blue:hover { --bs-card-bg: rgba(60,70,90); }
-
-#patches-dashboard-quicklinks .item.red, #patches-dashboard-warnings .item.red { --bs-card-bg: rgba(65,40,50); }
-#patches-dashboard-quicklinks .item.red:hover, #patches-dashboard-warnings .item.red:hover { --bs-card-bg: rgba(90,50,60); }
-
 @media (max-width: 1600px) {
-    #patches-dashboard-quicklinks .item,
-    #patches-dashboard-warnings .item {
-        gap: 1rem;
+    #patches-dashboard-quicklinks {
+        gap: 1.5rem;
     }
 
-    #patches-dashboard-quicklinks .item,
-    #patches-dashboard-warnings .item {
-        width: calc(50% - 1rem) !important;
+    #patches-dashboard-quicklinks .item {
+        width: calc(50% - 1.5rem) !important;
     }
 }
+
+#patches-dashboard-quicklinks .item.green { --bs-card-bg: rgba(15,50,50); }
+#patches-dashboard-quicklinks .item.green:hover { --bs-card-bg: rgba(25,60,60); }
+
+#patches-dashboard-quicklinks .item.blue { --bs-card-bg: rgba(50,60,85); }
+#patches-dashboard-quicklinks .item.blue:hover { --bs-card-bg: rgba(60,70,90); }
+
+#patches-dashboard-quicklinks .item.red { --bs-card-bg: rgba(65,40,50); }
+#patches-dashboard-quicklinks .item.red:hover { --bs-card-bg: rgba(90,50,60); }
