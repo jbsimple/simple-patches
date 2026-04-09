@@ -90,11 +90,12 @@ function fixStatCards() {
 }
 
 async function dashboardAlerts() {
-    if (typeof currentTask !== 'string' || currentTask.toLowerCase() !== 'pictures') return;
+    if (typeof currentTask !== 'string') return;
 
     const warningContainer = document.createElement('div');
     warningContainer.setAttribute('style', 'display:flex; flex-direction:wrap; align-items:center; justify-content:center; gap:2rem;');
-    await warning_photoRecent();
+
+    if (urrentTask.toLowerCase() !== 'pictures') { await warning_photoRecent(); }
 
     if (warningContainer.hasChildNodes()) {
         const content_container = document.getElementById('kt_app_content_container');
