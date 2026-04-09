@@ -97,7 +97,7 @@ async function dashboardAlerts() {
 
     const container = document.getElementById('productsStats').querySelector('.card-body');
     container.style.setProperty('min-height', '200px', 'important');
-    container.style.setProperty('padding-bottom', '2.25rem', 'important');
+    container.style.setProperty('padding-bottom', '0.25rem', 'important');
 
     hide(2); hide(3)
 
