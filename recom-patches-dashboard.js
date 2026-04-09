@@ -92,21 +92,22 @@ function fixStatCards() {
 async function dashboardAlerts() {
     if (typeof currentTask !== 'string' || currentTask.toLowerCase() !== 'pictures') return;
 
-    const content_container = document.getElementById('kt_app_content_container');
-
-    // add separator
-    const separator = document.createElement('div');
-    separator.setAttribute('class', 'separator separator-dashed');
-    separator.setAttribute('style', 'margin-bottom: 2.25rem;')
-    content_container.prepend(separator);
-
     const warningContainer = document.createElement('div');
     warningContainer.setAttribute('style', 'display:flex; flex-direction:wrap; align-items:center; justify-content:center; gap:2rem;');
-    
     await warning_photoRecent();
 
-    content_container.prepend(warningContainer);
+    if (warningContainer.hasChildNodes()) {
+        const content_container = document.getElementById('kt_app_content_container');
+        
+        // add separator
+        const separator = document.createElement('div');
+        separator.setAttribute('class', 'separator separator-dashed');
+        separator.setAttribute('style', 'margin-bottom: 2.25rem;')
+        content_container.prepend(separator);
 
+        content_container.prepend(warningContainer);
+    }
+    
     async function warning_photoRecent() {
         // Get today's date
         let today = new Date();
