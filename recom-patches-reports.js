@@ -1893,7 +1893,7 @@ async function report_findImgUrlsFromKeyword() {
     ];
 
     console.log('combined:', combined);
-    generateDwnloadFromTable(combined, 'images-keywordurl');
+    generateDwnloadFromTable(combined, 'images-keywordurl', true);
 
     async function fetchProductImages(status) {
         return await report_getSpecial({
