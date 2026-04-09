@@ -101,7 +101,7 @@ async function dashboardAlerts() {
     content_container.prepend(separator);
 
     const warningContainer = document.createElement('div');
-    warningContainer.setAttribute('style', 'display:flex; flex-direction:wrap; align-items:center; justify-content:center; gap:1.5rem;');
+    warningContainer.setAttribute('style', 'display:flex; flex-direction:wrap; align-items:center; justify-content:center; gap:2rem;');
     
     await warning_photoRecent();
 
@@ -184,6 +184,7 @@ async function dashboardAlerts() {
         if (count === null || count === 0) { return; }
         const warning_box = document.createElement('div');
         warning_box.setAttribute('class', 'card overflow-hidden card-flush h-md-50 mb-5 mb-xl-10 patches_warning');
+        warning_box.setAttribute('style', 'width:calc(25% - 2rem);');
         warning_box.innerHTML = `
         <h3>Warning: ${name}</h3>
         <h4 style="margin:0;padding:0;">There are ${count} items that need attention.</h4>
