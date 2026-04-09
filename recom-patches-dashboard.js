@@ -93,6 +93,7 @@ function fixStatCards() {
 }
 
 async function dashboardAlerts() {
+    document.getElementById('productsStats').querySelector('.card-title').textContent = 'Stats';
     if (typeof currentTask !== 'string') { return null; }
     if (panic) { return null; }
 
@@ -137,7 +138,7 @@ async function dashboardAlerts() {
         );
         const count = Array.isArray(data) ? data.length : 0;
         if (count !== 0) {
-            parseAndPrintWarning('Recent Pictures', count, '/reports?template=picture_missingSpecial');
+            parseAndPrintWarning('Missing Recent Photos', count, '/reports?template=picture_missingSpecial');
         }
     }
 
