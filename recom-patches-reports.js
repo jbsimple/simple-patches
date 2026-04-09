@@ -2153,7 +2153,7 @@ function generateReportTableFromList(list, name, display = true) {
                     td.appendChild(a);
                 } else if (k === 'URL') {
                     const a = document.createElement('a');
-                    a.href = encodeURIComponent(value);
+                    a.href = value;
                     a.textContent = value;
                     a.target = '_blank';
                     td.appendChild(a);
