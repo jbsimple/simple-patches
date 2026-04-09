@@ -188,7 +188,7 @@ async function dashboardAlerts() {
     function parseAndPrintWarning(name, count, link) {
         if (count === null || count === 0) { return; }
         const warning_box = document.createElement('div');
-        warning_box.setAttribute('class', 'card overflow-hidden card-flush h-md-50 mb-5 mb-xl-10 patches_warning');
+        warning_box.setAttribute('class', 'card card-flush h-md-50 mb-xl-10 blockui item red');
         warning_box.setAttribute('style', 'width:calc(25% - 2rem);');
         warning_box.innerHTML = `
         <h3>
