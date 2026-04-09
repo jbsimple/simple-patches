@@ -89,13 +89,119 @@ function fixStatCards() {
     }
 }
 
+async function dashboardAlerts() {
+    if (typeof currentTask !== 'string' || currentTask.toLowerCase() !== 'pictures') return;
+
+    const content_container = document.getElementById('kt_app_content_container');
+
+    // add separator
+    const separator = document.createElement('div');
+    separator.setAttribute('class', 'separator separator-dashed');
+    separator.setAttribute('style', 'margin-bottom: 2.25rem;')
+    content_container.prepend(separator);
+
+    const warningContainer = document.createElement('div');
+    warningContainer.setAttribute('style', 'display:flex;flex-direction:column;gap:1rem;');
+    
+    await warning_photoRecent();
+
+    content_container.prepend(warningContainer);
+
+    async function warning_photoRecent() {
+        // Get today's date
+        let today = new Date();
+        let todayFormatted = formatDate(today);
+
+        // Get the date 30 days ago
+        let pastDate = new Date();
+        pastDate.setDate(today.getDate() - 30);
+        let pastDateFormatted = formatDate(pastDate);
+
+        const data = await fetchWarningReport(
+            'item_images', ["product_items.sku"], [
+                {
+                    column: "product_items.created_at",
+                    opr: "between",
+                    value: `${pastDateFormatted} - ${todayFormatted}`
+                },
+                {
+                    column: "item_images.url",
+                    opr: "({0} IS NULL OR {0} = '')",
+                    value: ""
+                },
+                {
+                    column: "product_items.condition_id",
+                    opr: "{0} IN {1}",
+                    value: [6, 8, 18]
+                },
+                {
+                    column: "product_items.status",
+                    opr: "{0} = '{1}'",
+                    value: "1"
+                }
+            ]
+        );
+        const count = Array.isArray(data) ? data.length : 0;
+        if (count !== 0) {
+            parseAndPrintWarning('Recent Pictures', count, '/reports?template=picture_missingSpecial');
+        }
+    }
+
+    async function fetchWarningReport(type, columns, filters) {
+        const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
+        if (!csrfMeta || csrfMeta.getAttribute('content').length === 0) { return Promise.resolve(null); }
+        const csrfToken = csrfMeta.getAttribute('content');
+
+        const request = {
+            report: {
+                type: type,
+                columns: columns,
+                filters: filters
+            },
+            csrf_recom: csrfToken
+        };
+
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: "/reports/create",
+                data: request,
+            }).done(function (data) {
+                if (data.success && Array.isArray(data.results?.results)) {
+                    resolve(data.results.results);
+                } else {
+                    resolve([]);
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.error("Request failed: " + textStatus + ", " + errorThrown);
+                reject(new Error("Request failed: " + textStatus + ", " + errorThrown));
+            });
+        });
+    }
+
+    function parseAndPrintWarning(name, count, link) {
+        if (count === null || count === 0) { return; }
+        const warning_box = document.createElement('div');
+        warning_box.setAttribute('class', 'alert alert-danger my-5');
+        warning_box.setAttribute('style', 'display:flex;flex-direction:column;gap:0.25rem;');
+        warning_box.innerHTML = `<strong>Warning: ${name}</strong><p style="margin:0;padding:0;">There are ${count} items that need attention.</p><a href="${link}" target="_blank" class="btn btn-light">More Details</a>`;
+        warningContainer.appendChild(warning_box);
+    }
+}
+
 setTimeout(async function () { 
     fixStatCards();
-    loadEdgeConfig('dashboard').then(() => {
+
+    try {
+        await loadEdgeConfig('dashboard');
         console.debug('PATCHES - Dashboard Edge Config Loaded.');
+
         initQuickLinks();
         replaceEngagewidget();
-    }).catch(err => {
+    } catch (err) {
         console.error('PATCHES - Dashboard Edge config failed:', err);
-    });
+    }
+
+    await dashboardAlerts(); // always run last
 }, 200);

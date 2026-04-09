@@ -1821,6 +1821,99 @@ function peekAtImages() {
     };
 }
 
+async function getPictures(type, thing) {
+        function makeRequest(statusValue) {
+            const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
+            if (!csrfMeta || csrfMeta.getAttribute('content').length === 0) {
+                return Promise.resolve(null);
+            }
+
+            const csrfToken = csrfMeta.getAttribute('content');
+
+            let columns = [];
+            let filters = [];
+            if (type === "item_images") {
+                columns = [
+                    "products.sid",
+                    "product_items.sku",
+                    "item_images.url",
+                    "product_items.status",
+                    "product_items.created_at"
+                ];
+
+                filters = [
+                    {
+                        column: "product_items.sku",
+                        opr: "{0} = '{1}'",
+                        value: `${thing}`
+                    },
+                    {
+                        column: "product_items.status",
+                        opr: "{0} = '{1}'",
+                        value: statusValue
+                    }
+                ];
+            } else if (type === "product_images") {
+                columns = [
+                    "product_images.url",
+                    "products.status",
+                    "products.created_at"
+                ];
+                
+                filters = [
+                    {
+                        column: "products.sid",
+                        opr: "{0} = '{1}'",
+                        value: `${thing}`
+                    },
+                    {
+                        column: "products.status",
+                        opr: "{0} = '{1}'",
+                        value: statusValue
+                    }
+                ];
+            }
+
+            if (columns.length === 0 || filters.length === 0) { return null; }
+
+            const request = {
+                report: {
+                    type: `${type}`,
+                    columns: columns,
+                    filters: filters
+                },
+                csrf_recom: csrfToken
+            };
+
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: "/reports/create",
+                    data: request,
+                }).done(function (data) {
+                    if (data.success && Array.isArray(data.results?.results)) {
+                        resolve(data.results.results);
+                    } else {
+                        resolve([]);
+                    }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    console.error("Request failed: " + textStatus + ", " + errorThrown);
+                    reject(new Error("Request failed: " + textStatus + ", " + errorThrown));
+                });
+            });
+        }
+
+        return Promise.all([makeRequest("1"), makeRequest("0")])
+            .then(([status1Results, status0Results]) => {
+                return [...status1Results, ...status0Results];
+            })
+            .catch(error => {
+                console.error("Error during combined request:", error);
+                return null;
+            });
+    }
+
 async function patchInit() {
     loadPatchSettings();
     injectGoods();
