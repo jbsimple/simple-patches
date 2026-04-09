@@ -98,7 +98,7 @@ async function dashboardAlerts() {
 
     if (currentTask.toLowerCase() === 'pictures') {
         await warning_photoRecent();
-        // add missing photos warning
+        await warning_photosMissing();
     }
     
     async function warning_photoRecent() {
@@ -138,6 +138,128 @@ async function dashboardAlerts() {
         const count = Array.isArray(data) ? data.length : 0;
         if (count !== 0) {
             parseAndPrintWarning('Missing Recent Photos', count, '/reports?template=picture_missingSpecial');
+        }
+    }
+
+    async function warning_photosMissing() {
+        let items_images_qunique_report = await fetchWarningReport(
+            'item_images', [
+                "product_items.sku",
+                "products.sid"
+            ],
+            [
+                {
+                    column: "item_images.url",
+                    opr: "({0} IS NULL OR {0} = '')",
+                    value: ""
+                },
+                {
+                    column: "product_items.in_stock",
+                    opr: "{0} > {1}",
+                    value: 0
+                },
+                {
+                    column: "product_items.status",
+                    opr: "{0} = '{1}'",
+                    value: "1"
+                },
+                {
+                    column: "product_items.condition_id",
+                    opr: "{0} IN {1}",
+                    value: ["6", "8", "18"]
+                }
+            ]
+        );
+
+        let items_images_set = await fetchWarningReport(
+            'item_images', [
+                "product_items.sku",
+                "products.sid"
+            ],
+            [
+                {
+                    column: "item_images.url",
+                    opr: "({0} IS NULL OR {0} = '')",
+                    value: ""
+                },
+                {
+                    column: "product_items.in_stock",
+                    opr: "{0} > {1}",
+                    value: 0
+                },
+                {
+                    column: "product_items.status",
+                    opr: "{0} = '{1}'",
+                    value: "1"
+                },
+                {
+                    column: "product_items.condition_id",
+                    opr: "{0} IN {1}",
+                    value: ["1", "2", "4", "5", "9", "31", "32", "34", "35", "39", "42", "44", "45", "49", "71", "92", "94", "95", "99"]
+                }
+            ]
+        );
+
+        let product_images_set = await fetchWarningReport(
+            'product_images', ["products.sid"], [
+                {
+                    column: "product_images.url",
+                    opr: "({0} IS NULL OR {0} = '')",
+                    value: ""
+                },
+                {
+                    column: "products.status",
+                    opr: "{0} = '{1}'",
+                    value: "1"
+                }
+            ]
+        );
+
+        if (items_images_set === null) { items_images_set = []; }
+
+        if (product_images_set === null) { product_images_set = []; }
+
+        if (items_images_qunique_report === null) { items_images_qunique_report = [] }
+
+        if (items_images_set && Array.isArray(items_images_set) && product_images_set && Array.isArray(product_images_set) && items_images_qunique_report && Array.isArray(items_images_qunique_report)) {
+
+            console.log("uniques:", items_images_qunique_report);
+            console.log("items:", items_images_set);
+            console.log("products:", product_images_set);
+
+            var list = [];
+            for (let i = 0; i < items_images_qunique_report.length; i++) {
+                var item = items_images_qunique_report[i];
+                list.push(item);
+            }
+
+            for (let i = 0; i < items_images_set.length; i++) {
+                for (let j = 0; j < product_images_set.length; j++) { 
+                    if (items_images_set[i].SID === product_images_set[j].SID) {
+                        var item = items_images_set[i];
+                        if (product_images_set[j].items) {
+                            product_images_set[j].items.push(item);
+                        } else {
+                            product_images_set[j].items = [item];
+                        }
+                        break;
+                    }
+                }
+            }
+
+            var filtered__product_images_set = product_images_set.filter(obj => obj.hasOwnProperty('items'));
+            console.log('filtered products:', filtered__product_images_set);
+
+            for (let i = 0; i < filtered__product_images_set.length; i++) {
+                const married_product = filtered__product_images_set[i];
+                list.push(married_product);
+            }
+
+            console.log('final list:', list);
+            const count = Array.isArray(list) ? list.length : 0;
+            if (count !== 0) {
+                parseAndPrintWarning('In Stock Missing Photos', count, '/reports?template=picture_missingFull');
+            }
         }
     }
 
