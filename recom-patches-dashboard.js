@@ -94,6 +94,7 @@ async function dashboardAlerts() {
 
     const warningContainer = document.createElement('div');
     warningContainer.setAttribute('style', 'display:flex; flex-direction:wrap; align-items:center; justify-content:center; gap:2rem;');
+    warningContainer.id = 'patches-dashboard-warnings';
 
     if (currentTask.toLowerCase() === 'pictures') {
         await warning_photoRecent();
