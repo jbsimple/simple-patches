@@ -191,10 +191,10 @@ async function dashboardAlerts() {
         warning_box.setAttribute('class', 'card card-flush h-md-50 mb-xl-10 blockui item red');
         warning_box.setAttribute('style', 'width:calc(25% - 2rem);');
         warning_box.innerHTML = `
-        <h3>
+        <h3 class="text-gray-800">
             Warning: ${name}
         </h3>
-        <h4 style="margin:0;padding:0;">
+        <h4 class="fw-bolder text-gray-800 m-0" style="margin:0;padding:0;">
             There ${count === 1 ? 'is' : 'are'} ${count} ${count === 1 ? 'item' : 'items'} that need${count === 1 ? 's' : ''} attention.</h4>
         <div style="display:flex; flex-direction:row;">
             <span style="flex:1;"></span>
