@@ -1777,7 +1777,7 @@ async function report_sidTotalQuantityAndValue() {
     console.debug("PATCHES - mergedReport:", mergedReport);
 
     // this is a big report, should just prompt to download instead of trying to render it.
-    generateDwnloadFromTable(mergedReport, 'products-totalStockAndValue');
+    generateReportTableFromList(mergedReport, 'products-totalStockAndValue', false);
 }
 
 async function report_attributesColorCheck() {
@@ -1857,7 +1857,7 @@ async function report_attributesColorCheck() {
     });
 
     console.debug('PATCHES - Final Color List', list);
-    generateDwnloadFromTable(list, 'product-attributes-colors');
+    generateReportTableFromList(list, 'product-attributes-colors', true);
 }
 
 async function report_findImgUrlsFromKeyword() {
@@ -1893,7 +1893,7 @@ async function report_findImgUrlsFromKeyword() {
     ];
 
     console.log('combined:', combined);
-    generateDwnloadFromTable(combined, 'images-keywordurl', true);
+    generateReportTableFromList(combined, 'images-keywordurl', true);
 
     async function fetchProductImages(status) {
         return await report_getSpecial({
@@ -1962,55 +1962,6 @@ async function report_findImgUrlsFromKeyword() {
             url: row.URL
         }));
     }
-}
-
-function generateDwnloadFromTable(list, name) {
-    goToLastStep();
-
-    const button = document.getElementById('report_download');
-    button.removeAttribute('href');  
-    button.classList.remove('d-none');
-
-    button.onclick = function (event) {
-        event.preventDefault();
-
-        if (!Array.isArray(list) || list.length === 0) {
-            console.error("List is empty or not an array");
-            return;
-        }
-
-        const keys = Object.keys(list[0]);
-
-        const rows = [];
-        rows.push(keys.join(","));
-
-        for (const obj of list) {
-            const values = keys.map(k => {
-                let val = obj[k] ?? "";
-                if (typeof val === "string") {
-                    val = `"${val.replace(/"/g, '""')}"`;
-                }
-                return val;
-            });
-            rows.push(values.join(","));
-        }
-
-        const csvContent = rows.join("\n");
-
-        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-        const url = URL.createObjectURL(blob);
-
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = name.endsWith(".csv") ? name : `${name}-${Math.floor(Date.now() / 1000)}.csv`;
-        a.style.display = "none";
-
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-
-        URL.revokeObjectURL(url);
-    };
 }
 
 async function activePendingInventoryReport(page = 1, max_pages = null) {
@@ -2097,110 +2048,157 @@ async function activePendingInventoryReport(page = 1, max_pages = null) {
 function generateReportTableFromList(list, name, display = true) {
     goToLastStep();
 
-    const button = document.getElementById('report_download');
-    button.removeAttribute('href');  
-    button.classList.remove('d-none');
-    button.setAttribute('onclick', `event.preventDefault(); parseTableToCSV(\'${name}\');`);
+    if (!display) {
+        const button = document.getElementById('report_download');
+        button.removeAttribute('href');  
+        button.classList.remove('d-none');
 
-    const table = document.createElement('table');
-    table.style.width = '100%';
-    table.style.maxWidth = '100%';
-    table.style.overflow = 'auto';
-    table.id = 'recompatches-customreportTable';
-    table.classList.add('table', 'table-striped');
-    
-    const thead = document.createElement('thead');
-    const tbody = document.createElement('tbody');
+        button.onclick = function (event) {
+            event.preventDefault();
 
-    const headerRow = document.createElement('tr');
-
-    if (list.length > 0) {
-        Object.keys(list[0]).forEach(key => {
-            const th = document.createElement('th');
-            th.textContent = key;
-            th.style.minWidth = '200px';
-            th.style.padding = '2rem';
-            th.style.fontWeight = '700';
-            headerRow.appendChild(th);
-        });
-    }
-
-    thead.appendChild(headerRow);
-
-    list.forEach(item => {
-        const row = document.createElement('tr');
-
-        Object.entries(item).forEach(([key, value]) => {
-            const td = document.createElement('td');
-            td.style.minWidth = '200px';
-            td.style.padding = '0.75rem 2rem';
-
-            if (key === 'SID') {
-                const a = document.createElement('a');
-                a.href = `/products/${encodeURIComponent(value)}`;
-                a.textContent = value;
-                a.target = '_blank';
-                td.appendChild(a);
-            } else if (key === 'SKU') {
-                const a = document.createElement('a');
-                a.href = `/product/items/${encodeURIComponent(value)}`;
-                a.textContent = value;
-                a.target = '_blank';
-                td.appendChild(a);
-            } else if (key === 'ASIN') {
-                const a = document.createElement('a');
-                a.href = `https://www.amazon.com/dp/${encodeURIComponent(value)}`;
-                a.textContent = value;
-                a.target = '_blank';
-                td.appendChild(a);
-            } else {
-                td.textContent = value;
+            if (!Array.isArray(list) || list.length === 0) {
+                console.error("List is empty or not an array");
+                return;
             }
 
-            row.appendChild(td);
+            const keys = Object.keys(list[0]);
+
+            const rows = [];
+            rows.push(keys.join(","));
+
+            for (const obj of list) {
+                const values = keys.map(k => {
+                    let val = obj[k] ?? "";
+                    if (typeof val === "string") {
+                        val = `"${val.replace(/"/g, '""')}"`;
+                    }
+                    return val;
+                });
+                rows.push(values.join(","));
+            }
+
+            const csvContent = rows.join("\n");
+
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = name.endsWith(".csv") ? name : `${name}-${Math.floor(Date.now() / 1000)}.csv`;
+            a.style.display = "none";
+
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            URL.revokeObjectURL(url);
+        };
+    } else {
+        const button = document.getElementById('report_download');
+        button.removeAttribute('href');  
+        button.classList.remove('d-none');
+        button.setAttribute('onclick', `event.preventDefault(); parseTableToCSV(\'${name}\');`);
+
+        const table = document.createElement('table');
+        table.style.width = '100%';
+        table.style.maxWidth = '100%';
+        table.style.overflow = 'auto';
+        table.id = 'recompatches-customreportTable';
+        table.classList.add('table', 'table-striped');
+        
+        const thead = document.createElement('thead');
+        const tbody = document.createElement('tbody');
+
+        const headerRow = document.createElement('tr');
+
+        if (list.length > 0) {
+            Object.keys(list[0]).forEach(key => {
+                const th = document.createElement('th');
+                th.textContent = key;
+                th.style.minWidth = '200px';
+                th.style.padding = '2rem';
+                th.style.fontWeight = '700';
+                headerRow.appendChild(th);
+            });
+        }
+
+        thead.appendChild(headerRow);
+
+        list.forEach(item => {
+            const row = document.createElement('tr');
+
+            Object.entries(item).forEach(([key, value]) => {
+                const td = document.createElement('td');
+                td.style.minWidth = '200px';
+                td.style.padding = '0.75rem 2rem';
+
+                if (key === 'SID') {
+                    const a = document.createElement('a');
+                    a.href = `/products/${encodeURIComponent(value)}`;
+                    a.textContent = value;
+                    a.target = '_blank';
+                    td.appendChild(a);
+                } else if (key === 'SKU') {
+                    const a = document.createElement('a');
+                    a.href = `/product/items/${encodeURIComponent(value)}`;
+                    a.textContent = value;
+                    a.target = '_blank';
+                    td.appendChild(a);
+                } else if (key === 'ASIN') {
+                    const a = document.createElement('a');
+                    a.href = `https://www.amazon.com/dp/${encodeURIComponent(value)}`;
+                    a.textContent = value;
+                    a.target = '_blank';
+                    td.appendChild(a);
+                } else {
+                    td.textContent = value;
+                }
+
+                row.appendChild(td);
+            });
+
+            tbody.appendChild(row);
         });
 
-        tbody.appendChild(row);
-    });
+        table.appendChild(thead);
+        table.appendChild(tbody);
 
-    table.appendChild(thead);
-    table.appendChild(tbody);
+        const card = document.createElement('div');
+        card.classList = "card";
+        card.style.display = "none";
+        card.id = 'patches-table';
 
-    const card = document.createElement('div');
-    card.classList = "card";
-    card.style.display = "none";
-    card.id = 'patches-table';
+        const card_body = document.createElement('div');
+        card_body.setAttribute('style', 'padding: 0 !important; flex: 1; width: 100%; max-width: 100%; max-height: 60rem; overflow: scroll;');
+        card_body.classList = "card-body";
 
-    const card_body = document.createElement('div');
-    card_body.setAttribute('style', 'padding: 0 !important; flex: 1; width: 100%; max-width: 100%; max-height: 60rem; overflow: scroll;');
-    card_body.classList = "card-body";
+        const content = document.createElement('div');
+        card_body.appendChild(content);
 
-    const content = document.createElement('div');
-    card_body.appendChild(content);
+        card.appendChild(card_body);
 
-    card.appendChild(card_body);
+        if (!display) {
+            table.style.display = 'none';
+            const largeLabel = document.createElement('h2');
+            largeLabel.classList.add('fw-bolder', 'text-dark');
+            largeLabel.style.textAlign = 'center';
+            largeLabel.textContent = `Too Large to Load Preview, Download to View`;
+            card.appendChild(largeLabel);
+        }
 
-    if (!display) {
-        table.style.display = 'none';
-        const largeLabel = document.createElement('h2');
-        largeLabel.classList.add('fw-bolder', 'text-dark');
-        largeLabel.style.textAlign = 'center';
-        largeLabel.textContent = `Too Large to Load Preview, Download to View`;
-        card.appendChild(largeLabel);
+        // show number of things
+        const lengthLabel = document.createElement('p');
+        lengthLabel.setAttribute('style', 'width: 100%; text-align: center; font-size: 0.9rem; color: var(--bs-gray-600);')
+        lengthLabel.textContent = `Total number of rows: ${list.length}`;
+        card.appendChild(lengthLabel);
+
+        right.appendChild(card);
+
+        content.innerHTML = '';
+        content.appendChild(table);
+        content.removeAttribute('style');
+        card.setAttribute('style', 'display: flex;');
     }
-
-    // show number of things
-    const lengthLabel = document.createElement('p');
-    lengthLabel.setAttribute('style', 'width: 100%; text-align: center; font-size: 0.9rem; color: var(--bs-gray-600);')
-    lengthLabel.textContent = `Total number of rows: ${list.length}`;
-    card.appendChild(lengthLabel);
-
-    right.appendChild(card);
-
-    content.innerHTML = '';
-    content.appendChild(table);
-    content.removeAttribute('style');
-    card.setAttribute('style', 'display: flex;');
 }
 
 async function fcsinstock_report() {
