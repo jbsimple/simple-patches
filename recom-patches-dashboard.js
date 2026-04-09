@@ -183,7 +183,7 @@ async function dashboardAlerts() {
     function parseAndPrintWarning(name, count, link) {
         if (count === null || count === 0) { return; }
         const warning_box = document.createElement('div');
-        warning_box.setAttribute('class', 'card-body d-flex justify-content-between flex-column px-0 pb-0');
+        warning_box.setAttribute('class', 'card overflow-hidden card-flush h-md-50 mb-5 mb-xl-10');
         warning_box.setAttribute('style', '--bs-card-border-color:var(--bs-danger-border-subtle); display:flex; flex-wrap: wrap; align-items:center; justify-content:center; gap:0.25rem; margin:0;');
         warning_box.innerHTML = `
         <h3>Warning: ${name}</h3>
