@@ -175,9 +175,9 @@ async function api_test(type = null, page = 1, per_page = 200) {
                     per_page: per_page,
                     filters: [
                         {
-                            "field": "order_shipped_at",
+                            "field": "orders.date_ordered",
                             "operator": "between",
-                            "value": ["2026-04-06", "2026-04-06"]
+                            "value": ["2026-04-09", "2026-04-09"]
                         }
                     ],
                     columns: [
