@@ -101,7 +101,7 @@ async function dashboardAlerts() {
     container.style.setProperty('padding-top', '0.25rem', 'important');
     container.style.setProperty('padding-bottom', '0.25rem', 'important');
 
-    hide(2); hide(3); hide(5);
+    hide(2); hide(3); hide(6);
 
     function hide(n) {
         const child = container.querySelector(`:scope > div:nth-child(${n})`);
