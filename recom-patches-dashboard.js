@@ -109,10 +109,10 @@ async function dashboardAlerts() {
         child.querySelectorAll('div').forEach(elem => { elem.style.setProperty('display', 'none', 'important'); });
     }
 
-    await warning_photoRecent();
-    await warning_photosMissing();
+    await warning_photoRecent(true);
+    await warning_photosMissing(false);
     
-    async function warning_photoRecent() {
+    async function warning_photoRecent(separator = false) {
         // Get today's date
         let today = new Date();
         let todayFormatted = formatDate(today);
@@ -148,11 +148,11 @@ async function dashboardAlerts() {
         );
         const count = Array.isArray(data) ? data.length : 0;
         if (count !== 0) {
-            parseAndPrintWarning('Missing Recent Photos', count, '/reports?template=picture_missingSpecial');
+            parseAndPrintWarning('Missing Recent Photos', count, '/reports?template=picture_missingSpecial', separator);
         }
     }
 
-    async function warning_photosMissing() {
+    async function warning_photosMissing(separator = false) {
         let items_images_qunique_report = await fetchWarningReport(
             'item_images', [
                 "product_items.sku",
@@ -269,7 +269,7 @@ async function dashboardAlerts() {
             console.log('final list:', list);
             const count = Array.isArray(list) ? list.length : 0;
             if (count !== 0) {
-                parseAndPrintWarning('In Stock Missing Photos', count, '/reports?template=picture_missingFull');
+                parseAndPrintWarning('In Stock Missing Photos', count, '/reports?template=picture_missingFull', separator);
             }
         }
     }
