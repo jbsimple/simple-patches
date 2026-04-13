@@ -108,23 +108,29 @@ async function dashboardStats() {
         child.querySelectorAll('div').forEach(elem => { elem.style.setProperty('display', 'none', 'important'); });
     }
 
+    const separateElem = document.createElement('div');
+    separateElem.setAttribute('class', 'separator separator-dashed my-3');
+    container.appendChild(separateElem);
+
     await stat_listingCreatedToday(true);
     await stat_listingCreatedLast14Days(false);
+
+    container.appendChild(separateElem.cloneNode(true));
 
     await warning_photoRecent(true);
     await warning_photosMissing(false);
 
-    async function stat_listingCreatedToday(separator = false) {
+    async function stat_listingCreatedToday() {
         let today = new Date();
         let todayFormatted = formatDate(today);
         const data = await stat_createdItemsReport(todayFormatted, todayFormatted);
         const count = Array.isArray(data) ? data.length : 0;
         if (count !== 0) {
-            printStat('success', 'Items Created Today', count, '/productivity', separator);
+            printStat('success', 'Items Created Today', count, '/productivity');
         }
     }
 
-    async function stat_listingCreatedLast14Days(separator = false) {
+    async function stat_listingCreatedLast14Days() {
         let today = new Date();
         let todayFormatted = formatDate(today);
 
@@ -135,7 +141,7 @@ async function dashboardStats() {
         const data = await stat_createdItemsReport(pastDateFormatted, todayFormatted);
         const count = Array.isArray(data) ? data.length : 0;
         if (count !== 0) {
-            printStat('success', 'Items Created Last 14 Days', count, '/productivity?overview', separator);
+            printStat('success', 'Items Created Last 14 Days', count, '/productivity?overview');
         }
     }
 
@@ -186,7 +192,7 @@ async function dashboardStats() {
         return uniqueData;
     }
     
-    async function warning_photoRecent(separator = false) {
+    async function warning_photoRecent() {
         // Get today's date
         let today = new Date();
         let todayFormatted = formatDate(today);
@@ -222,11 +228,11 @@ async function dashboardStats() {
         );
         const count = Array.isArray(data) ? data.length : 0;
         if (count !== 0) {
-            printStat('danger', 'Missing Recent Photos', count, '/reports?template=picture_missingSpecial', separator);
+            printStat('danger', 'Missing Recent Photos', count, '/reports?template=picture_missingSpecial');
         }
     }
 
-    async function warning_photosMissing(separator = false) {
+    async function warning_photosMissing() {
         let items_images_qunique_report = await fetchStats(
             'item_images', [
                 "product_items.sku",
@@ -343,7 +349,7 @@ async function dashboardStats() {
             console.log('final list:', list);
             const count = Array.isArray(list) ? list.length : 0;
             if (count !== 0) {
-                printStat('danger', 'In Stock Missing Photos', count, '/reports?template=picture_missingFull', separator);
+                printStat('danger', 'In Stock Missing Photos', count, '/reports?template=picture_missingFull');
             }
         }
     }
@@ -381,17 +387,11 @@ async function dashboardStats() {
         });
     }
 
-    function printStat(type, name, count, link, separator = false) {
+    function printStat(type, name, count, link) {
         if (count === null || count === 0) { return; }
 
         const allowedTypes = ['white','light','primary','success','info','warning','danger','dark','secondary'];
         type = allowedTypes.includes(type) ? type : 'info';
-
-        if (separator) {
-            const separateElem = document.createElement('div');
-            separateElem.setAttribute('class', 'separator separator-dashed my-3');
-            container.appendChild(separateElem);
-        }
 
         const row = document.createElement('a');
         row.setAttribute('href', link);
