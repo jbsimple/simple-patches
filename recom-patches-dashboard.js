@@ -92,7 +92,7 @@ function fixStatCards() {
     }
 }
 
-async function dashboardAlerts() {
+async function dashboardStats() {
     document.getElementById('productsStats').querySelector('.card-title').textContent = 'Stats';
 
     const container = document.getElementById('productsStats').querySelector('.card-body');
@@ -347,5 +347,5 @@ setTimeout(async function () {
     } catch (err) {
         console.error('PATCHES - Dashboard Edge config failed:', err);
     }
-    await dashboardAlerts();
+    await dashboardStats();
 }, 200);
