@@ -108,8 +108,80 @@ async function dashboardStats() {
         child.querySelectorAll('div').forEach(elem => { elem.style.setProperty('display', 'none', 'important'); });
     }
 
+    await stat_listingCreatedToday(true);
+    await stat_listingCreatedLast14Days(false);
+
     await warning_photoRecent(true);
     await warning_photosMissing(false);
+
+    async function stat_listingCreatedToday(separator = false) {
+        let today = new Date();
+        let todayFormatted = formatDate(today);
+        const data = await stat_createdItemsReport(todayFormatted, todayFormatted);
+        const count = Array.isArray(data) ? data.length : 0;
+        if (count !== 0) {
+            printStat('success', 'Items Created Today', count, '/productivity', separator);
+        }
+    }
+
+    async function stat_listingCreatedLast14Days(separator = false) {
+        let today = new Date();
+        let todayFormatted = formatDate(today);
+
+        let pastDate = new Date();
+        pastDate.setDate(today.getDate() - 14);
+        let pastDateFormatted = formatDate(pastDate);
+
+        const data = await stat_createdItemsReport(pastDateFormatted, todayFormatted);
+        const count = Array.isArray(data) ? data.length : 0;
+        if (count !== 0) {
+            printStat('success', 'Items Created Last 14 Days', count, '/productivity?overview', separator);
+        }
+    }
+
+    async function stat_createdItemsReport(start, end) {
+        const data = await fetchStats(
+            'item_images', [
+                "user_profile.user_id",
+                "user_clocks.task_id",
+                "purchase_orders.id",
+                "user_clock_activity.activity_id",
+                "user_clock_activity.activity_code",
+                "user_clock_activity.units",
+                "user_clock_activity.created_at",
+                "user_clock_activity.time_spent",
+                "user_clocks.user_id",
+                "user_clocks.clock_date",
+                "products.sid",
+                "product_items.sku",
+                "product_items.condition_id"
+            ], [
+                {
+                    column: "user_profile.department_id",
+                    opr: "{0} IN {1}",
+                    value: ["23"]
+                },
+                {
+                    column: "user_clocks.clock_date",
+                    opr: "between",
+                    value: `${start} - ${end}`
+                }
+            ]
+        );
+        data = data.filter(row => row.Event_Code === "Inventory Listing");
+
+        const seenKeys = new Set();
+        const uniqueData = [];
+
+        data.forEach(row => {
+            const key = `${row.User}-${row.Task}-${row.Event_Date}-${row.Event_Code}-${row.SKU}-${row.Condition}`;
+            if (!seenKeys.has(key)) {
+                seenKeys.add(key);
+                uniqueData.push(row);
+            }
+        });
+        return data;
+    }
     
     async function warning_photoRecent(separator = false) {
         // Get today's date
