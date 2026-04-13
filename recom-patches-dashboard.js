@@ -150,6 +150,8 @@ async function dashboardStats() {
                 "user_clock_activity.units",
                 "user_clock_activity.created_at",
                 "user_clock_activity.time_spent",
+                "user_clocks.time_in",
+                "user_clocks.time_out",
                 "user_clocks.user_id",
                 "user_clocks.clock_date",
                 "products.sid",
@@ -180,8 +182,8 @@ async function dashboardStats() {
                 uniqueData.push(row);
             }
         });
-        console.debug(`PATCHES - Listing Created Items - ${start} to ${end} ->`, data);
-        return data;
+        console.debug(`PATCHES - Listing Created Items - ${start} to ${end} ->`, uniqueData);
+        return uniqueData;
     }
     
     async function warning_photoRecent(separator = false) {
