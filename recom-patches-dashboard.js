@@ -141,7 +141,7 @@ async function dashboardStats() {
 
     async function stat_createdItemsReport(start, end) {
         let data = await fetchStats(
-            'item_images', [
+            'user_clock', [
                 "user_profile.user_id",
                 "user_clocks.task_id",
                 "purchase_orders.id",
@@ -180,6 +180,7 @@ async function dashboardStats() {
                 uniqueData.push(row);
             }
         });
+        console.debug(`PATCHES - Listing Created Items - ${start} to ${end} ->`, data);
         return data;
     }
     
