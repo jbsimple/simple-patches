@@ -322,7 +322,7 @@ async function dashboardStats() {
         row.setAttribute('href', link);
         row.setAttribute('target', '_blank');
         row.setAttribute('class', 'd-flex flex-stack');
-        row.innerHTML = `<div class="fw-bold fs-6 me-2" style="color: var(--bs-${type}});">${name}</div>
+        row.innerHTML = `<div class="fw-bold fs-6 me-2" style="color: var(--bs-${type});">${name}</div>
         <div class="d-flex align-items-senter"><span class="text-gray-900 fw-boldest fs-6">${count}</span></div>`;
         container.appendChild(row);
 
