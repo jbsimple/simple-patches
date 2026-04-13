@@ -140,7 +140,7 @@ async function dashboardStats() {
     }
 
     async function stat_createdItemsReport(start, end) {
-        const data = await fetchStats(
+        let data = await fetchStats(
             'item_images', [
                 "user_profile.user_id",
                 "user_clocks.task_id",
