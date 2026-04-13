@@ -101,7 +101,7 @@ async function dashboardAlerts() {
     container.style.setProperty('padding-top', '0.25rem', 'important');
     container.style.setProperty('padding-bottom', '0.25rem', 'important');
 
-    hide(2); hide(3)
+    hide(2); hide(3); hide(5);
 
     function hide(n) {
         const child = container.querySelector(`:scope > div:nth-child(${n})`);
@@ -307,12 +307,14 @@ async function dashboardAlerts() {
         });
     }
 
-    function parseAndPrintWarning(name, count, link) {
+    function parseAndPrintWarning(name, count, link, separator = false) {
         if (count === null || count === 0) { return; }
 
-        const separator = document.createElement('div');
-        separator.setAttribute('class', 'separator separator-dashed my-3');
-        container.appendChild(separator);
+        if (separator) {
+            const separateElem = document.createElement('div');
+            separateElem.setAttribute('class', 'separator separator-dashed my-3');
+            container.appendChild(separateElem);
+        }
 
         const row = document.createElement('a');
         row.setAttribute('href', link);
