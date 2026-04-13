@@ -2,7 +2,6 @@ let quicklinks = [];
 let randomImages = [];
 
 function initQuickLinks() {
-    if (panic) { return null; }
 
     const content_container = document.getElementById('kt_app_content_container');
 
@@ -122,7 +121,7 @@ async function dashboardStats() {
         pastDate.setDate(today.getDate() - 30);
         let pastDateFormatted = formatDate(pastDate);
 
-        const data = await fetchWarningReport(
+        const data = await fetchStats(
             'item_images', ["product_items.sku"], [
                 {
                     column: "product_items.created_at",
@@ -148,12 +147,12 @@ async function dashboardStats() {
         );
         const count = Array.isArray(data) ? data.length : 0;
         if (count !== 0) {
-            parseAndPrintWarning('Missing Recent Photos', count, '/reports?template=picture_missingSpecial', separator);
+            printStat('danger', 'Missing Recent Photos', count, '/reports?template=picture_missingSpecial', separator);
         }
     }
 
     async function warning_photosMissing(separator = false) {
-        let items_images_qunique_report = await fetchWarningReport(
+        let items_images_qunique_report = await fetchStats(
             'item_images', [
                 "product_items.sku",
                 "products.sid"
@@ -182,7 +181,7 @@ async function dashboardStats() {
             ]
         );
 
-        let items_images_set = await fetchWarningReport(
+        let items_images_set = await fetchStats(
             'item_images', [
                 "product_items.sku",
                 "products.sid"
@@ -211,7 +210,7 @@ async function dashboardStats() {
             ]
         );
 
-        let product_images_set = await fetchWarningReport(
+        let product_images_set = await fetchStats(
             'product_images', ["products.sid"], [
                 {
                     column: "product_images.url",
@@ -269,12 +268,12 @@ async function dashboardStats() {
             console.log('final list:', list);
             const count = Array.isArray(list) ? list.length : 0;
             if (count !== 0) {
-                parseAndPrintWarning('In Stock Missing Photos', count, '/reports?template=picture_missingFull', separator);
+                printStat('danger', 'In Stock Missing Photos', count, '/reports?template=picture_missingFull', separator);
             }
         }
     }
 
-    async function fetchWarningReport(type, columns, filters) {
+    async function fetchStats(type, columns, filters) {
         const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
         if (!csrfMeta || csrfMeta.getAttribute('content').length === 0) { return Promise.resolve(null); }
         const csrfToken = csrfMeta.getAttribute('content');
@@ -307,8 +306,11 @@ async function dashboardStats() {
         });
     }
 
-    function parseAndPrintWarning(name, count, link, separator = false) {
+    function printStat(type, name, count, link, separator = false) {
         if (count === null || count === 0) { return; }
+
+        const allowedTypes = ['white','light','primary','success','info','warning','danger','dark','secondary'];
+        type = allowedTypes.includes(type) ? type : 'info';
 
         if (separator) {
             const separateElem = document.createElement('div');
@@ -320,10 +322,8 @@ async function dashboardStats() {
         row.setAttribute('href', link);
         row.setAttribute('target', '_blank');
         row.setAttribute('class', 'd-flex flex-stack');
-        row.innerHTML = `<div class="fw-bold fs-6 me-2" style="color: var(--bs-danger);">${name}</div>
-        <div class="d-flex align-items-senter">
-            <span class="text-gray-900 fw-boldest fs-6">${count}</span>
-        </div>`;
+        row.innerHTML = `<div class="fw-bold fs-6 me-2" style="color: var(--bs-${type}});">${name}</div>
+        <div class="d-flex align-items-senter"><span class="text-gray-900 fw-boldest fs-6">${count}</span></div>`;
         container.appendChild(row);
 
     }
