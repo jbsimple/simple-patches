@@ -2341,6 +2341,11 @@ async function report_amazonStatus() {
                     column: "orders.store_id",
                     opr: "{0} IN {1}",
                     value: []
+                },
+                {
+                    column: "store_live_listing.status",
+                    opr: "{0} = '{1}'",
+                    value: "blocked"
                 }
             ]
         },
