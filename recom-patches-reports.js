@@ -2380,10 +2380,16 @@ async function report_amazonStatus() {
             marketplaceCollapsed[item.Item_ID].forEach(line => {
                 let itemCollapsedLine = {
                     SKU: line.SKU,
-                    Status: line.Amazon_Recom,
+                    Amazon_Status: line.Amazon_Recom,
+                    Backmarket_Status: line.Backmarket,
+                    eBay_Status: line.Ebay_USA,
+                    Newegg_Status: line.Newegg,
+                    Reebelo_Status: line.Reebelo,
+                    MainShopify_Status: line.Simple_Cell_Shop,
+                    BulkShopify_Status: line.Simple_Cell_Bulk,
+                    Walmart_Status: line.Walmart_US,
                     SID: item.SID,
                     Product_Name: item.Product_Name,
-                    Item_ID: item.Item_ID,
                     Condition: item.Condition,
                     MAIN_Qty: item.MAIN_Qty,
                     Price: item.Price,
