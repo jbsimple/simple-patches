@@ -112,13 +112,14 @@ async function dashboardStats() {
     separateElem.setAttribute('class', 'separator separator-dashed my-3');
     container.appendChild(separateElem);
 
-    await stat_listingCreatedToday(true);
-    await stat_listingCreatedLast14Days(false);
+    await stat_listingCreatedToday();
+    await stat_listingCreatedYesterday();
+    await stat_listingCreatedLast14Days();
 
-    container.appendChild(separateElem.cloneNode(true));
+    container.appendChild(separateElem.cloneNode());
 
-    await warning_photoRecent(true);
-    await warning_photosMissing(false);
+    await warning_photoRecent();
+    await warning_photosMissing();
 
     async function stat_listingCreatedToday() {
         let today = new Date();
@@ -127,6 +128,18 @@ async function dashboardStats() {
         const count = Array.isArray(data) ? data.length : 0;
         if (count !== 0) {
             printStat('success', 'Items Created Today', count, '/productivity');
+        }
+    }
+
+    async function stat_listingCreatedYesterday() {
+        let pastDate = new Date();
+        pastDate.setDate(today.getDate() - 1);
+        let pastDateFormatted = formatDate(pastDate);
+
+        const data = await stat_createdItemsReport(pastDate, pastDate);
+        const count = Array.isArray(data) ? data.length : 0;
+        if (count !== 0) {
+            printStat('success', 'Items Created Yesterday', count, '/productivity?overview');
         }
     }
 
