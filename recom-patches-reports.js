@@ -2303,5 +2303,51 @@ async function fcsinstock_report() {
 
 }
 
+async function report_amazonStatus() {
+    const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
+
+    let items_report = await report_getSpecial({
+        report: {
+            type: "active_inventory",
+            columns: [
+                "products.sid",
+                "products.name",
+                "product_items.id",
+                "product_items.condition_id",
+                "product_items.in_stock",
+                "product_items.price",
+                "products.brand_id",
+                "products.category_id",
+                "products.asin"
+            ],
+            filters: [
+                {
+                    column: "product_items.in_stock",
+                    opr: "{0} >= {1}",
+                    value: 1
+                }
+            ]
+        },
+        csrf_recom: csrfToken
+    });
+    console.debug('PATCHES - items_report:', items_report);
+
+    let marketplace_listings = await report_getSpecial({
+        report: {
+            type: "listings_report",
+            columns: [],
+            filters: [
+                {
+                    column: "orders.store_id",
+                    opr: "{0} IN {1}",
+                    value: []
+                }
+            ]
+        },
+        csrf_recom: csrfToken
+    });
+    console.debug('PATCHES - marketplace_listings:', marketplace_listings);
+}
+
 initPreset();
 initTable();
