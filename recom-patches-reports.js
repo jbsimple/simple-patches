@@ -2373,21 +2373,58 @@ async function report_amazonStatus() {
         }, {});
     }
     let marketplaceCollapsed = collapseByItemId(all);
+
     let itemsStatusCollapsed = [];
+
     items_report.forEach(item => {
-        if (marketplaceCollapsed[item.Item_ID]) {
-            const value = Math.round((item.MAIN_Qty * item.Price) * 100) / 100;
-            marketplaceCollapsed[item.Item_ID].forEach(line => {
-                let itemCollapsedLine = {
-                    SKU: line.SKU,
-                    Amazon_Status: line.Amazon_Recom,
-                    Backmarket_Status: line.Backmarket,
-                    eBay_Status: line.Ebay_USA,
-                    Newegg_Status: line.Newegg,
-                    Reebelo_Status: line.Reebelo,
-                    MainShopify_Status: line.Simple_Cell_Shop,
-                    BulkShopify_Status: line.Simple_Cell_Bulk,
-                    Walmart_Status: line.Walmart_US,
+        const id = item.Item_ID;
+
+        if (marketplaceCollapsed[id]) {
+            const qty = parseFloat(item.MAIN_Qty);
+            const price = parseFloat(item.Price);
+            const value = Math.round(qty * price * 100) / 100;
+
+            const skuGrouped = {};
+
+            marketplaceCollapsed[id].forEach(line => {
+                const sku = line.SKU;
+
+                if (!skuGrouped[sku]) {
+                    skuGrouped[sku] = {
+                        SKU: sku,
+                        Amazon_Status: new Set(),
+                        Backmarket_Status: new Set(),
+                        eBay_Status: new Set(),
+                        Newegg_Status: new Set(),
+                        Reebelo_Status: new Set(),
+                        MainShopify_Status: new Set(),
+                        BulkShopify_Status: new Set(),
+                        Walmart_Status: new Set()
+                    };
+                }
+
+                skuGrouped[sku].Amazon_Status.add(line.Amazon_Recom);
+                skuGrouped[sku].Backmarket_Status.add(line.Backmarket);
+                skuGrouped[sku].eBay_Status.add(line.Ebay_USA);
+                skuGrouped[sku].Newegg_Status.add(line.Newegg);
+                skuGrouped[sku].Reebelo_Status.add(line.Reebelo);
+                skuGrouped[sku].MainShopify_Status.add(line.Simple_Cell_Shop);
+                skuGrouped[sku].BulkShopify_Status.add(line.Simple_Cell_Bulk);
+                skuGrouped[sku].Walmart_Status.add(line.Walmart_US);
+            });
+            
+            Object.values(skuGrouped).forEach(group => {
+                itemsStatusCollapsed.push({
+                    SKU: group.SKU,
+                    Amazon_Status: [...group.Amazon_Status].filter(Boolean).join(' / '),
+                    Backmarket_Status: [...group.Backmarket_Status].filter(Boolean).join(' / '),
+                    eBay_Status: [...group.eBay_Status].filter(Boolean).join(' / '),
+                    Newegg_Status: [...group.Newegg_Status].filter(Boolean).join(' / '),
+                    Reebelo_Status: [...group.Reebelo_Status].filter(Boolean).join(' / '),
+                    MainShopify_Status: [...group.MainShopify_Status].filter(Boolean).join(' / '),
+                    BulkShopify_Status: [...group.BulkShopify_Status].filter(Boolean).join(' / '),
+                    Walmart_Status: [...group.Walmart_Status].filter(Boolean).join(' / '),
+
                     SID: item.SID,
                     Product_Name: item.Product_Name,
                     Condition: item.Condition,
@@ -2396,8 +2433,7 @@ async function report_amazonStatus() {
                     Value: value,
                     Brand: item.Brand,
                     Category: item.Category
-                }
-                itemsStatusCollapsed.push(itemCollapsedLine);
+                });
             });
         }
     });
