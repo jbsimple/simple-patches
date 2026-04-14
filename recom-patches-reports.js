@@ -2377,19 +2377,22 @@ async function report_amazonStatus() {
     items_report.forEach(item => {
         if (marketplaceCollapsed[item.Item_ID]) {
             const value = Math.round((item.MAIN_Qty * item.Price) * 100) / 100;
-            let itemCollapsedLine = {
-                SID: item.SID,
-                Product_Name: item.Product_Name,
-                Item_ID: item.Item_ID,
-                Condition: item.Condition,
-                MAIN_Qty: item.MAIN_Qty,
-                Price: item.Price,
-                Value: value,
-                Brand: item.Brand,
-                Category: item.Category,
-                Status: marketplaceCollapsed[item.Item_ID]
-            }
-            itemsStatusCollapsed.push(itemCollapsedLine);
+            marketplaceCollapsed[item.Item_ID].forEach(line => {
+                let itemCollapsedLine = {
+                    SKU: line.SKU,
+                    Status: line.Amazon_Recom,
+                    SID: item.SID,
+                    Product_Name: item.Product_Name,
+                    Item_ID: item.Item_ID,
+                    Condition: item.Condition,
+                    MAIN_Qty: item.MAIN_Qty,
+                    Price: item.Price,
+                    Value: value,
+                    Brand: item.Brand,
+                    Category: item.Category
+                }
+                itemsStatusCollapsed.push(itemCollapsedLine);
+            });
         }
     });
 
