@@ -236,6 +236,9 @@ function initPreset() {
         card_body.appendChild(report_preset('product_stockandvalue'));
         card_body.appendChild(report_preset('product_highQty'));
         card_body.appendChild(report_preset('items_createdRecent'));
+   
+        card_body.appendChild(report_preset('marketplaceStatusExtended'));
+
         card_body.appendChild(report_preset('picture_missingFull'));
         card_body.appendChild(report_preset('picture_missingSpecial'));
         card_body.appendChild(report_preset('findImgUrlsFromKeyword'));
@@ -522,6 +525,14 @@ function report_preset(name) {
         details.input = "string";
         details.desc = "Because I am lazy and tired of pressing the Copy URL Button";
         details.title = "Image URL Fetcher";
+        return report_initHTML(details);
+    } else if (name === 'marketplaceStatusExtended') {
+        var details = {};
+        details.id = `patches-reports-marketplaceStatusExtended`;
+        details.name = `patches-reports-marketplaceStatusExtended`;
+        details.func = `report_marketplaceStatusExtended();`;
+        details.desc = "Every item and its status on marketplaces. Extended because it cleans up data and makes it useful.";
+        details.title = "Extended Marketplace Status";
         return report_initHTML(details);
     } else {
         return null;
@@ -2303,7 +2314,13 @@ async function fcsinstock_report() {
 
 }
 
-async function report_amazonStatus() {
+async function report_marketplaceStatusExtended() {
+    const createButton = document.querySelector(`button[data-id="patches-reports-marketplaceStatusExtended"]`);
+    if (createButton) {
+        createButton.textContent = 'Loading...';
+        createButton.setAttribute('style', 'background-color: gray !important;');
+    }
+
     const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
 
     let items_report = await report_getSpecial({
@@ -2412,7 +2429,7 @@ async function report_amazonStatus() {
                 skuGrouped[sku].BulkShopify_Status.add(line.Simple_Cell_Bulk);
                 skuGrouped[sku].Walmart_Status.add(line.Walmart_US);
             });
-            
+
             Object.values(skuGrouped).forEach(group => {
                 itemsStatusCollapsed.push({
                     SKU: group.SKU,
@@ -2440,7 +2457,7 @@ async function report_amazonStatus() {
 
     console.debug('PATCHES - itemsStatusCollapsed:', itemsStatusCollapsed);
 
-    generateReportTableFromList(itemsStatusCollapsed, 'marketplace-amazonstatus', false);
+    generateReportTableFromList(itemsStatusCollapsed, 'marketplace-status-extended', false);
 
 }
 
