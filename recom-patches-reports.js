@@ -2332,26 +2332,36 @@ async function report_amazonStatus() {
     });
     console.debug('PATCHES - items_report:', items_report);
 
-    let marketplace_listings = await report_getSpecial({
-        report: {
-            type: "listings_report",
-            columns: [],
-            filters: [
-                {
-                    column: "orders.store_id",
-                    opr: "{0} IN {1}",
-                    value: []
-                },
-                {
-                    column: "store_live_listing.status",
-                    opr: "{0} = '{1}'",
-                    value: "blocked"
-                }
-            ]
-        },
-        csrf_recom: csrfToken
-    });
-    console.debug('PATCHES - marketplace_listings:', marketplace_listings);
+    async function marketplace_listings(status) {
+        return await report_getSpecial({
+            report: {
+                type: "listings_report",
+                columns: [],
+                filters: [
+                    {
+                        column: "orders.store_id",
+                        opr: "{0} IN {1}",
+                        value: []
+                    },
+                    {
+                        column: "store_live_listing.status",
+                        opr: "{0} = '{1}'",
+                        value: status
+                    }
+                ]
+            },
+            csrf_recom: csrfToken
+        });
+    }
+
+    const online = await marketplace_listings('online');
+    const offline = await marketplace_listings('offline');
+    const blocked = await marketplace_listings('blocked');
+    const pending = await marketplace_listings('pending');
+    const all = [...online, ...offline, ...blocked, ...pending];
+    
+
+    console.debug('PATCHES - marketplace_listings:', all);
 }
 
 initPreset();
