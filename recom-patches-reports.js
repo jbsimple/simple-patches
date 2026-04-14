@@ -2359,9 +2359,42 @@ async function report_amazonStatus() {
     const blocked = await marketplace_listings('blocked');
     const pending = await marketplace_listings('pending');
     const all = [...online, ...offline, ...blocked, ...pending];
-    
 
     console.debug('PATCHES - marketplace_listings:', all);
+
+    function collapseByItemId(data) {
+        return data.reduce((acc, row) => {
+            const id = row.ITEM_ID;
+
+            if (!acc[id]) acc[id] = [];
+            acc[id].push(row);
+
+            return acc;
+        }, {});
+    }
+    let marketplaceCollapsed = collapseByItemId(all);
+    let itemsStatusCollapsed = [];
+    items_report.forEach(item => {
+        if (marketplaceCollapsed[item.Item_ID]) {
+            const value = Math.round((item.MAIN_Qty * item.Price) * 100) / 100;
+            let itemCollapsedLine = {
+                SID: item.SID,
+                Product_Name: item.Product_Name,
+                Item_ID: item.Item_ID,
+                Condition: item.Condition,
+                MAIN_Qty: item.MAIN_Qty,
+                Price: item.Price,
+                Value: value,
+                Brand: item.Brand,
+                Category: item.Category,
+                Status: marketplaceCollapsed[item.Item_ID]
+            }
+            itemsStatusCollapsed.push(itemCollapsedLine);
+        }
+    });
+
+    generateReportTableFromList(itemsStatusCollapsed, 'marketplace-amazonstatus', false);
+
 }
 
 initPreset();
