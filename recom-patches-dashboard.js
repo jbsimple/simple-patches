@@ -132,11 +132,12 @@ async function dashboardStats() {
     }
 
     async function stat_listingCreatedYesterday() {
+        let today = new Date();
         let pastDate = new Date();
         pastDate.setDate(today.getDate() - 1);
         let pastDateFormatted = formatDate(pastDate);
 
-        const data = await stat_createdItemsReport(pastDate, pastDate);
+        const data = await stat_createdItemsReport(pastDateFormatted, pastDateFormatted);
         const count = Array.isArray(data) ? data.length : 0;
         if (count !== 0) {
             printStat('success', 'Items Created Yesterday', count, '/productivity?overview');
