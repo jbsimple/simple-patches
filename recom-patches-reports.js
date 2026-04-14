@@ -2402,6 +2402,8 @@ async function report_amazonStatus() {
         }
     });
 
+    console.debug('PATCHES - itemsStatusCollapsed:', itemsStatusCollapsed);
+
     generateReportTableFromList(itemsStatusCollapsed, 'marketplace-amazonstatus', false);
 
 }
