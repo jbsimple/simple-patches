@@ -2090,9 +2090,10 @@ function generateReportTableFromList(list, name, display = true) {
             for (const obj of list) {
                 const values = keys.map(k => {
                     let val = obj[k] ?? "";
-                    if (typeof val === "string") {
-                        val = `"${val.replace(/"/g, '""')}"`;
+                    if (Array.isArray(val)) {
+                        val = val.join(" | ");
                     }
+                    val = `"${String(val).replace(/"/g, '""')}"`;
                     return val;
                 });
                 rows.push(values.join(","));
