@@ -78,7 +78,8 @@ if (inventory_results) {
     function singleOutAsinResults() {
         inventory_results.querySelectorAll('div.col-lg-4').forEach(col => {
             const hasInCatalog = Array.from(col.querySelectorAll('*')).some(el => el.textContent.includes('In Catalog'));
-            if (!hasInCatalog) { col.querySelector('div.card').setAttribute('style', '--bs-card-bg:color-mix(in srgb, var(--bs-info) 15%, var(--bs-body-bg) 85%)'); }
+            const hasAddNew = Array.from(col.querySelectorAll('*')).some(el => el.textContent.includes('Add New Product'));
+            if (!hasInCatalog && !hasAddNew) { col.querySelector('div.card').setAttribute('style', '--bs-card-bg:color-mix(in srgb, var(--bs-info) 15%, var(--bs-body-bg) 85%)'); }
         })
     }
 
