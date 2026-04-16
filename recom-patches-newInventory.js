@@ -54,7 +54,7 @@ function verifyGTIN() {
     }
 }
 
-// fix the In Catalog button.
+// fix the Results.
 const inventory_results = document.getElementById('inventory_results');
 inventory_results.innerHTML = ''; // i am tired of seeing that default image.
 if (inventory_results) {
@@ -62,6 +62,7 @@ if (inventory_results) {
         for (const mutation of mutationsList) {
             if (mutation.type === 'childList') {
                 console.debug('Patch- Inventory results updated');
+                singleOutAsinResults();
                 parseInventoryResults();
             }
         }
@@ -73,6 +74,13 @@ if (inventory_results) {
         subtree: false,
     };
     observer.observe(inventory_results, config);
+
+    function singleOutAsinResults() {
+        inventory_results.querySelectorAll('div.col-lg-4').forEach(col => {
+            const hasInCatalog = Array.from(col.querySelectorAll('*')).some(el => el.textContent.includes('In Catalog'));
+            if (!hasInCatalog) { col.querySelector('div.card').setAttribute('style', '--bs-card-bg:color-mix(in srgb, var(--bs-info) 15%, var(--bs-body-bg) 85%)'); }
+        })
+    }
 
     function parseInventoryResults() {
         const spans = inventory_results.querySelectorAll('span');
