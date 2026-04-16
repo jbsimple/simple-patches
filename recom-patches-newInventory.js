@@ -79,7 +79,11 @@ if (inventory_results) {
         inventory_results.querySelectorAll('div.col-lg-4').forEach(col => {
             const hasInCatalog = Array.from(col.querySelectorAll('*')).some(el => el.textContent.includes('In Catalog'));
             const hasAddNew = Array.from(col.querySelectorAll('*')).some(el => el.textContent.includes('Add New Product'));
-            if (!hasInCatalog && !hasAddNew) { col.querySelector('div.card').setAttribute('style', '--bs-card-bg:color-mix(in srgb, var(--bs-info) 15%, var(--bs-body-bg) 85%)'); }
+            if (!hasInCatalog && !hasAddNew) {
+                col.querySelector('div.card').setAttribute('style', '--bs-card-bg:color-mix(in srgb, var(--bs-info) 15%, var(--bs-body-bg) 85%)');
+            } else if (hasInCatalog) {
+                col.querySelector('div.card').setAttribute('style', '--bs-card-bg:color-mix(in srgb, var(--bs-primary) 15%, var(--bs-body-bg) 85%)');
+            }
         })
     }
 
