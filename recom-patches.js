@@ -482,7 +482,7 @@ function injectExtraTheme(observer = true) {
                     const pick = matches[Math.floor(Math.random() * matches.length)];
                     imgSrc = pick.src;
                     imgTitle = pick.title;
-                    textColor = `color-mix(in srgb, ${pick.color} 50%, ${textColor} 50%})`;
+                    textColor = `color-mix(in srgb, ${pick.color} 50%, ${textColor} 50%)`;
                 }
             }
             
