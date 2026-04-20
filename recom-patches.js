@@ -463,8 +463,21 @@ function injectExtraTheme() {
         if (logo) {
             logo.style.width = '85%';
             logo.style.height = '40px';
+
+            let imgSrc = "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/icon_notextpng.png";
+            let imgTitle = "RECOM";
+
+            const now = new Date();
+            const todayDay = now.getDate();
+            const todayMonth = now.getMonth() + 1;
+            const match = customLogo.find(item => item.day === todayDay && item.month === todayMonth );
+            if (match) {
+                imgSrc = match.src;
+                imgTitle = match.title;
+            }
+
             logo.innerHTML = `<div style="display:flex;flex-direction:row;gap:8px;justify-content:center;align-items:center;">
-                <img id="patches_logo" alt="Logo" src="https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/icon_notextpng.png">
+                <img id="patches_logo" alt="Logo" src="${imgSrc}" title="${imgTitle}">
                 <h1 style="padding:0;margin:0;line-height:2rem;font-size:2rem;font-weight:900;color:var(--bs-text-dark);">RECOM</h1>
             </div>`;
         }
