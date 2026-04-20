@@ -471,7 +471,7 @@ function injectExtraTheme() {
             const todayDay = now.getDate();
             const todayMonth = now.getMonth() + 1;
             const matches = customLogo.find(item => item.day === todayDay && item.month === todayMonth );
-            if (matches.length) {
+            if (matches && matches.length) {
                 const pick = matches[Math.floor(Math.random() * matches.length)];
                 imgSrc = pick.src;
                 imgTitle = pick.title;
