@@ -482,6 +482,7 @@ function injectExtraTheme(observer = true) {
                     const pick = matches[Math.floor(Math.random() * matches.length)];
                     imgSrc = pick.src;
                     imgTitle = pick.title;
+                    textColot = pick.color;
                 }
             }
             
