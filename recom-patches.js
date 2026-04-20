@@ -460,9 +460,9 @@ function injectExtraTheme() {
     if (kt_app_sidebar_header) {
         const logo = kt_app_sidebar_header.querySelector('.app-sidebar-logo');
         if (logo) {
-            logo.innerHTML = `<div style="display:flex;flex-direction:row;gap:8px;font-weight:900;color:var(--bs-text-dark);">
+            logo.innerHTML = `<div style="display:flex;flex-direction:row;gap:8px;justify-content:center;align-items:center;">
                 <img id="patches_logo" alt="Logo" src="https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/icon_notextpng.png">
-                <h1>RECOM</h1>
+                <h1 style="font-size:2rem;font-weight:900;color:var(--bs-text-dark);">RECOM</h1>
             </div>`;
         }
     }
