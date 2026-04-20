@@ -471,17 +471,19 @@ function injectExtraTheme(observer = true) {
             let imgSrc = "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/icon_notextpng.png";
             let imgTitle = "RECOM";
 
-            const now = new Date();
-            const todayDay = now.getDate();
-            const todayMonth = now.getMonth() + 1;
-            const matches = customLogo.filter(item => Number(item.day) === todayDay && Number(item.month) === todayMonth);
-            console.debug(`PATCHES - Custom Logos ${todayMonth}/${todayDay}:`, matches);
-            if (matches.length) {
-                const pick = matches[Math.floor(Math.random() * matches.length)];
-                imgSrc = pick.src;
-                imgTitle = pick.title;
+            if (!panic) {
+                const now = new Date();
+                const todayDay = now.getDate();
+                const todayMonth = now.getMonth() + 1;
+                const matches = customLogo.filter(item => Number(item.day) === todayDay && Number(item.month) === todayMonth);
+                console.debug(`PATCHES - Custom Logos ${todayMonth}/${todayDay}:`, matches);
+                if (matches.length) {
+                    const pick = matches[Math.floor(Math.random() * matches.length)];
+                    imgSrc = pick.src;
+                    imgTitle = pick.title;
+                }
             }
-
+            
             logo.innerHTML = `<div style="display:flex;flex-direction:row;gap:8px;justify-content:center;align-items:center;">
                 <img id="patches_logo" alt="Logo" style="height:40px;" src="${imgSrc}" title="${imgTitle}">
                 <h1 style="padding:0;margin:0;line-height:2rem;font-size:2rem;font-weight:900;color:var(--bs-text-dark);">RECOM</h1>
