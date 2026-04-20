@@ -93,6 +93,10 @@ function setupFromConfig() {
             logo.style.setProperty("--logo-animation", logoAnimations[day]);
         }
     }
+
+    // this is to rehook sidebar custom productivity and logo
+    injectExtraTheme(false);
+    
 }
 
 function rainbowMessage(message) {
@@ -398,7 +402,7 @@ function loadPatchSettings() {
     }
 }
 
-function injectExtraTheme() {
+function injectExtraTheme(observer = true) {
     const nav_sidebar = document.getElementById('kt_app_sidebar_navs_wrappers');
     if (nav_sidebar) {
         // version tracker in build.sh
@@ -550,21 +554,22 @@ function injectExtraTheme() {
 
     fixApexCharts();
 
-    const chartWatcher = new MutationObserver((changes) => {
-        for (const mutation of changes) {
-            if (mutation.type === 'childList' && mutation.addedNodes.length) {
-                const hasNewChart = Array.from(mutation.addedNodes).some(node =>
-                    node.nodeType === 1 && node.matches?.('svg.apexcharts-svg, .apexcharts-canvas, .apexcharts-inner')
-                );
-                if (hasNewChart) {
-                    setTimeout(fixApexCharts, 150);
-                    break;
+    if (observer) {
+        const chartWatcher = new MutationObserver((changes) => {
+            for (const mutation of changes) {
+                if (mutation.type === 'childList' && mutation.addedNodes.length) {
+                    const hasNewChart = Array.from(mutation.addedNodes).some(node =>
+                        node.nodeType === 1 && node.matches?.('svg.apexcharts-svg, .apexcharts-canvas, .apexcharts-inner')
+                    );
+                    if (hasNewChart) {
+                        setTimeout(fixApexCharts, 150);
+                        break;
+                    }
                 }
             }
-        }
-    });
-
-    chartWatcher.observe(document.body, { childList: true, subtree: true });
+        });
+        chartWatcher.observe(document.body, { childList: true, subtree: true });
+    }
 }
 
 function scheduleRun(hour, minute, callback) {
