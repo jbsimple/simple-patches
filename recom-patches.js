@@ -483,7 +483,7 @@ function injectExtraTheme(observer = true) {
             }
 
             logo.innerHTML = `<div style="display:flex;flex-direction:row;gap:8px;justify-content:center;align-items:center;">
-                <img id="patches_logo" alt="Logo" src="${imgSrc}" title="${imgTitle}">
+                <img id="patches_logo" alt="Logo" style="height:40px;" src="${imgSrc}" title="${imgTitle}">
                 <h1 style="padding:0;margin:0;line-height:2rem;font-size:2rem;font-weight:900;color:var(--bs-text-dark);">RECOM</h1>
             </div>`;
         }
