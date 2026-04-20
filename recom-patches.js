@@ -460,6 +460,8 @@ function injectExtraTheme() {
     if (kt_app_sidebar_header) {
         const logo = kt_app_sidebar_header.querySelector('.app-sidebar-logo');
         if (logo) {
+            logo.style.width = '85%';
+            logo.style.height = '40px';
             logo.innerHTML = `<div style="display:flex;flex-direction:row;gap:8px;justify-content:center;align-items:center;">
                 <img id="patches_logo" alt="Logo" src="https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/icon_notextpng.png">
                 <h1 style="padding:0;margin:0;line-height:2rem;font-size:2rem;font-weight:900;color:var(--bs-text-dark);">RECOM</h1>
