@@ -10,6 +10,7 @@ let queueDelete = [];
 let customNames = {};
 let rainbowAnnounce = [];
 let logoAnimations = [];
+let customLogo = [];
 let autoLocationUpdate = true;
 let allowed_colors = [];
 let panic = false;
