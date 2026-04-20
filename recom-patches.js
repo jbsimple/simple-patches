@@ -484,8 +484,10 @@ function injectExtraTheme(observer = true) {
                 }
             }
             
-            logo.innerHTML = `<div style="display:flex;flex-direction:row;gap:8px;justify-content:center;align-items:center;">
-                <img id="patches_logo" alt="Logo" style="height:40px;" src="${imgSrc}" title="${imgTitle}">
+            logo.innerHTML = `<div title="${imgTitle}" style="display:flex;flex-direction:row;gap:8px;justify-content:center;align-items:center;">
+                <div style="width:57px;height:40px;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+                    <img id="patches_logo" alt="Logo"src="${imgSrc}" style="max-width:100%;max-height:100%;object-fit:contain;">
+                </div>
                 <h1 style="padding:0;margin:0;line-height:2rem;font-size:2rem;font-weight:900;color:var(--bs-text-dark);">RECOM</h1>
             </div>`;
         }
