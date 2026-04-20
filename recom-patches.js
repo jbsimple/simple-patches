@@ -470,7 +470,7 @@ function injectExtraTheme(observer = true) {
 
             let imgSrc = "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/icon_notextpng.png";
             let imgTitle = "RECOM";
-            let textColor = "var(--bs-text-dark);";
+            let textColor = "var(--bs-text-dark)";
 
             if (!panic) {
                 const now = new Date();
