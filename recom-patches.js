@@ -403,64 +403,7 @@ function loadPatchSettings() {
 }
 
 function injectExtraTheme(observer = true) {
-    const nav_sidebar = document.getElementById('kt_app_sidebar_navs_wrappers');
-    if (nav_sidebar) {
-        // version tracker in build.sh
-        const nav_sidebar_links = document.getElementById('#kt_app_sidebar_menu');
-        if (nav_sidebar_links) {
-            const nameElem = nav_sidebar_links.querySelectorAll('.menu-heading')[0];
-            currentuser = nameElem.textContent
-                            .replace(/hi[\s,]*/i, '')
-                            .trim()
-                            .toLowerCase();
-            
-            const links = nav_sidebar_links.querySelectorAll('.menu-link');
-            if (links && links.length > 0 && !mockupProductivity) {
-                links.forEach(link => {
-                    const href = link.getAttribute('href'); 
-                    const title = link.querySelector('.menu-title');
-                    if (href && href.includes('productivity/employee')) {
-                        title.textContent = 'My Productivity';
-
-                        const parentItem = link.closest('.menu-item');
-                        if (parentItem && !nav_sidebar_links.querySelector('a[href="productivity?recentpics"]')) {
-                            const newItem = document.createElement('div');
-                            newItem.className = 'menu-item';
-                            newItem.innerHTML = `
-                                <a class="menu-link" href="productivity?recentpics">
-                                    <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-                                    <span class="menu-title">Created Items</span>
-                                </a>
-                            `;
-                            parentItem.insertAdjacentElement('afterend', newItem);
-                        }
-                    } else if (href && href.includes('productivity') && !href.includes('productivity/board')) {
-                        title.textContent = 'Team Productivity';
-
-                        const parentItem = link.closest('.menu-item');
-                        if (parentItem && !nav_sidebar_links.querySelector('a[href="productivity?overview"]')) {
-                            const newItem = document.createElement('div');
-                            newItem.className = 'menu-item';
-                            newItem.innerHTML = `
-                                <a class="menu-link" href="productivity?overview">
-                                    <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-                                    <span class="menu-title">Team Overview</span>
-                                </a>
-                            `;
-                            parentItem.insertAdjacentElement('beforebegin', newItem);
-                        }
-                    }
-                });
-            } else if (!mockupProductivity) {
-                console.error('PATCHES - Unable to parse button links');
-            }
-        }
-
-    } else {
-        console.error('Sidebar could not be found.');
-    }
-
-    // better logo
+    // better logo, always run
     const kt_app_sidebar_header = document.getElementById('kt_app_sidebar_header');
     if (kt_app_sidebar_header) {
         const logo = kt_app_sidebar_header.querySelector('.app-sidebar-logo');
@@ -496,6 +439,63 @@ function injectExtraTheme(observer = true) {
     }
 
     if (observer) {
+        const nav_sidebar = document.getElementById('kt_app_sidebar_navs_wrappers');
+        if (nav_sidebar) {
+            // version tracker in build.sh
+            const nav_sidebar_links = document.getElementById('#kt_app_sidebar_menu');
+            if (nav_sidebar_links) {
+                const nameElem = nav_sidebar_links.querySelectorAll('.menu-heading')[0];
+                currentuser = nameElem.textContent
+                                .replace(/hi[\s,]*/i, '')
+                                .trim()
+                                .toLowerCase();
+                
+                const links = nav_sidebar_links.querySelectorAll('.menu-link');
+                if (links && links.length > 0 && !mockupProductivity) {
+                    links.forEach(link => {
+                        const href = link.getAttribute('href'); 
+                        const title = link.querySelector('.menu-title');
+                        if (href && href.includes('productivity/employee')) {
+                            title.textContent = 'My Productivity';
+
+                            const parentItem = link.closest('.menu-item');
+                            if (parentItem && !nav_sidebar_links.querySelector('a[href="productivity?recentpics"]')) {
+                                const newItem = document.createElement('div');
+                                newItem.className = 'menu-item';
+                                newItem.innerHTML = `
+                                    <a class="menu-link" href="productivity?recentpics">
+                                        <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
+                                        <span class="menu-title">Created Items</span>
+                                    </a>
+                                `;
+                                parentItem.insertAdjacentElement('afterend', newItem);
+                            }
+                        } else if (href && href.includes('productivity') && !href.includes('productivity/board')) {
+                            title.textContent = 'Team Productivity';
+
+                            const parentItem = link.closest('.menu-item');
+                            if (parentItem && !nav_sidebar_links.querySelector('a[href="productivity?overview"]')) {
+                                const newItem = document.createElement('div');
+                                newItem.className = 'menu-item';
+                                newItem.innerHTML = `
+                                    <a class="menu-link" href="productivity?overview">
+                                        <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
+                                        <span class="menu-title">Team Overview</span>
+                                    </a>
+                                `;
+                                parentItem.insertAdjacentElement('beforebegin', newItem);
+                            }
+                        }
+                    });
+                } else if (!mockupProductivity) {
+                    console.error('PATCHES - Unable to parse button links');
+                }
+            }
+
+        } else {
+            console.error('PATCHES - Sidebar could not be found.');
+        }
+
         const nav_footer = document.getElementById('kt_app_footer');
         if (nav_footer) {
             const copyrights = nav_footer.querySelectorAll('.text-muted.fw-semibold.me-1');
@@ -512,14 +512,14 @@ function injectExtraTheme(observer = true) {
                 })
             }
         }
-    }
 
-    // fix top button, why is it green???
-    const nav_header = document.getElementById('kt_app_header');
-    if (nav_header) {
-        const greenButton = nav_header.querySelector('.btn-color-primary');
-        if (greenButton) {
-            greenButton.setAttribute('class', 'btn btn-icon btn-custom btn-color-gray-600 btn-active-light btn-active-color-primary w-35px h-35px w-md-40px h-md-40px');
+        // fix top button, why is it green???
+        const nav_header = document.getElementById('kt_app_header');
+        if (nav_header) {
+            const greenButton = nav_header.querySelector('.btn-color-primary');
+            if (greenButton) {
+                greenButton.setAttribute('class', 'btn btn-icon btn-custom btn-color-gray-600 btn-active-light btn-active-color-primary w-35px h-35px w-md-40px h-md-40px');
+            }
         }
     }
 
@@ -560,6 +560,7 @@ function injectExtraTheme(observer = true) {
         console.debug('PATCHES - Applied manual dark theme to all ApexCharts SVGs.');
     }
 
+    // always run
     fixApexCharts();
 
     if (observer) {
