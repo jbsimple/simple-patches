@@ -495,20 +495,22 @@ function injectExtraTheme(observer = true) {
         }
     }
 
-    const nav_footer = document.getElementById('kt_app_footer');
-    if (nav_footer) {
-        const copyrights = nav_footer.querySelectorAll('.text-muted.fw-semibold.me-1');
-        if (copyrights) {
-            copyrights.forEach(copyright => {
-                if (copyright.textContent = '2023©') {
-                    copyright.textContent = '(C)2025';
+    if (observer) {
+        const nav_footer = document.getElementById('kt_app_footer');
+        if (nav_footer) {
+            const copyrights = nav_footer.querySelectorAll('.text-muted.fw-semibold.me-1');
+            if (copyrights) {
+                copyrights.forEach(copyright => {
+                    if (copyright.textContent = '2023©') {
+                        copyright.textContent = '(C)2025';
 
-                    const newCopyright = document.createElement('span');
-                    newCopyright.classList.add('text-muted', 'fw-semibold', 'me-1');
-                    newCopyright.textContent = ' | Simple Patches';
-                    copyright.parentElement.appendChild(newCopyright);
-                }
-            })
+                        const newCopyright = document.createElement('span');
+                        newCopyright.classList.add('text-muted', 'fw-semibold', 'me-1');
+                        newCopyright.textContent = ' | Simple Patches';
+                        copyright.parentElement.appendChild(newCopyright);
+                    }
+                })
+            }
         }
     }
 
