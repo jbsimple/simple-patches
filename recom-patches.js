@@ -470,6 +470,7 @@ function injectExtraTheme(observer = true) {
 
             let imgSrc = "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/icon_notextpng.png";
             let imgTitle = "RECOM";
+            let textColor = "var(--bs-text-dark);";
 
             if (!panic) {
                 const now = new Date();
@@ -488,7 +489,7 @@ function injectExtraTheme(observer = true) {
                 <div style="width:57px;height:40px;display:flex;align-items:center;justify-content:center;overflow:hidden;">
                     <img id="patches_logo" alt="Logo"src="${imgSrc}" style="max-width:100%;max-height:100%;object-fit:contain;">
                 </div>
-                <h1 style="padding:0;margin:0;line-height:2rem;font-size:2rem;font-weight:900;color:var(--bs-text-dark);">RECOM</h1>
+                <h1 style="padding:0;margin:0;line-height:2rem;font-size:2rem;font-weight:900;color:${textColor}">RECOM</h1>
             </div>`;
         }
     }
