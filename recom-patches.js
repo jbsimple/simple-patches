@@ -410,9 +410,7 @@ function injectExtraTheme() {
                             .toLowerCase();
             
             const links = nav_sidebar_links.querySelectorAll('.menu-link');
-            if (links && links.length > 0 && mockupProductivity) {
-
-            } else if (links && links.length > 0) {
+            if (links && links.length > 0 && !mockupProductivity) {
                 links.forEach(link => {
                     const href = link.getAttribute('href'); 
                     const title = link.querySelector('.menu-title');
@@ -448,13 +446,25 @@ function injectExtraTheme() {
                         }
                     }
                 });
-            } else {
+            } else if (!mockupProductivity) {
                 console.error('PATCHES - Unable to parse button links');
             }
         }
 
     } else {
         console.error('Sidebar could not be found.');
+    }
+
+    // better logo
+    const kt_app_sidebar_header = document.getElementById('kt_app_sidebar_header');
+    if (kt_app_sidebar_header) {
+        const logo = kt_app_sidebar_header.querySelector('app-sidebar-logo');
+        if (logo) {
+            logo.innerHTML = `<div style="display:flex;flex-direction:row;gap:8px;font-weight:900;color:var(--bs-text-dark);">
+                <img id="patches_logo" alt="Logo" src="https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/icon_notextpng.png">
+                <h1>RECOM</h1>
+            </div>`;
+        }
     }
 
     const nav_footer = document.getElementById('kt_app_footer');
