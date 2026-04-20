@@ -470,7 +470,7 @@ function injectExtraTheme() {
             const now = new Date();
             const todayDay = now.getDate();
             const todayMonth = now.getMonth() + 1;
-            const matches = customLogo.filter(item => item.day === todayDay && item.month === todayMonth);
+            const matches = customLogo.filter(item => Number(item.day) === todayDay && Number(item.month) === todayMonth);
             console.debug(`PATCHES - Custom Logos ${todayMonth}/${todayDay}:`, matches);
             if (matches.length) {
                 const pick = matches[Math.floor(Math.random() * matches.length)];
