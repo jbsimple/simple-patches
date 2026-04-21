@@ -2210,6 +2210,12 @@ function conditionsNotesPopulator() {
         }
     }
 
+    //look for ebay condition tags
+    const tag_EbayLikeNew = form.querySelector('tag[value="EbayLikeNew"]');
+    if (tag_EbayLikeNew) { id = 2; }
+    const tag_EbayUsed = form.querySelector('tag[value="EbayUsed"]');
+    if (tag_EbayUsed) { id = 5; }
+
     if (!el || id === null) return;
 
     const fetchConditionNotes = `/ajax/actions/Condition/${id}`;
