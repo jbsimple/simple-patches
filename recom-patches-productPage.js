@@ -2216,6 +2216,10 @@ function conditionsNotesPopulator() {
     const tag_EbayUsed = form.querySelector('tag[value="EbayUsed"]');
     if (tag_EbayUsed) { id = 5; }
 
+    if (condition_notes_field.value === '' && (tag_EbayLikeNew || tag_EbayUsed)) {
+        fireSwal('Warning', ['Ebay Condition Tag Detected, no condition notes detected.', 'You need to fill in condition notes or it will push to eBay incorrectly.']);
+    }
+
     if (!el || id === null) return;
 
     //for wquill
