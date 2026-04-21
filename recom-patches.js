@@ -411,7 +411,7 @@ function injectExtraTheme(observer = true) {
             logo.style.width = '85%';
             logo.style.height = '40px';
 
-            let imgSrc = "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/icon_notextpng.png";
+            let imgSrc = "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/icon_logo-2-f.png";
             let imgTitle = "RECOM";
             let textColor = "var(--bs-text-dark)";
 
