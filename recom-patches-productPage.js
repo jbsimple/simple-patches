@@ -2187,5 +2187,62 @@ function smallNotesPopulator() {
 
     return true;
 }
-
 waitForElement('#kt_app_content_container', smallNotesPopulator);
+
+// condition notes fix
+function conditionsNotesPopulator() {
+    const form = document.getElementById('el_item_form');
+    if (!form) return;
+
+    const condition_notes_field = form.querySelector('textarea[name="item[condition_notes]"]');
+    if (!condition_notes_field) return;
+
+    let el = null;
+    let id = null;
+
+    for (const a of form.querySelectorAll('a[href]')) {
+        const href = a.getAttribute('href');
+        const match = href.match(/^javascript:getCondition\s*\(\s*([^)]+)\s*\)/);
+        if (match) {
+            el = a;
+            id = match[1];
+            break;
+        }
+    }
+
+    if (!el || id === null) return;
+
+    const fetchConditionNotes = `/ajax/actions/Condition/${id}`;
+
+    if (el.dataset.bound === 'true') return;
+    el.dataset.bound = 'true';
+    el.removeAttribute('href');
+    el.style.cursor = 'pointer';
+    el.setAttribute('class', 'btn btn-sm btn-light-primary');
+    el.textContent = 'Prefil Default Notes';
+    el.addEventListener('click', async (e) => {
+        e.preventDefault();
+        try {
+            const res = await fetch(fetchConditionNotes, {
+                method: 'GET',
+                headers: { 'Accept': 'application/json' }
+            });
+
+            if (!res.ok) { throw new Error(`HTTP ${res.status}`); }
+
+            const data = await res.json();
+            if (data && data.success && data.condition) {
+                const notes = data.condition.notes;
+                console.debug('PATCHES - Fetched Notes:', notes);
+                condition_notes_field.value = notes ?? '';
+            } else {
+                fireSwal('Oh no!', 'Failed to fetch condition notes', 'error');
+                console.error('PATCHES - Failed to fetch condition notes:', data);
+            }
+        } catch (err) {
+            fireSwal('Oh no!', 'Unable to fetch condition notes', 'error');
+            console.error('PATCHES - Unable to fetch condition notes:', err);
+        }
+    });
+}
+waitForElement('#el_item_form', conditionsNotesPopulator);
