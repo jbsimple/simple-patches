@@ -2211,10 +2211,15 @@ function conditionsNotesPopulator() {
     }
 
     //look for ebay condition tags
-    const tag_EbayLikeNew = form.querySelector('tag[value="EbayLikeNew"]');
-    if (tag_EbayLikeNew) { id = 2; }
-    const tag_EbayUsed = form.querySelector('tag[value="EbayUsed"]');
-    if (tag_EbayUsed) { id = 5; }
+    function checkForTag(flag_id = -1) {
+        let flag_id = -1;
+        const tag_EbayLikeNew = form.querySelector('tag[value="EbayLikeNew"]');
+        if (tag_EbayLikeNew) { flag_id = 2; }
+        const tag_EbayUsed = form.querySelector('tag[value="EbayUsed"]');
+        if (tag_EbayUsed) { flag_id = 5; }
+        return flag_id;
+    }
+    
 
     //hard warning for blank condition notes and tag present, which is an issue
     if (condition_notes_field.value === '' && (tag_EbayLikeNew || tag_EbayUsed)) {
@@ -2227,8 +2232,6 @@ function conditionsNotesPopulator() {
     let parent = el.closest('.card');
     if (!parent) return;
 
-    const fetchConditionNotes = `/ajax/actions/Condition/${id}`;
-
     if (el.dataset.bound === 'true') return;
     el.dataset.bound = 'true';
     el.removeAttribute('href');
@@ -2238,6 +2241,8 @@ function conditionsNotesPopulator() {
     el.addEventListener('click', async (e) => {
         e.preventDefault();
         try {
+            id = checkForTag(id);
+            const fetchConditionNotes = `/ajax/actions/Condition/${id}`;
             const res = await fetch(fetchConditionNotes, {
                 method: 'GET',
                 headers: { 'Accept': 'application/json' }
