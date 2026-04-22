@@ -2221,9 +2221,11 @@ function conditionsNotesPopulator() {
     
 
     //hard warning for blank condition notes and tag present, which is an issue
-    if (condition_notes_field.value === '' && (tag_EbayLikeNew || tag_EbayUsed)) {
+    let flag_id = checkForTag(id);
+    if (condition_notes_field.value === '' && flag_id !== id) {
         fireSwal('Warning', ['Ebay Condition Tag Detected, no condition notes detected.', 'You need to fill in condition notes or it will push to eBay incorrectly.']);
     }
+    id = flag_id;
 
     if (!el || id === null) return;
 
