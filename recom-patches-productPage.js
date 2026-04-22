@@ -2212,7 +2212,6 @@ function conditionsNotesPopulator() {
 
     //look for ebay condition tags
     function checkForTag(flag_id = -1) {
-        let flag_id = -1;
         const tag_EbayLikeNew = form.querySelector('tag[value="EbayLikeNew"]');
         if (tag_EbayLikeNew) { flag_id = 2; }
         const tag_EbayUsed = form.querySelector('tag[value="EbayUsed"]');
