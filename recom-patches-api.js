@@ -168,7 +168,7 @@ async function api_test(type = null, page = 1, per_page = 200) {
                         {
                             "field": "orders.date_ordered",
                             "operator": "between",
-                            "value": datestamp(day, 0)
+                            "value": datestamp('day', 0)
                         }
                     ],
                     columns: [
@@ -200,7 +200,7 @@ async function api_test(type = null, page = 1, per_page = 200) {
                         {
                             "field": "orders.date_ordered",
                             "operator": "between",
-                            "value": datestamp(day, 0)
+                            "value": datestamp('day', 0)
                         }
                     ],
                     columns: [
@@ -261,7 +261,7 @@ async function api_test(type = null, page = 1, per_page = 200) {
                         {
                             "field": "return_date",
                             "operator": "between",
-                            "value": datestamp(day, 0)
+                            "value": datestamp('day', 0)
                         }
                     ],
                     columns: [
@@ -318,7 +318,7 @@ async function api_test(type = null, page = 1, per_page = 200) {
                         {
                             "field": "user_clocks.clock_date",
                             "operator": "between",
-                            "value": datestamp(day, 0)
+                            "value": datestamp('day', 0)
                         }
                     ],
                     columns: [
@@ -503,7 +503,7 @@ async function api_test(type = null, page = 1, per_page = 200) {
                         {
                             "field": "order_date",
                             "operator": "between",
-                            "value": datestamp(day, 0)
+                            "value": datestamp('day', 0)
                         }
                     ],
                     columns: [
@@ -549,7 +549,7 @@ async function api_test(type = null, page = 1, per_page = 200) {
                         {
                             "field": "purchase_orders.created_at",
                             "operator": "between",
-                            "value": datestamp(month, 6)
+                            "value": datestamp('month', 6)
                         }
                     ],
                     columns: [
@@ -684,7 +684,7 @@ async function api_test(type = null, page = 1, per_page = 200) {
                         {
                             "field": "created_at",
                             "operator": "between",
-                            "value": datestamp(month, 6)
+                            "value": datestamp('month', 6)
                         }
                     ],
                     columns: [
@@ -708,7 +708,7 @@ async function api_test(type = null, page = 1, per_page = 200) {
                         {
                             "field": "order_date",
                             "operator": "between",
-                            "value": datestamp(day, 7)
+                            "value": datestamp('day', 7)
                         }
                     ],
                     columns: [
@@ -746,7 +746,7 @@ async function api_test(type = null, page = 1, per_page = 200) {
                         {
                             "field": "order_date",
                             "operator": "between",
-                            "value": datestamp(month, 1)
+                            "value": datestamp('month', 1)
                         }
                     ],
                     columns: [
@@ -785,7 +785,7 @@ async function api_test(type = null, page = 1, per_page = 200) {
                         {
                             "field": "return_date",
                             "operator": "between",
-                            "value": datestamp(day, 0)
+                            "value": datestamp('day', 0)
                         }
                     ],
                     columns: [
@@ -852,7 +852,7 @@ async function api_test(type = null, page = 1, per_page = 200) {
                         {
                             "field": "orders.date_ordered",
                             "operator": "between",
-                            "value": datestamp(day, 0)
+                            "value": datestamp('day', 0)
                         }
                     ],
                     columns: [
@@ -891,7 +891,7 @@ async function api_test(type = null, page = 1, per_page = 200) {
                         {
                             "field": "user_daily_activity.date",
                             "operator": "between",
-                            "value": datestamp(day, 0)
+                            "value": datestamp('day', 0)
                         }
                     ],
                     columns: [
@@ -942,7 +942,7 @@ async function api_test(type = null, page = 1, per_page = 200) {
                         {
                             "field": "store_logs.created_at",
                             "operator": "between",
-                            "value": datestamp(year, 1)
+                            "value": datestamp('year', 1)
                         }
                     ],
                     columns: [
