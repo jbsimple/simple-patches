@@ -49,6 +49,29 @@ async function fetchAPI(route, { params = {}, body = null } = {}, options = {}) 
 async function meta() { return await fetchAPI("meta"); }
 
 async function api_test(type = null, page = 1, per_page = 200) {
+    function datestamp(type, count = 1) {
+        function formatDate(date) { return date.toISOString().split('T')[0]; }
+        const today = new Date();
+        const past = new Date();
+        switch (type) {
+            case 'day':
+                past.setDate(past.getDate() - count);
+                break;
+            case 'week':
+                past.setDate(past.getDate() - (count * 7));
+                break;
+            case 'month':
+                const d = past.getDate();
+                past.setMonth(past.getMonth() - count);
+                if (past.getDate() < d) { past.setDate(0); }
+                break;
+            case 'year':
+                past.setFullYear(today.getFullYear() - count);
+                break;
+        }
+        return [formatDate(past), formatDate(today)];
+    }
+
     switch (type) {
         case 'active_inventory':
             return fetchAPI("reports", {
@@ -145,7 +168,7 @@ async function api_test(type = null, page = 1, per_page = 200) {
                         {
                             "field": "orders.date_ordered",
                             "operator": "between",
-                            "value": ["2026-03-23", "2026-03-23"]
+                            "value": datestamp(day, 0)
                         }
                     ],
                     columns: [
@@ -177,7 +200,7 @@ async function api_test(type = null, page = 1, per_page = 200) {
                         {
                             "field": "orders.date_ordered",
                             "operator": "between",
-                            "value": ["2026-04-09", "2026-04-09"]
+                            "value": datestamp(day, 0)
                         }
                     ],
                     columns: [
@@ -238,7 +261,7 @@ async function api_test(type = null, page = 1, per_page = 200) {
                         {
                             "field": "return_date",
                             "operator": "between",
-                            "value": ["2026-03-23", "2026-03-23"]
+                            "value": datestamp(day, 0)
                         }
                     ],
                     columns: [
@@ -295,7 +318,7 @@ async function api_test(type = null, page = 1, per_page = 200) {
                         {
                             "field": "user_clocks.clock_date",
                             "operator": "between",
-                            "value": ["2026-03-23", "2026-03-23"]
+                            "value": datestamp(day, 0)
                         }
                     ],
                     columns: [
@@ -480,7 +503,7 @@ async function api_test(type = null, page = 1, per_page = 200) {
                         {
                             "field": "order_date",
                             "operator": "between",
-                            "value": ["2026-03-23", "2026-03-23"]
+                            "value": datestamp(day, 0)
                         }
                     ],
                     columns: [
@@ -526,7 +549,7 @@ async function api_test(type = null, page = 1, per_page = 200) {
                         {
                             "field": "purchase_orders.created_at",
                             "operator": "between",
-                            "value": ["2026-02-01", "2026-02-28"] // pos are not created that often
+                            "value": datestamp(month, 6)
                         }
                     ],
                     columns: [
@@ -661,7 +684,7 @@ async function api_test(type = null, page = 1, per_page = 200) {
                         {
                             "field": "created_at",
                             "operator": "between",
-                            "value": ["2025-12-16", "2025-12-16"] // 5 purcahse orders in this range
+                            "value": datestamp(month, 6)
                         }
                     ],
                     columns: [
@@ -685,7 +708,7 @@ async function api_test(type = null, page = 1, per_page = 200) {
                         {
                             "field": "order_date",
                             "operator": "between",
-                            "value": ["2026-03-23", "2026-03-23"]
+                            "value": datestamp(day, 7)
                         }
                     ],
                     columns: [
@@ -723,7 +746,7 @@ async function api_test(type = null, page = 1, per_page = 200) {
                         {
                             "field": "order_date",
                             "operator": "between",
-                            "value": ["2026-02-01", "2026-02-28"]
+                            "value": datestamp(month, 1)
                         }
                     ],
                     columns: [
@@ -762,7 +785,7 @@ async function api_test(type = null, page = 1, per_page = 200) {
                         {
                             "field": "return_date",
                             "operator": "between",
-                            "value": ["2026-03-23", "2026-03-23"]
+                            "value": datestamp(day, 0)
                         }
                     ],
                     columns: [
@@ -829,7 +852,7 @@ async function api_test(type = null, page = 1, per_page = 200) {
                         {
                             "field": "orders.date_ordered",
                             "operator": "between",
-                            "value": ["2026-03-23", "2026-03-23"]
+                            "value": datestamp(day, 0)
                         }
                     ],
                     columns: [
@@ -868,7 +891,7 @@ async function api_test(type = null, page = 1, per_page = 200) {
                         {
                             "field": "user_daily_activity.date",
                             "operator": "between",
-                            "value": ["2026-03-23", "2026-03-23"]
+                            "value": datestamp(day, 0)
                         }
                     ],
                     columns: [
@@ -905,6 +928,31 @@ async function api_test(type = null, page = 1, per_page = 200) {
                         "po_imei.cost",
                         "po_imei.location",
                         "po_imei.notes"
+                    ]
+                }
+            });
+            break;
+        case 'error_log_report':
+            return fetchAPI("reports", {
+                body: {
+                    type: "error_log_report",
+                    page: page,
+                    per_page: per_page,
+                    filters: [
+                        {
+                            "field": "store_logs.created_at",
+                            "operator": "between",
+                            "value": datestamp(year, 1)
+                        }
+                    ],
+                    columns: [
+                        "store_logs.entry_id",
+                        "store_logs.entry_ref",
+                        "store_logs.entry_model",
+                        "store_logs.entry_action",
+                        "store_logs.log_data",
+                        "store_logs.store_id",
+                        "store_logs.created_at"
                     ]
                 }
             });
