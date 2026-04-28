@@ -436,40 +436,51 @@ async function handleLocationButton(e) {
     e.textContent = oldButtonText;
 }
 
-async function hijackAjaxPrefill() {
+async function hijackCreateItemButton() {
     const table = document.getElementById('dtTable_wrapper');
-    if (table) {
-        table.addEventListener('click', function(event) {
-            const target = event.target.closest('button');
-            if (target && target.matches('.btn.ajax-modal') && target.textContent.trim() === 'Create Item') {
-                console.log('PATCHES - Create Item button clicked:', target);
-                const modal = document.getElementById('rc_ajax_modal');
-                const observer = new MutationObserver((mutationsList, observer) => {
-                    for (const mutation of mutationsList) {
-                        if (mutation.type === 'childList' && mutation.addedNodes.length > 0 || mutation.type === 'attributes' || mutation.type === 'subtree' ) {
-                            observer.disconnect();
-                            (async () => {
-                                await new Promise(resolve => setTimeout(resolve, 50));
-                                console.log('PATCHES - Modal has updated.');
+    if (!table) return;
+    table.addEventListener('click', function(event) {
+        const target = event.target.closest('button');
+        if (target && target.matches('.btn.ajax-modal') && target.textContent.trim() === 'Create Item') {
+            console.log('PATCHES - Create Item button clicked:', target);
+            hijackPrefillWindow();
+        }
+    });
+}
 
-                                handlePrefillPictureWarning();
+async function hijackFindProductButton() {
+    const findProductButton = document.getElementById('find_product');
+    if (!findProductButton) return;
+    findProductButton.addEventListener('click', function(event) {
+        hijackPrefillWindow();
+    });
+}
 
-                                if (autoLocationUpdate) {
-                                    await handlePrefillLocationUpdate();
-                                }
-                            })();
-                            break;
-                        }
+async function hijackPrefillWindow() {
+    const modal = document.getElementById('rc_ajax_modal');
+    const observer = new MutationObserver((mutationsList, observer) => {
+        for (const mutation of mutationsList) {
+            if (mutation.type === 'childList' && mutation.addedNodes.length > 0 || mutation.type === 'attributes' || mutation.type === 'subtree' ) {
+                observer.disconnect();
+                (async () => {
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                    console.log('PATCHES - Modal has updated.');
+
+                    handlePrefillPictureWarning();
+
+                    if (autoLocationUpdate) {
+                        await handlePrefillLocationUpdate();
                     }
-                });
-                observer.observe(modal, {
-                    childList: true,
-                    subtree: true,
-                    attributes: true
-                });
+                })();
+                break;
             }
-        });
-    }
+        }
+    });
+    observer.observe(modal, {
+        childList: true,
+        subtree: true,
+        attributes: true
+    });
 }
 
 function handlePrefillWarning(message) { 
@@ -898,8 +909,9 @@ async function initListingPatch() {
 (async () => {
     if (window.location.href.includes('/receiving/queues/listing/') || window.location.href.includes('/products/new')) { 
         initListingPatch();
+        hijackFindProductButton();
     } else {
-        hijackAjaxPrefill();
+        hijackCreateItemButton();
     }
     inWrongTaskCheck();
 })();
