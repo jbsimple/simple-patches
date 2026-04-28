@@ -605,45 +605,65 @@ function handlePrefillPictureWarning() {
 
 async function handlePrefillLocationUpdate() {
     const ajax_button = document.getElementById('rc_ajax_modal_submit');
-     if (ajax_button) {
-        let prefillComplete = false;
-        let redirectQueued = null;
-        if (!window._patches_location_override) {
-            Object.defineProperty(window, 'location', {
-                configurable: true,
-                get() {
-                    return document.location;
-                },
-                set(value) {
-                    if (!prefillComplete) {
-                        redirectQueued = value;
-                    } else {
-                        document.location = value;
-                    }
-                }
-            });
-            window._patches_location_override = true;
-        }
+    if (!ajax_button) return;
 
-        ajax_button.addEventListener('click', async (e) => {
-            window.addEventListener('beforeunload', unloadWarning);
-            try {
-                await prefillSubmit();
-                prefillComplete = true;
-                if (redirectQueued) {
-                    window.location = redirectQueued;
-                }
-            } catch (err) {
-                console.error('PATCHES - Error during prefillSubmit:', err);
-                alert('Unexpected error. Check console for details.');
-            } finally {
-                window.removeEventListener('beforeunload', unloadWarning);
+    let prefillComplete = false;
+    let redirectQueued = null;
+
+    if (!window._patches_location_override) {
+        window._patches_location_override = true;
+
+        const originalAssign = window.location.assign.bind(window.location);
+        const originalReplace = window.location.replace.bind(window.location);
+
+        window.location.assign = function (url) {
+            if (!prefillComplete) {
+                redirectQueued = url;
+            } else {
+                originalAssign(url);
             }
-        }, { once: true });
+        };
+
+        window.location.replace = function (url) {
+            if (!prefillComplete) {
+                redirectQueued = url;
+            } else {
+                originalReplace(url);
+            }
+        };
+
+        document.addEventListener('click', (e) => {
+            const a = e.target.closest('a[href]');
+            if (!a) return;
+
+            if (!prefillComplete) {
+                e.preventDefault();
+                redirectQueued = a.href;
+            }
+        }, true);
     }
+
+    ajax_button.addEventListener('click', async () => {
+        window.addEventListener('beforeunload', unloadWarning);
+
+        try {
+            await prefillSubmit();
+            prefillComplete = true;
+
+            if (redirectQueued) {
+                window.location.assign(redirectQueued);
+            }
+        } catch (err) {
+            console.error('PATCHES - Error during prefillSubmit:', err);
+            alert('Unexpected error. Check console for details.');
+        } finally {
+            window.removeEventListener('beforeunload', unloadWarning);
+        }
+    }, { once: true });
 
     async function prefillSubmit() {
         console.debug('PATCHES - PrefillSubmit Called');
+
         const ajax_modalForm = document.getElementById('rc_ajax_modal_form');
         if (!ajax_modalForm) return;
 
@@ -655,7 +675,7 @@ async function handlePrefillLocationUpdate() {
             alert('SKU is missing.');
             return;
         } else if (sku.endsWith('-14') || sku.endsWith('-13') || sku.endsWith('-12')) {
-            return; 
+            return;
         }
 
         try {
@@ -666,8 +686,8 @@ async function handlePrefillLocationUpdate() {
                 throw new Error('Event ID not found from getTimeSpentInMinutes');
             }
 
-            // this here
             const updateLocationResponse = await updateLocation(sku, eventID);
+
             if (updateLocationResponse.success) {
                 console.log('PATCHES - Location Updated');
             } else {
@@ -681,8 +701,11 @@ async function handlePrefillLocationUpdate() {
     }
 
     function unloadWarning(e) {
-        e.preventDefault();
-        e.returnValue = '';
+        if (!prefillComplete) {
+            e.preventDefault();
+            e.returnValue = '';
+            return '';
+        }
     }
 }
 
