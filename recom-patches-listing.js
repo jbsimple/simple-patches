@@ -436,11 +436,11 @@ async function handleLocationButton(e) {
     e.textContent = oldButtonText;
 }
 
-async function hijackPrefillWindow() {
+function hijackPrefillWindow() {
     const modal = document.getElementById('rc_ajax_modal');
     if (!modal) return;
 
-    const observer = new MutationObserver((mutations) => {
+    const observer = new MutationObserver(async (mutations) => {
         for (const mutation of mutations) {
             if (mutation.type === 'childList') {
                 const form = modal.querySelector('#rc_ajax_modal_form');
@@ -459,7 +459,7 @@ async function hijackPrefillWindow() {
 
     observer.observe(modal, {
         childList: true,
-        subtree: true // important so it catches nested inserts
+        subtree: true
     });
 }
 
