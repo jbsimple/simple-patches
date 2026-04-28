@@ -436,32 +436,40 @@ async function handleLocationButton(e) {
     e.textContent = oldButtonText;
 }
 
-function hijackPrefillWindow() {
-    const modal = document.getElementById('rc_ajax_modal');
-    if (!modal) return;
+async function hijackAjaxPrefill() {
+    const table = document.getElementById('dtTable_wrapper');
+    if (table) {
+        table.addEventListener('click', function(event) {
+            const target = event.target.closest('button');
+            if (target && target.matches('.btn.ajax-modal') && target.textContent.trim() === 'Create Item') {
+                console.log('PATCHES - Create Item button clicked:', target);
+                const modal = document.getElementById('rc_ajax_modal');
+                const observer = new MutationObserver((mutationsList, observer) => {
+                    for (const mutation of mutationsList) {
+                        if (mutation.type === 'childList' && mutation.addedNodes.length > 0 || mutation.type === 'attributes' || mutation.type === 'subtree' ) {
+                            observer.disconnect();
+                            (async () => {
+                                await new Promise(resolve => setTimeout(resolve, 50));
+                                console.log('PATCHES - Modal has updated.');
 
-    const observer = new MutationObserver(async (mutations) => {
-        for (const mutation of mutations) {
-            if (mutation.type === 'childList') {
-                const form = modal.querySelector('#rc_ajax_modal_form');
-                const skuinput = modal.querySelector('input[name="item[sku]"]');
-                if (form && skuinput) {
-                    console.debug('PATCHES - Prefill Form Detected:', form);
-                    handlePrefillPictureWarning();
-                    if (autoLocationUpdate) {
-                        await handlePrefillLocationUpdate();
+                                handlePrefillPictureWarning();
+
+                                if (autoLocationUpdate) {
+                                    await handlePrefillLocationUpdate();
+                                }
+                            })();
+                            break;
+                        }
                     }
-                    observer.disconnect();
-                    break;
-                }
+                });
+                observer.observe(modal, {
+                    childList: true,
+                    subtree: true,
+                    attributes: true
+                });
             }
-        }
-    });
-
-    observer.observe(modal, {
-        childList: true,
-        subtree: true
-    });
+        });
+    }
 }
 
 function handlePrefillWarning(message) { 
@@ -890,8 +898,9 @@ async function initListingPatch() {
 (async () => {
     if (window.location.href.includes('/receiving/queues/listing/') || window.location.href.includes('/products/new')) { 
         initListingPatch();
+    } else {
+        hijackAjaxPrefill();
     }
-    hijackPrefillWindow();
     inWrongTaskCheck();
 })();
   
