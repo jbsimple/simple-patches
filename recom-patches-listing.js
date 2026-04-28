@@ -451,6 +451,7 @@ function hijackPrefillWindow() {
                     if (autoLocationUpdate) {
                         await handlePrefillLocationUpdate();
                     }
+                    observer.disconnect();
                     break;
                 }
             }
