@@ -436,7 +436,7 @@ async function handleLocationButton(e) {
     e.textContent = oldButtonText;
 }
 
-function hijackPrefillWindow() {
+async function hijackPrefillWindow() {
     const modal = document.getElementById('rc_ajax_modal');
     if (!modal) return;
 
