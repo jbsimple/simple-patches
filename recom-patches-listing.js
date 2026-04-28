@@ -633,7 +633,12 @@ async function handlePrefillLocationUpdate() {
         };
 
         document.addEventListener('click', (e) => {
-            const a = e.target.closest('a[href]');
+            let el = e.target;
+            
+            if (!(el instanceof Element)) { el = el.parentElement; }
+            if (!el) return;
+
+            const a = el.closest('a[href]');
             if (!a) return;
 
             if (!prefillComplete) {
