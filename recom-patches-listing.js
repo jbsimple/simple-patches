@@ -442,7 +442,6 @@ async function hijackCreateItemButton() {
     table.addEventListener('click', function(event) {
         const target = event.target.closest('button');
         if (target && target.matches('.btn.ajax-modal') && target.textContent.trim() === 'Create Item') {
-            console.log('PATCHES - Create Item button clicked:', target);
             hijackPrefillWindow();
         }
     });
@@ -457,6 +456,7 @@ async function hijackFindProductButton() {
 }
 
 async function hijackPrefillWindow() {
+    console.debug('PATCHES - Hijacking prefill window.');
     const modal = document.getElementById('rc_ajax_modal');
     const observer = new MutationObserver((mutationsList, observer) => {
         for (const mutation of mutationsList) {
