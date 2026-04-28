@@ -102,27 +102,23 @@ async function getTimeSpentInMinutes(sku) {
 }
 
 function inWrongTaskCheck() {
-    const link = document.querySelector('a[href="javascript:clockInOut(\'out\');"]');
-    const currentTask = link?.textContent.trim().toLowerCase() ?? 'na';
-    console.debug('PATCHES - Task Check:', currentTask);
-
     // this modal is just for the full page wizard wizard
     if (window.location.href.includes('/receiving/queues/listing/')) {
         const afterListing = window.location.href.split('/receiving/queues/listing/')[1];
-        if (afterListing && afterListing.trim() !== '' && currentTask !== 'clock out - listing') {
+        if (afterListing && afterListing.trim() !== '' && currentTask !== 'Listing') {
             fireSwal('TASK CHECK?', ["You're about to list without being in the listing task.", "Are you sure you want to continue?", "* Gotacha to reload, Close to just proceed."], 'question', true);
         }
-    } else if (currentTask !== 'clock out - listing') {
+    } else if (currentTask !== 'Listing') {
         const thecontent = document.getElementById('kt_app_content_container');
         const codeToAdd = `
         <style>
             .lebox {
-                    background-color: var(--bs-body-bg) !important;
-                    padding: 1.25rem 0 !important;
-                    margin: 0 !important;
-                    margin-bottom: 30px !important;
-                    border: var(--bs-border-width) solid var(--bs-border-color) !important;
-                    border-radius: 0.625rem !important;
+                background-color: color-mix(in srgb, var(--bs-danger) 15%, var(--bs-body-bg) 85%) !important;
+                padding: 1.25rem 0 !important;
+                margin: 0 !important;
+                margin-bottom: 30px !important;
+                border: var(--bs-border-width) solid var(--bs-border-color) !important;
+                border-radius: 0.625rem !important;
             }
         </style>
         <div class="lebox app-toolbar pt-7 pt-lg-10">
@@ -440,40 +436,31 @@ async function handleLocationButton(e) {
     e.textContent = oldButtonText;
 }
 
-async function hijackAjaxPrefill() {
-    const table = document.getElementById('dtTable_wrapper');
-    if (table) {
-        table.addEventListener('click', function(event) {
-            const target = event.target.closest('button');
-            if (target && target.matches('.btn.ajax-modal') && target.textContent.trim() === 'Create Item') {
-                console.log('PATCHES - Create Item button clicked:', target);
-                const modal = document.getElementById('rc_ajax_modal');
-                const observer = new MutationObserver((mutationsList, observer) => {
-                    for (const mutation of mutationsList) {
-                        if (mutation.type === 'childList' && mutation.addedNodes.length > 0 || mutation.type === 'attributes' || mutation.type === 'subtree' ) {
-                            observer.disconnect();
-                            (async () => {
-                                await new Promise(resolve => setTimeout(resolve, 50));
-                                console.log('PATCHES - Modal has updated.');
+function hijackPrefillWindow() {
+    const modal = document.getElementById('rc_ajax_modal');
+    if (!modal) return;
 
-                                handlePrefillPictureWarning();
-
-                                if (autoLocationUpdate) {
-                                    await handlePrefillLocationUpdate();
-                                }
-                            })();
-                            break;
-                        }
+    const observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+            if (mutation.type === 'childList') {
+                const form = modal.querySelector('#rc_ajax_modal_form');
+                const skuinput = modal.querySelector('input[name="item[sku]"]');
+                if (form && skuinput) {
+                    console.debug('PATCHES - Prefill Form Detected:', form);
+                    handlePrefillPictureWarning();
+                    if (autoLocationUpdate) {
+                        await handlePrefillLocationUpdate();
                     }
-                });
-                observer.observe(modal, {
-                    childList: true,
-                    subtree: true,
-                    attributes: true
-                });
+                    break;
+                }
             }
-        });
-    }
+        }
+    });
+
+    observer.observe(modal, {
+        childList: true,
+        subtree: true // important so it catches nested inserts
+    });
 }
 
 function handlePrefillWarning(message) { 
@@ -902,9 +889,8 @@ async function initListingPatch() {
 (async () => {
     if (window.location.href.includes('/receiving/queues/listing/') || window.location.href.includes('/products/new')) { 
         initListingPatch();
-    } else {
-        hijackAjaxPrefill();
     }
+    hijackPrefillWindow();
     inWrongTaskCheck();
 })();
   
