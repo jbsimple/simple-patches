@@ -466,8 +466,63 @@ async function hijackPrefillWindow() {
                     await new Promise(resolve => setTimeout(resolve, 50));
                     console.log('PATCHES - Modal has updated.');
 
-                    handlePrefillPictureWarning();
+                    const form = document.getElementById('rc_ajax_modal_form');
+                    if (!form) return;
 
+                    const img = form.querySelector('.img-thumbnail');
+                    if (!img) return;
+
+                    const imgsrc = img.getAttribute('src');
+                    const filename = imgsrc.split('/').pop();
+                    const baseName = filename.substring(0, filename.lastIndexOf('.'));
+                    console.debug('PATCHES - Prefill IMG src:', imgsrc);
+
+                    if (pictureWarnings.some(w => filename.includes(w))) { printWarning('Bad or missing photo.'); }
+                    if (!filename.includes('__')) { printWarning('Potential bad photo, please verify.'); }
+                    const [before, after] = baseName.split('__', 2);
+                    if (before !== before.toUpperCase()) {  printWarning('Potential old photo, please verify.'); }
+
+                    img.onload = function() {
+                        const w = img.naturalWidth;
+                        const h = img.naturalHeight;
+                
+                        if (w < 1199 || w > 1201 || h < 1199 || h > 1201) {
+                            printWarning(`Image is not 1200x1200 (actual: ${img.naturalWidth}x${img.naturalHeight}), Please verify.`);
+                        }
+                    };
+                    
+                    if (img.complete) { img.onload(); }
+
+                    const condition = form.querySelector('select[name="item[condition_id]"]');
+                    if (condition) {
+                        const conditionId = parseInt(condition.value, 10);
+                        if (conditionId === 6 || conditionId === 8 || conditionId === 18) {
+                            printWarning('This condition requires custom pictures.');
+                        } else if (conditionId === 1) {
+                            printWarning('This item is brand new, please update SID with box/new info.');
+                        }
+                    } else {
+                        console.error('PATCHES - Unable to find condition?', condition);
+                    }
+
+                    // handle swapping of the condition notes button
+                    conditionsNotesPopulator(form);
+
+                    const submitButton = document.getElementById('rc_ajax_modal_submit');
+                    let sku = form.querySelector('input[name="item[sku]"]'); //default grab
+                    if (submitButton && sku) {
+                        submitButton.addEventListener('click', async function() {
+                            /// fucking here
+                            sku = form.querySelector('input[name="item[sku]"]'); //regrab
+                            if (sku && sku.value !== '' && sku.value.length > 0) {
+                                setTimeout(() => {
+                                    window.open(`${window.location.origin}/product/items/${sku.value}`, '_blank');
+                                }, 500); // trying 500ms for now
+                            }
+                        });
+                    }
+
+                    // am getting to this in a minute
                     if (autoLocationUpdate) {
                         await handlePrefillLocationUpdate();
                     }
@@ -481,97 +536,24 @@ async function hijackPrefillWindow() {
         subtree: true,
         attributes: true
     });
-}
 
-function handlePrefillWarning(message) { 
-    const messageHTML = `<div class="alert alert-danger my-5">${message}<br></div>`; 
-    const form = document.getElementById('rc_ajax_modal_form');
-    if (form) {
-        const walker = document.createTreeWalker(form, NodeFilter.SHOW_COMMENT, {
-            acceptNode: (node) => {
-                return node.nodeValue.trim() === 'end::Heading' ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
-            }
-        });
-
-        const commentNode = walker.nextNode();
-        if (commentNode) {
-            const container = document.createElement('div');
-            container.innerHTML = messageHTML;
-            commentNode.parentNode.insertBefore(container.firstElementChild, commentNode.nextSibling);
-        }
-    }
-}
-
-function handlePrefillPictureWarning() {
-    const form = document.getElementById('rc_ajax_modal_form');
-    if (form) {
-        const img = form.querySelector('.img-thumbnail');
-        if (img) {
-            const imgsrc = img.getAttribute('src');
-            const filename = imgsrc.split('/').pop();
-            const baseName = filename.substring(0, filename.lastIndexOf('.'));
-            console.debug('PATCHES - Prefill IMG src:', imgsrc);
-
-            if (pictureWarnings.some(w => filename.includes(w))) {
-                handlePrefillWarning('Bad or missing photo.');
-                return;
-            }
-
-            if (!filename.includes('__')) {
-                handlePrefillWarning('Potential bad photo, please verify.');
-                return;
-            }
-
-            const [before, after] = baseName.split('__', 2);
-            if (before !== before.toUpperCase()) {
-                handlePrefillWarning('Potential old photo, please verify.');
-                return;
-            }
-
-            img.onload = function() {
-                const w = img.naturalWidth;
-                const h = img.naturalHeight;
-        
-                if (w < 1199 || w > 1201 || h < 1199 || h > 1201) {
-                    handlePrefillWarning(`Image is not 1200x1200 (actual: ${img.naturalWidth}x${img.naturalHeight}), Please verify.`);
-                }
-            };
-            
-            if (img.complete) {
-                img.onload();
-            }
-        } else {
-            console.error('PATCHES -Unable to find image?', img);
-        }
-
-        const condition = form.querySelector('select[name="item[condition_id]"]');
-        if (condition) {
-            const conditionId = parseInt(condition.value, 10);
-            if (conditionId === 6 || conditionId === 8 || conditionId === 18) {
-                handlePrefillWarning('This condition requires custom pictures.');
-            } else if (conditionId === 1) {
-                handlePrefillWarning('This item is brand new, please update SID with box/new info.');
-            }
-        } else {
-            console.error('PATCHES - Unable to find condition?', condition);
-        }
-
-        conditionsNotesPopulator(form);
-
-        const submitButton = document.getElementById('rc_ajax_modal_submit');
-        let sku = form.querySelector('input[name="item[sku]"]'); //default grab
-        if (submitButton && sku) {
-            submitButton.addEventListener('click', async function() {
-                sku = form.querySelector('input[name="item[sku]"]'); //regrab
-                if (sku && sku.value !== '' && sku.value.length > 0) {
-                    setTimeout(() => {
-                        window.open(`${window.location.origin}/product/items/${sku.value}`, '_blank');
-                    }, 500); // trying 500ms for now
+    function printWarning(message) { 
+        const messageHTML = `<div class="alert alert-danger my-5">${message}<br></div>`; 
+        const form = document.getElementById('rc_ajax_modal_form');
+        if (form) {
+            const walker = document.createTreeWalker(form, NodeFilter.SHOW_COMMENT, {
+                acceptNode: (node) => {
+                    return node.nodeValue.trim() === 'end::Heading' ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
                 }
             });
+
+            const commentNode = walker.nextNode();
+            if (commentNode) {
+                const container = document.createElement('div');
+                container.innerHTML = messageHTML;
+                commentNode.parentNode.insertBefore(container.firstElementChild, commentNode.nextSibling);
+            }
         }
-    } else {
-        console.error('PATCHES - Unable to find form?', form);
     }
 }
 
