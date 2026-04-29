@@ -1895,8 +1895,6 @@ async function conditionsNotesPopulator(form) {
     const condition_notes_field = form.querySelector('textarea[name="item[condition_notes]"]');
     if (!condition_notes_field) return;
 
-    console.debug('PATCHES - conditionsNotesPopulator');
-
     let el = null;
     let id = null;
 
@@ -1931,7 +1929,6 @@ async function conditionsNotesPopulator(form) {
 
     //for wquill
     let parent = el.closest('.card');
-    if (!parent) return;
 
     if (el.dataset.bound === 'true') return;
     el.dataset.bound = 'true';
@@ -1956,7 +1953,7 @@ async function conditionsNotesPopulator(form) {
                 const notes = data.condition.notes;
                 console.debug('PATCHES - Fetched Notes:', notes);
                 condition_notes_field.value = notes ?? '';
-                parent.querySelector('.card-footer.wquill').classList.remove('d-none');
+                if (parent) { parent.querySelector('.card-footer.wquill').classList.remove('d-none'); }
             } else {
                 fireSwal('Oh no!', 'Failed to fetch condition notes', 'error');
                 console.error('PATCHES - Failed to fetch condition notes:', data);
