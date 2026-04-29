@@ -1891,7 +1891,7 @@ function quillCleanPaste() {
     });
 }
 
-async function conditionsNotesPopulator(parent) {
+async function conditionsNotesPopulator(form) {
     const condition_notes_field = form.querySelector('textarea[name="item[condition_notes]"]');
     if (!condition_notes_field) return;
 
