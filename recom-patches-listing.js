@@ -556,11 +556,7 @@ function handlePrefillPictureWarning() {
             console.error('PATCHES - Unable to find condition?', condition);
         }
 
-        // replace 'view default notes' button to just dump the text into the textarea
-        const vewDefaultNotes = form.querySelector('a[href^="javascript:getCondition("]');
-        if (vewDefaultNotes) {
-            conditionsNotesPopulator(form);
-        }
+        conditionsNotesPopulator(form);
 
         const submitButton = document.getElementById('rc_ajax_modal_submit');
         let sku = form.querySelector('input[name="item[sku]"]'); //default grab
