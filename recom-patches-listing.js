@@ -102,7 +102,6 @@ async function getTimeSpentInMinutes(sku) {
 }
 
 function inWrongTaskCheck() {
-    console.debug('PATCHES - Listing JS - currentTask:', currentTask);
     // this modal is just for the full page wizard wizard
     if (window.location.href.includes('/receiving/queues/listing/')) {
         const afterListing = window.location.href.split('/receiving/queues/listing/')[1];
