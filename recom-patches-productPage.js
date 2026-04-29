@@ -2195,4 +2195,4 @@ function conditionsNotesInit() {
     if (!form) return;
     conditionsNotesPopulator(form);
 }
-waitForElement('#el_item_form', conditionsNotesPopulator);
+waitForElement('#el_item_form', conditionsNotesInit);
