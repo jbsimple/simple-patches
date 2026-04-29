@@ -1867,6 +1867,30 @@ function peekAtImages() {
     };
 }
 
+function quillCleanPaste() {
+    const editor = document.querySelector('#html-editor .ql-editor');
+    const quill = editor && editor.__quill;
+
+    if (!quill) return;
+
+    // prevent double-binding
+    if (quill.__cleanPasteBound) return;
+    quill.__cleanPasteBound = true;
+
+    quill.root.addEventListener('paste', function (e) {
+        e.preventDefault();
+
+        const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+        const range = quill.getSelection();
+
+        if (range) {
+            quill.deleteText(range.index, range.length);
+            quill.insertText(range.index, text);
+            quill.setSelection(range.index + text.length);
+        }
+    });
+}
+
 async function patchInit() {
     loadPatchSettings();
     injectGoods();
@@ -1876,6 +1900,7 @@ async function patchInit() {
     checkWeatherAndCreateEffects();
     adjustToolbar();
     peekAtImages();
+    quillCleanPaste();
 
     loadEdgeConfig('config').then(() => {
         console.debug('PATCHES - Edge Config Loaded.');
