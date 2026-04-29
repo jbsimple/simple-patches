@@ -492,6 +492,7 @@ async function hijackPrefillWindow() {
                     };
                     
                     if (img.complete) { img.onload(); }
+                    console.debug('PATCHES - Listing - Img Checks Done');
 
                     const condition = form.querySelector('select[name="item[condition_id]"]');
                     if (condition) {
