@@ -124,6 +124,7 @@ function injectGoods() {
     if (location.pathname.includes('/receiving/queues/listing') || location.pathname.includes('/products/new')) {
 
         loadPatchScript('recom-patches-duplicateCheck.js');
+        loadPatchScript('recom-patches-listingPrefill.js');
         loadPatchStyle('recom-patches-listing.css');
         loadPatchScript('recom-patches-listing.js');
 
@@ -135,6 +136,7 @@ function injectGoods() {
         // ending slash is needed to ensure that the code only applies the patch for the sku and sid pages
 
         loadPatchScript('recom-patches-duplicateCheck.js');
+        loadPatchScript('recom-patches-listingPrefill.js');
         loadPatchStyle('recom-patches-product.css');
         loadPatchScript('recom-patches-productPage.js');
 

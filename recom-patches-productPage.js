@@ -364,6 +364,9 @@ function initAddItemsButton() {
             Add Item
         </button>
     `;
+    toolbar.querySelector('button.ajax-modal').addEventListener('click', function(event) {
+        hijackPrefillWindow();
+    });
 
     cardTitle.insertAdjacentElement('afterend', toolbar);
 
@@ -2196,3 +2199,12 @@ function conditionsNotesInit() {
     conditionsNotesPopulator(form);
 }
 waitForElement('#el_item_form', conditionsNotesInit);
+
+function hijackNewItem() {
+    const btns = document.querySelectorAll('[data-url^="/product/items/new?product_id="]');
+    btns.forEach(btn => {
+        btn.addEventListener('click', function(event) {
+            hijackPrefillWindow();
+        });
+    })
+}
