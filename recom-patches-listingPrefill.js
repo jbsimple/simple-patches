@@ -57,8 +57,6 @@ async function hijackPrefillWindow(updateLocation = true) {
                     if (img.complete) { img.onload(); }
                     console.debug('PATCHES - Listing - Img Checks Done');
 
-                    
-
                     // handle swapping of the condition notes button
                     conditionsNotesPopulator(form);
 
@@ -70,9 +68,13 @@ async function hijackPrefillWindow(updateLocation = true) {
                             if (sku && sku.value !== '' && sku.value.length > 0) {
                                 const observer = new MutationObserver(() => {
                                     const swal = document.querySelector('.swal2-popup');
-                                    if (swal) {
+                                    if (!swal) return;
+                                    const text = swal.innerText || swal.textContent || '';
+                                    if (text.toLowerCase().includes('saved successfully')) {
                                         observer.disconnect();
-                                        window.open(`${window.location.origin}/product/items/${sku.value}`, '_blank');
+                                        setTimeout(() => {
+                                            window.open(`${window.location.origin}/product/items/${sku.value}`, '_blank');
+                                        }, 500);
                                     }
                                 });
 
