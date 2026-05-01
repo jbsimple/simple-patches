@@ -2208,3 +2208,4 @@ function hijackNewItem() {
         });
     })
 }
+waitForElement('#kt_app_content_container', hijackNewItem);
