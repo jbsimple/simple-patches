@@ -97,8 +97,8 @@ async function hijackPrefillWindow(updateLocation = true) {
     });
     observer.observe(modal, {
         childList: true,
-        subtree: true,
-        attributes: true
+        subtree: false,
+        attributes: false
     });
 
     function printWarning(message, single) {
