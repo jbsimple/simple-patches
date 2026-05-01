@@ -365,7 +365,7 @@ function initAddItemsButton() {
         </button>
     `;
     toolbar.querySelector('button.ajax-modal').addEventListener('click', function(event) {
-        hijackPrefillWindow();
+        hijackPrefillWindow(false);
     });
 
     cardTitle.insertAdjacentElement('afterend', toolbar);
