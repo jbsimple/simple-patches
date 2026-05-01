@@ -91,9 +91,9 @@ async function hijackPrefillWindow() {
         attributes: true
     });
 
-    function printWarning(message, alwaysadd) {
+    function printWarning(message, single) {
         const form = document.getElementById('rc_ajax_modal_form');
-        if (!alwaysadd) {
+        if (single) {
             const existingMessage = form.querySelector('div.patches-alert');
             if (existingMessage) return;
         }
