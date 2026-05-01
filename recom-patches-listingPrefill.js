@@ -66,12 +66,20 @@ async function hijackPrefillWindow(updateLocation = true) {
                     let sku = form.querySelector('input[name="item[sku]"]'); //default grab
                     if (submitButton && sku) {
                         submitButton.addEventListener('click', async function() {
-                            /// fucking here
                             sku = form.querySelector('input[name="item[sku]"]'); //regrab
                             if (sku && sku.value !== '' && sku.value.length > 0) {
-                                setTimeout(() => {
-                                    window.open(`${window.location.origin}/product/items/${sku.value}`, '_blank');
-                                }, 500); // trying 500ms for now
+                                const observer = new MutationObserver(() => {
+                                    const swal = document.querySelector('.swal2-popup');
+                                    if (swal) {
+                                        observer.disconnect();
+                                        window.open(`${window.location.origin}/product/items/${sku.value}`, '_blank');
+                                    }
+                                });
+
+                                observer.observe(document.body, {
+                                    childList: true,
+                                    subtree: true
+                                });
                             }
                         });
                     }
