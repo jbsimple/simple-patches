@@ -2204,7 +2204,7 @@ function hijackNewItem() {
     const btns = document.querySelectorAll('[data-url^="/product/items/new?product_id="]');
     btns.forEach(btn => {
         btn.addEventListener('click', function(event) {
-            hijackPrefillWindow();
+            hijackPrefillWindow(false);
         });
     })
 }

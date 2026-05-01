@@ -1,4 +1,4 @@
-async function hijackPrefillWindow() {
+async function hijackPrefillWindow(updateLocation = true) {
     console.debug('PATCHES - Hijacking prefill window.');
     const modal = document.getElementById('rc_ajax_modal');
     const observer = new MutationObserver((mutationsList, observer) => {
@@ -77,7 +77,7 @@ async function hijackPrefillWindow() {
                     }
 
                     // am getting to this in a minute
-                    if (autoLocationUpdate) {
+                    if (updateLocation && autoLocationUpdate) {
                         await handlePrefillLocationUpdate();
                     }
                 })();
