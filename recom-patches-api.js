@@ -1100,3 +1100,29 @@ async function groq(prompt, model = 'llama-3.3-70b-versatile') {
 
     return data;
 }
+
+async function betterAutofill(title, description = null) {
+    let prompt = [
+        "Give me a quick 3 sentence paragraph and 4-6 bullet points describing a product.",
+        "In your response, please keep these things in mind:",
+        "1. Please make sure any information you're providing is valid and accurate for the product, search online and use reputable sources when gathering information.",
+        "2. Do not include any mentions to Apple's Lightning cable; instead call it a MFI (Made For Apple) 8-pin cable.",
+        "3. Do not mention any information about a warranty or coverage from the manufacturer; we are a third-party seller.",
+        "4. Do not mention anything regarding anti-bacteria or anti-microbial. These terms are not allowed on most marketplaces.",
+        "The format for your response should be:",
+        "First, a version of just the title in a complete sentence. For example: \"The Apple (44mm) Sport Band Clasp for Apple Watch 42/44/45mm Cases. Pink Sand Version.\" where it restates the product name and extra information in a separate, incomplete sentence. Followed by a blank line. Then the 3 sentence paragraph followed by another blank line. Finally, the bullet points with the word \"Features:\" before printing each bullet point into it's own line, using characters \"-\" for each bullet.",
+        "When done, the format look like:",
+        "{Title restated as sentence}\\n\\n{3 Sentence Paragraph}\\n\\nFeatures:\\n\\n- Bullet 1\\n\\n- Bullet 2\\n\\n... and so on.",
+    ];
+
+    if (title !== null && title !== '') {
+        prompt.push(`The product title is: "${title}".`);
+    }
+
+    if (description !== null && description !== '') {
+        prompt.push(`Additional product information: "${description}"`)
+    }
+
+    await groq(prompt.join("\n"));
+
+}
