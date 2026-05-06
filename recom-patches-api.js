@@ -1093,6 +1093,10 @@ async function groq(prompt, model = 'llama-3.3-70b-versatile') {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt })
     });
-    
-    return res.json();
+
+    const data = await res.json();
+
+    console.log("GROQ Response:", data);
+
+    return data;
 }
