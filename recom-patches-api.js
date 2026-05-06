@@ -1106,7 +1106,7 @@ async function betterAutofill(title, description = null) {
         "Give me a quick 3 sentence paragraph and 4-6 bullet points describing a product.",
         "In your response, please keep these things in mind:",
         "1. Please make sure any information you're providing is valid and accurate for the product, search online and use reputable sources when gathering information.",
-        "2. Do not include any mentions to Apple's Lightning cable; instead call it a MFI (Made For Apple) 8-pin cable.",
+        "2. If the title contains the word \"lightning\" with respect to Apple's Lightning charging standard, do not include any mentions to it. Instead call it a MFI (Made For Apple) 8-pin cable. Don't eroniously add it where it does not apply, either. This only applies to products that have a lightning charger.",
         "3. Do not mention any information about a warranty or coverage from the manufacturer; we are a third-party seller.",
         "4. Do not mention anything regarding anti-bacteria or anti-microbial. These terms are not allowed on most marketplaces.",
         "The format for your response should be:",
