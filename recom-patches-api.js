@@ -1103,16 +1103,67 @@ async function groq(prompt, model = 'llama-3.3-70b-versatile') {
 
 async function betterAutofill(title, description = null) {
     let prompt = [
-        "Give me a quick 3 sentence paragraph and 4-6 bullet points describing a product.",
-        "In your response, please keep these things in mind:",
-        "1. Please make sure any information you're providing is valid and accurate for the product, search online and use reputable sources when gathering information.",
-        "2. If the title contains the word \"lightning\" with respect to Apple's Lightning charging standard, do not include any mentions to it. Instead call it a MFI (Made For Apple) 8-pin cable. Don't eroniously add it where it does not apply, either. This only applies to products that have a lightning charger.",
-        "3. Do not mention any information about a warranty or coverage from the manufacturer; we are a third-party seller.",
-        "4. Do not mention anything regarding anti-bacteria or anti-microbial. These terms are not allowed on most marketplaces.",
-        "The format for your response should be:",
-        "First, a version of just the title in a complete sentence. For example: \"The Apple (44mm) Sport Band Clasp for Apple Watch 42/44/45mm Cases. Pink Sand Version.\" where it restates the product name and extra information in a separate, incomplete sentence. Followed by a blank line. Then the 3 sentence paragraph followed by another blank line. Finally, the bullet points with the word \"Features:\" before printing each bullet point into it's own line, using characters \"-\" for each bullet.",
-        "When done, the format look like:",
-        "{Title restated as sentence}\\n\\n{3 Sentence Paragraph}\\n\\nFeatures:\\n\\n- Bullet 1\\n\\n- Bullet 2\\n\\n... and so on.",
+        "I am a third-party seller that purchases overstock products and resells them on marketplaces like eBay and Shopify.",
+        "Generate a clean, factual, marketplace-style product description in plain text only.",
+
+        "Your response must follow this exact structure:",
+
+        "{Rewritten Title}",
+        "",
+        "{2-4 sentence overview paragraph}",
+        "",
+        "Features:",
+        "- Feature bullet",
+        "- Feature bullet",
+        "- Feature bullet",
+        "- Feature bullet",
+
+        "Rules for rewriting the title:",
+        "- Rewrite the title into natural sentence fragments.",
+        "- Preserve important product information exactly as written.",
+        "- Keep brand names, model names, compatibility, sizes, capacities, and colors.",
+        "- Use periods to separate secondary details naturally.",
+        "- Keep compatibility information grouped together.",
+        "- If a color or edition appears near the end of the title, place it into its own sentence fragment.",
+        "- Keep the rewritten title concise and factual.",
+        "- Do not make the rewritten title sound promotional.",
+        "- Do not use exclamation marks.",
+        "- Use normal sentence casing.",
+        "- Do not invent missing information.",
+
+        "Example input title:",
+        "Apple (44mm) Sport Band Clasp for Apple Watch 42/44/45mm Case - Pink Sand",
+
+        "Example rewritten title:",
+        "The Apple 44mm Sport Band Clasp for Apple Watch 42/44/45mm cases. Pink Sand version.",
+
+        "Rules for the overview paragraph:",
+        "- Write 2 to 4 informative sentences.",
+        "- Keep the tone neutral and marketplace-friendly.",
+        "- The paragraph should sound helpful, not sales-heavy.",
+        "- Do not use exaggerated marketing language.",
+        "- Do not invent specifications or compatibility.",
+        "- Only mention details that are known or highly reliable.",
+
+        "Rules for the feature bullets:",
+        "- Write 4 to 6 bullet points.",
+        "- Each bullet should be 1 to 2 sentences long.",
+        "- Keep bullets concise and informative.",
+        "- Focus on compatibility, materials, functionality, dimensions, connectivity, included items, or practical usage when known.",
+        "- Do not repeat the same information excessively.",
+
+        "Global restrictions:",
+        "- Do not mention warranties or manufacturer coverage.",
+        "- Do not mention anti-bacterial or anti-microbial properties.",
+        "- Do not use emojis.",
+        "- Do not use markdown formatting except for the bullet list.",
+        "- Do not hallucinate specifications, measurements, or certifications.",
+        "- If information is uncertain, keep the wording general instead of inventing details.",
+
+        "Lightning cable rule:",
+        "- If the product uses Apple's Lightning connector, do not use the word 'Lightning'.",
+        "- Instead, refer to it as an 'MFI (Made For Apple) 8-pin connector' or 'MFI 8-pin cable' when appropriate.",
+        "- Do not incorrectly apply this rule to unrelated products."
     ];
 
     if (title !== null && title !== '') {
@@ -1120,7 +1171,7 @@ async function betterAutofill(title, description = null) {
     }
 
     if (description !== null && description !== '') {
-        prompt.push(`Additional product information: "${description}"`)
+        prompt.push(`Additional product information: "${description}".`)
     }
 
     const response = await groq(prompt.join("\n"));
