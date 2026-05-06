@@ -1123,6 +1123,7 @@ async function betterAutofill(title, description = null) {
         prompt.push(`Additional product information: "${description}"`)
     }
 
-    await groq(prompt.join("\n"));
+    const response = await groq(prompt.join("\n"));
+    console.log(response.response);
 
 }
