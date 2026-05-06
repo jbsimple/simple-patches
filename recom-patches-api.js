@@ -1086,3 +1086,13 @@ async function allSkusEver() {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 }
+
+async function groq(prompt, model = 'llama-3.3-70b-versatile') {
+    const res = await fetch(`https://simple-patches.vercel.app/api/groq?model=${model}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt })
+    });
+    
+    return res.json();
+}
