@@ -65,16 +65,19 @@ async function hijackPrefillWindow(updateLocation = true) {
                     if (submitButton && sku) {
                         submitButton.addEventListener('click', async function() {
                             sku = form.querySelector('input[name="item[sku]"]'); //regrab
+                            let fired = false;
                             if (sku && sku.value !== '' && sku.value.length > 0) {
+                                if (fired) return;
                                 const observer = new MutationObserver(() => {
                                     const swal = document.querySelector('.swal2-popup');
                                     if (!swal) return;
                                     const text = swal.innerText || swal.textContent || '';
                                     if (text.toLowerCase().includes('saved successfully')) {
+                                        opened = true;
                                         observer.disconnect();
                                         setTimeout(() => {
                                             window.open(`${window.location.origin}/product/items/${sku.value}`, '_blank');
-                                        }, 500);
+                                        }, 1000);
                                     }
                                 });
 
