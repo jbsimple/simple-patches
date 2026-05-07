@@ -1101,9 +1101,20 @@ async function groq(prompt, model = 'llama-3.3-70b-versatile') {
     return data;
 }
 
-async function betterAutofill(title, description = null) {
+const prompt_header = "I am a third-party seller that purchases overstock products and resells them on marketplaces like eBay and Shopify.";
+const prompt_globalRestrictions = [
+    "Global restrictions:",
+    "- Do not mention warranties or manufacturer coverage.",
+    "- Do not mention anti-bacterial or anti-microbial properties.",
+    "- Do not use emojis.",
+    "- Do not use markdown formatting, use dashes for bullet dots.",
+    "- Do not hallucinate specifications, measurements, or certifications.",
+    "- If information is uncertain, keep the wording general instead of inventing details."
+]
+
+async function listing_autofill_desc(title, description = null) {
     let prompt = [
-        "I am a third-party seller that purchases overstock products and resells them on marketplaces like eBay and Shopify.",
+        prompt_header,
         "Generate a clean, factual, marketplace-style product description in plain text only.",
 
         "Your response must follow this exact structure:",
@@ -1154,29 +1165,100 @@ async function betterAutofill(title, description = null) {
         "- Focus on compatibility, materials, functionality, dimensions, connectivity, included items, or practical usage when known.",
         "- Do not repeat the same information excessively.",
 
-        "Global restrictions:",
-        "- Do not mention warranties or manufacturer coverage.",
-        "- Do not mention anti-bacterial or anti-microbial properties.",
-        "- Do not use emojis.",
-        "- Do not use markdown formatting except for the bullet list.",
-        "- Do not hallucinate specifications, measurements, or certifications.",
-        "- If information is uncertain, keep the wording general instead of inventing details.",
+        prompt_globalRestrictions,
 
         "Lightning cable rule:",
         "- If the product uses Apple's Lightning connector, do not use the word 'Lightning'.",
         "- Instead, refer to it as an 'MFI (Made For Apple) 8-pin connector' or 'MFI 8-pin cable' when appropriate.",
-        "- Do not incorrectly apply this rule to unrelated products."
-    ];
+        "- Do not incorrectly apply this rule to unrelated products.",
 
-    if (title !== null && title !== '') {
-        prompt.push(`The product title is: "${title}".`);
-    }
+        `Product Title:\n${title}`,
+        description ? `Addiitonal Product Details:\n${description}` : '',
+    ].filter(Boolean).join("\n\n");
 
-    if (description !== null && description !== '') {
-        prompt.push(`Additional product information: "${description}".`)
-    }
-
-    const response = await groq(prompt.join("\n"));
+    const response = await groq(prompt);
     console.log(response.response);
+    return response.response;
 
+}
+
+async function listing_autofill_attrib(attrib, title, description = '') {
+    // attrib example:
+    // {
+    //     "color": {
+    //         "required": true,
+    //         "type": "string",
+    //         "description": "Primary product color",
+    //         "values": ["black", "white", "green", "yellow"]
+    //     }
+    // }
+
+    let prompt = [
+        prompt_header,
+
+        "You are filling out product listing attributes for an ecommerce marketplace listing.",
+        "Your task is to determine the most accurate value for each attribute based only on the provided product information.",
+
+        "Rules:",
+        "- Use only information that is explicitly known from the title, description, images, or provided data.",
+        "- Do not invent specifications, features, measurements, compatibility, or materials.",
+        "- If an attribute contains a \"values\" array, you MUST choose the single best matching value from that list.",
+        "- Never generate a custom value when a \"values\" list exists.",
+        "- If multiple values could apply, choose the most specific and accurate option.",
+        "- If the correct value cannot be confidently determined, return null for that attribute.",
+        "- Match the required data type exactly.",
+        "- Keep generated values short, clean, and marketplace-friendly.",
+        "- Do not explain your reasoning.",
+        "- Return ONLY valid JSON.",
+        "- Preserve the original attribute keys exactly as provided.",
+        "- If an attribute has \"required\": true, always include it in the response.",
+        "- If a required attribute cannot be confidently determined, set its value to null.",
+        "- If an attribute has \"required\": false and no confident value exists, omit it entirely from the response.",
+
+        "Attribute JSON format explanation:",
+        "- The top-level key is the attribute name.",
+        "- \"required\" is a boolean for if that attribute value is required in your response.",
+        "- \"type\" defines the required value type.",
+        "- \"description\" provides extra context about the attribute (not always present).",
+        "- \"values\" means the value must be selected from the provided options (not always present).",
+
+        "Example attribute input:",
+        JSON.stringify({
+            color: {
+                required: true,
+                type: "string",
+                description: "Primary product color",
+                values: ["black", "white", "green", "yellow"]
+            },
+            brand: {
+                required: true,
+                type: "string",
+                description: "Manufacturer or brand name"
+            },
+            size: {
+                required: false,
+                type: "string",
+                values: ["XS", "S", "M", "L", "XL"]
+            }
+        }, null, 2),
+
+        "Example valid response:",
+        JSON.stringify({
+            color: "black",
+            brand: "Nike",
+            size: "L"
+        }, null, 2),
+
+        prompt_globalRestrictions,
+
+        `Product Title:\n${title}`,
+        description ? `Product Description:\n${description}` : '',
+
+        "Attributes to fill:",
+        JSON.stringify(attrib, null, 2),
+    ].filter(Boolean).join("\n\n");
+
+    const response = await groq(prompt);
+    console.log(response.response);
+    return response.response;
 }
