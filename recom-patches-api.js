@@ -1101,20 +1101,10 @@ async function groq(prompt, model = 'llama-3.3-70b-versatile') {
     return data;
 }
 
-const prompt_header = "I am a third-party seller that purchases overstock products and resells them on marketplaces like eBay and Shopify.";
-const prompt_globalRestrictions = [
-    "Global restrictions:",
-    "- Do not mention warranties or manufacturer coverage.",
-    "- Do not mention anti-bacterial or anti-microbial properties.",
-    "- Do not use emojis.",
-    "- Do not use markdown formatting, use dashes for bullet dots.",
-    "- Do not hallucinate specifications, measurements, or certifications.",
-    "- If information is uncertain, keep the wording general instead of inventing details."
-]
-
 async function listing_autofill_desc(title = null, description = null) {
     let prompt = [
-        prompt_header,
+        "I am a third-party seller that purchases overstock products and resells them on marketplaces like eBay and Shopify.",
+
         "Generate a clean, factual, marketplace-style product description in plain text only.",
 
         "Your response must follow this exact structure:",
@@ -1165,7 +1155,13 @@ async function listing_autofill_desc(title = null, description = null) {
         "- Focus on compatibility, materials, functionality, dimensions, connectivity, included items, or practical usage when known.",
         "- Do not repeat the same information excessively.",
 
-        prompt_globalRestrictions,
+        "Global restrictions:",
+        "- Do not mention warranties or manufacturer coverage.",
+        "- Do not mention anti-bacterial or anti-microbial properties.",
+        "- Do not use emojis.",
+        "- Do not use markdown formatting, use dashes for bullet dots.",
+        "- Do not hallucinate specifications, measurements, or certifications.",
+        "- If information is uncertain, keep the wording general instead of inventing details.",
 
         "Lightning cable rule:",
         "- If the product uses Apple's Lightning connector, do not use the word 'Lightning'.",
@@ -1180,124 +1176,4 @@ async function listing_autofill_desc(title = null, description = null) {
     console.log(response.response);
     return response.response;
 
-}
-
-// request too large :(
-async function listing_autofill_attrib(attrib = null, title = null, description = null) {
-    // attrib example:
-    // {
-    //     "color": {
-    //         "required": true,
-    //         "description": "Primary product color",
-    //         "values": ["black", "white", "green", "yellow"]
-    //     }
-    // }
-
-    if (attrib === null) {
-        const attribHTML = document.getElementById('product-specs');
-        if (!attribHTML) {
-            fireSwal('Groq Error', 'Unable to find #product-specs', 'error', false);
-            console.error('PATCHES - Unable to find #product-specs');
-            return '';
-        }
-        attrib = {};
-        const attribLines = attribHTML.querySelectorAll('div[data-repeater-item]');
-        attribLines.forEach(line => {
-            const nameInput = line.querySelector('input[name^="product[specs]["][name$="[name]"]');
-            if (!nameInput) return;
-
-            const name = nameInput.value.trim();
-            const required = nameInput.hasAttribute('required');
-
-            const valuesInput = line.querySelector('select[name^="product[specs]["][name$="[values][]"]');
-            if (!valuesInput) return;
-
-            let values = [];
-            valuesInput.querySelectorAll('option[value]').forEach(opt => { values.push(opt.getAttribute('value')); });
-
-            attrib[name] = {required, description, values};
-
-        });
-    }
-
-    if (title === null) {
-        const titleInput = document.querySelector('input[name="product[name]"]');
-        if (!titleInput) {
-            fireSwal('Groq Error', 'Unable to find input[name="product[name]"]', 'error', false);
-            console.error('PATCHES - Unable to find input[name="product[name]"]');
-            return '';
-        }
-        title = titleInput.value.trim();
-    }
-
-    if (description === null) {
-        const descInput = document.getElementById('product_desc');
-        if (descInput) { // okay to not be there
-            description = descInput.value.trim();
-        }
-    }
-
-    let prompt = [
-        prompt_header,
-
-        "You are filling out product listing attributes for an ecommerce marketplace listing.",
-        "Your task is to determine the most accurate value for each attribute based only on the provided product information.",
-
-        "Rules:",
-        "- Use only information that is explicitly known from the title, description, images, or provided data.",
-        "- Do not invent specifications, features, measurements, compatibility, or materials.",
-        "- If an attribute contains a \"values\" array, you MUST choose the single best matching value from that list.",
-        "- Never generate a custom value when a \"values\" list exists.",
-        "- If multiple values could apply, choose the most specific and accurate option.",
-        "- If the correct value cannot be confidently determined, return null for that attribute.",
-        "- Keep generated values short, clean, and marketplace-friendly.",
-        "- Do not explain your reasoning.",
-        "- Return ONLY valid JSON.",
-        "- Preserve the original attribute keys exactly as provided.",
-        "- If an attribute has \"required\": true, always include it in the response.",
-        "- If a required attribute cannot be confidently determined, set its value to null.",
-        "- If an attribute has \"required\": false and no confident value exists, omit it entirely from the response.",
-
-        "Attribute JSON format explanation:",
-        "- The top-level key is the attribute name.",
-        "- \"required\" is a boolean for if that attribute value is required in your response.",
-        "- \"description\" provides extra context about the attribute (not always present).",
-        "- \"values\" means the value must be selected from the provided options (not always present).",
-
-        "Example attribute input:",
-        JSON.stringify({
-            color: {
-                required: true,
-                description: "Primary product color",
-                values: ["black", "white", "green", "yellow"]
-            },
-            brand: {
-                required: true,
-                description: "Manufacturer or brand name"
-            },
-            size: {
-                required: false,
-                values: ["XS", "S", "M", "L", "XL"]
-            }
-        }, null, 2),
-
-        "Example valid response:",
-        JSON.stringify({
-            color: "black",
-            brand: "Nike",
-            size: "L"
-        }, null, 2),
-
-        prompt_globalRestrictions,
-
-        `Product Title:\n${title}`,
-        description ? `Product Description:\n${description}` : '',
-
-        "Attributes to fill:",
-        JSON.stringify(attrib, null, 2),
-    ].filter(Boolean).join("\n\n");
-
-    const response = await groq(prompt);
-    console.log(response.response);
-    return response.response;
 }
