@@ -1112,7 +1112,7 @@ const prompt_globalRestrictions = [
     "- If information is uncertain, keep the wording general instead of inventing details."
 ]
 
-async function listing_autofill_desc(title, description = null) {
+async function listing_autofill_desc(title = null, description = null) {
     let prompt = [
         prompt_header,
         "Generate a clean, factual, marketplace-style product description in plain text only.",
@@ -1182,16 +1182,59 @@ async function listing_autofill_desc(title, description = null) {
 
 }
 
-async function listing_autofill_attrib(attrib, title, description = '') {
+async function listing_autofill_attrib(attrib = null, title = null, description = null) {
     // attrib example:
     // {
     //     "color": {
     //         "required": true,
-    //         "type": "string",
     //         "description": "Primary product color",
     //         "values": ["black", "white", "green", "yellow"]
     //     }
     // }
+
+    if (attrib === null) {
+        const attribHTML = document.getElementById('product-specs');
+        if (!attribHTML) {
+            fireSwal('Groq Error', 'Unable to find #product-specs', 'error', false);
+            console.error('PATCHES - Unable to find #product-specs');
+            return '';
+        }
+        attrib = {};
+        const attribLines = attribHTML.querySelectorAll('div[data-repeater-item]');
+        attribLines.forEach(line => {
+            const nameInput = line.querySelector('input[name^="product[specs]["][name$="[name]"]');
+            if (!nameInput) continue;
+
+            const name = nameInput.value.trim();
+            const required = nameInput.hasAttribute('required');
+
+            const valuesInput = line.querySelector('select[name^="product[specs]["][name$="[values][]"]');
+            if (!valuesInput) continue;
+
+            let values = [];
+            valuesInput.querySelectorAll('option[value]').forEach(opt => { values.push(opt.getAttribute('value')); });
+
+            attrib[name] = {required, description, values};
+
+        });
+    }
+
+    if (title === null) {
+        const titleInput = document.querySelector('input[name="product[name]"]');
+        if (!titleInput) {
+            fireSwal('Groq Error', 'Unable to find input[name="product[name]"]', 'error', false);
+            console.error('PATCHES - Unable to find input[name="product[name]"]');
+            return '';
+        }
+        title = titleInput.value.trim();
+    }
+
+    if (description === null) {
+        const descInput = document.getElementById('product_desc');
+        if (descInput) { // okay to not be there
+            description = descInput.value.trim();
+        }
+    }
 
     let prompt = [
         prompt_header,
@@ -1206,7 +1249,6 @@ async function listing_autofill_attrib(attrib, title, description = '') {
         "- Never generate a custom value when a \"values\" list exists.",
         "- If multiple values could apply, choose the most specific and accurate option.",
         "- If the correct value cannot be confidently determined, return null for that attribute.",
-        "- Match the required data type exactly.",
         "- Keep generated values short, clean, and marketplace-friendly.",
         "- Do not explain your reasoning.",
         "- Return ONLY valid JSON.",
@@ -1218,7 +1260,6 @@ async function listing_autofill_attrib(attrib, title, description = '') {
         "Attribute JSON format explanation:",
         "- The top-level key is the attribute name.",
         "- \"required\" is a boolean for if that attribute value is required in your response.",
-        "- \"type\" defines the required value type.",
         "- \"description\" provides extra context about the attribute (not always present).",
         "- \"values\" means the value must be selected from the provided options (not always present).",
 
@@ -1226,18 +1267,15 @@ async function listing_autofill_attrib(attrib, title, description = '') {
         JSON.stringify({
             color: {
                 required: true,
-                type: "string",
                 description: "Primary product color",
                 values: ["black", "white", "green", "yellow"]
             },
             brand: {
                 required: true,
-                type: "string",
                 description: "Manufacturer or brand name"
             },
             size: {
                 required: false,
-                type: "string",
                 values: ["XS", "S", "M", "L", "XL"]
             }
         }, null, 2),
