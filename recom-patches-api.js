@@ -1203,13 +1203,13 @@ async function listing_autofill_attrib(attrib = null, title = null, description 
         const attribLines = attribHTML.querySelectorAll('div[data-repeater-item]');
         attribLines.forEach(line => {
             const nameInput = line.querySelector('input[name^="product[specs]["][name$="[name]"]');
-            if (!nameInput) continue;
+            if (!nameInput) return;
 
             const name = nameInput.value.trim();
             const required = nameInput.hasAttribute('required');
 
             const valuesInput = line.querySelector('select[name^="product[specs]["][name$="[values][]"]');
-            if (!valuesInput) continue;
+            if (!valuesInput) return;
 
             let values = [];
             valuesInput.querySelectorAll('option[value]').forEach(opt => { values.push(opt.getAttribute('value')); });
