@@ -62,10 +62,11 @@ async function hijackPrefillWindow(updateLocation = true) {
 
                     const submitButton = document.getElementById('rc_ajax_modal_submit');
                     let sku = form.querySelector('input[name="item[sku]"]'); //default grab
-                    if (submitButton && sku) {
+                    if (submitButton && sku && !submitButton.dataset.patchesBound) {
+                        submitButton.dataset.patchesBound = 'true';
+                        let fired = false;
                         submitButton.addEventListener('click', async function() {
                             sku = form.querySelector('input[name="item[sku]"]'); //regrab
-                            let fired = false;
                             if (sku && sku.value !== '' && sku.value.length > 0) {
                                 if (fired) return;
                                 const observer = new MutationObserver(() => {
@@ -73,8 +74,9 @@ async function hijackPrefillWindow(updateLocation = true) {
                                     if (!swal) return;
                                     const text = swal.innerText || swal.textContent || '';
                                     if (text.toLowerCase().includes('saved successfully')) {
-                                        opened = true;
+                                        fired = true;
                                         observer.disconnect();
+
                                         setTimeout(() => {
                                             window.open(`${window.location.origin}/product/items/${sku.value}`, '_blank');
                                         }, 1000);
