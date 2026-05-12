@@ -1,22 +1,11 @@
 export default async function handler(req, res) {
 
-    const origin = req.headers.origin;
-    if (!origin) { return res.status(403).json({ success: false, error: "Missing origin" }); }
-    let originHost;
-    try {
-        originHost = new URL(origin).host;
-    } catch {
-        return res.status(400).json({ success: false, error: "Invalid origin" });
-    }
-
-    const host = req.headers.host;
-    if (originHost !== host) { return res.status(403).json({ success: false, error: "Cross-origin blocked" }); }
-    res.setHeader("Access-Control-Allow-Origin", origin);
-    res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    res.setHeader("Vary", "Origin");
 
     if (req.method === "OPTIONS") { return res.status(200).end(); }
+    if (req.method !== "GET") { return res.status(405).json({ success: false, error: "Invalid Method, GET required." }); }
 
     if (!req.query.key || req.query.key !== process.env.listing_dashboard_key) { return res.status(403).json({ success: false, error: "Invalid access key." }); }
 
@@ -26,8 +15,6 @@ export default async function handler(req, res) {
 
     const token = process.env.PROD_API_KEY ?? null;
     if (!token) { return res.status(500).json({ success: false, error: "Missing API token" }); }
-
-    if (req.method !== "GET") { return res.status(405).json({ success: false, error: "Invalid Method, GET required." }); }
 
     try {
 
