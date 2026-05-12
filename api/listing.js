@@ -18,16 +18,18 @@ export default async function handler(req, res) {
 
     try {
 
-        const in_stock = await fetchSet("gte", 1);
-        //const no_stock = await fetchSet("lte", 0);
-        //const items = [...in_stock, ...no_stock];
-        const items = in_stock; // test
+        const [in_stock, no_stock] = await Promise.all([
+            fetchSet("gte", 1),
+            fetchSet("lte", 0)
+        ]);
+
+        const items = [...in_stock, ...no_stock];
 
         return res.status(200).json({
             success: true,
             items,
-            items_count: items.length,
-            rel: allowedOrigins[0]
+            count: items.length,
+            rel: allowedOrigins[0],
         });
 
     } catch (err) {
@@ -43,7 +45,7 @@ export default async function handler(req, res) {
         let has_more = false;
         let data = [];
         do {
-            const result = await fetchPage("gte", 1, page);
+            const result = await fetchPage(operator, 1, page);
             if (Array.isArray(result.data)) { data.push(...result.data); }
             has_more = result?.meta?.has_more === true;
             page++;
@@ -61,7 +63,7 @@ export default async function handler(req, res) {
                 {
                     "field": "product_items.in_stock",
                     "operator": operator,
-                    "value": "1"
+                    "value": String(value)
                 }
             ],
             columns: ["products.sid","products.name","product_items.id","product_items.sku","conditions.name","product_items.condition_id","product_items.title","products.description","first_image","product_items.available","product_items.in_stock","product_items.price","product_items.min_price","product_items.max_price","product_items.bulk_price","product_items.seller_price","products.msrp","product_items.location","brands.name","products.brand_id","categories.name","products.category_id","categories.type","products.weight","products.mpn","products.gtin","products.asin","products.dimensions","product_items.store_settings","products.specs","product_items.flags","product_items.is_scrap","product_items.has_fba","product_items.status","product_items.sold_at","product_items.priced_at","product_items.created_at","product_items.updated_at"]
