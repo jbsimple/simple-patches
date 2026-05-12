@@ -84,6 +84,16 @@ ul {
 	margin-bottom: 32px
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+p {
+    margin: 0;
+    padding: 0;
+}
+
 .error-title {
 	font-size: 2rem;
 	padding-left: 22px;
