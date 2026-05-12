@@ -1,12 +1,6 @@
 // api fetch
 async function fetchAPI(route, { params = {}, body = null } = {}, options = {}) {
-
-    if (!["meta", "reports"].includes(route)) {
-        throw new Error("Invalid route");
-    }
-
     let url = `https://simple-patches.vercel.app/api/fetch?route=${route}`;
-
     if (route === "meta" && params && Object.keys(params).length > 0) {
         const query = new URLSearchParams(params).toString();
         url += `&${query}`;
@@ -22,12 +16,8 @@ async function fetchAPI(route, { params = {}, body = null } = {}, options = {}) 
     };
 
     if (route === "reports") {
-        if (!body || !body.type) {
-            throw new Error("Missing report body or type");
-        }
-
+        if (!body || !body.type) { throw new Error("Missing report body or type"); }
         body.filters = Array.isArray(body.filters) ? body.filters : [];
-
         fetchOptions.body = JSON.stringify(body);
     }
 
