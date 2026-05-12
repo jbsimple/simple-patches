@@ -1,33 +1,52 @@
 export default async function handler(req, res) {
 
-    const allowedOrigins = (process.env.ALLOWED_ORIGINS || "").split(",").map(o => o.trim()).filter(Boolean);
+    const allowedOrigins = (process.env.ALLOWED_ORIGINS || "")
+        .split(",")
+        .map(o => o.trim())
+        .filter(Boolean);
+
     const origin = req.headers.origin;
-    res.setHeader("Vary", "Origin");
-    if (allowedOrigins.includes(origin)) { res.setHeader("Access-Control-Allow-Origin", origin); }
+
+    if (!origin || !allowedOrigins.includes(origin)) {
+        return res.status(403).json({ success: false, error: "Origin not allowed" });
+    }
+
+    res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    if (req.method === "OPTIONS") { return res.status(200).end(); }
 
-    if (!origin || !allowedOrigins.includes(origin)) { return res.status(403).json({ success: false, error: "Origin not allowed", origin, allowedOrigins }); }
+    if (req.method === "OPTIONS") {
+        return res.status(200).end();
+    }
 
-    if (req.method === "OPTIONS") { return res.status(200).end(); }
+    if (!["GET", "POST"].includes(req.method)) {
+        return res.status(405).json({ success: false, error: "Method not allowed" });
+    }
 
-    if (!["GET", "POST"].includes(req.method)) { return res.status(405).json({ success: false, error: "Method not allowed" }); }
     const referrerHeader = req.headers.referer || req.headers.origin;
 
-    if (!referrerHeader) { return res.status(403).json({ success: false, error: "Missing referrer" }); }
+    if (!referrerHeader) {
+        return res.status(403).json({ success: false, error: "Missing referrer" });
+    }
 
     let hostname;
+
     try {
         hostname = new URL(referrerHeader).hostname;
     } catch {
         return res.status(400).json({ success: false, error: "Invalid referrer" });
     }
 
-    let token = hostname.startsWith("dev.") ? process.env.DEV_API_KEY : process.env.PROD_API_KEY;
-    if (!token) { return res.status(500).json({ success: false, error: "Missing API token" }); }
+    let token = hostname.startsWith("dev.")
+        ? process.env.DEV_API_KEY
+        : process.env.PROD_API_KEY;
+
+    if (!token) {
+        return res.status(500).json({ success: false, error: "Missing API token" });
+    }
 
     let apiURL;
+
     try {
         switch (req.query.route) {
             case "meta":
