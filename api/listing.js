@@ -20,10 +20,9 @@ export default async function handler(req, res) {
 
     try {
 
-        const [in_stock, no_stock] = await Promise.all([
-            fetchSet("gte", 1),
-            fetchSet("lte", 0)
-        ]);
+        const in_stock = await fetchSet("gte", 1);
+        await sleep(1000);
+        const no_stock = await fetchSet("lte", 0);
 
         const items = [...in_stock, ...no_stock];
 
@@ -48,10 +47,13 @@ export default async function handler(req, res) {
         let has_more = false;
         let data = [];
         do {
-            const result = await fetchPage(operator, 1, page);
+            const result = await fetchPage(operator, value, page, limit);
             if (Array.isArray(result.data)) { data.push(...result.data); }
             has_more = result?.meta?.has_more === true;
             page++;
+            if (has_more) {
+                await sleep(500);
+            }
         } while (has_more);
 
         return data;
