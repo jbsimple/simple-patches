@@ -186,10 +186,11 @@ body {
     min-height: 100vh;
 }
 
-body > * {
+header,
+main,
+footer {
     width: 90%;
     max-width: 1200px;
-    display: flex;
 }
 
 header {
