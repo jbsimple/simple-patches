@@ -56,7 +56,7 @@ export default async function handler(req, res) {
             return res.status(response.status).json({ success: response.ok, data });
         }
 
-        if (route === "products") {
+        if (route === "items") {
             if (req.method !== "POST") { return res.status(405).json({ success: false, error: "Reports require POST" }); }
             apiURL = `https://${hostname}/api/v1/reports`;
             let data = [];
