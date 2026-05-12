@@ -42,6 +42,10 @@ export default async function handler(req, res) {
         });
     }
 
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
     async function fetchSet(operator, value, limit = 1000) {
         let page = 1;
         let has_more = false;
