@@ -1632,15 +1632,36 @@ async function fetchPurchaseOrdersList(onlyIds = false) {
 
 function bustUserTracker() {
     function simulateUserActivity() {
-        console.debug('PATCHES - Simulated events for userTracker');
-        const events = ["mousemove", "keydown", "scroll", "click"];
-        events.forEach(eventType => {
-            const event = new Event(eventType, {
+        console.debug('PATCHES - [User Tracker Buster]: Simulated events for userTracker.');
+        const target = document.body || document.documentElement || window;
+        const events = [
+            new MouseEvent('mousemove', {
                 bubbles: true,
                 cancelable: true,
-            });
-            document.dispatchEvent(event);
-        });
+                view: window,
+                clientX: 1,
+                clientY: 1
+            }),
+
+            new KeyboardEvent('keydown', {
+                bubbles: true,
+                cancelable: true,
+                key: 'Shift'
+            }),
+
+            new Event('scroll', {
+                bubbles: true,
+                cancelable: true
+            }),
+
+            new MouseEvent('click', {
+                bubbles: true,
+                cancelable: true,
+                view: window
+            })
+        ];
+
+        events.forEach(event => { target.dispatchEvent(event); });
     }
 
     const workerCode = `
@@ -1673,7 +1694,7 @@ function bustUserTracker() {
     document.addEventListener('visibilitychange', () => {
         console.debug('Document visibility changed:', document.visibilityState);
         if (document.visibilityState === 'hidden') {
-            console.debug('Entering aggressive simulation mode');
+            console.debug('PATCHES - [User Tracker Buster]: Visibility changed, Entering aggressive simulation mode.');
 
             if (!aggressiveIntervalId) {
                 aggressiveIntervalId = setInterval(() => {
@@ -1681,7 +1702,7 @@ function bustUserTracker() {
                 }, 10000); // when tab not visible, change to 10s to "bypass" browser inactive tab behavior
             }
         } else {
-            console.debug('Resuming normal simulation mode');
+            console.debug('PATCHES - [User Tracker Buster]: Visibility changed, Entering normal simulation mode.');
             if (aggressiveIntervalId) {
                 clearInterval(aggressiveIntervalId);
                 aggressiveIntervalId = null;
