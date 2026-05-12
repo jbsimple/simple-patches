@@ -7,17 +7,36 @@ export default async function handler(req, res) {
 
     const origin = req.headers.origin;
 
-    if (!origin || !allowedOrigins.includes(origin)) {
-        return res.status(403).json({ success: false, error: "Origin not allowed" });
-    }
-
-    res.setHeader("Access-Control-Allow-Origin", origin);
-    res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-
     if (req.method === "OPTIONS") {
+        if (origin && allowedOrigins.includes(origin)) {
+            res.setHeader("Access-Control-Allow-Origin", origin);
+        }
+
+        res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+        res.setHeader("Access-Control-Allow-Headers", "*");
+        res.setHeader("Vary", "Origin");
+
         return res.status(200).end();
     }
+
+    if (origin && allowedOrigins.includes(origin)) {
+        res.setHeader("Access-Control-Allow-Origin", origin);
+    }
+
+    res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "*");
+    res.setHeader("Vary", "Origin");
+
+    // THEN validate
+    if (!origin || !allowedOrigins.includes(origin)) {
+        return res.status(403).json({
+            success: false,
+            error: "Origin not allowed",
+            origin,
+            allowedOrigins
+        });
+    }
+
 
     if (!["GET", "POST"].includes(req.method)) {
         return res.status(405).json({ success: false, error: "Method not allowed" });
