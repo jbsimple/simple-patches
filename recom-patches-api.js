@@ -1,6 +1,12 @@
 // api fetch
 async function fetchAPI(route, { params = {}, body = null } = {}, options = {}) {
+
+    if (!["meta", "reports"].includes(route)) {
+        throw new Error("Invalid route");
+    }
+
     let url = `https://simple-patches.vercel.app/api/fetch?route=${route}`;
+
     if (route === "meta" && params && Object.keys(params).length > 0) {
         const query = new URLSearchParams(params).toString();
         url += `&${query}`;
@@ -16,8 +22,12 @@ async function fetchAPI(route, { params = {}, body = null } = {}, options = {}) 
     };
 
     if (route === "reports") {
-        if (!body || !body.type) { throw new Error("Missing report body or type"); }
+        if (!body || !body.type) {
+            throw new Error("Missing report body or type");
+        }
+
         body.filters = Array.isArray(body.filters) ? body.filters : [];
+
         fetchOptions.body = JSON.stringify(body);
     }
 
@@ -951,7 +961,130 @@ async function api_test(type = null, page = 1, per_page = 200) {
 }
 
 async function allSkusEver() {
-    return fetchAPI("items");
+    const columns = [
+        "products.sid",
+        "products.name",
+        "product_items.id",
+        "product_items.sku",
+        "conditions.name",
+        "product_items.condition_id",
+        "product_items.title",
+        "products.description",
+        "first_image",
+        "product_items.available",
+        "product_items.in_stock",
+        "product_items.price",
+        "product_items.min_price",
+        "product_items.max_price",
+        "product_items.bulk_price",
+        "product_items.seller_price",
+        "products.msrp",
+        "product_items.location",
+        "brands.name",
+        "products.brand_id",
+        "categories.name",
+        "products.category_id",
+        "categories.type",
+        "products.weight",
+        "products.mpn",
+        "products.gtin",
+        "products.asin",
+        "products.dimensions",
+        "product_items.store_settings",
+        "products.specs",
+        "product_items.flags",
+        "product_items.is_scrap",
+        "product_items.has_fba",
+        "product_items.status",
+        "product_items.sold_at",
+        "product_items.priced_at",
+        "product_items.created_at",
+        "product_items.updated_at"
+    ];
+
+    const instockData = await fetchAllPages("INSTOCK", {
+        type: "active_inventory",
+        filters: [
+            {
+                field: "product_items.in_stock",
+                operator: "gte",
+                value: 1
+            }
+        ],
+        columns
+    });
+
+    console.debug("PATCHES - Cooling down before OUTOFSTOCK...");
+    await sleep(5000);
+
+    const outofstockData = await fetchAllPages("OUTOFSTOCK", {
+        type: "active_inventory",
+        filters: [
+            {
+                field: "product_items.in_stock",
+                operator: "lte",
+                value: 0
+            }
+        ],
+        columns
+    });
+
+    return [...instockData, ...outofstockData];
+
+    async function fetchAllPages(label, baseBody) {
+        let page = 1;
+        let results = [];
+
+        while (true) {
+            console.debug(`PATCHES - [${label}] Fetching page ${page}...`);
+
+            const res = await fetchWithRetry(() =>
+                fetchAPI("reports", {
+                    body: {
+                        ...baseBody,
+                        page,
+                        per_page: 5000
+                    }
+                }),
+                3,
+                label,
+                page
+            );
+            const data = res?.data?.data || [];
+            const meta = res?.data?.meta || {};
+            results.push(...data);
+            console.debug(`PATCHES - [${label}] Page ${page} done | +${data.length} items | total=${results.length} | has_more=${meta.has_more}`);
+            if (!meta.has_more) break;
+            page++;
+            await sleep(1000);
+        }
+
+        console.debug(`PATCHES - [${label}] COMPLETE | total=${results.length}`);
+        return results;
+    }
+
+    async function fetchWithRetry(fn, maxRetries = 3, label = "", page = 0) {
+        let attempt = 1;
+
+        while (true) {
+            try {
+                return await fn();
+            } catch (err) {
+                const retryable = err?.message?.includes("429") || err?.message?.includes("500") ||err?.message?.includes("fetch");
+                console.debug(`PATCHES - [${label}] Page ${page} failed (attempt ${attempt}/${maxRetries})`, err?.message);
+                if (!retryable || attempt >= maxRetries) {
+                    console.debug(`PATCHES - [${label}] Page ${page} FAILED permanently`);
+                    throw err;
+                }
+                attempt++;
+                await sleep(5000 * attempt);
+            }
+        }
+    }
+
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
 }
 
 async function groq(prompt, model = 'llama-3.3-70b-versatile') {
