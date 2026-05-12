@@ -19,8 +19,9 @@ export default async function handler(req, res) {
     try {
 
         const in_stock = await fetchSet("gte", 1);
-        const no_stock = await fetchSet("lte", 0);
-        const items = [...in_stock, ...no_stock];
+        //const no_stock = await fetchSet("lte", 0);
+        //const items = [...in_stock, ...no_stock];
+        const items = in_stock; // test
 
         return res.status(200).json({
             success: true,
