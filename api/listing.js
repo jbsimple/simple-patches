@@ -16,6 +16,8 @@ export default async function handler(req, res) {
     const token = process.env.PROD_API_KEY ?? null;
     if (!token) { return res.status(500).json({ success: false, error: "Missing API token" }); }
 
+    let api_errors = [];
+
     try {
 
         const [in_stock, no_stock] = await Promise.all([
@@ -26,7 +28,8 @@ export default async function handler(req, res) {
         const items = [...in_stock, ...no_stock];
 
         return res.status(200).json({
-            success: true,
+            success: (api_errors.length === 0),
+            errors: api_errors,
             items,
             count: items.length,
             rel: allowedOrigins[0],
@@ -63,21 +66,37 @@ export default async function handler(req, res) {
                 {
                     "field": "product_items.in_stock",
                     "operator": operator,
-                    "value": String(value)
+                    "value": value
                 }
             ],
             columns: ["products.sid","products.name","product_items.id","product_items.sku","conditions.name","product_items.condition_id","product_items.title","products.description","first_image","product_items.available","product_items.in_stock","product_items.price","product_items.min_price","product_items.max_price","product_items.bulk_price","product_items.seller_price","products.msrp","product_items.location","brands.name","products.brand_id","categories.name","products.category_id","categories.type","products.weight","products.mpn","products.gtin","products.asin","products.dimensions","product_items.store_settings","products.specs","product_items.flags","product_items.is_scrap","product_items.has_fba","product_items.status","product_items.sold_at","product_items.priced_at","product_items.created_at","product_items.updated_at"]
         };
 
-        const response = await fetch(apiURL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify(body)
-        });
-        if (!response.ok) { throw new Error(`API request failed: ${response.status}`); }
-        return await response.json();
+        try {
+            const response = await fetch(apiURL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+                body: JSON.stringify(body)
+            });
+
+            let json = null;
+
+            try {
+                json = await response.json();
+            } catch (err) {
+                api_errors.push({ page, operator, value, status: response.status,error: "Invalid JSON response" });
+                return { data: [], meta: { has_more: false } };
+            }
+
+            if (!response.ok) {
+                api_errors.push({ page, operator, value, status: response.status, response: json });
+                return { data: [], meta: { has_more: false } }; }
+            return json;
+
+        } catch (err) {
+            api_errors.push({ page, operator, value, error: err.message });
+            return { data: [], meta: { has_more: false } };
+        }
+        
     }
 }
