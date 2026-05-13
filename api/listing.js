@@ -127,7 +127,11 @@ export default async function handler(req, res) {
     }
 
     async function itemPage(filters, page, limit = 1000, retries = tokens.length * 3) {
-        // need to add filter for specific condition ids
+        filters.push({
+            field: "product_items.condition_id",
+            operator: "in",
+            value: [1,2,4,5,6,8,9,18,31,32,34,35,38,39,42,44,45,49,71]
+        });
 
         const body = {
             type: "active_inventory",
