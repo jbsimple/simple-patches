@@ -284,7 +284,7 @@ footer {
 	border-radius: 0.5rem;
 	background-color: color-mix(in srgb, var(--secondary) 90%, var(--primary) 10%);
 	transition: background 0.1s ease-in-out;
-	height: 450px;
+	height: 400px;
 }
 
 .box .heading {
@@ -313,8 +313,8 @@ footer {
 
 .box .body img {
 	margin-bottom: 0.5rem;
-	width: 150px;
-	height: 150px;
+	width: 200px;
+	height: 200px;
 	border-radius: 0.5rem;
 }
 
@@ -323,11 +323,12 @@ footer {
 	flex-wrap: wrap;
 	align-items: center;
 	justify-content: center;
-	gap: 0.75rem;
+	gap: 1.2rem;
 }
 
 .box .body .stats * {
 	font-size: 1.1rem;
+	text-align: center;
 }
 
 .box .footing {
