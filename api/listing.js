@@ -28,7 +28,7 @@ export default async function handler(req, res) {
                 items = await fetchSet("gte", 1);
                 break;
             case "lte":
-                items = fetchSet("lte", 0);
+                items = await fetchSet("lte", 0);
                 break;
             case "err":
                 items = ['to-do'];
