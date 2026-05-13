@@ -15,8 +15,8 @@
             });
         }
 
-        const hgv = await api("hgv");
-        document.getElementById('content').appendChild(activeInventoryPrint("hgv", hgv));
+        const hvi = await api("hvi");
+        document.getElementById('content').appendChild(activeInventoryPrint("hvi", hvi));
         
         hideLoader();
     } catch (err) {
