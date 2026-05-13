@@ -89,7 +89,7 @@
 
         item["MAIN_Qty"] = parseFloat(item["MAIN_Qty"] || 0); // In Stock
         item["Price"] = parseFloat(item["Price"] || 0);
-        item["Value"] = `$${item["MAIN_Qty"] * item["Price"]}`;
+        item["Value"] = Math.round((item["MAIN_Qty"] * item["Price"]) * 100) / 100;
 
         item["Min_Price"] = parseFloat(item["Min_Price"] || 0);
         item["Max_Price"] = parseFloat(item["Max_Price"] || 0);
@@ -149,7 +149,7 @@
         return sortedItem;
     }
 
-    function activeInventoryPrint(id, list) {
+    function activeInventoryPrint(id, items) {
 
         // another round of parsing just for the html
         items = items.map(item => {
@@ -164,9 +164,11 @@
             item["Product_Image"] = (typeof item["Product_Image"] === "string" && item["Product_Image"].trim() !== "")
                 ? `<img src="${item["Product_Image"]}" width="72" height="72">`
                 : `<img src="https://s3.amazonaws.com/elog-cdn/no-image.png" width="72" height="72">`;
+
+            item["Value"] = `$${item["Value"]}`;
         })
         
-        return printTable(id, list, [
+        return printTable(id, items, [
             {"Product_Image": ""},
             {"Product_Name": "Name"},
             "SID",
