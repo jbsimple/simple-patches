@@ -90,7 +90,7 @@ a.button {
 	font-weight: 600;
 	background-color: var(--blue);
 	border-radius: 0.5rem;
-	padding: 0.7rem 0.3rem;
+	padding: 0.3rem 0.7rem;
 }
 
 a.button:active,

@@ -72,8 +72,8 @@
                 </div>
             </div>
             <div class="footing">
-                <a class="button" target="_blank" href="${rel}/product/items/${item["SKU"]}">${item["SKU"]}</a>
-                <a class="button" target="_blank" href="${rel}/products/${item["SID"]}">${item["SID"]}</a>
+                <a class="button" target="_blank" href="${rel}/product/items/${item["SKU"]}">View SKU</a>
+                <a class="button" target="_blank" href="${rel}/products/${item["SID"]}">View SID</a>
             </div>`;
             grid.appendChild(gridItem);
         });
