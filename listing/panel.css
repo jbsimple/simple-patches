@@ -72,14 +72,30 @@ body {
 
 a {
 	cursor: pointer;
-	color: var(--blue);
 	text-decoration: none;
-	transition: all .2s ease;
-	border-bottom: none;
+	transition: all .1s ease-in-out;
 }
 
-a:hover {
-	border-bottom: 1px solid var(--blue);
+a:not(a.button) {
+	color: var(--blue);
+}
+
+a:not(a.button):active,
+a:not(a.button):hover {
+	color: color-mix(in srgb, var(--blue) 75%, white 25%);
+}
+
+a.button {
+	color: white;
+	font-weight: 600;
+	background-color: var(--blue);
+	border-radius: 0.5rem;
+	padding: 0.7rem 0.3rem;
+}
+
+a.button:active,
+a.button:hover {
+	background-color: color-mix(in srgb, var(--blue) 75%, white 25%);
 }
 
 ul {
@@ -284,14 +300,14 @@ footer {
 	border-radius: 0.5rem;
 	background-color: color-mix(in srgb, var(--secondary) 90%, var(--primary) 10%);
 	transition: background 0.1s ease-in-out;
-	height: 400px;
+	height: 425px;
 }
 
 .box .heading {
 	flex-direction: row;
 	width: 100%;
 	border-bottom: var(--boxBorder);
-	padding: 1.5rem;
+	padding: 0.7rem;
 }
 
 .box .heading h3 {
@@ -335,7 +351,7 @@ footer {
 	flex-direction: row;
 	width: 100%;
 	border-top: var(--boxBorder);
-	padding: 0.3rem;
+	padding: 0.7rem;
 	gap: 1rem;
 }
 
