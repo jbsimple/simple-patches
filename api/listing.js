@@ -16,7 +16,7 @@ export default async function handler(req, res) {
     const token = process.env.PROD_API_KEY ?? null;
     if (!token) { return res.status(500).json({ success: false, error: "Missing API token" }); }
 
-    const type = req.query.key;
+    const type = req.query.type;
     if (!type || type === '') { return res.status(405).json({ success: false, error: "Please provide a type." }); }
 
     let api_errors = [];
