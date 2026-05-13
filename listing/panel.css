@@ -58,6 +58,7 @@ body {
 	max-height: -webkit-fill-available;
 	margin: 0;
 
+	color: var(--primary);
     background: var(--secondary);
 }
 
@@ -160,7 +161,7 @@ p {
 .error-code {
 	margin: 0;
 	font-size: 1.6rem;
-	color: var(--secondary);
+	color: var(--primary);
 	margin-bottom: 1.6rem;
 }
 
@@ -171,7 +172,7 @@ p {
 .devinfo-line code,
 code,
 li {
-	color: var(--secondary);
+	color: var(--primary);
 }
 
 .devinfo-line:not(:last-child) {
@@ -208,6 +209,18 @@ li {
 	.note {
 		margin-top: 16px;
 	}
+}
+
+/* swal */
+.swal2-popup {
+    background: var(--secondary) !important;
+    color: var(--primary) !important;
+    border: 1px solid var(--border);
+}
+
+.swal2-title,
+.swal2-html-container {
+    color: var(--primary) !important;
 }
 
 /* start of page structure */
