@@ -58,6 +58,9 @@ export default async function handler(req, res) {
         const requestPromise = (async () => {
             let items = [];
             switch (type) {
+                case "hvi":
+                    items = await fetchSet("gte", 1000);
+                    break;
                 case "gte":
                     items = await fetchSet("gte", 1);
                     break;

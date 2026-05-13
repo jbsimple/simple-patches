@@ -15,8 +15,8 @@
             });
         }
 
-        const gte = await api("gte");
-        document.getElementById('content').appendChild(activeInventoryPrint());
+        const hgv = await api("hgv");
+        document.getElementById('content').appendChild(activeInventoryPrint("hgv", hgv));
         
         hideLoader();
     } catch (err) {
