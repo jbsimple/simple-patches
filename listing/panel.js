@@ -119,9 +119,6 @@
             )
             : {};
 
-
-        item["Item_Flags"] = item["Item_Flags"].split("|");
-
         item["Item_Flags"] = (typeof item["Item_Flags"] === "string" && item["Item_Flags"].trim() !== "")
             ? item["Item_Flags"].split("|").map(flag => flag.trim()).filter(Boolean)
             : [];
