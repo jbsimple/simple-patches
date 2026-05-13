@@ -89,7 +89,7 @@
         // sort the keys
         const item_legend = ['SID', 'Product_Name', 'Item_ID', 'SKU', 'Condition', 'Item_Title', 'Product_Description', 'Product_Image', 'Total_SKU_Supply', 'MAIN_Qty', 'Value', 'Min_Price', 'Max_Price', 'Bulk_Price', 'Seller_Cost', 'Product_MSRP', 'Full_Location', 'Brand', 'Category', 'Category_Type', 'Weight', 'MPN', 'GTIN_UPC', 'ASIN', 'Product_dimensions', 'Length', 'Width', 'Height', 'Listing_Template', 'Product_Attributes', 'Item_Flags', 'Scrap_Flag', 'Has_FBA', 'Item_Status', 'Last_Sale_Date', 'Last_Price_Date', 'Created_Date', 'Updated_Date'];
         const sortedItem = {};
-        itemLegend.forEach(key => {
+        item_legend.forEach(key => {
             if (key in item) {
                 sortedItem[key] = item[key];
             }
@@ -104,7 +104,7 @@
 
     function printTable(id, list, columns = null) {
         if (!Array.isArray(list)) {
-            console.error('printTable: list must be an array');
+            console.error('printTable: list must be an array', list);
             return;
         }
 
