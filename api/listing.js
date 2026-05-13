@@ -16,16 +16,27 @@ export default async function handler(req, res) {
     const token = process.env.PROD_API_KEY ?? null;
     if (!token) { return res.status(500).json({ success: false, error: "Missing API token" }); }
 
+    const type = req.query.key;
+    if (!type || type === '') { return res.status(405).json({ success: false, error: "Please provide a type." }); }
+
     let api_errors = [];
 
     try {
+        let items = [];
+        switch (type) {
+            case "gte":
+                items = await fetchSet("gte", 1);
+                break;
+            case "lte":
+                items = fetchSet("lte", 0);
+                break;
+            case "err":
+                items = ['to-do'];
+                break;
+            default:
+                return res.status(404).json({ success: false, error: "Invalid type." });
 
-        const [in_stock, no_stock] = await Promise.all([
-            fetchSet("gte", 1),
-            fetchSet("lte", 0)
-        ]);
-
-        const items = [...in_stock, ...no_stock];
+        }
 
         return res.status(200).json({
             success: (api_errors.length === 0),
