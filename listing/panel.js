@@ -16,7 +16,7 @@
         }
 
         const gte = await api("gte");
-        document.getElementById('content').appendChild(printTable("gte", gte, ["Product_Image", "Product_Name", "SID", "SKU", "Condition", "MAIN_Qty", "Price", "Value"]));
+        document.getElementById('content').appendChild(activeInventoryPrint());
         
         hideLoader();
     } catch (err) {
@@ -78,15 +78,18 @@
     }
 
     function parseItem(item) {
-        item["Product_Image"] = (typeof item["Product_Image"] === "string" && item["Product_Image"].trim() !== "")
-            ? `<img src="${item["Product_Image"]}" width="72" height="72">`
+        item["SID_html"] = (typeof item["SID"] === "string" && item["SID"].trim() !== "")
+            ? `<a target="_blank" href="${rel}/products/${item["SID"]}"`
+            : item["SID"];
+        item["Product_Image_html"] = (typeof item["Product_Image"] === "string" && item["Product_Image"].trim() !== "")
+            ? `<img loading="lazy" src="${item["Product_Image"]}" width="72" height="72">`
             : `<img src="https://s3.amazonaws.com/elog-cdn/no-image.png" width="72" height="72">`;
 
         item["Total_SKU_Supply"] = parseFloat(item["Total_SKU_Supply"] || 0); // Available
 
         item["MAIN_Qty"] = parseFloat(item["MAIN_Qty"] || 0); // In Stock
-        item["Price"] = parseFloat(item["MAIN_Qty"] || 0);
-        item["Value"] = item["MAIN_Qty"] * item["Price"];
+        item["Price"] = parseFloat(item["Price"] || 0);
+        item["Value"] = `$${item["MAIN_Qty"] * item["Price"]}`;
 
         item["Min_Price"] = parseFloat(item["Min_Price"] || 0);
         item["Max_Price"] = parseFloat(item["Max_Price"] || 0);
@@ -146,11 +149,34 @@
         return sortedItem;
     }
 
+    function activeInventoryPrint(id, list) {
+        return printTable(id, list, [
+            {"Product_Image": ""},
+            {"Product_Name": "Name"},
+            "SID",
+            "SKU",
+            "Condition",
+            {"MAIN_Qty": "In Stock"},
+            "Price",
+            "Value"
+        ]);
+    }
+
     function printTable(id, list, columns = null) {
         if (!Array.isArray(list)) {
             console.error('printTable: list must be an array', list);
             return;
         }
+
+        const normalizedColumns = columns.map(column => {
+            if (typeof column === 'string') { return { key: column, label: column }; }
+
+            if (typeof column === 'object' && column !== null) {
+                const key = Object.keys(column)[0];
+                return { key, label: column[key] };
+            }
+            return { key: '', label: '' };
+        });
 
         if (!Array.isArray(columns) || columns.length === 0) {
             const keys = new Set();
@@ -166,7 +192,7 @@
             const headerRow = document.createElement('tr');
             columns.forEach(column => {
                 const th = document.createElement('th');
-                th.textContent = column;
+                th.textContent = column.label;
                 headerRow.appendChild(th);
             });
             thead.appendChild(headerRow);
@@ -185,7 +211,7 @@
             const headerRow = document.createElement('tr');
             columns.forEach(column => {
                 const th = document.createElement('th');
-                th.textContent = column;
+                th.textContent = column.label;
                 headerRow.appendChild(th);
             });
             thead.appendChild(headerRow);
@@ -201,7 +227,7 @@
             const row = document.createElement('tr');
             columns.forEach(column => {
                 const td = document.createElement('td');
-                let value = item?.[column];
+                let value = item?.[column.key];
                 if (Array.isArray(value)) {
                     value = value.join(', ');
                 } else if (typeof value === 'object' && value !== null) {
