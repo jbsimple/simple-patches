@@ -150,6 +150,22 @@
     }
 
     function activeInventoryPrint(id, list) {
+
+        // another round of parsing just for the html
+        items = items.map(item => {
+            item["SID"] = (typeof item["SID"] === "string" && item["SID"].trim() !== "")
+                ? `<a target="_blank" href="${rel}/products/${item["SID"]}"`
+                : item["SID"];
+
+            item["SKU"] = (typeof item["SKU"] === "string" && item["SKU"].trim() !== "")
+                ? `<a target="_blank" href="${rel}/product/items/${item["SKU"]}"`
+                : item["SKU"];
+
+            item["Product_Image"] = (typeof item["Product_Image"] === "string" && item["Product_Image"].trim() !== "")
+                ? `<img src="${item["Product_Image"]}" width="72" height="72">`
+                : `<img src="https://s3.amazonaws.com/elog-cdn/no-image.png" width="72" height="72">`;
+        })
+        
         return printTable(id, list, [
             {"Product_Image": ""},
             {"Product_Name": "Name"},
