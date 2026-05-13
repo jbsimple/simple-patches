@@ -281,7 +281,7 @@ footer {
 	flex-direction: column;
 	gap: 0.7rem;
 	border: var(--boxBorder);
-	border-radius: 0.3rem;
+	border-radius: 0.5rem;
 	background-color: color-mix(in srgb, var(--secondary) 90%, var(--primary) 10%);
 	transition: background 0.1s ease-in-out;
 	height: 450px;
@@ -296,6 +296,7 @@ footer {
 
 .box .heading h3 {
 	flex: 1;
+	font-size: 1.5rem;
 }
 
 .box .body {
@@ -306,15 +307,15 @@ footer {
 }
 
 .box .body h4 {
-	font-size: 0.9rem;
+	font-size: 1.2rem;
 	text-align: center;
 }
 
-
 .box .body img {
 	margin-bottom: 0.5rem;
-	width: 64px;
-	height: 64px;
+	width: 150px;
+	height: 150px;
+	border-radius: 0.5rem;
 }
 
 .box .body .stats {
@@ -326,7 +327,7 @@ footer {
 }
 
 .box .body .stats * {
-	font-size: 0.8rem;
+	font-size: 1rem;
 }
 
 .box .footing {
