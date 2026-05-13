@@ -166,7 +166,9 @@
                 : `<img src="https://s3.amazonaws.com/elog-cdn/no-image.png" width="72" height="72">`;
 
             item["Value"] = `$${item["Value"]}`;
-        })
+
+            return item;
+        });
         
         return printTable(id, items, [
             {"Product_Image": ""},
