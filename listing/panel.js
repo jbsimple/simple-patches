@@ -163,20 +163,7 @@
     }
 
     function printTable(id, list, columns = null) {
-        if (!Array.isArray(list)) {
-            console.error('printTable: list must be an array', list);
-            return;
-        }
-
-        const normalizedColumns = columns.map(column => {
-            if (typeof column === 'string') { return { key: column, label: column }; }
-
-            if (typeof column === 'object' && column !== null) {
-                const key = Object.keys(column)[0];
-                return { key, label: column[key] };
-            }
-            return { key: '', label: '' };
-        });
+        if (!Array.isArray(list)) { console.error('printTable: list must be an array', list); return; }
 
         if (!Array.isArray(columns) || columns.length === 0) {
             const keys = new Set();
@@ -184,60 +171,81 @@
             columns = Array.from(keys);
         }
 
+        columns = columns.map(column => {
+            if (typeof column === 'string') { return { key: column, label: column }; }
+
+            if (typeof column === 'object' && column !== null) {
+                const key = Object.keys(column)[0];
+                return { key, label: column[key] };
+            }
+
+            return { key: '', label: '' };
+        });
+
         let table = document.getElementById(id);
+
         if (!table) {
             table = document.createElement('table');
             table.id = id;
-            const thead = document.createElement('thead');
-            const headerRow = document.createElement('tr');
-            columns.forEach(column => {
-                const th = document.createElement('th');
-                th.textContent = column.label;
-                headerRow.appendChild(th);
-            });
-            thead.appendChild(headerRow);
-            table.appendChild(thead);
-            const tbody = document.createElement('tbody');
-            table.appendChild(tbody);
-            document.body.appendChild(table);
 
-        } else {
-            let thead = table.querySelector('thead');
-            if (!thead) {
-                thead = document.createElement('thead');
-                table.prepend(thead);
-            }
-            thead.innerHTML = '';
-            const headerRow = document.createElement('tr');
-            columns.forEach(column => {
-                const th = document.createElement('th');
-                th.textContent = column.label;
-                headerRow.appendChild(th);
-            });
-            thead.appendChild(headerRow);
+            const thead = document.createElement('thead');
+            const tbody = document.createElement('tbody');
+
+            table.appendChild(thead);
+            table.appendChild(tbody);
+
+            document.body.appendChild(table);
         }
 
+        let thead = table.querySelector('thead');
+
+        if (!thead) {
+            thead = document.createElement('thead');
+            table.prepend(thead);
+        }
+
+        thead.innerHTML = '';
+
+        const headerRow = document.createElement('tr');
+
+        columns.forEach(column => {
+            const th = document.createElement('th');
+            th.textContent = column.label;
+            headerRow.appendChild(th);
+        });
+
+        thead.appendChild(headerRow);
+
         let tbody = table.querySelector('tbody');
+
         if (!tbody) {
             tbody = document.createElement('tbody');
             table.appendChild(tbody);
         }
+
         tbody.innerHTML = '';
+
         list.forEach(item => {
             const row = document.createElement('tr');
+
             columns.forEach(column => {
                 const td = document.createElement('td');
+
                 let value = item?.[column.key];
+
                 if (Array.isArray(value)) {
                     value = value.join(', ');
                 } else if (typeof value === 'object' && value !== null) {
                     value = JSON.stringify(value);
                 }
+
                 td.innerHTML = value ?? '';
                 row.appendChild(td);
             });
+
             tbody.appendChild(row);
         });
+
         return table;
     }
 
