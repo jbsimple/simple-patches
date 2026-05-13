@@ -51,11 +51,11 @@
             gridItem.classList.add('box');
             gridItem.innerHTML = `
             <div class="heading">
-                <h4>${item["SKU"]}</h4>
+                <h3>${item["SKU"]}</h3>
             </div>
             <div class="body">
                 <img src="${item["Product_Image"]}">
-                <strong>${item["Product_Name"]}</strong>
+                <h4>${item["Product_Name"]}</h4>
                 <div class="stats">
                     <div class="item">
                         <h5>In Stock</h5>
