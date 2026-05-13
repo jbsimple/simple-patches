@@ -18,7 +18,8 @@
   },
   "homepage": "https://github.com/jbsimple/simple-patches#readme",
   "dependencies": {
-    "@vercel/blob": "^1.1.1",
+    "@neondatabase/serverless": "^1.1.0",
+    "@vercel/blob": "^2.3.3",
     "@vercel/edge-config": "^1.4.0"
   }
 }
