@@ -62,7 +62,10 @@
             gridItem.classList.add('box');
             gridItem.innerHTML = `
             <div class="heading">
-                <h3>${item["SKU"]}</h3>
+                <div class="spacer">
+                    <h3>${item["SKU"]}</h3>
+                    <i>${item["Condition"]}</i>
+                </div>
             </div>
             <div class="body">
                 <img src="${item["Product_Image"]}">
