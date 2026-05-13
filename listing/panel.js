@@ -4,7 +4,11 @@
     const qs = new URLSearchParams(window.location.search);
     const key = qs.get('key') ?? null;
     if (key == null) {
-        fireMessage('error', 'Hey!', ["You're missing the key in your request.","A key is needed to access this panel."]);
+        fireMessage({
+            type:'error',
+            title: 'Hey!',
+            body: ["You're missing the key in your request.","A key is needed to access this panel."]
+        });
     }
 
     try {
