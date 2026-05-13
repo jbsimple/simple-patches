@@ -57,15 +57,42 @@ export default async function handler(req, res) {
 
         const requestPromise = (async () => {
             let items = [];
-            switch (type) {
-                case "hvi":
-                    items = await fetchSet("gte", 1000);
+            switch (type) { // idea is that views will be added here
+                case "hvi": // all stock 1000qty+
+                    items = await itemSet([
+                        {
+                            field: "product_items.in_stock",
+                            operator: "gte",
+                            value: 1000
+                        }
+                    ]);
                     break;
-                case "gte":
-                    items = await fetchSet("gte", 1);
+                case "ovs": // all oversells
+                    items = await itemSet([
+                        {
+                            field: "product_items.in_stock",
+                            operator: "lte",
+                            value: -1
+                        }
+                    ]);
                     break;
-                case "lte":
-                    items = await fetchSet("lte", 0);
+                case "gte": // all in stock items
+                    items = await itemSet([
+                        {
+                            field: "product_items.in_stock",
+                            operator: "gte",
+                            value: 1
+                        }
+                    ]);
+                    break;
+                case "lte": // all out of stock + oversell items
+                    items = await itemSet([
+                        {
+                            field: "product_items.in_stock",
+                            operator: "lte",
+                            value: 0
+                        }
+                    ]);
                     break;
                 default:
                     throw new Error("Invalid type.");
@@ -85,12 +112,12 @@ export default async function handler(req, res) {
         return res.status(500).json({ success: false, error: err.message });
     }
 
-    async function fetchSet(operator, value, limit = 1000) {
+    async function itemSet(filters, limit = 1000) {
         let page = 1;
         let has_more = false;
         let data = [];
         do {
-            const result = await fetchPage(operator, value, page, limit);
+            const result = await itemPage(filters, page, limit);
             if (Array.isArray(result.data)) { data.push(...result.data); }
             has_more = result?.meta?.has_more === true;
             page++;
@@ -99,18 +126,14 @@ export default async function handler(req, res) {
         return data;
     }
 
-    async function fetchPage(operator, value, page, limit = 1000, retries = tokens.length * 3) {
+    async function itemPage(filters, page, limit = 1000, retries = tokens.length * 3) {
+        // need to add filter for specific condition ids
+
         const body = {
             type: "active_inventory",
             page: page,
             per_page: limit,
-            filters: [
-                {
-                    field: "product_items.in_stock",
-                    operator: operator,
-                    value: value
-                }
-            ], // need to add filter for specific condition ids
+            filters,
             columns: ["products.sid","products.name","product_items.id","product_items.sku","conditions.name","product_items.condition_id","product_items.title","products.description","first_image","product_items.available","product_items.in_stock","product_items.price","product_items.min_price","product_items.max_price","product_items.bulk_price","product_items.seller_price","products.msrp","product_items.location","brands.name","products.brand_id","categories.name","products.category_id","categories.type","products.weight","products.mpn","products.gtin","products.asin","products.dimensions","product_items.store_settings","products.specs","product_items.flags","product_items.is_scrap","product_items.has_fba","product_items.status","product_items.sold_at","product_items.priced_at","product_items.created_at","product_items.updated_at"]
         };
 

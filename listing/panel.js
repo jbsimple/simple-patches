@@ -15,7 +15,7 @@
     // autorun
     let rel = null;
     try {
-        await panel();
+        await panel('hvi');
     } catch (err) {
         fireMessage({
             type: 'error',
@@ -26,13 +26,24 @@
     }
 
     // init + refresh
-    async function panel() {
+    async function panel(type) {
         showLoader()
         let list = [];
 
-        // add hvi to list
-        const hvi = await api("hvi");
-        if (Array.isArray(hvi)) { list = [...list, ...hvi]; }
+        switch (type) { // idea is that each view for the panel will be constructed here
+            case 'hvi': // when user first visits, because this is small
+                const hvi = await api("hvi");
+                if (Array.isArray(hvi)) { list = [...list, ...hvi]; }
+                break;
+            default:
+                fireMessage({
+                    type: 'error',
+                    title: 'Oh No!',
+                    body: ["Looks like a javascript error!", "Invalid panel type requested."]
+                });
+        }
+
+        list.sort((a, b) => (b.Value || 0) - (a.Value || 0));
 
         // another round of parsing just for the html
         list = list.map(item => {
