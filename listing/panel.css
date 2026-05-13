@@ -280,7 +280,7 @@ footer {
     align-items: center;
     justify-content: center;
 
-    background: rgba(0, 0, 0, 0.65);
+    background: color-mix(in srgb, var(--secondary) 75%, transparent 25%);
     backdrop-filter: blur(4px);
 
     opacity: 1;

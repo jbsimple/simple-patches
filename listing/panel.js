@@ -2,9 +2,10 @@
     "use strict";
 
     // this is the init, really
+    let key = null;
     try {
         const qs = new URLSearchParams(window.location.search);
-        const key = qs.get('key') ?? null;
+        key = qs.get('key') ?? null;
         if (key == null) {
             fireMessage({
                 type: 'error',
