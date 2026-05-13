@@ -5,7 +5,7 @@
     const key = qs.get('key') ?? null;
     if (key == null) {
         fireMessage({
-            type:'error',
+            type: 'error',
             title: 'Hey!',
             body: ["You're missing the key in your request.","A key is needed to access this panel."]
         });
@@ -23,6 +23,7 @@
         });
     }
 
+    let rel = null;
     async function api(type) {
         const url = `/api/listing?type=${encodeURIComponent(type)}&key=${encodeURIComponent(key)}`;
         try {
@@ -41,14 +42,34 @@
             if (!response.ok || !data.success) { throw new Error(data?.error || `HTTP ${response.status}`); }
             console.debug('[Listing Dashboard] API Response:', data);
 
+            if (data && data.rel && rel === null) {
+                rel = data.rel;
+            } else if (data && data.rel && rel !== data.rel) {
+                fireMessage({
+                    type: 'error',
+                    title: 'Error in API Fetch',
+                    body: "Relative URL Mismatch. This should not happen.",
+                });
+            } else if (data && !data.rel) {
+                fireMessage({
+                    type: 'error',
+                    title: 'Error in API Fetch',
+                    body: "Relative URL was not included in response. Links will not work.",
+                });
+            }
+
             if (data && data.items) {
                 return data.items.map(item => parseItem(item));
             } else {
                 return [];
             }
         } catch (err) {
-            console.error('API Error:', err);
-            return { success: false, error: err.message };
+            fireMessage({
+                type: 'error',
+                title: 'Error in API Fetch',
+                body: err.message,
+                obj: err
+            });
         }
     }
 
