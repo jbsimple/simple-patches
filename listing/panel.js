@@ -1,24 +1,21 @@
 (async function() {
     "use strict";
 
-    // this is the init, really
-    let key = null;
+    // check for key
+    const qs = new URLSearchParams(window.location.search);
+    const key = qs.get('key') ?? null;
+    if (key == null) {
+        fireMessage({
+            type: 'error',
+            title: 'Hey!',
+            body: ["You're missing the key in your request.","A key is needed to access this panel."]
+        });
+    }
+
+    // autorun
     let rel = null;
     try {
-        const qs = new URLSearchParams(window.location.search);
-        key = qs.get('key') ?? null;
-        if (key == null) {
-            fireMessage({
-                type: 'error',
-                title: 'Hey!',
-                body: ["You're missing the key in your request.","A key is needed to access this panel."]
-            });
-        }
-
-        const hvi = await api("hvi");
-        document.getElementById('content').appendChild(activeInventoryPrint("hvi", hvi));
-        
-        hideLoader();
+        await panel();
     } catch (err) {
         fireMessage({
             type: 'error',
@@ -26,6 +23,64 @@
             body: err.message,
             obj: err
         });
+    }
+
+    // init + refresh
+    async function panel() {
+        showLoader()
+        let list = [];
+
+        // add hvi to list
+        const hvi = await api("hvi");
+        if (Array.isArray(hvi)) { list = [...list, ...hvi]; }
+
+        // another round of parsing just for the html
+        list = list.map(item => {
+            item["Product_Image"] = (typeof item["Product_Image"] === "string" && item["Product_Image"].trim() !== "")
+                ? item["Product_Image"]
+                : `https://s3.amazonaws.com/elog-cdn/no-image.png`;
+            return item;
+        });
+
+        let grid = document.getElementById('grid') ?? document.createElement('div');
+        grid.innerHTML = '';
+        grid.id = 'grid';
+
+        list.forEach(item => {
+            const gridItem = document.createElement('div');
+            gridItem.classList.add('box');
+            gridItem.innerHTML = `
+            <div class="heading">
+                <h4>${item["SKU"]}</h4>
+            </div>
+            <div class="body">
+                <img src="${item["Product_Image"]}">
+                <strong>${item["Product_Name"]}</strong>
+                <div class="stats">
+                    <div class="item">
+                        <h5>In Stock</h5>
+                        <p>${item["MAIN_Qty"]}</p>
+                    </div>
+                    <div class="item">
+                        <h5>Price</h5>
+                        <p>${item["Price"]}</p>
+                    </div>
+                    <div class="item">
+                        <h5>Value</h5>
+                        <p>$${item["Value"]}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footing">
+                <a class="button" target="_blank" href="${rel}/product/items/${item["SKU"]}">${item["SKU"]}</a>
+                <a class="button" target="_blank" href="${rel}/products/${item["SID"]}">${item["SID"]}</a>
+            </div>`;
+            grid.appendChild(gridItem);
+        });
+        
+        document.getElementById('content').appendChild(grid);
+
+        hideLoader();
     }
 
     async function api(type) {
@@ -78,13 +133,6 @@
     }
 
     function parseItem(item) {
-        item["SID_html"] = (typeof item["SID"] === "string" && item["SID"].trim() !== "")
-            ? `<a target="_blank" href="${rel}/products/${item["SID"]}"`
-            : item["SID"];
-        item["Product_Image_html"] = (typeof item["Product_Image"] === "string" && item["Product_Image"].trim() !== "")
-            ? `<img loading="lazy" src="${item["Product_Image"]}" width="72" height="72">`
-            : `<img src="https://s3.amazonaws.com/elog-cdn/no-image.png" width="72" height="72">`;
-
         item["Total_SKU_Supply"] = parseFloat(item["Total_SKU_Supply"] || 0); // Available
 
         item["MAIN_Qty"] = parseFloat(item["MAIN_Qty"] || 0); // In Stock
@@ -147,126 +195,6 @@
             }
         });
         return sortedItem;
-    }
-
-    function activeInventoryPrint(id, items) {
-
-        // another round of parsing just for the html
-        items = items.map(item => {
-            item["SID"] = (typeof item["SID"] === "string" && item["SID"].trim() !== "")
-                ? `<a target="_blank" href="${rel}/products/${item["SID"]}"`
-                : item["SID"];
-
-            item["SKU"] = (typeof item["SKU"] === "string" && item["SKU"].trim() !== "")
-                ? `<a target="_blank" href="${rel}/product/items/${item["SKU"]}"`
-                : item["SKU"];
-
-            item["Product_Image"] = (typeof item["Product_Image"] === "string" && item["Product_Image"].trim() !== "")
-                ? `<img src="${item["Product_Image"]}" width="72" height="72">`
-                : `<img src="https://s3.amazonaws.com/elog-cdn/no-image.png" width="72" height="72">`;
-
-            item["Value"] = `$${item["Value"]}`;
-
-            return item;
-        });
-        
-        return printTable(id, items, [
-            {"Product_Image": ""},
-            {"Product_Name": "Name"},
-            "SID",
-            "SKU",
-            "Condition",
-            {"MAIN_Qty": "In Stock"},
-            "Price",
-            "Value"
-        ]);
-    }
-
-    function printTable(id, list, columns = null) {
-        if (!Array.isArray(list)) { console.error('printTable: list must be an array', list); return; }
-
-        if (!Array.isArray(columns) || columns.length === 0) {
-            const keys = new Set();
-            list.forEach(item => { if (item && typeof item === 'object') { Object.keys(item).forEach(key => keys.add(key)); } });
-            columns = Array.from(keys);
-        }
-
-        columns = columns.map(column => {
-            if (typeof column === 'string') { return { key: column, label: column }; }
-
-            if (typeof column === 'object' && column !== null) {
-                const key = Object.keys(column)[0];
-                return { key, label: column[key] };
-            }
-
-            return { key: '', label: '' };
-        });
-
-        let table = document.getElementById(id);
-
-        if (!table) {
-            table = document.createElement('table');
-            table.id = id;
-
-            const thead = document.createElement('thead');
-            const tbody = document.createElement('tbody');
-
-            table.appendChild(thead);
-            table.appendChild(tbody);
-
-            document.body.appendChild(table);
-        }
-
-        let thead = table.querySelector('thead');
-
-        if (!thead) {
-            thead = document.createElement('thead');
-            table.prepend(thead);
-        }
-
-        thead.innerHTML = '';
-
-        const headerRow = document.createElement('tr');
-
-        columns.forEach(column => {
-            const th = document.createElement('th');
-            th.textContent = column.label;
-            headerRow.appendChild(th);
-        });
-
-        thead.appendChild(headerRow);
-
-        let tbody = table.querySelector('tbody');
-
-        if (!tbody) {
-            tbody = document.createElement('tbody');
-            table.appendChild(tbody);
-        }
-
-        tbody.innerHTML = '';
-
-        list.forEach(item => {
-            const row = document.createElement('tr');
-
-            columns.forEach(column => {
-                const td = document.createElement('td');
-
-                let value = item?.[column.key];
-
-                if (Array.isArray(value)) {
-                    value = value.join(', ');
-                } else if (typeof value === 'object' && value !== null) {
-                    value = JSON.stringify(value);
-                }
-
-                td.innerHTML = value ?? '';
-                row.appendChild(td);
-            });
-
-            tbody.appendChild(row);
-        });
-
-        return table;
     }
 
     function showLoader() {document.getElementById('pageLoader').classList.remove('hidden');  }
