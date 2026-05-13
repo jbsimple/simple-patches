@@ -251,10 +251,12 @@ header {
 }
 
 main {
+	position: relative;
     display: flex;
     flex-direction: column;
     gap: inherit;
     flex: 1;
+	min-height: 300px;
 }
 
 footer {
@@ -266,4 +268,36 @@ footer {
     margin-top: 0.5rem;
     padding-top: 0.5rem;
     border-top: 1px solid var(--border);
+}
+
+/* page loader */
+#pageLoader {
+    position: absolute;
+    inset: 0;
+    z-index: 999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(4px);
+
+    opacity: 1;
+    visibility: visible;
+
+    transition:
+        opacity 0.25s ease,
+        visibility 0.25s ease;
+}
+
+#pageLoader.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+#pageLoader i {
+    font-size: 6rem;
+    color: var(--blue);
 }

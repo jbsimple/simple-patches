@@ -3,18 +3,25 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width,initial-scale=1">
-        <meta name="theme-color" content="#000">
+        <meta name="theme-color" content="#111">
         <title>Listing Dashboard - Simple Patches</title>
         <link rel="stylesheet" type="text/css" href="/listing/panel.css">
+
+        <!-- Externals -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     </head>
     <body>
         <header>
             <h1>Listing Dashboard</h1>
             <h5>This is a really cool dashboard.</h5>
         </header>
-        <main></main>
+        <main id="content">
+            <div id="pageLoader">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+            </div>
+        </main>
         <footer>
             <a href="/">&copy; 2026 Simple Patches</a>
         </footer>

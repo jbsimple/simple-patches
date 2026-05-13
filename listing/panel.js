@@ -1,23 +1,26 @@
 (async function() {
     "use strict";
 
-    const qs = new URLSearchParams(window.location.search);
-    const key = qs.get('key') ?? null;
-    if (key == null) {
-        fireMessage({
-            type: 'error',
-            title: 'Hey!',
-            body: ["You're missing the key in your request.","A key is needed to access this panel."]
-        });
-    }
-
+    // this is the init, really
     try {
+        const qs = new URLSearchParams(window.location.search);
+        const key = qs.get('key') ?? null;
+        if (key == null) {
+            fireMessage({
+                type: 'error',
+                title: 'Hey!',
+                body: ["You're missing the key in your request.","A key is needed to access this panel."]
+            });
+        }
+
         const gte = await api("gte");
-        printTable("gte", gte, ["Product_Image", "Product_Name", "SID", "SKU", "Condition", "MAIN_Qty", "Price", "Value"]);
+        document.getElementById('content').appendChild(printTable("gte", gte, ["Product_Image", "Product_Name", "SID", "SKU", "Condition", "MAIN_Qty", "Price", "Value"]));
+        
+        hideLoader();
     } catch (err) {
         fireMessage({
             type: 'error',
-            title: 'Failed in Fetch',
+            title: 'Oh No!',
             body: err.message,
             obj: err
         });
@@ -191,6 +194,9 @@
         });
         return table;
     }
+
+    function showLoader() {document.getElementById('pageLoader').classList.remove('hidden');  }
+    function hideLoader() { document.getElementById('pageLoader').classList.add('hidden'); }
 
     function fireMessage({ type = 'info', title = '', body = '', obj = null, refresh = false } = {}) {
         const allowed_types = ["success", "error", "warning", "info", "question"];
