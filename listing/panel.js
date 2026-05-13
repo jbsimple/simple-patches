@@ -3,6 +3,7 @@
 
     // this is the init, really
     let key = null;
+    let rel = null;
     try {
         const qs = new URLSearchParams(window.location.search);
         key = qs.get('key') ?? null;
@@ -27,7 +28,6 @@
         });
     }
 
-    let rel = null;
     async function api(type) {
         const url = `/api/listing?type=${encodeURIComponent(type)}&key=${encodeURIComponent(key)}`;
         try {
