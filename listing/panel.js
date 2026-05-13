@@ -88,28 +88,46 @@
         item["Max_Price"] = parseFloat(item["Max_Price"] || 0);
         item["Bulk_Price"] = parseFloat(item["Bulk_Price"] || 0);
         item["Seller_Cost"] = parseFloat(item["Seller_Cost"] || 0);
-        item["Full_Location"] = item["Full_Location"].split("|");
+
+        item["Full_Location"] = (typeof item["Full_Location"] === "string" && item["Full_Location"].trim() !== "")
+            ? item["Full_Location"].split("|")
+            : [];
+
         item["Product_MSRP"] = parseFloat(item["Product_MSRP"] || 0);
         item["Weight"] = parseFloat(item["Weight"] || 0);
 
-        item["Product_dimensions"] = item["Product_dimensions"].split(" x ");
-        item["Length"] = item["Product_dimensions"][0];
-        item["Width"] = item["Product_dimensions"][1];
-        item["Height"] = item["Product_dimensions"][2];
+        item["Product_dimensions"] = (typeof item["Product_dimensions"] === "string" && item["Product_dimensions"].trim() !== "")
+            ? item["Product_dimensions"].split(" x ")
+            : [];
+        
+        item["Length"] = item["Product_dimensions"][0] ?? null;
+        item["Width"] = item["Product_dimensions"][1] ?? null;
+        item["Height"] = item["Product_dimensions"][2] ?? null;
 
         const Listing_Template_Legend = { 8:"Returnable-UpTo-1Lb", 14:"Returnable-1-to-4Lb", 15:"Returnable-Over-4lbs", 16:"DEFECTIVE-NoReturns-Under 1 Pound", 17:"Heavy Large Dims", 23:"Local Pickup ONLY", 26:"DEFECTIVE-NoReturns-Over 1 Pound", 36:"$150+ Products - Non Bulky", 37:"Otterbox_Lifeproof_FREE2DAY", 38:"Otterbox_Lifeproof_Under1LB", 39:"Otterbox_Lifeproof_Over1LB", 40:"NoEBAYcatalogINFO", 43:"Ebay Deals", 44:"Free 2 day - Phones", 45:"Gaming Accessories" }
         item["Listing_Template"] = Listing_Template_Legend[parseFloat(item["Listing_Template"] || 8)] ?? Listing_Template_Legend[8];
 
-        item["Product_Attributes"] = Object.fromEntries(
-            item["Product_Attributes"].split("|").map(item => {
-                const [key, ...value] = item.split(":");
-                return [key.trim(), value.join(":").trim()];
-            })
-        );
+        item["Product_Attributes"] = (typeof item["Product_Attributes"] === "string" && item["Product_Attributes"].trim() !== "")
+            ? Object.fromEntries(
+                item["Product_Attributes"].split("|").map(attr => {
+                    const [key, ...value] = attr.split(":");
+                    return [
+                        (key || "").trim(),
+                        value.join(":").trim()
+                    ];
+                }).filter(([key]) => key !== "")
+            )
+            : {};
+
+
         item["Item_Flags"] = item["Item_Flags"].split("|");
 
-        item["Scrap_Flag"] = (item["Scrap_Flag"] === "1");
-        item["Has_FBA"] = (item["Has_FBA"] === "Yes");
+        item["Item_Flags"] = (typeof item["Item_Flags"] === "string" && item["Item_Flags"].trim() !== "")
+            ? item["Item_Flags"].split("|").map(flag => flag.trim()).filter(Boolean)
+            : [];
+
+        item["Scrap_Flag"] = (item["Scrap_Flag"] === "1" || item["Scrap_Flag"] === 1 || item["Scrap_Flag"] === true);
+        item["Has_FBA"] = (item["Has_FBA"] === "Yes" || item["Has_FBA"] === true);
 
         // sort the keys
         const item_legend = ['SID', 'Product_Name', 'Item_ID', 'SKU', 'Condition', 'Item_Title', 'Product_Description', 'Product_Image', 'Total_SKU_Supply', 'MAIN_Qty', 'Value', 'Min_Price', 'Max_Price', 'Bulk_Price', 'Seller_Cost', 'Product_MSRP', 'Full_Location', 'Brand', 'Category', 'Category_Type', 'Weight', 'MPN', 'GTIN_UPC', 'ASIN', 'Product_dimensions', 'Length', 'Width', 'Height', 'Listing_Template', 'Product_Attributes', 'Item_Flags', 'Scrap_Flag', 'Has_FBA', 'Item_Status', 'Last_Sale_Date', 'Last_Price_Date', 'Created_Date', 'Updated_Date'];
