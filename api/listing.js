@@ -2,6 +2,11 @@ export const config = {
     maxDuration: 60
 };
 
+// magical cache
+const CACHE_TTL = 60 * 1000;
+const resultCache = new Map();
+const inflightCache = new Map();
+
 export default async function handler(req, res) {
 
     res.setHeader("Access-Control-Allow-Origin", "*");
@@ -38,18 +43,41 @@ export default async function handler(req, res) {
 
     let api_errors = [];
     try {
-        let items = [];
-        switch (type) {
-            case "gte":
-                items = await fetchSet("gte", 1);
-                break;
-            case "lte":
-                items = await fetchSet("lte", 0);
-                break;
-            default:
-                return res.status(404).json({ success: false, error: "Invalid type." });
+        const cacheKey = type;
+        const cached = resultCache.get(cacheKey);
+        if (cached) {
+            if ((Date.now() - cached.created) < CACHE_TTL) { return res.status(200).json({ ...cached.data, cache: true }); }
+            resultCache.delete(cacheKey);
         }
-        return res.status(200).json({ success: (api_errors.length === 0), errors: api_errors, items, count: items.length, rel: allowedOrigins[0] });
+
+        if (inflightCache.has(cacheKey)) {
+            const sharedResult = await inflightCache.get(cacheKey);
+            return res.status(200).json({ ...sharedResult, shared: true });
+        }
+
+        const requestPromise = (async () => {
+            let items = [];
+            switch (type) {
+                case "gte":
+                    items = await fetchSet("gte", 1);
+                    break;
+                case "lte":
+                    items = await fetchSet("lte", 0);
+                    break;
+                default:
+                    throw new Error("Invalid type.");
+            }
+            const result = { success: (api_errors.length === 0), errors: api_errors, items, count: items.length, rel: allowedOrigins[0] };
+            resultCache.set(cacheKey, { created: Date.now(), data: result });
+            return result;
+        })();
+        inflightCache.set(cacheKey, requestPromise);
+        try {
+            const result = await requestPromise;
+            return res.status(200).json(result);
+        } finally {
+            inflightCache.delete(cacheKey);
+        }
     } catch (err) {
         return res.status(500).json({ success: false, error: err.message });
     }
