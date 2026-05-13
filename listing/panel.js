@@ -78,6 +78,10 @@
     }
 
     function parseItem(item) {
+        item["Product_Image"] = (typeof item["Product_Image"] === "string" && item["Product_Image"].trim() !== "")
+            ? `<img src="${item["Product_Image"]}" width="72" height="72">`
+            : `<img src="https://s3.amazonaws.com/elog-cdn/no-image.png" width="72" height="72">`;
+
         item["Total_SKU_Supply"] = parseFloat(item["Total_SKU_Supply"] || 0); // Available
 
         item["MAIN_Qty"] = parseFloat(item["MAIN_Qty"] || 0); // In Stock
@@ -203,7 +207,7 @@
                 } else if (typeof value === 'object' && value !== null) {
                     value = JSON.stringify(value);
                 }
-                td.textContent = value ?? '';
+                td.innerHTML = value ?? '';
                 row.appendChild(td);
             });
             tbody.appendChild(row);
