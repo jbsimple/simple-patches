@@ -546,6 +546,16 @@ nav {
     flex: 1;
     min-height: 0;
 	width: 100%;
+	font-size: 1.25rem;
+}
+
+#modal .detail {
+	padding: 0.7rem;
+	border: 1px dashed color-mix(in srgb, var(--border) 50%, transparent 50%);
+}
+
+#modal .body h3 {
+	font-size: 1.5rem;
 }
 
 #modal img[modal-item="Product_Image"] {
