@@ -84,7 +84,7 @@
                     <h3>${item["SKU"]}</h3>
                     <i>${item["Condition"]}</i>
                 </div>
-                ${item["Enhance_Flags"].length > 0  ? `<span>${item["Enhance_Flags"].length} ${item["Enhance_Flags"].length === 1 ? 'Issue' : 'Issues'}</span>` : ``}
+                ${item["Enhance_Flags"].length > 0  ? `<a class="button" data-action="enhancement">${item["Enhance_Flags"].length} ${item["Enhance_Flags"].length === 1 ? 'Issue' : 'Issues'}</a>` : ``}
             </div>
             <div class="body">
                 <img src="${item["Product_Image"]}">
@@ -105,11 +105,18 @@
                 </div>
             </div>
             <div class="footing">
-                <a class="button" target="_blank" href="${rel}/product/items/${item["SKU"]}">View SKU</a>
-                <a class="button" target="_blank" href="${rel}/products/${item["SID"]}">View SID</a>
+                <a class="button" data-action="modal">More Info</a>
             </div>`;
 
-            grid.addEventListener('click', () => {
+            grid.querySelector('a.button[data-action="enhancement"]').addEventListener('click', () => {
+                fireMessage({
+                    type: 'warning',
+                    title: 'List of Flags',
+                    body: ["These are all the issues with this item that need to be fixed.", ...item["Enhance_Flags"]]
+                });
+            });
+
+            grid.querySelector('a.button[data-action="modal"]').addEventListener('click', () => {
                 fireMessage({
                     type: 'info',
                     title: 'To-Do',
