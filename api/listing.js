@@ -55,6 +55,11 @@ export default async function handler(req, res) {
             return res.status(200).json({ ...sharedResult, shared: true });
         }
 
+        // neondb integration to-do
+        // lte and gte will reference neondb
+        // cron job to update neondb with gte and lte items to-do
+        // resolve button in panel will run type=id, which will update the neondb with fresh data 
+
         const requestPromise = (async () => {
             let items = [];
             switch (type) { // idea is that views will be added here
@@ -76,7 +81,18 @@ export default async function handler(req, res) {
                         }
                     ]);
                     break;
-                case "gte": // all in stock items
+                case "id": // single for quick updates
+                    const item_id = parseInt(req.query.id, 10);
+                    if (!Number.isInteger(item_id) || item_id <= 0) { return res.status(400).json({ success: false, error: "Invalid item ID" }); }
+                    items = await itemSet([
+                        {
+                            field: "product_items.id",
+                            operator: "eq",
+                            value: item_id
+                        }
+                    ]);
+                    break;
+                case "gte": // all in stock items, neondb reference to-do
                     items = await itemSet([
                         {
                             field: "product_items.in_stock",
@@ -85,7 +101,7 @@ export default async function handler(req, res) {
                         }
                     ]);
                     break;
-                case "lte": // all out of stock + oversell items
+                case "lte": // all in stock items, neondb reference to-do
                     items = await itemSet([
                         {
                             field: "product_items.in_stock",
@@ -123,6 +139,7 @@ export default async function handler(req, res) {
             page++;
             if (has_more) { await sleep(1000); }
         } while (has_more);
+        // to-do, update neondb with this data
         return data;
     }
 
