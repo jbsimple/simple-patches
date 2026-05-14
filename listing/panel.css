@@ -206,6 +206,43 @@ li {
 	color: var(--blue);
 }
 
+.column {
+	display: flex;
+	flex-direction: column;
+}
+
+.row {
+	display: flex;
+	flex-direction: row;
+}
+
+.wrap {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.gapL {
+	gap: 1.5rem;
+}
+
+.gapS {
+	gap: 0.7rem;
+}
+
+.gapT {
+	gap: 0.3rem;
+}
+
+.spacer {
+	flex: 1;
+}
+
+.center {
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+}
+
 @media(max-width:500px) {
 	.devinfo-container .devinfo-line code {
 		margin-top: .4rem;
@@ -443,181 +480,97 @@ nav {
 	background-color: color-mix(in srgb, var(--secondary) 80%, var(--primary) 20%);
 }
 
-/* modal */
-#itemModalOverlay {
+#modalblock {
     position: fixed;
     inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
     z-index: 9998;
-
-    background: rgba(0,0,0,.65);
-    backdrop-filter: blur(5px);
 
     opacity: 0;
     visibility: hidden;
-
-    transition: 0.15s ease;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
 }
 
-#itemModalOverlay.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-#itemModal {
+#modal {
     position: fixed;
     top: 50%;
     left: 50%;
-    z-index: 9999;
+    transform: translate(-50%, -50%) scale(0.95);
 
-    width: min(950px, 95vw);
-    max-height: 90vh;
-
-    overflow-y: auto;
-
-    transform: translate(-50%, -50%) scale(.95);
+    width: min(1400px, calc(100vw - 4rem));
+    height: min(90vh, calc(100vh - 4rem));
 
     background: var(--secondary);
+    color: var(--primary);
+
     border: 1px solid var(--border);
-    border-radius: 1rem;
+    border-radius: 1.6rem;
 
-    padding: 2rem;
-
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
+    z-index: 9999;
+    overflow: hidden;
 
     opacity: 0;
     visibility: hidden;
 
-    transition: 0.15s ease;
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease,
+        visibility 0.2s ease;
+
+    box-shadow: 0 0 40px rgba(0,0,0,0.4);
 }
 
-#itemModal.active {
+#modal.active,
+#modalblock.active {
     opacity: 1;
     visibility: visible;
+}
+
+#modal.active {
     transform: translate(-50%, -50%) scale(1);
 }
 
-#closeItemModal {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
+#modal .header {
+    padding: 1.6rem;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
 
-    width: 42px;
-    height: 42px;
+#modal .body {
+    padding: 1.6rem;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+}
 
-    border: 0;
-    border-radius: 0.5rem;
+#modal img[modal-item="Product_Image"] {
+    width: 240px;
+    max-width: 100%;
+    border-radius: 1rem;
+    border: 1px solid var(--border);
+}
+
+#modal textarea {
+    width: 100%;
+    min-height: 180px;
+    resize: vertical;
 
     background: transparent;
-    color: var(--primary);
+    color: inherit;
 
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+
+    padding: 1rem;
+}
+
+#modal [modal-action="close"] {
     cursor: pointer;
-    transition: background 0.1s ease;
-}
-
-#closeItemModal:hover {
-    background: color-mix(in srgb, var(--primary) 10%, transparent 90%);
-}
-
-#closeItemModal i {
-    font-size: 1.8rem;
-}
-
-#itemModal .modalHeader {
-    display: flex;
-    gap: 2rem;
-    align-items: flex-start;
-}
-
-#itemModal .modalHeader img {
-    width: 250px;
-    height: 250px;
-
-    object-fit: contain;
-
-    border-radius: 0.75rem;
-    border: 1px solid var(--border);
-
-    background: white;
-}
-
-#itemModal .modalHeader .info {
-    flex: 1;
-
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-#itemModal .modalHeader h2 {
     font-size: 2.4rem;
-    line-height: 1.2;
+    transition: opacity 0.15s ease;
 }
 
-#itemModal .meta {
-    display: flex;
-    flex-direction: column;
-    gap: 0.7rem;
-}
-
-#itemModal .meta p {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-}
-
-#itemModal .meta strong {
-    opacity: .7;
-    font-size: 1.2rem;
-}
-
-#itemModal .modalStats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-}
-
-#itemModal .modalStats .stat {
-    padding: 1.5rem;
-
-    border: 1px solid var(--border);
-    border-radius: 0.75rem;
-}
-
-#itemModal .modalStats h5 {
-    margin-bottom: 0.5rem;
-    opacity: .7;
-}
-
-#itemModal .modalStats p {
-    font-size: 2.2rem;
-    font-weight: 700;
-}
-
-#modalDescription {
-    line-height: 1.7;
-}
-
-#itemModal .modalActions {
-    display: flex;
-    gap: 1rem;
-}
-
-@media (max-width: 800px) {
-
-    #itemModal .modalHeader {
-        flex-direction: column;
-    }
-
-    #itemModal .modalHeader img {
-        width: 100%;
-        height: auto;
-        max-height: 300px;
-    }
-
-    #itemModal .modalStats {
-        grid-template-columns: 1fr;
-    }
-
+#modal [modal-action="close"]:hover {
+    opacity: 0.7;
 }

@@ -29,6 +29,26 @@
         msrp_missing: { label: "Product MSRP missing", count: 0 }
     };
 
+    const modal = document.getElementById('modal');
+    const modalblock = document.getElementById('modalblock');
+    function openModal() {
+        modal.classList.add('active');
+        modalblock.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeModal() {
+        modal.classList.remove('active');
+        modalblock.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    modal.querySelector('[modal-action="close"]').addEventListener('click', closeModal);
+    modalblock.addEventListener('click', closeModal);
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+    });
+
     // autorun
     let rel = null;
     try {
@@ -127,7 +147,7 @@
             gridItem.querySelector('[data-action="enhancement"]')?.addEventListener('click', () => {
                 let enhance_names = [];
                 item["Enhance_Flags"].forEach(enh => { enhance_names.push(Enhance_Flag_Glossary[enh]['label']); });
-                
+
                 fireMessage({
                     type: 'warning',
                     title: 'List of Flags',
@@ -136,13 +156,21 @@
             });
 
             gridItem.querySelector('[data-action="modal"]').addEventListener('click', () => {
-                fireMessage({
-                    type: 'info',
-                    title: 'To-Do',
-                    body: ["Haven't got this far yet.","This will be a window that will show all item details with issues highlighted, list/links of other items in same sid family, links to main system and button to check issue resolution (update data/neon db)"]
+                Object.entries(item).forEach(([key, value]) => {
+                    modal.querySelectorAll(`[modal-item="${key}"]`).forEach(elem => {
+                        if (key === "Product_Image") {
+                            elem.src = value;
+                        } else if (key === "Product_Attributes") {
+                            let attrib_html = '';
+                            Object.entries(value).forEach(([attrib_name, attrib_val]) => { attrib_html += `<div class="row gapS"><strong>${attrib_name}</strong><p>${attrib_val}</p></div>`; });
+                            elem.innerHTML = attrib_html;
+                        } else {
+                            elem.innerHTML = value;
+                        }
+                    });
                 });
+                openModal();
             });
-
             grid.appendChild(gridItem);
         });
         
