@@ -505,7 +505,7 @@ nav {
     color: var(--primary);
 
     border: 1px solid var(--border);
-    border-radius: 1.6rem;
+    border-radius: 0.7rem;
 
     z-index: 9999;
     overflow: hidden;
@@ -519,6 +519,8 @@ nav {
         visibility 0.2s ease;
 
     box-shadow: 0 0 40px rgba(0,0,0,0.4);
+
+	max-width: 1100px;
 }
 
 #modal.active,
@@ -535,6 +537,7 @@ nav {
     padding: 1.6rem;
     border-bottom: 1px solid var(--border);
     flex-shrink: 0;
+	width: 100%;
 }
 
 #modal .body {
@@ -542,6 +545,7 @@ nav {
     overflow-y: auto;
     flex: 1;
     min-height: 0;
+	width: 100%;
 }
 
 #modal img[modal-item="Product_Image"] {
