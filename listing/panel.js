@@ -58,7 +58,7 @@
         nav.innerHTML = '';
         Object.entries(Enhance_Flag_Glossary).forEach(([key, value]) => {
             if (value.count <= 0) { return; }
-            
+
             const a = document.createElement('a');
             a.classList.add('button');
             a.setAttribute('data-flag', key);
@@ -125,10 +125,13 @@
             </div>`;
 
             gridItem.querySelector('[data-action="enhancement"]')?.addEventListener('click', () => {
+                let enhance_names = [];
+                item["Enhance_Flags"].forEach(enh => { enhance_names.push(Enhance_Flag_Glossary[enh]['label']); });
+                
                 fireMessage({
                     type: 'warning',
                     title: 'List of Flags',
-                    body: ["These are all the issues with this item that need to be fixed.", ...item["Enhance_Flags"]]
+                    body: ["These are all the issues with this item that need to be fixed.", ...enhance_names]
                 });
             });
 
