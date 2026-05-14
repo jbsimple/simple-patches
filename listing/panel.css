@@ -331,6 +331,12 @@ nav {
 
 .box .heading h3 {
 	font-size: 1.5rem;
+	line-height: 1.5rem;
+}
+
+.box .heading i {
+	font-size: 1.25rem;
+	line-height: 1.25rem;
 }
 
 .box .body {
