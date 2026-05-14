@@ -108,7 +108,7 @@
                 <a class="button" data-action="modal">More Info</a>
             </div>`;
 
-            grid.querySelector('a.button[data-action="enhancement"]')?.addEventListener('click', () => {
+            gridItem.querySelector('a.button[data-action="enhancement"]')?.addEventListener('click', () => {
                 fireMessage({
                     type: 'warning',
                     title: 'List of Flags',
@@ -116,7 +116,7 @@
                 });
             });
 
-            grid.querySelector('a.button[data-action="modal"]').addEventListener('click', () => {
+            gridItem.querySelector('a.button[data-action="modal"]').addEventListener('click', () => {
                 fireMessage({
                     type: 'info',
                     title: 'To-Do',
