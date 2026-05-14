@@ -12,21 +12,21 @@
         });
     }
 
-    // global glossary for enhance flags
-    const Enhance_Flag_Glossary = {
-        template_defective: "Defective on wrong template",
-        template_otterbox: "Otterbox on wrong template",
-        template_weights: "1lb+ items on wrong template",
-        attributes_color: "Wrong color selection",
-        asin_missing: "ASIN missing",
-        itemTitle_missing: "Custom title missing",
-        attributes_missing: "Product attributes missing",
-        dimensions_missing: "Missing dimensions",
-        mpn_missing: "MPN missing",
-        description_short: "Product description too short",
-        description_missing: "Product description missing",
-        priceBulk_missing: "Bulk price missing",
-        msrp_missing: "Product MSRP missing"
+    // global glossary and counter
+    let Enhance_Flag_Glossary = {
+        template_defective: { label: "Defective on wrong template", count: 0 },
+        template_otterbox: { label: "Otterbox on wrong template", count: 0 },
+        template_weights: { label: "1lb+ items on wrong template", count: 0 },
+        attributes_color: { label: "Wrong color selection", count: 0 },
+        asin_missing: { label: "ASIN missing", count: 0 },
+        itemTitle_missing: { label: "Custom title missing", count: 0 },
+        attributes_missing: { label: "Product attributes missing", count: 0 },
+        dimensions_missing: { label: "Missing dimensions", count: 0 },
+        mpn_missing: { label: "MPN missing", count: 0 },
+        description_short: { label: "Product description too short", count: 0 },
+        description_missing: { label: "Product description missing", count: 0 },
+        priceBulk_missing: { label: "Bulk price missing", count: 0 },
+        msrp_missing: { label: "Product MSRP missing", count: 0 }
     };
 
     // autorun
@@ -47,26 +47,42 @@
         showLoader()
         let list = [];
 
-        switch (type) { // idea is that each view for the panel will be constructed here
-            case 'hvi': // when user first visits, because this is small
-                const hvi = await api("hvi");
-                if (Array.isArray(hvi)) { list = [...list, ...hvi]; }
-                break;
-            default:
-                fireMessage({
-                    type: 'error',
-                    title: 'Oh No!',
-                    body: ["Looks like a javascript error!", "Invalid panel type requested."]
-                });
-        }
+        const hvi = await api("hvi");
+        if (Array.isArray(hvi)) { list = [...list, ...hvi]; }
+        // basic list for now
 
         list.sort((a, b) => (b.Value || 0) - (a.Value || 0));
+
+        // build nav
+        const nav = document.getElementById('enhancement_nav');
+        nav.innerHTML = '';
+        Object.entries(Enhance_Flag_Glossary).forEach(([key, value]) => {
+            if (value.count <= 0) { return; }
+            
+            const a = document.createElement('a');
+            a.classList.add('button');
+            a.setAttribute('data-flag', key);
+            a.textContent = `${value.label} (${value.count})`;
+            a.addEventListener('click', () => {
+                fireMessage({
+                    type: 'info',
+                    title: 'Hey!',
+                    body: ["Haven't got this far yet.","This will filter the list below to just items that are tagged."]
+                });
+            });
+            nav.appendChild(a);
+        });
 
         // another round of parsing just for the html
         list = list.map(item => {
             item["Product_Image"] = (typeof item["Product_Image"] === "string" && item["Product_Image"].trim() !== "")
                 ? item["Product_Image"]
                 : `https://s3.amazonaws.com/elog-cdn/no-image.png`;
+
+            item["Enhance_Flags_HTML"] = item["Enhance_Flags"].length > 0
+                ? `<span data-action="enhancement">${item["Enhance_Flags"].length} ${item["Enhance_Flags"].length === 1 ? 'Issue' : 'Issues'}</span>`
+                : ``;
+
             return item;
         });
 
@@ -84,7 +100,7 @@
                     <h3>${item["SKU"]}</h3>
                     <i>${item["Condition"]}</i>
                 </div>
-                ${item["Enhance_Flags"].length > 0 ? `<span data-action="enhancement">${item["Enhance_Flags"].length} ${item["Enhance_Flags"].length === 1 ? 'Issue' : 'Issues'}</span>` : ``}
+                ${item["Enhance_Flags_HTML"]}
             </div>
             <div class="body">
                 <img src="${item["Product_Image"]}">
@@ -258,8 +274,9 @@
         // missing MSRP
         if ( item["Product_MSRP"] <= 0 ) { item["Enhance_Flags"].push("msrp_missing"); }
         // color will be a to-do, requires mapping rules I don't have
-        // clean
+        // clean removal of duplicates
         item["Enhance_Flags"] = [...new Set(item["Enhance_Flags"])];
+        item["Enhance_Flags"].forEach(flag => { if (Enhance_Flag_Glossary[flag]) { Enhance_Flag_Glossary[flag].count++; } })
 
         // sort the keys
         const item_legend = ['SID', 'Product_Name', 'Item_ID', 'SKU', 'Condition', 'Condition_ID', 'Item_Title', 'Product_Description', 'Product_Image', 'Total_SKU_Supply', 'MAIN_Qty', 'Value', 'Min_Price', 'Max_Price', 'Bulk_Price', 'Seller_Cost', 'Product_MSRP', 'Full_Location', 'Brand', 'Category', 'Category_Type', 'Weight', 'MPN', 'GTIN_UPC', 'ASIN', 'Product_dimensions', 'Length', 'Width', 'Height', 'Listing_Template_ID', 'Listing_Template', 'Product_Attributes', 'Item_Flags', 'Scrap_Flag', 'Has_FBA', 'Item_Status', 'Last_Sale_Date', 'Last_Price_Date', 'Created_Date', 'Updated_Date'];
