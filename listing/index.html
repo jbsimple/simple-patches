@@ -22,6 +22,31 @@
                 <i class="fa-solid fa-spinner fa-spin"></i>
             </div>
         </main>
+        <div id="itemModalOverlay"></div>
+        <div id="itemModal">
+            <button id="closeItemModal"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modalHeader">
+                <img id="modalImage">
+                <div class="info">
+                    <h2 id="modalTitle"></h2>
+                    <div class="meta">
+                        <p><strong>SKU</strong><span id="modalSKU"></span></p>
+                        <p><strong>SID</strong><span id="modalSID"></span></p>
+                        <p><strong>Condition</strong><span id="modalCondition"></span></p>
+                    </div>
+                </div>
+                <div class="modalStats">
+                    <div class="stat"><h5>In Stock</h5><p id="modalQty"></p></div>
+                    <div class="stat"><h5>Price</h5><p id="modalPrice"></p></div>
+                    <div class="stat"><h5>Value</h5><p id="modalValue"></p></div>
+                </div>
+                <div id="modalDescription"></div>
+                <div class="modalActions">
+                    <a id="modalSKUButton" class="button" target="_blank">View SKU</a>
+                    <a id="modalSIDButton" class="button" target="_blank">View SID</a>
+                </div>
+            </div>
+        </div>
         <script type="text/javascript" src="/listing/panel.js"></script>
     </body>
 </html>

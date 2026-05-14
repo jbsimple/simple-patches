@@ -12,6 +12,23 @@
         });
     }
 
+    // global glossary for enhance flags
+    const Enhance_Flag_Glossary = {
+        template_defective: "Defective on wrong template",
+        template_otterbox: "Otterbox on wrong template",
+        template_weights: "1lb+ items on wrong template",
+        attributes_color: "Wrong color selection",
+        asin_missing: "ASIN missing",
+        itemTitle_missing: "Custom title missing",
+        attributes_missing: "Product attributes missing",
+        dimensions_missing: "Missing dimensions",
+        mpn_missing: "MPN missing",
+        description_short: "Product description too short",
+        description_missing: "Product description missing",
+        priceBulk_missing: "Bulk price missing",
+        msrp_missing: "Product MSRP missing"
+    };
+
     // autorun
     let rel = null;
     try {
@@ -60,12 +77,14 @@
         list.forEach(item => {
             const gridItem = document.createElement('div');
             gridItem.classList.add('box');
+            gridItem.setAttribute('data-itemID', item["Item_ID"]);
             gridItem.innerHTML = `
             <div class="heading">
                 <div class="spacer">
                     <h3>${item["SKU"]}</h3>
                     <i>${item["Condition"]}</i>
                 </div>
+                ${item["Enhance_Flags"].length > 0  ? `<span>${item["Enhance_Flags"].length} ${item["Enhance_Flags"].length === 1 ? 'Issue' : 'Issues'}</span>` : ``}
             </div>
             <div class="body">
                 <img src="${item["Product_Image"]}">
@@ -89,6 +108,15 @@
                 <a class="button" target="_blank" href="${rel}/product/items/${item["SKU"]}">View SKU</a>
                 <a class="button" target="_blank" href="${rel}/products/${item["SID"]}">View SID</a>
             </div>`;
+
+            grid.addEventListener('click', () => {
+                fireMessage({
+                    type: 'info',
+                    title: 'To-Do',
+                    body: ["Haven't got this far yet.","This will be a window that will show all item details with issues highlighted, list/links of other items in same sid family, links to main system and button to check issue resolution (update data/neon db)"]
+                });
+            });
+
             grid.appendChild(gridItem);
         });
         
@@ -147,6 +175,7 @@
     }
 
     function parseItem(item) {
+        item["Condition_ID"] = parseInt(item ["Condition"].split("-")[0], 10);
         item["Total_SKU_Supply"] = parseFloat(item["Total_SKU_Supply"] || 0); // Available
 
         item["MAIN_Qty"] = parseFloat(item["MAIN_Qty"] || 0); // In Stock
@@ -173,6 +202,7 @@
         item["Width"] = item["Product_dimensions"][1] ?? null;
         item["Height"] = item["Product_dimensions"][2] ?? null;
 
+        item["Listing_Template_ID"] = parseFloat(item["Listing_Template"] || 8);
         const Listing_Template_Legend = { 8:"Returnable-UpTo-1Lb", 14:"Returnable-1-to-4Lb", 15:"Returnable-Over-4lbs", 16:"DEFECTIVE-NoReturns-Under 1 Pound", 17:"Heavy Large Dims", 23:"Local Pickup ONLY", 26:"DEFECTIVE-NoReturns-Over 1 Pound", 36:"$150+ Products - Non Bulky", 37:"Otterbox_Lifeproof_FREE2DAY", 38:"Otterbox_Lifeproof_Under1LB", 39:"Otterbox_Lifeproof_Over1LB", 40:"NoEBAYcatalogINFO", 43:"Ebay Deals", 44:"Free 2 day - Phones", 45:"Gaming Accessories" }
         item["Listing_Template"] = Listing_Template_Legend[parseFloat(item["Listing_Template"] || 8)] ?? Listing_Template_Legend[8];
 
@@ -195,8 +225,37 @@
         item["Scrap_Flag"] = (item["Scrap_Flag"] === "1" || item["Scrap_Flag"] === 1 || item["Scrap_Flag"] === true);
         item["Has_FBA"] = (item["Has_FBA"] === "Yes" || item["Has_FBA"] === true);
 
+        item["Enhance_Flags"] = [];
+        // defective items on wrong template
+        if (item["Condition"] && item["Condition_ID"] === 6 && ![16, 26].includes(item["Listing_Template_ID"])) { item["Enhance_Flags"].push("template_defective"); }
+        // otterbox/lifeproof wrong template
+        if (typeof item["Brand"] === "string" && /(otterbox|lifeproof)/i.test(item["Brand"]) && ![37, 38, 39].includes(item["Listing_Template_ID"])) { item["Enhance_Flags"].push("template_otterbox"); }
+        // heavy items on lightweight template
+        if (item["Weight"] > 1 && item["Listing_Template_ID"] === 8) { item["Enhance_Flags"].push("template_weights"); }
+        // missing ASIN
+        if ( !item["ASIN"] || item["ASIN"].toString().trim() === "") { item["Enhance_Flags"].push("asin_missing"); }
+        // missing custom title on conditions
+        if ((item["Condition_ID"] && [6,8,18,31,32,34,35,39,42,44,45,49,71,92,94,95,99].includes(item["Condition_ID"]) ) && (!item["Item_Title"] || item["Item_Title"].trim() === "")) { item["Enhance_Flags"].push("itemTitle_missing"); }
+        // missing attributes
+        if (!item["Product_Attributes"] || Object.keys(item["Product_Attributes"]).length === 0) { item["Enhance_Flags"].push("attributes_missing"); }
+        // missing dimensions
+        if (!item["Length"] || !item["Width"] || !item["Height"]) { item["Enhance_Flags"].push("dimensions_missing"); }
+        // missing MPN
+        if (!item["MPN"] || item["MPN"].trim() === "") { item["Enhance_Flags"].push("mpn_missing"); }
+        // missing description
+        if (!item["Product_Description"] || item["Product_Description"].trim() === "") { item["Enhance_Flags"].push("description_missing"); }
+        // short description
+        if ( item["Product_Description"] && item["Product_Description"].replace(/<[^>]*>/g, "").trim().length < 150 ) { item["Enhance_Flags"].push("description_short"); }
+        // missing bulk price
+        if ( item["Bulk_Price"] <= 0 ) { item["Enhance_Flags"].push("priceBulk_missing"); }
+        // missing MSRP
+        if ( item["Product_MSRP"] <= 0 ) { item["Enhance_Flags"].push("msrp_missing"); }
+        // color will be a to-do, requires mapping rules I don't have
+        // clean
+        item["Enhance_Flags"] = [...new Set(item["Enhance_Flags"])];
+
         // sort the keys
-        const item_legend = ['SID', 'Product_Name', 'Item_ID', 'SKU', 'Condition', 'Item_Title', 'Product_Description', 'Product_Image', 'Total_SKU_Supply', 'MAIN_Qty', 'Value', 'Min_Price', 'Max_Price', 'Bulk_Price', 'Seller_Cost', 'Product_MSRP', 'Full_Location', 'Brand', 'Category', 'Category_Type', 'Weight', 'MPN', 'GTIN_UPC', 'ASIN', 'Product_dimensions', 'Length', 'Width', 'Height', 'Listing_Template', 'Product_Attributes', 'Item_Flags', 'Scrap_Flag', 'Has_FBA', 'Item_Status', 'Last_Sale_Date', 'Last_Price_Date', 'Created_Date', 'Updated_Date'];
+        const item_legend = ['SID', 'Product_Name', 'Item_ID', 'SKU', 'Condition', 'Condition_ID', 'Item_Title', 'Product_Description', 'Product_Image', 'Total_SKU_Supply', 'MAIN_Qty', 'Value', 'Min_Price', 'Max_Price', 'Bulk_Price', 'Seller_Cost', 'Product_MSRP', 'Full_Location', 'Brand', 'Category', 'Category_Type', 'Weight', 'MPN', 'GTIN_UPC', 'ASIN', 'Product_dimensions', 'Length', 'Width', 'Height', 'Listing_Template_ID', 'Listing_Template', 'Product_Attributes', 'Item_Flags', 'Scrap_Flag', 'Has_FBA', 'Item_Status', 'Last_Sale_Date', 'Last_Price_Date', 'Created_Date', 'Updated_Date'];
         const sortedItem = {};
         item_legend.forEach(key => {
             if (key in item) {
