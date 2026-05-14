@@ -87,7 +87,7 @@ a.button {
 	font-weight: 600;
 	background-color: var(--blue);
 	border-radius: 0.5rem;
-	padding: 0.3rem 0.7rem;
+	padding: 0.1rem 0.6rem;
 }
 
 a.button:active,
@@ -395,6 +395,7 @@ nav {
 	padding: 0.2rem 0.6rem;
 	color: var(--secondary);
 	background-color: var(--yellow);
+	cursor: pointer;
 }
 
 #grid .box .body {
