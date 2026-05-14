@@ -84,7 +84,7 @@
                     <h3>${item["SKU"]}</h3>
                     <i>${item["Condition"]}</i>
                 </div>
-                ${item["Enhance_Flags"].length > 0  ? `<a class="button" data-action="enhancement">${item["Enhance_Flags"].length} ${item["Enhance_Flags"].length === 1 ? 'Issue' : 'Issues'}</a>` : ``}
+                ${item["Enhance_Flags"].length > 0 ? `<a class="button" data-action="enhancement">${item["Enhance_Flags"].length} ${item["Enhance_Flags"].length === 1 ? 'Issue' : 'Issues'}</a>` : ``}
             </div>
             <div class="body">
                 <img src="${item["Product_Image"]}">
@@ -108,7 +108,7 @@
                 <a class="button" data-action="modal">More Info</a>
             </div>`;
 
-            grid.querySelector('a.button[data-action="enhancement"]').addEventListener('click', () => {
+            grid.querySelector('a.button[data-action="enhancement"]')?.addEventListener('click', () => {
                 fireMessage({
                     type: 'warning',
                     title: 'List of Flags',
