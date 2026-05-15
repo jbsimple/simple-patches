@@ -199,7 +199,7 @@
                 });
 
                 // enhancement status box
-                const enhanceBox = modal.querySelector('div.details.enhancements');
+                const enhanceBox = modal.querySelector('div.detail.enhancements');
                 if (item["Enhance_Flags"].length > 0) {
                     enhanceBox.style.borderColor = 'var(--yellow)';
                     let enhanceBoxHTML = `<div class="column gapT"><h4>Issues</h4><p>These are issues that need to be resolved for the best item performance.</p></div><div class="column gapT">`;
