@@ -173,6 +173,7 @@
                     }
                 });
 
+                // fill in data, show issues
                 const enhance_itemkeys = item["Enhance_Flags"].flatMap(enh => Enhance_Flag_Glossary[enh]?.keys || []);
                 Object.entries(item).forEach(([key, value]) => {
                     modal.querySelectorAll(`[modal-item="${key}"]`).forEach(elem => {
@@ -191,11 +192,27 @@
                         if (enhance_itemkeys.includes(key)) {
                             const detail = elem.closest('.detail');
                             if (detail) {
-                                detail.style.borderColor = 'var(--red)';
+                                detail.style.borderColor = 'var(--yellow)';
                             }
                         }
                     });
                 });
+
+                // enhancement status box
+                const enhanceBox = modal.querySelector('div.details.enhancements');
+                if (item["Enhance_Flags"].length > 0) {
+                    enhanceBox.style.borderColor = 'var(--yellow)';
+                    let enhanceBoxHTML = `<h4>Issues</h4><p>These are issues that need to be resolved for the best item performance.</p><hr>`;
+                    let enhance_names = [];
+                    item["Enhance_Flags"].forEach(enh => { enhance_names.push(Enhance_Flag_Glossary[enh]['label']); });
+                    enhance_names.forEach(label => {
+                        enhanceBoxHTML += `<p>${label}</p>`;
+                    });
+                    enhanceBox.innerHTML = enhanceBox;
+                } else {
+                    enhanceBox.style.borderColor = 'var(--green)';
+                    enhanceBox.innerHTML = `<h4>Good News!</h4><p>TNo isses have been detected, ensure the details are correct.</p>`;
+                }
             }
             grid.appendChild(gridItem);
         });
