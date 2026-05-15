@@ -86,7 +86,7 @@
             a.addEventListener('click', () => {
                 fireMessage({
                     type: 'info',
-                    title: 'Hey!',
+                    title: 'To-Do',
                     body: ["Haven't got this far yet.","This will filter the list below to just items that are tagged."]
                 });
             });
@@ -169,6 +169,13 @@
                             break;
                         case 'SKU':
                             elem.href = `${rel}/product/items/${item['SKU']}`;
+                            break;
+                        case 'resolve':
+                            fireMessage({
+                                type: 'info',
+                                title: 'To-Do',
+                                body: ["Not here yet.", "Plan is the resolve button will refresh item from system and update neon db."]
+                            });
                             break;
                     }
                 });
