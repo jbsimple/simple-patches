@@ -41,16 +41,22 @@
                 <div class="row gapL center">
                     <div class="column gapS">
                         <img modal-item="Product_Image">
-                        <hr>
-                        <div class="detail column"><strong>Condition:</strong><p modal-item="Condition"></p></div>
-                        <div class="detail column"><strong>In Stock:</strong><p modal-item="MAIN_Qty"></p></div>
-                        <div class="detail column"><strong>Price:</strong><p>$<span modal-item="Price"></span></p></div>
-                        <div class="detail column"><strong>Value:</strong><p>$<span modal-item="Value"></span></p></div>
-                        <hr>
-                        <div class="detail column spacer"><strong>Created:</strong><p modal-item="Created_Date"></p></div>
-                        <div class="detail column spacer"><strong>Last Update:</strong><p modal-item="Updated_Date"></p></div>
-                        <div class="detail column spacer"><strong>Last Sale:</strong><p modal-item="Last_Sale_Date"></p></div>
-                        <div class="detail column spacer"><strong>Last Price Change:</strong><p modal-item="Last_Price_Date"></p></div>
+                        <div class="column detail gapL">
+                            <div class="row gapL">
+                                <div class="column spacer gapT"><strong>Condition:</strong><p modal-item="Condition"></p></div>
+                                <div class="column spacer gapT"><strong>In Stock:</strong><p modal-item="MAIN_Qty"></p></div>
+                            </div>
+                            <div class="row gapL">
+                                <div class="column spacer gapT"><strong>Price:</strong><p>$<span modal-item="Price"></span></p></div>
+                                <div class="column spacer gapT"><strong>Value:</strong><p>$<span modal-item="Value"></span></p></div>
+                            </div>
+                        </div>
+                        <div class="column detail gapL">
+                            <div class="column gapT"><strong>Created:</strong><p modal-item="Created_Date"></p></div>
+                            <div class="column gapT"><strong>Last Update:</strong><p modal-item="Updated_Date"></p></div>
+                            <div class="column gapT"><strong>Last Sale:</strong><p modal-item="Last_Sale_Date"></p></div>
+                            <div class="column gapT"><strong>Last Price Change:</strong><p modal-item="Last_Price_Date"></p></div>
+                        </div>
                         <div class="spacer"></div>
                     </div>
                     <div class="column spacer gapS">
@@ -78,7 +84,8 @@
                             <div class="detail column spacer"><strong>Bulk Price:</strong><p>$<span modal-item="Bulk_Price"></span></p></div>
                             <div class="detail column spacer"><strong>Seller Cost:</strong><p>$<span modal-item="Seller_Cost"></span></p></div>
                         </div>
-                        <div class="column" modal-item="Product_Attributes"></div>
+                        <div class="detail column" modal-item="Product_Attributes"></div>
+                        <div class="spacer"></div>
                     </div>
                 </div>
             </div>
