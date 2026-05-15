@@ -60,11 +60,11 @@ body {
 }
 
 ::selection {
-	background: var(--green);
+	background: color-mix(in srgb, var(--green) 50%, transparent 50%);
 }
 
 ::-moz-selection {
-	background: var(--green);
+	background: color-mix(in srgb, var(--green) 50%, transparent 50%);
 }
 
 a {
@@ -87,12 +87,20 @@ a.button {
 	font-weight: 600;
 	background-color: var(--blue);
 	border-radius: 0.5rem;
-	padding: 0.1rem 0.6rem;
+	padding: 0.2rem 0.7rem;
 }
 
 a.button:active,
 a.button:hover {
 	background-color: color-mix(in srgb, var(--blue) 75%, white 25%);
+}
+
+.pill {
+	color: white;
+	font-weight: 400;
+	background-color: var(--purple);
+	border-radius: 0.5rem;
+	padding: 0.1rem 0.6rem;
 }
 
 ul {

@@ -123,7 +123,7 @@
                 ${item["Enhance_Flags_HTML"]}
             </div>
             <div class="body">
-                <img src="${item["Product_Image"]}">
+                <img loading="lazy" src="${item["Product_Image"]}">
                 <h4>${item["Product_Name"]}</h4>
                 <div class="stats">
                     <div class="item">
@@ -181,6 +181,12 @@
                                 attrib_html += `<div class="row gapS"><strong>${attrib_name}</strong><span>:</span><p style="flex:1;text-align:left;">${attrib_val}</p></div>`;
                             });
                             elem.innerHTML = attrib_html;
+                        } else if (key === "Item_Flags") {
+                            let flag_html = '';
+                            value.forEach(flag => {
+                                flag_html += `<div class="pill">${flag}</div>`;
+                            });
+                            elem.innerHTML = flag_html;
                         } else {
                             elem.innerHTML = value;
                         }
@@ -300,6 +306,8 @@
         const Listing_Template_Legend = { 8:"Returnable-UpTo-1Lb", 14:"Returnable-1-to-4Lb", 15:"Returnable-Over-4lbs", 16:"DEFECTIVE-NoReturns-Under 1 Pound", 17:"Heavy Large Dims", 23:"Local Pickup ONLY", 26:"DEFECTIVE-NoReturns-Over 1 Pound", 36:"$150+ Products - Non Bulky", 37:"Otterbox_Lifeproof_FREE2DAY", 38:"Otterbox_Lifeproof_Under1LB", 39:"Otterbox_Lifeproof_Over1LB", 40:"NoEBAYcatalogINFO", 43:"Ebay Deals", 44:"Free 2 day - Phones", 45:"Gaming Accessories" }
         item["Listing_Template"] = Listing_Template_Legend[parseFloat(item["Listing_Template"] || 8)] ?? Listing_Template_Legend[8];
 
+        // splitting at pipe is not enough, to-fix
+        // |Features:Shockproof|Lightweight| -> Features:["Shockproof","Lightweight"]
         item["Product_Attributes"] = (typeof item["Product_Attributes"] === "string" && item["Product_Attributes"].trim() !== "")
             ? Object.fromEntries(
                 item["Product_Attributes"].split("|").map(attr => {
