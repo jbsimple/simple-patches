@@ -161,6 +161,18 @@
             });
 
             function refreshModal() {
+                // heading links
+                modal.querySelectorAll('a.button[modal-link]').forEach(elem => {
+                    switch (elem.getAttribute('modal-link')) {
+                        case 'SID':
+                            elem.href = `${rel}/products/${item['SID']}`;
+                            break;
+                        case 'SKU':
+                            elem.href = `${rel}/product/items/${item['SKU']}`;
+                            break;
+                    }
+                });
+
                 const enhance_itemkeys = item["Enhance_Flags"].flatMap(enh => Enhance_Flag_Glossary[enh]?.keys || []);
                 Object.entries(item).forEach(([key, value]) => {
                     modal.querySelectorAll(`[modal-item="${key}"]`).forEach(elem => {
