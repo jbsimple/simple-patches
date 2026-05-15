@@ -208,7 +208,7 @@
                     enhance_names.forEach(label => {
                         enhanceBoxHTML += `<p>${label}</p>`;
                     });
-                    enhanceBox.innerHTML = enhanceBox;
+                    enhanceBox.innerHTML = enhanceBoxHTML;
                 } else {
                     enhanceBox.style.borderColor = 'var(--green)';
                     enhanceBox.innerHTML = `<h4>Good News!</h4><p>TNo isses have been detected, ensure the details are correct.</p>`;
