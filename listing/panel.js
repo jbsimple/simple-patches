@@ -170,7 +170,12 @@
                             elem.innerHTML = value;
                         }
 
-                        if (enhance_itemkeys.includes(key)) { elem.style.borderColor = 'var(--red)'; }
+                        if (enhance_itemkeys.includes(key)) {
+                            const detail = elem.closest('.detail');
+                            if (detail) {
+                                detail.style.borderColor = 'var(--red)';
+                            }
+                        }
                     });
                 });
                 openModal();
