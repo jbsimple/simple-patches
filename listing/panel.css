@@ -562,10 +562,10 @@ nav {
 	border-radius: 0.7rem;
 }
 
-#modal .body h3 {
-	font-size: 2rem;
+#modal h3 {
+	font-size: 1.75rem;
 	width: 100%;
-	text-align: center;
+	text-align: left;
 }
 
 #modal img[modal-item="Product_Image"] {
