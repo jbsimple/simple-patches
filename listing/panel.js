@@ -202,16 +202,17 @@
                 const enhanceBox = modal.querySelector('div.details.enhancements');
                 if (item["Enhance_Flags"].length > 0) {
                     enhanceBox.style.borderColor = 'var(--yellow)';
-                    let enhanceBoxHTML = `<h4>Issues</h4><p>These are issues that need to be resolved for the best item performance.</p><hr>`;
+                    let enhanceBoxHTML = `<div class="column gapT"><h4>Issues</h4><p>These are issues that need to be resolved for the best item performance.</p></div><div class="column gapT">`;
                     let enhance_names = [];
                     item["Enhance_Flags"].forEach(enh => { enhance_names.push(Enhance_Flag_Glossary[enh]['label']); });
                     enhance_names.forEach(label => {
                         enhanceBoxHTML += `<p>${label}</p>`;
                     });
+                    enhanceBoxHTML += '</div>';
                     enhanceBox.innerHTML = enhanceBoxHTML;
                 } else {
                     enhanceBox.style.borderColor = 'var(--green)';
-                    enhanceBox.innerHTML = `<h4>Good News!</h4><p>TNo isses have been detected, ensure the details are correct.</p>`;
+                    enhanceBox.innerHTML = `<div class="column gapT"><h4>Good News!</h4><p>TNo isses have been detected, ensure the details are correct.</p></div>`;
                 }
             }
             grid.appendChild(gridItem);
