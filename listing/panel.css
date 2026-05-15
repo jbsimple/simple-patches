@@ -555,6 +555,12 @@ nav {
 	border-radius: 0.7rem;
 }
 
+#modal .detail [modal-item] {
+	line-height: 1.2rem;
+	font-size: 1.2rem;
+	min-height: 1.2rem;
+}
+
 #modal .body h3 {
 	font-size: 2rem;
 	width: 100%;
