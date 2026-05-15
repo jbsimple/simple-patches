@@ -156,8 +156,12 @@
             });
 
             gridItem.querySelector('[data-action="modal"]').addEventListener('click', () => {
+                refreshModal();
+                openModal();
+            });
+
+            function refreshModal() {
                 const enhance_itemkeys = item["Enhance_Flags"].flatMap(enh => Enhance_Flag_Glossary[enh]?.keys || []);
-                
                 Object.entries(item).forEach(([key, value]) => {
                     modal.querySelectorAll(`[modal-item="${key}"]`).forEach(elem => {
                         if (key === "Product_Image") {
@@ -165,7 +169,7 @@
                         } else if (key === "Product_Attributes") {
                             let attrib_html = '';
                             Object.entries(value).forEach(([attrib_name, attrib_val]) => {
-                                attrib_html += `<div class="row gapS"><strong>${attrib_name}</strong><span>:</span><p style="flex:1;">${attrib_val}</p></div>`;
+                                attrib_html += `<div class="row gapS"><strong>${attrib_name}</strong><span>:</span><p style="flex:1;text-align:left;">${attrib_val}</p></div>`;
                             });
                             elem.innerHTML = attrib_html;
                         } else {
@@ -180,8 +184,7 @@
                         }
                     });
                 });
-                openModal();
-            });
+            }
             grid.appendChild(gridItem);
         });
         
