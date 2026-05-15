@@ -563,7 +563,8 @@ nav {
 }
 
 #modal h3 {
-	font-size: 1.75rem;
+	font-size: 1.75rem !important;
+	font-weight: 700 !important;
 	width: 100%;
 	text-align: left;
 }
