@@ -542,6 +542,7 @@ nav {
 
 #modal .body {
     padding: 1.6rem;
+	padding-top: 0rem;
     overflow-y: auto;
     flex: 1;
     min-height: 0;
