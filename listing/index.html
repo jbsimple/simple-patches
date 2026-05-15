@@ -19,7 +19,7 @@
         </header>
         <main id="content">
             <div id="pageLoader">
-                <i class="fa-solid fa-spinner fa-spin"></i>
+                <i aria-hidden="true" class="fa-solid fa-spinner fa-spin"></i>
             </div>
         </main>
         <div id="modalblock"></div>
@@ -30,11 +30,13 @@
                 </div>
                 <i class="fa fa-window-close" aria-hidden="true" modal-action="close"></i>
             </div>
-            <div class="body column gapL center">
+            <div class="body column gapL">
                 <div class="row gapL center">
                     <h3 class="spacer" modal-item="Product_Name"></h3>
-                    <a class="button" target="_blank" modal-link="SID">View SID</a>
-                    <a class="button" target="_blank" modal-link="SID">View SKU</a>
+                    <div class="row center gapS">
+                        <a class="button" target="_blank" modal-link="SID">View SID<i aria-hidden="true" class="fa-solid fa-up-right-from-square"></i></a>
+                        <a class="button" target="_blank" modal-link="SKU">View SKU<i aria-hidden="true" class="fa-solid fa-up-right-from-square"></i></a>
+                    </div>
                 </div>
                 <div class="row gapL center">
                     <div class="column gapS">
