@@ -164,7 +164,9 @@
                             elem.src = value;
                         } else if (key === "Product_Attributes") {
                             let attrib_html = '';
-                            Object.entries(value).forEach(([attrib_name, attrib_val]) => { attrib_html += `<div class="row gapS"><strong>${attrib_name}</strong><p>${attrib_val}</p></div>`; });
+                            Object.entries(value).forEach(([attrib_name, attrib_val]) => {
+                                attrib_html += `<div class="row gapS"><strong>${attrib_name}</strong><span>:</span><p style="flex:1;">${attrib_val}</p></div>`;
+                            });
                             elem.innerHTML = attrib_html;
                         } else {
                             elem.innerHTML = value;
