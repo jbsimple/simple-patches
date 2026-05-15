@@ -552,6 +552,7 @@ nav {
 #modal .detail {
 	padding: 0.7rem;
 	border: 1px dashed color-mix(in srgb, var(--border) 50%, transparent 50%);
+	border-radius: 0.7rem;
 }
 
 #modal .body h3 {

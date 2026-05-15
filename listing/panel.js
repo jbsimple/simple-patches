@@ -14,19 +14,19 @@
 
     // global glossary and counter
     let Enhance_Flag_Glossary = {
-        template_defective: { label: "Defective on wrong template", count: 0 },
-        template_otterbox: { label: "Otterbox on wrong template", count: 0 },
-        template_weights: { label: "1lb+ items on wrong template", count: 0 },
+        template_defective: { label: "Defective on wrong template", itemKey: 'Listing_Template', count: 0 },
+        template_otterbox: { label: "Otterbox on wrong template", itemKey: 'Listing_Template', count: 0 },
+        template_weights: { label: "1lb+ items on wrong template", itemKey: 'Listing_Template', count: 0 },
         attributes_color: { label: "Wrong color selection", count: 0 },
-        asin_missing: { label: "ASIN missing", count: 0 },
-        itemTitle_missing: { label: "Custom title missing", count: 0 },
-        attributes_missing: { label: "Product attributes missing", count: 0 },
-        dimensions_missing: { label: "Missing dimensions", count: 0 },
-        mpn_missing: { label: "MPN missing", count: 0 },
-        description_short: { label: "Product description too short", count: 0 },
-        description_missing: { label: "Product description missing", count: 0 },
-        priceBulk_missing: { label: "Bulk price missing", count: 0 },
-        msrp_missing: { label: "Product MSRP missing", count: 0 }
+        asin_missing: { label: "ASIN missing", itemKey: 'ASIN', count: 0 },
+        itemTitle_missing: { label: "Custom title missing", itemKey: 'Item_Title', count: 0 },
+        attributes_missing: { label: "Product attributes missing", itemKey: 'Product_Attributes', count: 0 },
+        dimensions_missing: { label: "Missing dimensions", itemKey: 'Length,Width,Height', count: 0 },
+        mpn_missing: { label: "MPN missing", itemKey: 'MPN', count: 0 },
+        description_short: { label: "Product description too short", itemKey: 'Product_Description', count: 0 },
+        description_missing: { label: "Product description missing", itemKey: 'Product_Description', count: 0 },
+        priceBulk_missing: { label: "Bulk price missing", itemKey: 'Bulk_Price', count: 0 },
+        msrp_missing: { label: "Product MSRP missing", itemKey: 'MSRP', count: 0 }
     };
 
     const modal = document.getElementById('modal');
@@ -156,6 +156,8 @@
             });
 
             gridItem.querySelector('[data-action="modal"]').addEventListener('click', () => {
+                let enhance_itemkeys = [];
+                item["Enhance_Flags"].forEach(enh => { enhance_itemkeys.push(Enhance_Flag_Glossary[enh]['itemKey']); });
                 Object.entries(item).forEach(([key, value]) => {
                     modal.querySelectorAll(`[modal-item="${key}"]`).forEach(elem => {
                         if (key === "Product_Image") {
@@ -167,6 +169,8 @@
                         } else {
                             elem.innerHTML = value;
                         }
+
+                        if (enhance_itemkeys[key]) { elem.style.borderColor = 'var(--red)'; }
                     });
                 });
                 openModal();
