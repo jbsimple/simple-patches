@@ -171,11 +171,13 @@
                             elem.href = `${rel}/product/items/${item['SKU']}`;
                             break;
                         case 'resolve':
-                            fireMessage({
-                                type: 'info',
-                                title: 'To-Do',
-                                body: ["Not here yet.", "Plan is the resolve button will refresh item from system and update neon db."]
-                            });
+                            elem.addEventListener('click', async() => {
+                                fireMessage({
+                                    type: 'info',
+                                    title: 'To-Do',
+                                    body: ["Not here yet.", "Plan is the resolve button will refresh item from system and update neon db."]
+                                });
+                            })
                             break;
                     }
                 });
