@@ -3,7 +3,7 @@
     :root {
         --primary: #111;
         --secondary: #eee;
-        --border: #333;
+        --border: #222;
     }
 }
 
@@ -12,7 +12,7 @@
     :root {
         --primary: #eee;
         --secondary: #111;
-        --border: #bbb;
+        --border: #ddd;
     }
 }
 
