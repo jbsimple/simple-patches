@@ -100,7 +100,7 @@
                 : `https://s3.amazonaws.com/elog-cdn/no-image.png`;
 
             item["Enhance_Flags_HTML"] = item["Enhance_Flags"].length > 0
-                ? `<span data-action="enhancement">${item["Enhance_Flags"].length} ${item["Enhance_Flags"].length === 1 ? 'Issue' : 'Issues'}</span>`
+                ? `<span>${item["Enhance_Flags"].length} ${item["Enhance_Flags"].length === 1 ? 'Issue' : 'Issues'}</span>`
                 : ``;
 
             return item;
@@ -132,33 +132,20 @@
                     </div>
                     <div class="item">
                         <h5>Price</h5>
-                        <p>${item["Price"]}</p>
+                        <p>$${item["Price"]}</p>
                     </div>
                     <div class="item">
                         <h5>Value</h5>
                         <p>$${item["Value"]}</p>
                     </div>
                 </div>
-            </div>
-            <div class="footing">
-                <a class="button" data-action="modal">More Info</a>
             </div>`;
 
-            gridItem.querySelector('[data-action="enhancement"]')?.addEventListener('click', () => {
-                let enhance_names = [];
-                item["Enhance_Flags"].forEach(enh => { enhance_names.push(Enhance_Flag_Glossary[enh]['label']); });
-
-                fireMessage({
-                    type: 'warning',
-                    title: 'List of Flags',
-                    body: ["These are all the issues with this item that need to be fixed.", ...enhance_names]
-                });
-            });
-
-            gridItem.querySelector('[data-action="modal"]').addEventListener('click', () => {
+            gridItem.addEventListener('click', () => {
                 refreshModal();
                 openModal();
             });
+            gridItem.style.cursor = 'pointer';
 
             function refreshModal() {
                 // heading links

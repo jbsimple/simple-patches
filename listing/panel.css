@@ -395,7 +395,7 @@ nav {
 	border-radius: 0.5rem;
 	background-color: color-mix(in srgb, var(--secondary) 90%, var(--primary) 10%);
 	transition: background 0.1s ease-in-out;
-	height: 425px;
+	height: 400px;
 }
 
 #grid .box .heading {
