@@ -928,6 +928,59 @@ function modifyMediaTable() {
                                 }
                             });
 
+                            // download
+                            const download_image = document.createElement('a');
+                            download_image.classList.add('btn', 'btn-icon', 'btn-hover-light-info');
+                            download_image.dataset.bsToggle = "tooltip";
+                            download_image.setAttribute("aria-label", "Download Image");
+                            download_image.dataset.bsOriginalTitle = "Download Image";
+                            download_image.dataset.ktInitialized = "0";
+                            download_image.innerHTML = '<i class="fas fa-download fs-2"></i>';
+                            copy_image.insertAdjacentElement('afterend', download_image);
+
+                            download_image.addEventListener('click', async (e) => {
+                                e.preventDefault();
+
+                                const domimg = image.querySelector('img');
+                                if (!domimg) return;
+
+                                try {
+                                    const imageURL = domimg.src;
+                                    const filenameFromURL = imageURL.split('/').pop()?.split('?')[0] || 'image';
+
+                                    const proxyURL = `https://simple-patches.vercel.app/api/proxy-image?url=${encodeURIComponent(imageURL)}&filename=${encodeURIComponent(filenameFromURL)}`;
+
+                                    const response = await fetch(proxyURL);
+
+                                    if (!response.ok) {
+                                        fireSwal('ERROR', 'Unable to download image.', 'error');
+                                        throw new Error('Failed to fetch image.');
+                                    }
+
+                                    const blob = await response.blob();
+                                    const blobURL = URL.createObjectURL(blob);
+
+                                    const a = document.createElement('a');
+                                    a.href = blobURL;
+                                    a.download = filenameFromURL;
+
+                                    document.body.appendChild(a);
+                                    a.click();
+                                    a.remove();
+
+                                    URL.revokeObjectURL(blobURL);
+
+                                    download_image.classList.add('btn-primary');
+
+                                    setTimeout(() => {
+                                        download_image.classList.remove('btn-primary');
+                                    }, 2000);
+
+                                } catch (err) {
+                                    console.error('Failed to download:', err);
+                                }
+                            });
+
                         }
 
                     }
