@@ -384,12 +384,17 @@ tbody td {
 }
 
 th:nth-child(2),
-td:nth-child(2),
-th:nth-child(6),
-td:nth-child(6) {
+td:nth-child(2) {
     white-space: normal;
     overflow-wrap: break-word;
-    width: 30%;
+    width: 40%;
+}
+
+th:nth-child(6),
+td:nth-child(6) {
+	white-space: normal;
+    overflow-wrap: break-word;
+    width: 20%;
 }
 
 th:not(:nth-child(2)):not(:nth-child(6)),
