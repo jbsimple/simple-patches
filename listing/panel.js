@@ -161,6 +161,76 @@
                 })
             });
             tbody.appendChild(row);
+            function refreshModal() {
+                // heading links
+                modal.querySelectorAll('a.button[modal-link]').forEach(elem => {
+                    switch (elem.getAttribute('modal-link')) {
+                        case 'SID':
+                            elem.href = `${rel}/products/${item['SID']}`;
+                            break;
+                        case 'SKU':
+                            elem.href = `${rel}/product/items/${item['SKU']}`;
+                            break;
+                        case 'resolve':
+                            elem.addEventListener('click', async() => {
+                                fireMessage({
+                                    type: 'info',
+                                    title: 'To-Do',
+                                    body: ["Not here yet.", "Plan is the resolve button will refresh item from system and update neon db."]
+                                });
+                            })
+                            break;
+                    }
+                });
+
+                // fill in data, show issues
+                const enhance_itemkeys = item["Enhance_Flags"].flatMap(enh => Enhance_Flag_Glossary[enh]?.keys || []);
+                Object.entries(item).forEach(([key, value]) => {
+                    modal.querySelectorAll(`[modal-item="${key}"]`).forEach(elem => {
+                        if (key === "Product_Image") {
+                            elem.src = value;
+                        } else if (key === "Product_Attributes") {
+                            let attrib_html = '';
+                            Object.entries(value).forEach(([attrib_name, attrib_val]) => {
+                                attrib_html += `<div class="row gapS"><strong>${attrib_name}</strong><span>:</span><p style="flex:1;text-align:left;">${attrib_val}</p></div>`;
+                            });
+                            elem.innerHTML = attrib_html;
+                        } else if (key === "Item_Flags") {
+                            let flag_html = '';
+                            value.forEach(flag => {
+                                flag_html += `<div class="pill">${flag}</div>`;
+                            });
+                            elem.innerHTML = flag_html;
+                        } else {
+                            elem.innerHTML = value;
+                        }
+
+                        if (enhance_itemkeys.includes(key)) {
+                            const detail = elem.closest('.detail');
+                            if (detail) {
+                                detail.style.borderColor = 'var(--yellow)';
+                            }
+                        }
+                    });
+                });
+
+                // enhancement status box
+                const enhanceBox = modal.querySelector('div.detail.enhancements');
+                if (item["Enhance_Flags"].length > 0) {
+                    enhanceBox.style.borderColor = 'var(--yellow)';
+                    let enhanceBoxHTML = `<div class="column gapT"><h4>Issues</h4><p>These are issues that need to be resolved for the best item performance.</p></div><div class="column gapT">`;
+                    let enhance_names = [];
+                    item["Enhance_Flags"].forEach(enh => { enhance_names.push(Enhance_Flag_Glossary[enh]['label']); });
+                    enhance_names.forEach(label => {
+                        enhanceBoxHTML += `<p>${label}</p>`;
+                    });
+                    enhanceBoxHTML += '</div>';
+                    enhanceBox.innerHTML = enhanceBoxHTML;
+                } else {
+                    enhanceBox.style.borderColor = 'var(--green)';
+                    enhanceBox.innerHTML = `<div class="column gapT"><h4>Good News!</h4><p>TNo isses have been detected, ensure the details are correct.</p></div>`;
+                }
+            }
         });
         table.appendChild(tbody);
 
