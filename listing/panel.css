@@ -83,7 +83,7 @@ a:not(a.button):hover {
 }
 
 a.button {
-	--btnBgC: var(var(--green));
+	--btnBgC: var(--blue);
 	--btnTxC: white;
 
 	color: var(--btnTxC);
