@@ -79,7 +79,8 @@
         const nav = document.getElementById('enhancement_nav');
         nav.innerHTML = '';
         const allBtn = document.createElement('a');
-        allBtn.classList.add('button', 'green');
+        allBtn.classList.add('button');
+        if (Enhance_Flag_Filter === 'all') { allBtn.classList.add('green'); } else { allBtn.classList.add('yellow'); }
         allBtn.textContent = `View All ${Object.values(Enhance_Flag_Glossary).reduce((sum, item) => sum + (parseInt(item.count, 10) || 0), 0)}`;
         allBtn.href = `/listing?list=all&key=${access_key}`;
         nav.appendChild(allBtn);
@@ -87,14 +88,16 @@
         Object.entries(Enhance_Flag_Glossary).forEach(([key, value]) => {
             if (value.count <= 0) { return; }
             const filterBtn = document.createElement('a');
-            filterBtn.classList.add('button', 'yellow');
+            filterBtn.classList.add('button');
+            if (Enhance_Flag_Filter === 'all') { filterBtn.classList.add('green'); } else { filterBtn.classList.add('yellow'); }
             filterBtn.textContent = `${value.label} (${value.count})`;
             filterBtn.href = `/listing?list=${key}&key=${access_key}`;
             nav.appendChild(filterBtn);
         });
 
         const clrBtn = document.createElement('a');
-        clrBtn.classList.add('button', 'red');
+        clrBtn.classList.add('button');
+        if (Enhance_Flag_Filter === 'clear') { clrBtn.classList.add('green'); }
         clrBtn.textContent = `Clear Filter`;
         clrBtn.href = `/listing?list=clear&key=${access_key}`;
         nav.appendChild(clrBtn);
