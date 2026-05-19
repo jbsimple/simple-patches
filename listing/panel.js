@@ -93,7 +93,7 @@
         });
 
         const clrBtn = document.createElement('a');
-        clrBtn.classList.add('button', red);
+        clrBtn.classList.add('button', 'red');
         clrBtn.textContent = `Clear Filter`;
         clrBtn.href = `/listing?list=clear&key=${access_key}`;
         nav.appendChild(clrBtn);
