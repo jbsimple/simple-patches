@@ -153,8 +153,10 @@
                 </td>
                 <td>
                     <div class="column gapS">
-                        <a class="button row gapS center" href="${rel}/products/${item['SID']}" target="_blank"><p>View SID</p><i aria-hidden="true" class="fa-solid fa-up-right-from-square"></i></a>
-                        <a class="button row gapS center" href="${rel}/product/items/${item['SKU']}" target="_blank"><p>View SKU</p><i aria-hidden="true" class="fa-solid fa-up-right-from-square"></i></a>
+                        <div class="row gapS">
+                            <a class="button row gapS center" href="${rel}/products/${item['SID']}" target="_blank"><p>SID</p><i aria-hidden="true" class="fa-solid fa-up-right-from-square"></i></a>
+                            <a class="button row gapS center" href="${rel}/product/items/${item['SKU']}" target="_blank"><p>SKU</p><i aria-hidden="true" class="fa-solid fa-up-right-from-square"></i></a>
+                        </div>
                         <a class="button green row gapS center" table-action="resolve" target="_blank"><p>Resolve</p><i aria-hidden="true" class="fa-solid fa-arrows-refresh"></i></a>
                     </div>
                 </td>
