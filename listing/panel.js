@@ -140,15 +140,9 @@
                     <img loading="lazy" src="${item["Product_Image"]}">
                 </td>
                 <td>
-                    <div class="row gapS">
-                        <div class="column gapT spacer">
-                            <strong>${item["Product_Name"]}</strong>
-                            <p>${item["SKU"]}&nbsp;|&nbsp;${item["Condition"]}</p>
-                        </div>
-                        <div class="row gapS">
-                            <a class="button row gapS center" href="${rel}/products/${item['SID']}" target="_blank"><p>SID</p><i aria-hidden="true" class="fa-solid fa-up-right-from-square"></i></a>
-                            <a class="button row gapS center" href="${rel}/product/items/${item['SKU']}" target="_blank"><p>SKU</p><i aria-hidden="true" class="fa-solid fa-up-right-from-square"></i></a>
-                        </div>
+                    <div class="column gapT">
+                        <a style="font-weight:700;" href="${rel}/products/${item['SID']}" target="_blank">${item["Product_Name"]}</a>
+                        <a style="font-weight:300;" href="${rel}/product/items/${item['SKU']}" target="_blank">${item["SKU"]}&nbsp;|&nbsp;${item["Condition"]}</p>
                     </div>
                 </td>
                 <td>${item["MAIN_Qty"]}</td>
