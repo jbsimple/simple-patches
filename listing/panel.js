@@ -107,7 +107,7 @@
         hideLoader();
     }
 
-    function createTable(items) {
+    function createTable(list) {
         let table = document.getElementById('table') ?? document.createElement('table');
         table.id = 'table';
         table.innerHTML = '';
