@@ -93,16 +93,18 @@
             nav.appendChild(a);
         });
 
-        // handle img vs no img
+        // more parsing for html
         list = list.map(item => {
             item["Product_Image"] = (typeof item["Product_Image"] === "string" && item["Product_Image"].trim() !== "")
                 ? item["Product_Image"]
                 : `https://s3.amazonaws.com/elog-cdn/no-image.png`;
-            return item;
+            
 
             item["Enhance_Flags_HTML"] = item["Enhance_Flags"].length > 0
                 ? `<a class="button yellow row gapT" table-action="modal"><i aria-hidden="true" class="fa-solid fa-triangle-exclamation"></i><span>${item["Enhance_Flags"].length} ${item["Enhance_Flags"].length === 1 ? 'Issue' : 'Issues'}</span></a>`
                 : `<a class="button green row gapT" table-action="modal"><i aria-hidden="true" class="fa-solid fa-circle-check"></i><span>All Good!</span></a>`;
+
+                return item;
         });
 
         document.getElementById('table')?.remove();
