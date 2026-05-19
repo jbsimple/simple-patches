@@ -104,7 +104,7 @@
                 ? item["Product_Image"]
                 : `https://s3.amazonaws.com/elog-cdn/no-image.png`;
 
-            if (Enhance_Flag_Filter !== 'clear') {
+            if (Enhance_Flag_Filter !== 'clear' || Enhance_Flag_Filter !== 'all') {
                 item["Enhance_Flags_HTML"] = `<a class="button yellow row center gapT" table-action="modal"><i aria-hidden="true" class="fa-solid fa-triangle-exclamation"></i><span>More Info</span></a>`;
             } else if (item["Enhance_Flags"].length > 0) {
                 item["Enhance_Flags_HTML"] = `<a class="button yellow row center gapT" table-action="modal"><i aria-hidden="true" class="fa-solid fa-triangle-exclamation"></i><span>${item["Enhance_Flags"].length} ${item["Enhance_Flags"].length === 1 ? 'Issue' : 'Issues'}</span></a>`
