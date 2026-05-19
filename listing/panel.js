@@ -116,11 +116,11 @@
         const thead = document.createElement('thead');
         thead.innerHTML = `<tr>
             <th></th>
-            <th class="lg">Product Name / SKU</th>
+            <th>Product Name / SKU</th>
             <th>In Stock / Available</th>
             <th>Price</th>
             <th>Value</th>
-            <th class="lg">Issues</th>
+            <th>Issues</th>
             <th></th>
         </tr>`;
         table.appendChild(thead);

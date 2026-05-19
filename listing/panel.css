@@ -379,24 +379,25 @@ table {
 
 thead th,
 tbody td {
-    padding: 1rem;
+    padding: 0.3rem;
     text-align: left;
+}
+
+th:nth-child(1),
+th:nth-child(3),
+th:nth-child(4),
+td:nth-child(1),
+td:nth-child(3),
+td:nth-child(4) {
+    width: auto;
     white-space: nowrap;
 }
 
-thead th:not(.lg),
-tbody td:not(.lg) {
-    width: 1%;
-}
-
-thead th.lg,
-tbody td.lg {
-    width: auto;
-}
-
-thead th.lg,
-tbody td.lg {
-    white-space: normal;
+th:nth-child(2),
+th:nth-child(5),
+td:nth-child(2),
+td:nth-child(5) {
+    width: 400px;
 }
 
 #table img {
