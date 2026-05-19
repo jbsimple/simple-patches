@@ -72,6 +72,7 @@
         if (Array.isArray(hvi)) { list = [...list, ...hvi]; }
         // basic list for now
 
+        // default value sort
         list.sort((a, b) => (b.Value || 0) - (a.Value || 0));
 
         // build nav
