@@ -79,14 +79,17 @@
         nav.innerHTML = '';
         Object.entries(Enhance_Flag_Glossary).forEach(([key, value]) => {
             if (value.count <= 0) { return; }
-
-            const a = document.createElement('a');
-            a.classList.add('button');
-            a.setAttribute('data-flag', key);
-            a.textContent = `${value.label} (${value.count})`;
-            a.href = `/listing?list=${key}&key=${access_key}`;
-            nav.appendChild(a);
+            const filterBtn = document.createElement('a');
+            filterBtn.classList.add('button');
+            filterBtn.textContent = `${value.label} (${value.count})`;
+            filterBtn.href = `/listing?list=${key}&key=${access_key}`;
+            nav.appendChild(filterBtn);
         });
+        const clrBtn = document.createElement('a');
+        clrBtn.classList.add('button');
+        clrBtn.textContent = `View All`;
+        clrBtn.href = `/listing?list=all&key=${access_key}`;
+        nav.appendChild(clrBtn);
 
         // more parsing for html
         list = list.map(item => {
