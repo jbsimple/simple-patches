@@ -141,7 +141,7 @@
                 <td>
                     <div class="column gapT">
                         <strong>${item["Product_Name"]}</strong>
-                        <p>${SKU}&nbsp;|&nbsp;$${item["Condition"]}</p>
+                        <p>${item["SKU"]}&nbsp;|&nbsp;$${item["Condition"]}</p>
                     </div>
                 </td>
                 <td>${item["MAIN_Qty"]}&nbsp;/&nbsp;${item["Available"]}</td>
