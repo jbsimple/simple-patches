@@ -89,7 +89,7 @@
             if (value.count <= 0) { return; }
             const filterBtn = document.createElement('a');
             filterBtn.classList.add('button');
-            if (Enhance_Flag_Filter === 'all') { filterBtn.classList.add('green'); } else { filterBtn.classList.add('yellow'); }
+            if (Enhance_Flag_Filter === key) { filterBtn.classList.add('green'); } else { filterBtn.classList.add('yellow'); }
             filterBtn.textContent = `${value.label} (${value.count})`;
             filterBtn.href = `/listing?list=${key}&key=${access_key}`;
             nav.appendChild(filterBtn);
