@@ -28,6 +28,7 @@
         priceBulk_missing: { label: "Bulk price missing", keys: ['Bulk_Price'], count: 0 },
         msrp_missing: { label: "Product MSRP missing", keys: ['MSRP'], count: 0 }
     };
+    const Enhance_Flag_Filter = qs.get('list') ?? 'all';
 
     const modal = document.getElementById('modal');
     const modalblock = document.getElementById('modalblock');
@@ -98,14 +99,25 @@
             item["Product_Image"] = (typeof item["Product_Image"] === "string" && item["Product_Image"].trim() !== "")
                 ? item["Product_Image"]
                 : `https://s3.amazonaws.com/elog-cdn/no-image.png`;
-            
 
-            item["Enhance_Flags_HTML"] = item["Enhance_Flags"].length > 0
-                ? `<a class="button yellow row center gapT" table-action="modal"><i aria-hidden="true" class="fa-solid fa-triangle-exclamation"></i><span>${item["Enhance_Flags"].length} ${item["Enhance_Flags"].length === 1 ? 'Issue' : 'Issues'}</span></a>`
-                : `<a class="button green row center gapT" table-action="modal"><i aria-hidden="true" class="fa-solid fa-circle-check"></i><span>All Good!</span></a>`;
+            if (Enhance_Flag_Filter !== 'all') {
+                item["Enhance_Flags_HTML"] = `<a class="button yellow row center gapT" table-action="modal"><i aria-hidden="true" class="fa-solid fa-triangle-exclamation"></i><span>More Info</span></a>`;
+            } else if (item["Enhance_Flags"].length > 0) {
+                item["Enhance_Flags_HTML"] = `<a class="button yellow row center gapT" table-action="modal"><i aria-hidden="true" class="fa-solid fa-triangle-exclamation"></i><span>${item["Enhance_Flags"].length} ${item["Enhance_Flags"].length === 1 ? 'Issue' : 'Issues'}</span></a>`
+            } else {
+                item["Enhance_Flags_HTML"] = `<a class="button green row center gapT" table-action="modal"><i aria-hidden="true" class="fa-solid fa-circle-check"></i><span>All Good!</span></a>`
+            }
 
-                return item;
+            return item;
         });
+
+        // filter with enhance flags
+        if (Enhance_Flag_Filter !== 'all') {
+            list = list.filter(item => {
+                return Array.isArray(item["Enhance_Flags"]) &&
+                    item["Enhance_Flags"].includes(Enhance_Flag_Filter);
+            });
+        }
 
         document.getElementById('table')?.remove();
         let table = document.createElement('table');
@@ -116,7 +128,7 @@
         thead.innerHTML = `<tr>
             <th></th>
             <th>Product Name / SKU</th>
-            <th>Issues</th>
+            <th>Enhancement</th>
             <th>In Stock</th>
             <th>Price</th>
             <th>Value</th>
