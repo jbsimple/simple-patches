@@ -226,6 +226,8 @@
                             const detail = elem.closest('.detail');
                             if (detail) {
                                 detail.style.borderColor = 'var(--yellow)';
+                            } else {
+                                detail.style.borderColor = 'inherit';
                             }
                         }
                     });
