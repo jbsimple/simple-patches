@@ -145,7 +145,7 @@
                         <p>${item["SKU"]}&nbsp;|&nbsp;$${item["Condition"]}</p>
                     </div>
                 </td>
-                <td>${item["MAIN_Qty"]}&nbsp;/&nbsp;${item["Available"]}</td>
+                <td>${item["MAIN_Qty"]}&nbsp;/&nbsp;${item["Total_SKU_Supply"]}</td>
                 <td>$${item["Price"]}</td>
                 <td>$${item["Value"]}</td>
                 <td>
