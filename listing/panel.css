@@ -374,7 +374,7 @@ nav {
 table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: auto;
+    table-layout: fixed;
 }
 
 thead th,
@@ -397,12 +397,15 @@ th:nth-child(2),
 th:nth-child(5),
 td:nth-child(2),
 td:nth-child(5) {
-    width: 400px;
+    width: 50%;
+	white-space: normal;
+    overflow-wrap: break-word;
 }
 
 #table img {
 	width: 64px;
 	height: 64px;
+	object-fit: contain;
 }
 
 /* grid / modal */
