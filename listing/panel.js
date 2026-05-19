@@ -99,15 +99,12 @@
                 ? item["Product_Image"]
                 : `https://s3.amazonaws.com/elog-cdn/no-image.png`;
             return item;
+
+            item["Enhance_Flags_HTML"] = item["Enhance_Flags"].length > 0
+                ? `<a class="button yellow row gapT" table-action="modal"><i aria-hidden="true" class="fa-solid fa-triangle-exclamation"></i><span>${item["Enhance_Flags"].length} ${item["Enhance_Flags"].length === 1 ? 'Issue' : 'Issues'}</span></a>`
+                : `<a class="button green row gapT" table-action="modal"><i aria-hidden="true" class="fa-solid fa-circle-check"></i><span>All Good!</span></a>`;
         });
 
-        // either table or grid
-        createTable(list);
-
-        hideLoader();
-    }
-
-    function createTable(items) {
         document.getElementById('table')?.remove();
         let table = document.createElement('table');
         table.id = 'table';
@@ -126,14 +123,7 @@
         table.appendChild(thead);
 
         const tbody = document.createElement('tbody');
-        items.forEach(item => {
-            let issuesHTML = '';
-            let enhance_names = [];
-            item["Enhance_Flags"].forEach(enh => { enhance_names.push(Enhance_Flag_Glossary[enh]['label']); });
-            enhance_names.forEach(label => {
-                issuesHTML += `<p>${label}</p>`;
-            });
-
+        list.forEach(item => {
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>
@@ -148,9 +138,7 @@
                 <td>${item["MAIN_Qty"]}</td>
                 <td>$${item["Price"]}</td>
                 <td>$${item["Value"]}</td>
-                <td>
-                    <div class="column gapT">${issuesHTML}</div>
-                </td>
+                <td>${item["Enhance_Flags_HTML"]}</td>
                 <td><a class="button green row gapS center" table-action="resolve" target="_blank"><p>Resolve</p><i aria-hidden="true" class="fa-solid fa-arrows-refresh"></i></a></td>
             `;
             tbody.appendChild(row);
@@ -158,132 +146,8 @@
         table.appendChild(tbody);
 
         document.getElementById('content').appendChild(table);
-    }
 
-    function createGrid(items) {
-        document.getElementById('grid')?.remove();
-        let grid = document.createElement('div');
-        grid.innerHTML = '';
-        grid.id = 'grid';
-
-        list.forEach(item => {
-            list = list.map(item => {
-                item["Enhance_Flags_HTML"] = item["Enhance_Flags"].length > 0
-                    ? `<span>${item["Enhance_Flags"].length} ${item["Enhance_Flags"].length === 1 ? 'Issue' : 'Issues'}</span>`
-                    : ``;
-                return item;
-            });
-
-            const gridItem = document.createElement('div');
-            gridItem.classList.add('box');
-            gridItem.setAttribute('data-itemID', item["Item_ID"]);
-            gridItem.innerHTML = `
-            <div class="heading">
-                <div class="spacer">
-                    <h3>${item["SKU"]}</h3>
-                    <i>${item["Condition"]}</i>
-                </div>
-                ${item["Enhance_Flags_HTML"]}
-            </div>
-            <div class="body">
-                <img loading="lazy" src="${item["Product_Image"]}">
-                <h4>${item["Product_Name"]}</h4>
-                <div class="stats">
-                    <div class="item">
-                        <h5>In Stock</h5>
-                        <p>${item["MAIN_Qty"]}</p>
-                    </div>
-                    <div class="item">
-                        <h5>Price</h5>
-                        <p>$${item["Price"]}</p>
-                    </div>
-                    <div class="item">
-                        <h5>Value</h5>
-                        <p>$${item["Value"]}</p>
-                    </div>
-                </div>
-            </div>`;
-
-            gridItem.addEventListener('click', () => {
-                refreshModal();
-                openModal();
-            });
-            gridItem.style.cursor = 'pointer';
-
-            function refreshModal() {
-                // heading links
-                modal.querySelectorAll('a.button[modal-link]').forEach(elem => {
-                    switch (elem.getAttribute('modal-link')) {
-                        case 'SID':
-                            elem.href = `${rel}/products/${item['SID']}`;
-                            break;
-                        case 'SKU':
-                            elem.href = `${rel}/product/items/${item['SKU']}`;
-                            break;
-                        case 'resolve':
-                            elem.addEventListener('click', async() => {
-                                fireMessage({
-                                    type: 'info',
-                                    title: 'To-Do',
-                                    body: ["Not here yet.", "Plan is the resolve button will refresh item from system and update neon db."]
-                                });
-                            })
-                            break;
-                    }
-                });
-
-                // fill in data, show issues
-                const enhance_itemkeys = item["Enhance_Flags"].flatMap(enh => Enhance_Flag_Glossary[enh]?.keys || []);
-                Object.entries(item).forEach(([key, value]) => {
-                    modal.querySelectorAll(`[modal-item="${key}"]`).forEach(elem => {
-                        if (key === "Product_Image") {
-                            elem.src = value;
-                        } else if (key === "Product_Attributes") {
-                            let attrib_html = '';
-                            Object.entries(value).forEach(([attrib_name, attrib_val]) => {
-                                attrib_html += `<div class="row gapS"><strong>${attrib_name}</strong><span>:</span><p style="flex:1;text-align:left;">${attrib_val}</p></div>`;
-                            });
-                            elem.innerHTML = attrib_html;
-                        } else if (key === "Item_Flags") {
-                            let flag_html = '';
-                            value.forEach(flag => {
-                                flag_html += `<div class="pill">${flag}</div>`;
-                            });
-                            elem.innerHTML = flag_html;
-                        } else {
-                            elem.innerHTML = value;
-                        }
-
-                        if (enhance_itemkeys.includes(key)) {
-                            const detail = elem.closest('.detail');
-                            if (detail) {
-                                detail.style.borderColor = 'var(--yellow)';
-                            }
-                        }
-                    });
-                });
-
-                // enhancement status box
-                const enhanceBox = modal.querySelector('div.detail.enhancements');
-                if (item["Enhance_Flags"].length > 0) {
-                    enhanceBox.style.borderColor = 'var(--yellow)';
-                    let enhanceBoxHTML = `<div class="column gapT"><h4>Issues</h4><p>These are issues that need to be resolved for the best item performance.</p></div><div class="column gapT">`;
-                    let enhance_names = [];
-                    item["Enhance_Flags"].forEach(enh => { enhance_names.push(Enhance_Flag_Glossary[enh]['label']); });
-                    enhance_names.forEach(label => {
-                        enhanceBoxHTML += `<p>${label}</p>`;
-                    });
-                    enhanceBoxHTML += '</div>';
-                    enhanceBox.innerHTML = enhanceBoxHTML;
-                } else {
-                    enhanceBox.style.borderColor = 'var(--green)';
-                    enhanceBox.innerHTML = `<div class="column gapT"><h4>Good News!</h4><p>TNo isses have been detected, ensure the details are correct.</p></div>`;
-                }
-            }
-            grid.appendChild(gridItem);
-        });
-        
-        document.getElementById('content').appendChild(grid);
+        hideLoader();
     }
 
     async function api(type) {
