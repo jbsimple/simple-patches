@@ -83,34 +83,34 @@ a:not(a.button):hover {
 }
 
 a.button {
-	--btnBG: var(var(--green));
-	--btnTx: white;
+	--btnBgC: var(var(--green));
+	--btnTxC: white;
 
-	color: var(--btnTx);
+	color: var(--btnTxC);
 	font-weight: 600;
-	background-color: var(--btnBG);
+	background-color: var(--btnBgC);
 	border-radius: 0.5rem;
 	padding: 0.2rem 0.7rem;
 }
 
 a.button:active,
 a.button:hover {
-	background-color: color-mix(in srgb, var(--btnBG) 75%, white 25%);
+	background-color: color-mix(in srgb, var(--btnBgC) 75%, white 25%);
 }
 
 a.button.green {
-	--btnBG: var(--green);
-	--btnTx: white;
+	--btnBgC: var(--green);
+	--btnTxC: white;
 }
 
 a.button.yellow {
-	--btnBG: var(--yellow);
-	--btnTx: white;
+	--btnBgC: var(--yellow);
+	--btnTxC: white;
 }
 
 a.button.red {
-	--btnBG: var(--red);
-	--btnTx: white;
+	--btnBgC: var(--red);
+	--btnTxC: white;
 }
 
 .pill {
