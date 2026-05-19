@@ -28,7 +28,7 @@
         priceBulk_missing: { label: "Bulk price missing", keys: ['Bulk_Price'], count: 0 },
         msrp_missing: { label: "Product MSRP missing", keys: ['MSRP'], count: 0 }
     };
-    const Enhance_Flag_Filter = qs.get('list') ?? 'all';
+    const Enhance_Flag_Filter = qs.get('list') ?? 'clear';
 
     const modal = document.getElementById('modal');
     const modalblock = document.getElementById('modalblock');
@@ -77,6 +77,12 @@
         // build nav
         const nav = document.getElementById('enhancement_nav');
         nav.innerHTML = '';
+        const allBtn = document.createElement('a');
+        allBtn.classList.add('button');
+        allBtn.textContent = `View All ${Object.values(Enhance_Flag_Glossary).reduce((sum, item) => sum + (parseInt(item.count, 10) || 0), 0)}`;
+        allBtn.href = `/listing?list=all&key=${access_key}`;
+        nav.appendChild(allBtn);
+        
         Object.entries(Enhance_Flag_Glossary).forEach(([key, value]) => {
             if (value.count <= 0) { return; }
             const filterBtn = document.createElement('a');
@@ -85,10 +91,11 @@
             filterBtn.href = `/listing?list=${key}&key=${access_key}`;
             nav.appendChild(filterBtn);
         });
+
         const clrBtn = document.createElement('a');
         clrBtn.classList.add('button');
         clrBtn.textContent = `View All`;
-        clrBtn.href = `/listing?list=all&key=${access_key}`;
+        clrBtn.href = `/listing?list=clear&key=${access_key}`;
         nav.appendChild(clrBtn);
 
         // more parsing for html
@@ -97,7 +104,7 @@
                 ? item["Product_Image"]
                 : `https://s3.amazonaws.com/elog-cdn/no-image.png`;
 
-            if (Enhance_Flag_Filter !== 'all') {
+            if (Enhance_Flag_Filter !== 'clear') {
                 item["Enhance_Flags_HTML"] = `<a class="button yellow row center gapT" table-action="modal"><i aria-hidden="true" class="fa-solid fa-triangle-exclamation"></i><span>More Info</span></a>`;
             } else if (item["Enhance_Flags"].length > 0) {
                 item["Enhance_Flags_HTML"] = `<a class="button yellow row center gapT" table-action="modal"><i aria-hidden="true" class="fa-solid fa-triangle-exclamation"></i><span>${item["Enhance_Flags"].length} ${item["Enhance_Flags"].length === 1 ? 'Issue' : 'Issues'}</span></a>`
@@ -109,10 +116,11 @@
         });
 
         // filter with enhance flags
-        if (Enhance_Flag_Filter !== 'all') {
+        if (Enhance_Flag_Filter !== 'clear') {
             list = list.filter(item => {
-                return Array.isArray(item["Enhance_Flags"]) &&
-                    item["Enhance_Flags"].includes(Enhance_Flag_Filter);
+                const flags = Array.isArray(item["Enhance_Flags"]) ? item["Enhance_Flags"] : [];
+                if (Enhance_Flag_Filter === 'all') { return flags.length > 0; }
+                return flags.includes(Enhance_Flag_Filter);
             });
         }
 
