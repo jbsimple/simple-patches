@@ -222,13 +222,11 @@
                             elem.innerHTML = value;
                         }
 
-                        if (enhance_itemkeys.includes(key)) {
-                            const detail = elem.closest('.detail');
-                            if (detail) {
-                                detail.style.borderColor = 'var(--yellow)';
-                            } else {
-                                detail.style.borderColor = 'inherit';
-                            }
+                        const detail = elem.closest('.detail');
+                        if (detail && enhance_itemkeys.includes(key)) {
+                            detail.style.borderColor = 'var(--yellow)';
+                        } else if (detail) {
+                            detail.style.borderColor = 'imherit';
                         }
                     });
                 });
