@@ -390,15 +390,8 @@ td:nth-child(2) {
     width: 45%;
 }
 
-th:nth-child(6),
-td:nth-child(6) {
-	white-space: normal;
-    overflow-wrap: break-word;
-    width: 15%;
-}
-
-th:not(:nth-child(2)):not(:nth-child(6)),
-td:not(:nth-child(2)):not(:nth-child(6)) {
+th:not(:nth-child(2)),
+td:not(:nth-child(2)) {
     white-space: nowrap;
     width: 1%;
 }
