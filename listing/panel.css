@@ -99,17 +99,17 @@ a.button:hover {
 }
 
 a.button.green {
-	--btnBG: var(var(--green));
+	--btnBG: var(--green);
 	--btnTx: white;
 }
 
 a.button.yellow {
-	--btnBG: var(var(--yellow));
+	--btnBG: var(--yellow);
 	--btnTx: white;
 }
 
 a.button.red {
-	--btnBG: var(var(--red));
+	--btnBG: var(--red);
 	--btnTx: white;
 }
 
