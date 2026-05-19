@@ -374,38 +374,34 @@ nav {
 table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: fixed;
 }
 
 thead th,
 tbody td {
     padding: 0.3rem;
     text-align: left;
-}
-
-th:nth-child(1),
-th:nth-child(3),
-th:nth-child(4),
-td:nth-child(1),
-td:nth-child(3),
-td:nth-child(4) {
-    width: auto;
-    white-space: nowrap;
+    vertical-align: top;
 }
 
 th:nth-child(2),
-th:nth-child(5),
 td:nth-child(2),
+th:nth-child(5),
 td:nth-child(5) {
-    width: 50%;
-	white-space: normal;
+    white-space: normal;
     overflow-wrap: break-word;
+    width: 30%;
+}
+
+th:not(:nth-child(2)):not(:nth-child(5)),
+td:not(:nth-child(2)):not(:nth-child(5)) {
+    white-space: nowrap;
+    width: 1%;
 }
 
 #table img {
-	width: 64px;
-	height: 64px;
-	object-fit: contain;
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
 }
 
 /* grid / modal */
