@@ -102,12 +102,12 @@
         });
 
         // either table or grid
-        createTable(items);
+        createTable(list);
 
         hideLoader();
     }
 
-    function createTable(list) {
+    function createTable(items) {
         let table = document.getElementById('table') ?? document.createElement('table');
         table.id = 'table';
         table.innerHTML = '';
