@@ -117,7 +117,7 @@
         thead.innerHTML = `<tr>
             <th></th>
             <th>Product Name / SKU</th>
-            <th>In Stock / Available</th>
+            <th>In Stock</th>
             <th>Price</th>
             <th>Value</th>
             <th>Issues</th>
@@ -145,14 +145,14 @@
                         <p>${item["SKU"]}&nbsp;|&nbsp;$${item["Condition"]}</p>
                     </div>
                 </td>
-                <td>${item["MAIN_Qty"]}&nbsp;/&nbsp;${item["Total_SKU_Supply"]}</td>
+                <td>${item["MAIN_Qty"]}</td>
                 <td>$${item["Price"]}</td>
                 <td>$${item["Value"]}</td>
                 <td>
                     <div class="column gapT">${issuesHTML}</div>
                 </td>
                 <td>
-                    <div class="row gapS>
+                    <div class="row gapS">
                         <a class="button row gapS center" href="${rel}/products/${item['SID']}" target="_blank"><p>View SID</p><i aria-hidden="true" class="fa-solid fa-up-right-from-square"></i></a>
                         <a class="button row gapS center" href="${rel}/product/items/${item['SKU']}" target="_blank"><p>View SKU</p><i aria-hidden="true" class="fa-solid fa-up-right-from-square"></i></a>
                         <a class="button green row gapS center" table-action="resolve" target="_blank"><p>Resolve</p><i aria-hidden="true" class="fa-solid fa-arrows-refresh"></i></a>
