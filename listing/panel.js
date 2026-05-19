@@ -78,7 +78,7 @@
         const nav = document.getElementById('enhancement_nav');
         nav.innerHTML = '';
         const allBtn = document.createElement('a');
-        allBtn.classList.add('button');
+        allBtn.classList.add('button', 'green');
         allBtn.textContent = `View All ${Object.values(Enhance_Flag_Glossary).reduce((sum, item) => sum + (parseInt(item.count, 10) || 0), 0)}`;
         allBtn.href = `/listing?list=all&key=${access_key}`;
         nav.appendChild(allBtn);
@@ -86,15 +86,15 @@
         Object.entries(Enhance_Flag_Glossary).forEach(([key, value]) => {
             if (value.count <= 0) { return; }
             const filterBtn = document.createElement('a');
-            filterBtn.classList.add('button');
+            filterBtn.classList.add('button', 'yellow');
             filterBtn.textContent = `${value.label} (${value.count})`;
             filterBtn.href = `/listing?list=${key}&key=${access_key}`;
             nav.appendChild(filterBtn);
         });
 
         const clrBtn = document.createElement('a');
-        clrBtn.classList.add('button');
-        clrBtn.textContent = `View All`;
+        clrBtn.classList.add('button', red);
+        clrBtn.textContent = `Clear Filter`;
         clrBtn.href = `/listing?list=clear&key=${access_key}`;
         nav.appendChild(clrBtn);
 
