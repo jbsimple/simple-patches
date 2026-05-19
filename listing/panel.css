@@ -294,6 +294,7 @@ header,
 main,
 footer {
     width: 95%;
+	max-width: 1500px;
 }
 
 header {
@@ -386,14 +387,14 @@ th:nth-child(2),
 td:nth-child(2) {
     white-space: normal;
     overflow-wrap: break-word;
-    width: 35%;
+    width: 45%;
 }
 
 th:nth-child(6),
 td:nth-child(6) {
 	white-space: normal;
     overflow-wrap: break-word;
-    width: 25%;
+    width: 15%;
 }
 
 th:not(:nth-child(2)):not(:nth-child(6)),
