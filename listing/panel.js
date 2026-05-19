@@ -163,7 +163,7 @@
         table.appendChild(tbody);
 
         document.getElementById('content').innerHTML = '';
-        document.getElementById('content').appendChild(grid);
+        document.getElementById('content').appendChild(table);
     }
 
     function createGrid(items) {
