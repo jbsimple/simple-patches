@@ -154,8 +154,8 @@
                 </td>
                 <td table-sort="${item["Product_Name"]}">
                     <div class="column gapT">
-                        <a style="font-weight:700;font-size:1.3rem;" href="${rel}/products/${item['SID']}" target="_blank">${item["Product_Name"]}</a>
-                        <a style="font-weight:300;" href="${rel}/product/items/${item['SKU']}" target="_blank">${item["SKU"]}&nbsp;|&nbsp;${item["Condition"]}</a>
+                        <strong style="font-size:1.3rem;">${item["Product_Name"]}</strong>
+                        <p style="font-weight:300;">${item["SKU"]}&nbsp;|&nbsp;${item["Condition"]}</p>
                         <div class="row gapS">
                             <a class="button row center gapS" href="${rel}/products/${item['SID']}" target="_blank"><span>View Product</span><i aria-hidden="true" class="fa-solid fa-up-right-from-square"></i></a>
                             <a class="button row center gapS" href="${rel}/product/items/${item['SKU']}" target="_blank" ><span>View Item</span><i aria-hidden="true" class="fa-solid fa-up-right-from-square"></i></a></div>
