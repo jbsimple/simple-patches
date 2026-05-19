@@ -370,7 +370,36 @@ nav {
     color: var(--blue);
 }
 
-/* base content */
+/* table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+}
+
+thead th,
+tbody td {
+    padding: 1rem;
+    text-align: left;
+    white-space: nowrap;
+}
+
+thead th:not(.lg),
+tbody td:not(.lg) {
+    width: 1%;
+}
+
+thead th.lg,
+tbody td.lg {
+    width: auto;
+}
+
+thead th.lg,
+tbody td.lg {
+    white-space: normal;
+}
+
+/* grid / modal */
 #grid {
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);

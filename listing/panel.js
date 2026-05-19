@@ -108,7 +108,8 @@
     }
 
     function createTable(items) {
-        let table = document.getElementById('table') ?? document.createElement('table');
+        document.getElementById('table')?.remove();
+        let table = document.createElement('table');
         table.id = 'table';
         table.innerHTML = '';
 
@@ -162,12 +163,12 @@
         });
         table.appendChild(tbody);
 
-        document.getElementById('content').innerHTML = '';
         document.getElementById('content').appendChild(table);
     }
 
     function createGrid(items) {
-        let grid = document.getElementById('grid') ?? document.createElement('div');
+        document.getElementById('grid')?.remove();
+        let grid = document.createElement('div');
         grid.innerHTML = '';
         grid.id = 'grid';
 
@@ -288,7 +289,6 @@
             grid.appendChild(gridItem);
         });
         
-        document.getElementById('content').innerHTML = '';
         document.getElementById('content').appendChild(grid);
     }
 
