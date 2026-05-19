@@ -84,13 +84,7 @@
             a.classList.add('button');
             a.setAttribute('data-flag', key);
             a.textContent = `${value.label} (${value.count})`;
-            a.addEventListener('click', () => {
-                fireMessage({
-                    type: 'info',
-                    title: 'To-Do',
-                    body: ["Haven't got this far yet.","This will filter the list below to just items that are tagged."]
-                });
-            });
+            a.href = `/listing?list=${key}&key=${key}`;
             nav.appendChild(a);
         });
 
