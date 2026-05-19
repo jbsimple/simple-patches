@@ -399,6 +399,11 @@ tbody td.lg {
     white-space: normal;
 }
 
+#table .imgcont {
+	width: 64px;
+	height: 64px;
+}
+
 /* grid / modal */
 #grid {
 	display: grid;
