@@ -385,15 +385,15 @@ tbody td {
 
 th:nth-child(2),
 td:nth-child(2),
-th:nth-child(5),
-td:nth-child(5) {
+th:nth-child(6),
+td:nth-child(6) {
     white-space: normal;
     overflow-wrap: break-word;
     width: 30%;
 }
 
-th:not(:nth-child(2)):not(:nth-child(5)),
-td:not(:nth-child(2)):not(:nth-child(5)) {
+th:not(:nth-child(2)):not(:nth-child(6)),
+td:not(:nth-child(2)):not(:nth-child(6)) {
     white-space: nowrap;
     width: 1%;
 }
