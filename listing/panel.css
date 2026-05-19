@@ -21,7 +21,7 @@
 	--purple: #7239ea;
 	--green: #50cd89;
 	--blue: #3e97ff;
-	--yellow: #ffc700;
+	--yellow: #ffc800;
 	--red: #f1416c;
 }
 
@@ -105,7 +105,7 @@ a.button.green {
 
 a.button.yellow {
 	--btnBgC: var(--yellow);
-	--btnTxC: white;
+	--btnTxC: black;
 }
 
 a.button.red {
