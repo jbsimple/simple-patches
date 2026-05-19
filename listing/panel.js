@@ -3,8 +3,8 @@
 
     // check for key
     const qs = new URLSearchParams(window.location.search);
-    const key = qs.get('key') ?? null;
-    if (key == null) {
+    const access_key = qs.get('key') ?? null;
+    if (access_key == null) {
         fireMessage({
             type: 'error',
             title: 'Hey!',
@@ -84,7 +84,7 @@
             a.classList.add('button');
             a.setAttribute('data-flag', key);
             a.textContent = `${value.label} (${value.count})`;
-            a.href = `/listing?list=${key}&key=${key}`;
+            a.href = `/listing?list=${key}&key=${access_key}`;
             nav.appendChild(a);
         });
 
@@ -147,7 +147,7 @@
                 <td>${item["MAIN_Qty"]}</td>
                 <td>$${item["Price"]}</td>
                 <td>$${item["Value"]}</td>
-                <td><a class="button green row gapS center" table-action="resolve" target="_blank"><p>Resolve</p><i aria-hidden="true" class="fa-solid fa-arrows-refresh"></i></a></td>
+                <td><a class="button green row gapS center" table-action="resolve" target="_blank"><p>Resolve</p><i aria-hidden="true" class="fa-solid fa-rotate-right"></i></a></td>
             `;
             row.querySelectorAll('[table-action]').forEach(btn => {
                 btn.addEventListener('click', async() => {
@@ -246,7 +246,7 @@
     }
 
     async function api(type) {
-        const url = `/api/listing?type=${encodeURIComponent(type)}&key=${encodeURIComponent(key)}`;
+        const url = `/api/listing?type=${encodeURIComponent(type)}&key=${encodeURIComponent(access_key)}`;
         try {
             const response = await fetch(url, {
                 method: 'GET',
