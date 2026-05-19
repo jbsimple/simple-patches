@@ -132,11 +132,11 @@
         const thead = document.createElement('thead');
         thead.innerHTML = `<tr>
             <th></th>
-            <th>Product Name / SKU</th>
-            <th>Enhancement</th>
-            <th>In Stock</th>
-            <th>Price</th>
-            <th>Value</th>
+            <th table-sort="alph">Product Name / SKU</th>
+            <th table-sort="num">Enhancement</th>
+            <th table-sort="num">In Stock</th>
+            <th table-sort="num">Price</th>
+            <th table-sort="num">Value</th>
             <th></th>
         </tr>`;
         table.appendChild(thead);
@@ -148,16 +148,16 @@
                 <td>
                     <img loading="lazy" src="${item["Product_Image"]}">
                 </td>
-                <td>
+                <td table-sort="${item["Product_Name"]}">
                     <div class="column gapT">
                         <a style="font-weight:700;" href="${rel}/products/${item['SID']}" target="_blank">${item["Product_Name"]}</a>
                         <a style="font-weight:300;" href="${rel}/product/items/${item['SKU']}" target="_blank">${item["SKU"]}&nbsp;|&nbsp;${item["Condition"]}</p>
                     </div>
                 </td>
-                <td>${item["Enhance_Flags_HTML"]}</td>
-                <td>${item["MAIN_Qty"]}</td>
-                <td>$${item["Price"]}</td>
-                <td>$${item["Value"]}</td>
+                <td table-sort="${item["Enhance_Flags"].length}">${item["Enhance_Flags_HTML"]}</td>
+                <td table-sort="${item["MAIN_Qty"]}">${item["MAIN_Qty"]}</td>
+                <td table-sort="${item["Price"]}">$${item["Price"]}</td>
+                <td table-sort="${item["Value"]}">$${item["Value"]}</td>
                 <td><a class="button green row gapS center" table-action="resolve" target="_blank"><p>Resolve</p><i aria-hidden="true" class="fa-solid fa-rotate-right"></i></a></td>
             `;
             row.querySelectorAll('[table-action]').forEach(btn => {
