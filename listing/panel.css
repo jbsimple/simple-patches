@@ -293,8 +293,7 @@ body {
 header,
 main,
 footer {
-    width: 90%;
-    max-width: 1200px;
+    width: 95%;
 }
 
 header {
