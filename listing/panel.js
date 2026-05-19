@@ -226,7 +226,7 @@
                         if (detail && enhance_itemkeys.includes(key)) {
                             detail.style.borderColor = 'var(--yellow)';
                         } else if (detail) {
-                            detail.style.borderColor = 'imherit';
+                            detail.style.borderColor = '';
                         }
                     });
                 });
