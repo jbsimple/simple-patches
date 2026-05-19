@@ -93,24 +93,92 @@
             nav.appendChild(a);
         });
 
-        // another round of parsing just for the html
+        // handle img vs no img
         list = list.map(item => {
             item["Product_Image"] = (typeof item["Product_Image"] === "string" && item["Product_Image"].trim() !== "")
                 ? item["Product_Image"]
                 : `https://s3.amazonaws.com/elog-cdn/no-image.png`;
-
-            item["Enhance_Flags_HTML"] = item["Enhance_Flags"].length > 0
-                ? `<span>${item["Enhance_Flags"].length} ${item["Enhance_Flags"].length === 1 ? 'Issue' : 'Issues'}</span>`
-                : ``;
-
             return item;
         });
 
+        // either table or grid
+        createTable(items);
+
+        hideLoader();
+    }
+
+    function createTable(items) {
+        let table = document.getElementById('table') ?? document.createElement('table');
+        table.id = 'table';
+        table.innerHTML = '';
+
+        const thead = document.createElement('thead');
+        thead.innerHTML = `<tr>
+            <th></th>
+            <th class="lg">Product Name / SKU</th>
+            <th>In Stock / Available</th>
+            <th>Price</th>
+            <th>Value</th>
+            <th class="lg">Issues</th>
+            <th></th>
+        </tr>`;
+        table.appendChild(thead);
+
+        const tbody = document.createElement('tbody');
+        items.forEach(item => {
+            const issuesHTML = '';
+            let enhance_names = [];
+            item["Enhance_Flags"].forEach(enh => { enhance_names.push(Enhance_Flag_Glossary[enh]['label']); });
+            enhance_names.forEach(label => {
+                issuesHTML += `<p>${label}</p>`;
+            });
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>
+                    <img loading="lazy" src="${item["Product_Image"]}">
+                </td>
+                <td>
+                    <div class="column gapT">
+                        <strong>${item["Product_Name"]}</strong>
+                        <p>${SKU}&nbsp;|&nbsp;$${item["Condition"]}</p>
+                    </div>
+                </td>
+                <td>${item["MAIN_Qty"]}&nbsp;/&nbsp;${item["Available"]}</td>
+                <td>$${item["Price"]}</td>
+                <td>$${item["Value"]}</td>
+                <td>
+                    <div class="column gapT">${issuesHTML}</div>
+                </td>
+                <td>
+                    <div class="row gapS>
+                        <a class="button row gapS center" href="${rel}/products/${item['SID']}" target="_blank"><p>View SID</p><i aria-hidden="true" class="fa-solid fa-up-right-from-square"></i></a>
+                        <a class="button row gapS center" href="${rel}/product/items/${item['SKU']}" target="_blank"><p>View SKU</p><i aria-hidden="true" class="fa-solid fa-up-right-from-square"></i></a>
+                        <a class="button green row gapS center" table-action="resolve" target="_blank"><p>Resolve</p><i aria-hidden="true" class="fa-solid fa-arrows-refresh"></i></a>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+        table.appendChild(tbody);
+
+        document.getElementById('content').innerHTML = '';
+        document.getElementById('content').appendChild(grid);
+    }
+
+    function createGrid(items) {
         let grid = document.getElementById('grid') ?? document.createElement('div');
         grid.innerHTML = '';
         grid.id = 'grid';
 
         list.forEach(item => {
+            list = list.map(item => {
+                item["Enhance_Flags_HTML"] = item["Enhance_Flags"].length > 0
+                    ? `<span>${item["Enhance_Flags"].length} ${item["Enhance_Flags"].length === 1 ? 'Issue' : 'Issues'}</span>`
+                    : ``;
+                return item;
+            });
+
             const gridItem = document.createElement('div');
             gridItem.classList.add('box');
             gridItem.setAttribute('data-itemID', item["Item_ID"]);
@@ -220,9 +288,8 @@
             grid.appendChild(gridItem);
         });
         
+        document.getElementById('content').innerHTML = '';
         document.getElementById('content').appendChild(grid);
-
-        hideLoader();
     }
 
     async function api(type) {
