@@ -101,8 +101,8 @@
             
 
             item["Enhance_Flags_HTML"] = item["Enhance_Flags"].length > 0
-                ? `<a class="button yellow row gapT" table-action="modal"><i aria-hidden="true" class="fa-solid fa-triangle-exclamation"></i><span>${item["Enhance_Flags"].length} ${item["Enhance_Flags"].length === 1 ? 'Issue' : 'Issues'}</span></a>`
-                : `<a class="button green row gapT" table-action="modal"><i aria-hidden="true" class="fa-solid fa-circle-check"></i><span>All Good!</span></a>`;
+                ? `<a class="button yellow row center gapT" table-action="modal"><i aria-hidden="true" class="fa-solid fa-triangle-exclamation"></i><span>${item["Enhance_Flags"].length} ${item["Enhance_Flags"].length === 1 ? 'Issue' : 'Issues'}</span></a>`
+                : `<a class="button green row center gapT" table-action="modal"><i aria-hidden="true" class="fa-solid fa-circle-check"></i><span>All Good!</span></a>`;
 
                 return item;
         });
@@ -116,10 +116,10 @@
         thead.innerHTML = `<tr>
             <th></th>
             <th>Product Name / SKU</th>
+            <th>Issues</th>
             <th>In Stock</th>
             <th>Price</th>
             <th>Value</th>
-            <th>Issues</th>
             <th></th>
         </tr>`;
         table.appendChild(thead);
@@ -137,12 +137,29 @@
                         <a style="font-weight:300;" href="${rel}/product/items/${item['SKU']}" target="_blank">${item["SKU"]}&nbsp;|&nbsp;${item["Condition"]}</p>
                     </div>
                 </td>
+                <td>${item["Enhance_Flags_HTML"]}</td>
                 <td>${item["MAIN_Qty"]}</td>
                 <td>$${item["Price"]}</td>
                 <td>$${item["Value"]}</td>
-                <td>${item["Enhance_Flags_HTML"]}</td>
                 <td><a class="button green row gapS center" table-action="resolve" target="_blank"><p>Resolve</p><i aria-hidden="true" class="fa-solid fa-arrows-refresh"></i></a></td>
             `;
+            row.querySelectorAll('[table-action]').forEach(btn => {
+                btn.addEventListener('click', async() => {
+                    switch (btn.getAttribute('table-action')) {
+                        case 'modal':
+                            await refreshModal();
+                            openModal();
+                            break;
+                        case 'resolve':
+                            // get initials of person
+                            fireMessage({
+                                type: 'info',
+                                title: 'To-Do',
+                                body: ["Not here yet.", "Plan is the resolve button will refresh item from system and update neon db."]
+                            });
+                    }
+                })
+            });
             tbody.appendChild(row);
         });
         table.appendChild(tbody);
