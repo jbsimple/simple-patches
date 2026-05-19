@@ -126,7 +126,7 @@
 
         const tbody = document.createElement('tbody');
         items.forEach(item => {
-            const issuesHTML = '';
+            let issuesHTML = '';
             let enhance_names = [];
             item["Enhance_Flags"].forEach(enh => { enhance_names.push(Enhance_Flag_Glossary[enh]['label']); });
             enhance_names.forEach(label => {
