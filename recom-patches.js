@@ -504,7 +504,7 @@ function injectExtraTheme(observer = true) {
             if (copyrights) {
                 copyrights.forEach(copyright => {
                     if (copyright.textContent = '2023©') {
-                        copyright.textContent = '(C)2025';
+                        copyright.textContent = '(C)2026';
 
                         const newCopyright = document.createElement('span');
                         newCopyright.classList.add('text-muted', 'fw-semibold', 'me-1');
