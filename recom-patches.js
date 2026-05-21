@@ -585,16 +585,13 @@ function injectExtraTheme(observer = true) {
 
 function scheduleRun(hour, minute, callback) {
     const now = new Date();
-
     const target = new Date(now);
     target.setHours(hour, minute, 0, 0);
-    if (target <= now) {
-        target.setDate(target.getDate() + 1);
-    }
+    if (target <= now) { target.setDate(target.getDate() + 1); }
 
     const delay = target - now;
     setTimeout(() => {
-        callback();
+        if (!document.hidden) { callback(); }
         runAtSpecificTime(hour, minute, callback);
     }, delay);
 }
