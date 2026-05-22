@@ -12,6 +12,18 @@ async function hijackPrefillWindow(updateLocation = true) {
                     const form = document.getElementById('rc_ajax_modal_form');
                     if (!form) return;
 
+                    const condition = form.querySelector('select[name="item[condition_id]"]');
+                    if (condition) {
+                        const conditionId = parseInt(condition.value, 10);
+                        if (conditionId === 6 || conditionId === 8 || conditionId === 18) {
+                            printWarning('This condition requires custom photos.', true);
+                        } else if (conditionId === 1) {
+                            printWarning('Prefilling a brand new item? Give those details a once-over, please.', false);
+                        }
+                    } else {
+                        console.error('PATCHES - Unable to find condition?', condition);
+                    }
+
                     const img = form.querySelector('.img-thumbnail');
                     if (!img) return;
 
@@ -21,28 +33,16 @@ async function hijackPrefillWindow(updateLocation = true) {
                     console.debug('PATCHES - Prefill IMG src:', imgsrc);
 
                     if (pictureWarnings.some(w => filename.includes(w))) {
-                        printWarning('Bad or missing photo.', true);
+                        printWarning('Bad or missing photo, requires new photos.', true);
                     }
 
                     if (!filename.includes('__')) {
-                        printWarning('Potential bad photo, please verify.', true);
+                        printWarning('Potential bad photo, requires new photos.', true);
                     }
 
                     const [before, after] = baseName.split('__', 2);
                     if (before !== before.toUpperCase()) {
-                        printWarning('Potential old photo, please verify.', true);
-                    }
-
-                    const condition = form.querySelector('select[name="item[condition_id]"]');
-                    if (condition) {
-                        const conditionId = parseInt(condition.value, 10);
-                        if (conditionId === 6 || conditionId === 8 || conditionId === 18) {
-                            printWarning('This condition requires custom pictures.', true);
-                        } else if (conditionId === 1) {
-                            printWarning('This item is brand new, please update SID with box/new info.', false);
-                        }
-                    } else {
-                        console.error('PATCHES - Unable to find condition?', condition);
+                        printWarning('Potential old photo, requires new photos.', true);
                     }
 
                     img.onload = function() {
@@ -50,7 +50,7 @@ async function hijackPrefillWindow(updateLocation = true) {
                         const h = img.naturalHeight;
                 
                         if (w < 1199 || w > 1201 || h < 1199 || h > 1201) {
-                            printWarning(`Image is not 1200x1200 (actual: ${img.naturalWidth}x${img.naturalHeight}), Please verify.`, true);
+                            printWarning(`Image is not 1200x1200 (actual: ${img.naturalWidth}x${img.naturalHeight}), requires new photos.`, true);
                         }
                     };
                     
