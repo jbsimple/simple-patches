@@ -33,7 +33,7 @@ async function hijackPrefillWindow(updateLocation = true) {
                     console.debug('PATCHES - Prefill IMG src:', imgsrc);
 
                     if (pictureWarnings.some(w => filename.includes(w))) {
-                        printWarning('Bad or missing photo, requires new photos.', true);
+                        printWarning('This product was flagged for new photos.', true);
                     }
 
                     if (!filename.includes('__')) {
