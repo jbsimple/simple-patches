@@ -39,6 +39,7 @@ async function getTimeSpentInMinutes(sku) {
             report: {
                 type: "user_clock",
                 columns: [
+                    "purchase_orders.id",
                     "user_clock_activity.activity_id",
                     "user_clock_activity.activity_code",
                     "user_clock_activity.time_spent"
@@ -74,6 +75,7 @@ async function getTimeSpentInMinutes(sku) {
                     console.debug("PATCHES - Listing Results received:", data.results.results);
                     const matchingEntries = data.results.results.filter(
                         entry => entry.Event_Code === "Inventory Listing" 
+                        && entry.hasOwnProperty("PO_Number")
                         && entry.hasOwnProperty("Time_Spent_in_mintues")
                         && entry.hasOwnProperty("Event_ID")
                     );
@@ -81,6 +83,7 @@ async function getTimeSpentInMinutes(sku) {
                     if (matchingEntries.length > 0) {
                         const lastMatch = matchingEntries[matchingEntries.length - 1];
                         resolve({
+                            po: lastMatch.PO_Number,
                             time_spent: parseFloat(lastMatch.Time_Spent_in_mintues),
                             event_id: parseInt(lastMatch.Event_ID)
                         });
@@ -272,6 +275,83 @@ function fixSimilarProduct() {
         }
         charCountSpan.textContent = `${newTitleInput.value.length} / 80`;
     });
+}
+
+async function newUpdateLocation(sku, eventID = null, po = null) {
+    const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
+    if (!(csrfMeta && csrfMeta.getAttribute('content').length > 0)) {
+        return { success: false, message: "Missing CSRF token" };
+    }
+    const csrfToken = csrfMeta.getAttribute('content');
+
+    // get eventID if not present
+    if (eventID === null || po === null) {
+        const justCreated = await getTimeSpentInMinutes(sku);
+        if (justCreated && justCreated.event_id && justCreated.po) {
+            eventID = justCreated.event_id;
+            po = justCreated.po;
+        }
+    }
+
+    // verify event id
+    eventID = parseInt(eventID, 10);
+    if (!Number.isInteger(eventID)) { return { success: false, message: "Invalid Event ID" }; }
+
+    // parse po into a po_id
+    const url = `/ajax/datalist/PurchaseOrders?term=SCPO&_type=query&q=${encodeURIComponent(po)}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    po = Array.isArray(data.results) && data.results.length > 0 ? parseInt(data.results[0].id, 10) : null;
+    if (!Number.isInteger(po)) { return { success: false, message: "Invalid PO ID" }; }
+
+    // get existing location
+    const reportData = await $.ajax({
+        type: "POST",
+        dataType: "json",
+        url: "/reports/create",
+        data: {
+            report: {
+                type: "pending_inventory",
+                columns: ["inventory_receiving.location"],
+                filters: [
+                    {
+                        column: "purchase_orders.id",
+                        opr: "{0} IN {1}",
+                        value: `${po}`
+                    },
+                    {
+                        column: "inventory_receiving.id",
+                        opr: "{0} = {1}",
+                        value: `${eventID}`
+                    }
+                ]
+            },
+            csrf_recom: csrfToken
+        }
+    });
+    if (!reportData.success) { return { success: false, message: "Failed to fetch original sorting location." }; }
+    const sortLocation = reportData.results?.results?.[0]?.Sort_Location ?? null;
+    if (!sortLocation) { return { success: false, message: "Sort location not found" }; }
+
+    // prevent douple PICTURES if that ever happens
+    const cleanLocation = sortLocation.replace(/^PICTURES\s+/i, '').trim();
+    const newSortingLocation = ('PICTURES ' + (newSortingLocation .trim() || '')).trimEnd();
+    const formData = new FormData();
+    formData.append('name', newSortingLocation);
+
+    const postRes = await fetcher(
+        `/ajax/actions/updateSortingLocation/${eventID}`,
+        { method: 'POST', headers: { 'x-csrf-token': csrfToken }, body: formData }
+    );
+
+    if (postRes.ok && postRes.data?.success) {
+        return { success: true, message: "Location Updated" };
+    } else {
+        const msg = postRes.timedOut
+            ? `POST timed out after ${TIMEOUT_MS} ms`
+            : (postRes.data?.message || postRes.error?.message || "Update failed");
+        return { success: false, message: msg };
+    }
 }
 
 async function updateLocation(sku, eventID) {
@@ -568,9 +648,11 @@ async function initListingPatch() {
                         if (getCreatedSKU && getCreatedSKU[0]) {
                             const sku = getCreatedSKU[0].textContent;
                             const justCreated = await getTimeSpentInMinutes(sku); // await here
-                            if (justCreated !== null && justCreated.time_spent && justCreated.event_id) {
+                            if (justCreated !== null && justCreated.po && justCreated.time_spent && justCreated.event_id) {
+                                const po = justCreated.po;
                                 const timespent = justCreated.time_spent;
                                 const eventID = justCreated.event_id;
+
                                 code += `<br><br><p style="color: var(--bs-info);"><b>Time Spent in Minutes:</b>&nbsp;${timespent} minutes.</p>`;
                                 code += `<div class="patches-row patches-gap">
                                     <div class="patches-row" style="gap: 0.5rem; align-items: center; justify-content: center;">
@@ -583,7 +665,24 @@ async function initListingPatch() {
                                             <span>View In Pending Inventory</span>
                                         </a>
                                     </div>`;
-                                if (!autoLocationUpdate) {
+                                
+                                if (autoLocationUpdate) {
+                                    const updateConditions = [1,2,3,4,5,6,7,8,9,18,31,32,34,35,42,44,45,71,92,94,95,99];
+                                    if (updateConditions.some(cond => sku.endsWith(`-${cond}`))) {
+                                        window.addEventListener('beforeunload', unloadWarning);
+                                        // const updateLocationResponse = await updateLocation(sku, eventID);
+                                        const updateLocationResponse = await newUpdateLocation(sku, eventID, po);
+                                        window.removeEventListener('beforeunload', unloadWarning);
+                                        if (updateLocationResponse.success) {
+                                            console.log('PATCHES - Location Updated');
+                                        } else {
+                                            console.error('PATCHES - Unable to Update Location:', updateLocationResponse);
+                                            alert(`Issue Updating Location: ${updateLocationResponse.message ?? 'Check Console'}`);
+                                        }
+                                    } else {
+                                        code += '<p>This entry\'s condition does not need a location update.</p>';
+                                    }
+                                } else {
                                     code += `<div class="patches-row" style="gap: 0.5rem; align-items: center; justify-content: center;">
                                         <a class="btn btn-info btn-sm my-sm-1 ms-1" style="display: flex; flex-direction: row; gap: 0.25rem; align-items: center; justify-content: center;" title="Add PICTURES to Location" aria-label="Add PICTURES to Location" data-sku="${sku}" data-eventID="${eventID}" onclick="handleLocationButton(this);">
                                             <i class="fas fa-map-marker-alt"></i>
@@ -591,18 +690,6 @@ async function initListingPatch() {
                                         </a>
                                         <span></span>
                                     </div>`;
-                                } else if (!sku.endsWith('-14')) {
-                                    window.addEventListener('beforeunload', unloadWarning);
-                                    const updateLocationResponse = await updateLocation(sku, eventID);
-                                    window.removeEventListener('beforeunload', unloadWarning);
-                                    if (updateLocationResponse.success) {
-                                        console.log('PATCHES - Location Updated');
-                                    } else {
-                                        console.error('PATCHES - Unable to Update Location:', updateLocationResponse);
-                                        alert(`Issue Updating Location: ${updateLocationResponse.message ?? 'Check Console'}`);
-                                    }
-                                } else {
-                                    code += '<p>This entry is in the untested queue.</p>';
                                 }
                                 code += `<span class="spacer"></span></div>`;
                             }
