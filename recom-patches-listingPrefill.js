@@ -219,7 +219,8 @@ async function handlePrefillLocationUpdate() {
                 throw new Error('Event ID not found from getTimeSpentInMinutes');
             }
 
-            const updateLocationResponse = await updateLocation(sku, eventID);
+            //const updateLocationResponse = await updateLocation(sku, eventID);
+            //const updateLocationResponse = await newUpdateLocation(sku, eventID);
 
             if (updateLocationResponse.success) {
                 console.log('PATCHES - Location Updated');

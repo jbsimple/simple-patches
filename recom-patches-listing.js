@@ -504,7 +504,8 @@ async function handleLocationButton(e) {
     e.style.setProperty('background-color', 'gray', 'important');
 
     // do le update
-    const response = await updateLocation(sku, eventID);
+    //const response = await updateLocation(sku, eventID);
+    const response = await newUpdateLocation(sku, eventID);
 
     // show le response
     messageSpan.textContent = response.message;
