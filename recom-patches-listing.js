@@ -298,10 +298,13 @@ async function newUpdateLocation(sku, eventID = null, po = null) {
     if (!Number.isInteger(eventID)) { return { success: false, message: "Invalid Event ID" }; }
 
     // parse po into a po_id
-    const url = `/ajax/datalist/PurchaseOrders?term=SCPO&_type=query&q=${encodeURIComponent(po)}`;
-    const response = await fetch(url);
-    const data = await response.json();
-    po = Array.isArray(data.results) && data.results.length > 0 ? parseInt(data.results[0].id, 10) : null;
+    po = parseInt(po, 10);
+    if (!Number.isInteger(po)) {
+        const url = `/ajax/datalist/PurchaseOrders?term=SCPO&_type=query&q=${encodeURIComponent(po)}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        po = Array.isArray(data.results) && data.results.length > 0 ? parseInt(data.results[0].id, 10) : null;
+    }
     if (!Number.isInteger(po)) { return { success: false, message: "Invalid PO ID" }; }
 
     // get existing location
