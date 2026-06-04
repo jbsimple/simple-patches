@@ -685,9 +685,11 @@ async function initListingPatch() {
                                         window.removeEventListener('beforeunload', unloadWarning);
                                         if (updateLocationResponse.success) {
                                             console.log('PATCHES - Location Updated');
+                                            code += '<p>Updated entry location with PICTURES.</p>';
                                         } else {
                                             console.error('PATCHES - Unable to Update Location:', updateLocationResponse);
-                                            alert(`Issue Updating Location: ${updateLocationResponse.message ?? 'Check Console'}`);
+                                            code += `<p>Failed to update location with PICTURES: ${updateLocationResponse.message ?? 'Check Console'}</p>`;
+                                            //alert(`Issue Updating Location: ${updateLocationResponse.message ?? 'Check Console'}`);
                                         }
                                     } else {
                                         code += '<p>This entry\'s condition does not need a location update.</p>';
