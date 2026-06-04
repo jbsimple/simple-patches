@@ -56,7 +56,7 @@ async function getTimeSpentInMinutes(sku) {
                     },
                     {
                         column: "product_items.sku",
-                        opr: "{0} LIKE '%{1}%'",
+                        opr: "{0} = '{1}'",
                         value: `${sku}`
                     }
                 ]
@@ -278,82 +278,87 @@ function fixSimilarProduct() {
 }
 
 async function newUpdateLocation(sku, eventID = null, po = null) {
-    const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
-    if (!(csrfMeta && csrfMeta.getAttribute('content').length > 0)) {
-        return { success: false, message: "Missing CSRF token" };
-    }
-    const csrfToken = csrfMeta.getAttribute('content');
-
-    // get eventID if not present
-    if (eventID === null || po === null) {
-        const justCreated = await getTimeSpentInMinutes(sku);
-        if (justCreated && justCreated.event_id && justCreated.po) {
-            eventID = justCreated.event_id;
-            po = justCreated.po;
+    try {
+        const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
+        if (!(csrfMeta && csrfMeta.getAttribute('content').length > 0)) {
+            return { success: false, message: "Missing CSRF token" };
         }
-    }
+        const csrfToken = csrfMeta.getAttribute('content');
 
-    // verify event id
-    eventID = parseInt(eventID, 10);
-    if (!Number.isInteger(eventID)) { return { success: false, message: "Invalid Event ID" }; }
-
-    // parse po into a po_id
-    po = parseInt(po, 10);
-    if (!Number.isInteger(po)) {
-        const url = `/ajax/datalist/PurchaseOrders?term=SCPO&_type=query&q=${encodeURIComponent(po)}`;
-        const response = await fetch(url);
-        const data = await response.json();
-        po = Array.isArray(data.results) && data.results.length > 0 ? parseInt(data.results[0].id, 10) : null;
-    }
-    if (!Number.isInteger(po)) { return { success: false, message: "Invalid PO ID" }; }
-
-    // get existing location
-    const reportData = await $.ajax({
-        type: "POST",
-        dataType: "json",
-        url: "/reports/create",
-        data: {
-            report: {
-                type: "pending_inventory",
-                columns: ["inventory_receiving.location"],
-                filters: [
-                    {
-                        column: "purchase_orders.id",
-                        opr: "{0} IN {1}",
-                        value: `${po}`
-                    },
-                    {
-                        column: "inventory_receiving.id",
-                        opr: "{0} = {1}",
-                        value: `${eventID}`
-                    }
-                ]
-            },
-            csrf_recom: csrfToken
+        // get eventID if not present
+        if (eventID === null || po === null) {
+            const justCreated = await getTimeSpentInMinutes(sku);
+            if (justCreated && justCreated.event_id && justCreated.po) {
+                eventID = justCreated.event_id;
+                po = justCreated.po;
+            }
         }
-    });
-    if (!reportData.success) { return { success: false, message: "Failed to fetch original sorting location." }; }
-    const sortLocation = reportData.results?.results?.[0]?.Sort_Location ?? null;
-    if (!sortLocation) { return { success: false, message: "Sort location not found" }; }
 
-    // prevent douple PICTURES if that ever happens
-    const cleanLocation = sortLocation.replace(/^PICTURES\s+/i, '').trim();
-    const newSortingLocation = ('PICTURES ' + (newSortingLocation .trim() || '')).trimEnd();
-    const formData = new FormData();
-    formData.append('name', newSortingLocation);
+        // verify event id
+        eventID = parseInt(eventID, 10);
+        if (!Number.isInteger(eventID)) { return { success: false, message: "Invalid Event ID" }; }
 
-    const postRes = await fetcher(
-        `/ajax/actions/updateSortingLocation/${eventID}`,
-        { method: 'POST', headers: { 'x-csrf-token': csrfToken }, body: formData }
-    );
+        // parse po into a po_id
+        po = parseInt(po, 10);
+        if (!Number.isInteger(po)) {
+            const url = `/ajax/datalist/PurchaseOrders?term=SCPO&_type=query&q=${encodeURIComponent(po)}`;
+            const response = await fetch(url);
+            const data = await response.json();
+            po = Array.isArray(data.results) && data.results.length > 0 ? parseInt(data.results[0].id, 10) : null;
+        }
+        if (!Number.isInteger(po)) { return { success: false, message: "Invalid PO ID" }; }
 
-    if (postRes.ok && postRes.data?.success) {
-        return { success: true, message: "Location Updated" };
-    } else {
-        const msg = postRes.timedOut
-            ? `POST timed out after ${TIMEOUT_MS} ms`
-            : (postRes.data?.message || postRes.error?.message || "Update failed");
-        return { success: false, message: msg };
+        // get existing location
+        const reportData = await $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "/reports/create",
+            data: {
+                report: {
+                    type: "pending_inventory",
+                    columns: ["inventory_receiving.location"],
+                    filters: [
+                        {
+                            column: "purchase_orders.id",
+                            opr: "{0} IN {1}",
+                            value: `${po}`
+                        },
+                        {
+                            column: "inventory_receiving.id",
+                            opr: "{0} = {1}",
+                            value: `${eventID}`
+                        }
+                    ]
+                },
+                csrf_recom: csrfToken
+            }
+        });
+        if (!reportData.success) { return { success: false, message: "Failed to fetch original sorting location." }; }
+        const sortLocation = reportData.results?.results?.[0]?.Sort_Location ?? null;
+        if (!sortLocation) { return { success: false, message: "Sort location not found" }; }
+
+        // prevent douple PICTURES if that ever happens
+        const cleanLocation = sortLocation.replace(/^PICTURES\s+/i, '').trim();
+        const newSortingLocation = ('PICTURES ' + (newSortingLocation .trim() || '')).trimEnd();
+        const formData = new FormData();
+        formData.append('name', newSortingLocation);
+
+        const postRes = await fetcher(
+            `/ajax/actions/updateSortingLocation/${eventID}`,
+            { method: 'POST', headers: { 'x-csrf-token': csrfToken }, body: formData }
+        );
+
+        if (postRes.ok && postRes.data?.success) {
+            return { success: true, message: "Location Updated" };
+        } else {
+            const msg = postRes.timedOut
+                ? `POST timed out after ${TIMEOUT_MS} ms`
+                : (postRes.data?.message || postRes.error?.message || "Update failed");
+            return { success: false, message: msg };
+        }
+    } catch (error) {
+        console.error(error);
+        return { success: false, message: error?.message || String(error) || "Unknown error" };
     }
 }
 
@@ -652,8 +657,8 @@ async function initListingPatch() {
                         if (getCreatedSKU && getCreatedSKU[0]) {
                             const sku = getCreatedSKU[0].textContent;
                             const justCreated = await getTimeSpentInMinutes(sku); // await here
-                            if (justCreated !== null && justCreated.po && justCreated.time_spent && justCreated.event_id) {
-                                const po = justCreated.po;
+                            if (justCreated !== null && justCreated.time_spent && justCreated.event_id) {
+                                const po = justCreated.po ?? null;
                                 const timespent = justCreated.time_spent;
                                 const eventID = justCreated.event_id;
 
@@ -696,6 +701,8 @@ async function initListingPatch() {
                                     </div>`;
                                 }
                                 code += `<span class="spacer"></span></div>`;
+                            } else {
+                                console.error(justCreated);
                             }
                         }
 
