@@ -342,17 +342,20 @@ async function newUpdateLocation(sku, eventID = null, po = null) {
         const newSortingLocation = ('PICTURES ' + (cleanLocation .trim() || '')).trimEnd();
         const formData = new FormData();
         formData.append('name', newSortingLocation);
-        const postRes = await fetcher(
-            `/ajax/actions/updateSortingLocation/${eventID}`,
-            { method: 'POST', headers: { 'X-Csrf-Token': csrfToken, 'X-Requested-With': 'XMLHttpRequest' }, body: formData }
-        );
-
-        if (postRes.ok && postRes.data?.success) {
-            return { success: true, message: "Location Updated" };
-        } else {
-            const msg = postRes.timedOut ? `POST timed out after ${TIMEOUT_MS} ms` : (postRes.data?.message || postRes.error?.message || "Update failed");
-            return { success: false, message: msg };
+        const response = await fetch(`/ajax/actions/updateSortingLocation/${eventID}`,{
+            method: 'POST',
+            headers: {
+                'X-Csrf-Token': csrfToken,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: formData
+        });
+        const data = await response.json();
+        if (response.ok && data?.success) {
+            return { success: true, message: "Location Updated", name: data.name };
         }
+        return { success: false, message: data?.message || `HTTP ${response.status}` };
+
     } catch (error) {
         console.error(error);
         return { success: false, message: error?.message || String(error) || "Unknown error" };
@@ -670,7 +673,8 @@ async function initListingPatch() {
                                             <i class="fas fa-boxes"></i>
                                             <span>View In Pending Inventory</span>
                                         </a>
-                                    </div>`;
+                                    </div>
+                                    <span class="spacer"></span></div>`;
                                 
                                 if (autoLocationUpdate) {
                                     const updateConditions = [1,2,3,4,5,6,7,8,9,18,31,32,34,35,42,44,45,71,92,94,95,99];
