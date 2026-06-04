@@ -337,12 +337,11 @@ async function newUpdateLocation(sku, eventID = null, po = null) {
         const sortLocation = reportData.results?.results?.[0]?.Sort_Location ?? null;
         if (!sortLocation) { return { success: false, message: "Sort location not found" }; }
 
-        // prevent douple PICTURES if that ever happens
+        // update
         const cleanLocation = sortLocation.replace(/^PICTURES\s+/i, '').trim();
-        const newSortingLocation = ('PICTURES ' + (newSortingLocation .trim() || '')).trimEnd();
+        const newSortingLocation = ('PICTURES ' + (cleanLocation .trim() || '')).trimEnd();
         const formData = new FormData();
         formData.append('name', newSortingLocation);
-
         const postRes = await fetcher(
             `/ajax/actions/updateSortingLocation/${eventID}`,
             { method: 'POST', headers: { 'x-csrf-token': csrfToken }, body: formData }
@@ -351,9 +350,7 @@ async function newUpdateLocation(sku, eventID = null, po = null) {
         if (postRes.ok && postRes.data?.success) {
             return { success: true, message: "Location Updated" };
         } else {
-            const msg = postRes.timedOut
-                ? `POST timed out after ${TIMEOUT_MS} ms`
-                : (postRes.data?.message || postRes.error?.message || "Update failed");
+            const msg = postRes.timedOut ? `POST timed out after ${TIMEOUT_MS} ms` : (postRes.data?.message || postRes.error?.message || "Update failed");
             return { success: false, message: msg };
         }
     } catch (error) {
