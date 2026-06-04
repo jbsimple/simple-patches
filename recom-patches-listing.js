@@ -344,7 +344,7 @@ async function newUpdateLocation(sku, eventID = null, po = null) {
         formData.append('name', newSortingLocation);
         const postRes = await fetcher(
             `/ajax/actions/updateSortingLocation/${eventID}`,
-            { method: 'POST', headers: { 'x-csrf-token': csrfToken }, body: formData }
+            { method: 'POST', headers: { 'X-Csrf-Token': csrfToken, 'X-Requested-With': 'XMLHttpRequest' }, body: formData }
         );
 
         if (postRes.ok && postRes.data?.success) {
