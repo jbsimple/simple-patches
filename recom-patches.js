@@ -648,7 +648,7 @@ function modifiedClockInit() {
         const retroactiveClock_button = document.createElement('a');
         retroactiveClock_button.className = 'btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-info me-2';
         retroactiveClock_button.href = `javascript:retroactiveClock('');`;
-        retroactiveClock_button.innerHTML = '<i class="bi bi-bi-hourglass fs-2 mobilefix"></i><span class="mobilefix">Retroactive Record Time</span>';
+        retroactiveClock_button.innerHTML = '<i class="bi bi-hourglass fs-2 mobilefix"></i><span class="mobilefix">Retroactive Record Time</span>';
         retroactiveClock_button.title = 'Retroactive Record Time';
         clockIn_parent.insertBefore(retroactiveClock_button, clockIn_button);
     }
