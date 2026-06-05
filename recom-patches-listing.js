@@ -357,8 +357,9 @@ async function newUpdateLocation(sku, eventID = null, po = null) {
         return { success: false, message: data?.message || `HTTP ${response.status}` };
 
     } catch (error) {
-        console.error(error);
-        return { success: false, message: error?.message || String(error) || "Unknown error" };
+        console.error('Full error:', error);
+        console.debug('Error Keys:', Object.keys(error || {}));
+        return { success: false, message: JSON.stringify(error, null, 2) };
     }
 }
 
