@@ -262,24 +262,26 @@ async function retroactiveClock() {
             <p class="fs-6 fw-semibold form-label mb-2"><b>Actvitiy/Event</b>: Use if needing to tack multiple things in same task.</p>
             <p class="fs-6 fw-semibold form-label mb-2"><b>Notes</b>: Provide extra notes if needed.</p>
         </div>
-        <div class="d-flex flex-row mb-8">
-            <div class="d-flex flex-column mb-8">
+        <div class="d-flex flex-row mb-8" style="gap:2rem;">
+            <div class="d-flex flex-column" style="flex:1;">
                 <label class="fs-6 fw-bold mb-2" for="patch-retroactive-timeIn">Timestamp In:</label>
                 <input type="datetime-local" class="form-control form-control-solid" id="patch-retroactive-timeIn">
             </div>
-            <div class="d-flex flex-column mb-8">
+            <div class="d-flex flex-column" style="flex:1;">
                 <label class="fs-6 fw-bold mb-2" for="patch-retroactive-timeOut">Timestamp Out:</label>
                 <input type="datetime-local" class="form-control form-control-solid" id="patch-retroactive-timeIn">
             </div>
         </div>
-        <div class="d-flex flex-column mb-8">
-            <label class="fs-6 fw-bold mb-2" for="patch-retroactive-task">Task:</label>
-            <select class="form-select form-select-solid" id="patch-retroactive-task">${tasks_options}</select>
-        </div>
-        <div class="d-flex flex-column mb-8">
-            <label class="fs-6 fw-bold mb-2" for="patch-retroactive-activityCode">Activity/Event:</label>
-            <input type="text" class="form-control form-control-solid" name="task" id="patch-retroactive-activityCode" ${activitycodeList !== '' ? 'list="patch-clockout-text-task-list" autocomplete="off"' : ''} placeholder="Enter Activity/Event" spellcheck="false">
-            ${activitycodeList}
+        <div class="d-flex flex-row mb-8" style="gap:2rem;">
+            <div class="d-flex flex-column" style="flex:1;">
+                <label class="fs-6 fw-bold mb-2" for="patch-retroactive-task">Task:</label>
+                <select class="form-select form-select-solid" id="patch-retroactive-task">${tasks_options}</select>
+            </div>
+            <div class="d-flex flex-column" style="flex:1;">
+                <label class="fs-6 fw-bold mb-2" for="patch-retroactive-activityCode">Activity/Event:</label>
+                <input type="text" class="form-control form-control-solid" name="task" id="patch-retroactive-activityCode" ${activitycodeList !== '' ? 'list="patch-clockout-text-task-list" autocomplete="off"' : ''} placeholder="Enter Activity/Event" spellcheck="false">
+                ${activitycodeList}
+            </div>
         </div>
         <div class="d-flex flex-column mb-8">
             <label class="fs-6 fw-bold mb-2" for="patch-retroactive-notes">Notes:</label>
