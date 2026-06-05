@@ -211,6 +211,185 @@ function modifiedClock(task) {
     }
 }
 
+async function retroactiveClock() {
+    const tasks = await searchDataList('clockintasks', '');
+    let tasks_options = '';
+    if (tasks.length > 0) {
+        tasks_options += `<option value="">Select a task...</option>`;
+        tasks.forEach(task => {
+            tasks_options += `<option value="${task.id}">${task.text}</option>`;
+        });
+    }
+
+    let activitycodeList = '';
+    if (settings && settings.activitylist && Array.isArray(settings.activitylist) && settings.activitylist.length > 0) {
+        settings.activitylist.forEach(option => {
+            activitycodeList += `<option value="${option}"></option>`;
+        })
+        activitycodeList = `<datalist id="patch-clockout-text-task-list">${activitycodeList}</datalist>`;
+    }
+
+    async function getUserID() {
+        try {
+            const response = await fetch('/user/me');
+            const html = await response.text();
+    
+            const scriptMatch = html.match(/<script[^>]*>([\s\S]*?)<\/script>/gi);
+            if (scriptMatch) {
+                for (const script of scriptMatch) {
+                    const userIdMatch = script.match(/userID\s*=\s*(\d+);/);
+                    if (userIdMatch) {
+                        console.debug('PATCHES - Extracted userID:', userIdMatch[1]);
+                        return parseInt(userIdMatch[1], 10);
+                    }
+                }
+            }
+            console.log('userID not found');
+            return null;
+        } catch (error) {
+            console.error('Error fetching the page:', error);
+            return null;
+        }
+    }
+    const userID = await getUserID();
+    if (!userID) return;
+
+    const body = `
+        <div class="d-flex flex-column mb-8">
+            <p class="fs-6 fw-bold">This is for when you forget to clock in or clock out.</p>
+            <p class="fs-6 fw-semibold form-label mb-2"><b>Timestamp In & Timestamp Out</b>: Start of task to End of task.</p>
+            <p class="fs-6 fw-semibold form-label mb-2"><b>Task</b>: The task for the productivity block.</p>
+            <p class="fs-6 fw-semibold form-label mb-2"><b>Actvitiy/Event</b>: Use if needing to tack multiple things in same task.</p>
+            <p class="fs-6 fw-semibold form-label mb-2"><b>Notes</b>: Provide extra notes if needed.</p>
+        </div>
+        <div class="d-flex flex-column mb-8">
+            <label class="fs-6 fw-bold mb-2" for="patch-retroactive-timeIn">Timestamp In:</label>
+            <input type="datetime-local" class="form-control form-control-solid" id="patch-retroactive-timeIn">
+        </div>
+        <div class="d-flex flex-column mb-8">
+            <label class="fs-6 fw-bold mb-2" for="patch-retroactive-timeOut">Timestamp Out:</label>
+            <input type="datetime-local" class="form-control form-control-solid" id="patch-retroactive-timeIn">
+        </div>
+        <div class="d-flex flex-column mb-8">
+            <label class="fs-6 fw-bold mb-2" for="patch-retroactive-task">Task:</label>
+            <select class="form-select form-select-solid" id="patch-retroactive-task">${tasks_options}</select>
+        </div>
+        <div class="d-flex flex-column mb-8">
+            <label class="fs-6 fw-bold mb-2" for="patch-retroactive-activityCode">Activity/Event:</label>
+            <input type="text" class="form-control form-control-solid" name="task" id="patch-retroactive-activityCode" ${activitycodeList !== '' ? 'list="patch-clockout-text-task-list" autocomplete="off"' : ''} placeholder="Enter Activity/Event" spellcheck="false">
+            ${activitycodeList}
+        </div>
+        <div class="d-flex flex-column mb-8">
+            <label class="fs-6 fw-bold mb-2" for="patch-retroactive-notes">Notes:</label>
+            <textarea style="max-height: 50vh;" class="form-control form-control-solid" rows="3" name="notes" id="patch-retroactive-notes" placeholder="Provide some notes if any" spellcheck="false"></textarea>
+        </div>
+        <div class="separator my-10"></div>
+    `;
+
+    const footer = `
+        <div class="text-center">
+            <button type="button" class="btn btn-light me-3" data-modal-close>Cancel</button>
+            <button type="button" id="patch_retroactiveClock_submit" class="btn btn-primary">
+                <span class="indicator-label">Submit</span>
+                <span class="indicator-progress" style="display: none;">Please wait...
+                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                </span>
+            </button>
+        </div>
+    `;
+
+    const api = openPatchesModal({
+        id: 'patch_retroactiveClock_fullModal',
+        title: 'Retroactive Record Time',
+        body,
+        footer,
+        focus: '#patch-retroactive-text-task',
+        escapeBlockedWhen: (ae) => ae && ae.id === 'patch-clockout-textarea-notes'
+    });
+    if (!api) return;
+
+    function submitInputError(obj) {
+        const errorMessage = document.createElement('span');
+        errorMessage.setAttribute('style', 'display:block;width:100%;margin-top:0.5rem;font-size:0.95rem;color:var(--bs-danger-text);font-weight:400;');
+        errorMessage.textContent = 'Invalid value for input.';
+        obj.insertAdjacentElement('afterend', errorMessage);
+    }
+
+    function formatDateTimeLocal(value) {
+        const date = new Date(value);
+
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+
+        let hours = date.getHours();
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12 || 12;
+
+        return `${year}/${month}/${day} ${String(hours).padStart(2, '0')}:${minutes} ${ampm}`;
+    }
+
+    const submit = api.find('#patch_retroactiveClock_submit');
+    if (submit) {
+        submit.onclick = function () {
+            const csrf_token = document.querySelector('meta[name="X-CSRF-TOKEN"]')?.getAttribute('content')?.trim();
+
+            const taskInput = api.find('patch-retroactive-task');
+            const taskID = parseInt(taskInput.value, 10);
+            if (!Number.isInteger(taskID)) {
+                submitInputError(taskInput);
+                return { success: false, message: 'Task is required.' };
+            }
+
+            const timeInInput = api.find('patch-retroactive-timeIn');
+            if (!timeInInput.value) {
+                submitInputError(timeInInput);
+                return { success: false, message: 'Timestamp In is required' };
+            }
+            const timeOutInput = api.find('patch-retroactive-timeOut');
+            if (!timeOutInput.value) {
+                submitInputError(timeIntimeOutInputnput);
+                return { success: false, message: 'Timestamp Out is required' };
+            }
+            const timeRange = `${formatDateTimeLocal(timeInInput.value)} - ${formatDateTimeLocal(timeOutInput.value)}`;
+
+            const activityCodeInput = api.find('patch-retroactive-activityCode');
+            const activityCodeValue = activityCodeInput.value.trim() ?? '';
+
+            const noteTextBox = api.find('#patch-clockout-textarea-notes');
+            let notes = (noteTextBox && noteTextBox.value.length > 0) ? noteTextBox.value : '';
+
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: "/productivity/record",
+                data: {
+                    "csrf_recom": $('meta[name="X-CSRF-TOKEN"]').attr("content"),
+                    "clock_activity[user_id]": userID,
+                    "clock_activity[task_id]": taskID,
+                    "clock_activity[time_in]": timeRange,
+                    "clock_activity[activity_code]": activityCodeValue,
+                    "clock_activity[po_id]": "",
+                    "clock_activity[activity_id]": "",
+                    "clock_activity[units]": "0",
+                    "clock_activity[notes]": notes || "Retroactive Record Time"
+                },
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="X-CSRF-TOKEN"]').attr("content"),
+                },
+            })
+            .done(function (data) { apiResponseAlert(data); })
+            .fail(function (error) { console.error("FAIL", error); ajaxFailAlert(error); })
+            .always(function () {
+                submit.querySelector('.indicator-label').style.display = '';
+                submit.querySelector('.indicator-progress').style.display = 'none';
+            });
+        };
+    }
+}
+
 async function updatePictureLocations() {
     let isRunning = false;
 

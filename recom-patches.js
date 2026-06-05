@@ -608,40 +608,50 @@ function fetchTask() {
 function modifiedClockInit() {
     const task = fetchTask();
 	const recordTime_button = document.querySelector('a[data-url="productivity/record"]');
+    const clockIn_button = document.querySelector(`a[href="javascript:clockInOut('in');"]`);
 	if (recordTime_button) {
 		const recordTime_parent = recordTime_button.parentElement;
-		if (recordTime_parent) {
-            const clockButton = recordTime_button.nextSibling;
+        if (!recordTime_parent) return;
 
-            clockButton.innerHTML = `<i class="bi bi-stopwatch-fill fs-2 mobilefix"></i><span class="mobilefix">Clock Out - ${task}</span>`;
-			
-			const newButton = document.createElement('a');
-            newButton.className = 'btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-warning me-2';
-            newButton.href = `javascript:modifiedClock('${task}');`;
-            newButton.innerHTML = '<i class="bi bi-stopwatch-fill fs-2 mobilefix"></i><span class="mobilefix">Record Clock Out</span>';
-            newButton.title = 'Off System: Clock Out';
-            // newButton.setAttribute('onclick', 'modifiedClock();');
+        const clockButton = recordTime_button.nextSibling;
+        clockButton.innerHTML = `<i class="bi bi-stopwatch-fill fs-2 mobilefix"></i><span class="mobilefix">Clock Out - ${task}</span>`;
+        
+        const newButton = document.createElement('a');
+        newButton.className = 'btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-warning me-2';
+        newButton.href = `javascript:modifiedClock('${task}');`;
+        newButton.innerHTML = '<i class="bi bi-stopwatch-fill fs-2 mobilefix"></i><span class="mobilefix">Record Clock Out</span>';
+        newButton.title = 'Off System: Clock Out';
+        // newButton.setAttribute('onclick', 'modifiedClock();');
 
-            recordTime_button.innerHTML = '<i class="bi bi-hourglass fs-2 mobilefix"></i><span class="mobilefix">Record Time</span>';
-            recordTime_button.title = 'Off System: Record Time';
-            
-            recordTime_parent.insertBefore(newButton, recordTime_button.nextSibling);
+        recordTime_button.innerHTML = '<i class="bi bi-hourglass fs-2 mobilefix"></i><span class="mobilefix">Record Time</span>';
+        recordTime_button.title = 'Off System: Record Time';
+        
+        recordTime_parent.insertBefore(newButton, recordTime_button.nextSibling);
 
-            if (task === 'Pictures' || task === 'Testing') {
-                const updatePuctureLocationsButton = document.createElement('a');
-                updatePuctureLocationsButton.id = 'patches_bulkUpdateLocationsClock';
-                updatePuctureLocationsButton.className = 'btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-primary me-2';
-                updatePuctureLocationsButton.href = `javascript:updatePictureLocations();`;
-                updatePuctureLocationsButton.innerHTML = '<i class="bi bi-arrow-repeat fs-2"></i><span class="mobilefix">Update Locations</span>';
-                updatePuctureLocationsButton.title = 'Update Picture Locations';
-                updatePuctureLocationsButton.style.display = 'none'; // this needs to update if actually true, doing in resolve LOL
-                recordTime_parent.insertBefore(updatePuctureLocationsButton, recordTime_button);
+        if (task === 'Pictures' || task === 'Testing') {
+            const updatePuctureLocationsButton = document.createElement('a');
+            updatePuctureLocationsButton.id = 'patches_bulkUpdateLocationsClock';
+            updatePuctureLocationsButton.className = 'btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-primary me-2';
+            updatePuctureLocationsButton.href = `javascript:updatePictureLocations();`;
+            updatePuctureLocationsButton.innerHTML = '<i class="bi bi-arrow-repeat fs-2"></i><span class="mobilefix">Update Locations</span>';
+            updatePuctureLocationsButton.title = 'Update Picture Locations';
+            updatePuctureLocationsButton.style.display = 'none'; // this needs to update if actually true, doing in resolve LOL
+            recordTime_parent.insertBefore(updatePuctureLocationsButton, recordTime_button);
 
-                // enable logout bust because I still hate it
-                bustUserTracker();
-            }
-		}
-	}
+            // enable logout bust because I still hate it
+            bustUserTracker();
+        }
+	} else if (clockIn_button) {
+        const clockIn_parent = clockIn_button.parentElement;
+        if (!clockIn_parent) return;
+
+        const retroactiveClock_button = document.createElement('a');
+        retroactiveClock_button.className = 'btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-info me-2';
+        retroactiveClock_button.href = `javascript:retroactiveClock('');`;
+        retroactiveClock_button.innerHTML = '<i class="bi bi-bi-hourglass fs-2 mobilefix"></i><span class="mobilefix">Retroactive Record Time</span>';
+        retroactiveClock_button.title = 'Retroactive Record Time';
+        clockIn_parent.insertBefore(retroactiveClock_button, clockIn_button);
+    }
 }
 
 const TIMEOUT_MS = 15000;
