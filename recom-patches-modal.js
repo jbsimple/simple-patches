@@ -269,7 +269,7 @@ async function retroactiveClock() {
             </div>
             <div class="d-flex flex-column" style="flex:1;">
                 <label class="fs-6 fw-bold mb-2" for="patch-retroactive-timeOut">Timestamp Out:</label>
-                <input type="datetime-local" class="form-control form-control-solid" id="patch-retroactive-timeIn">
+                <input type="datetime-local" class="form-control form-control-solid" id="patch-retroactive-timeOut">
             </div>
         </div>
         <div class="d-flex flex-row mb-8" style="gap:2rem;">
@@ -354,7 +354,7 @@ async function retroactiveClock() {
             }
             const timeOutInput = api.find('#patch-retroactive-timeOut');
             if (!timeOutInput.value) {
-                submitInputError(timeIntimeOutInputnput);
+                submitInputError(timeOutInput);
                 return { success: false, message: 'Timestamp Out is required' };
             }
             const timeRange = `${formatDateTimeLocal(timeInInput.value)} - ${formatDateTimeLocal(timeOutInput.value)}`;
@@ -362,7 +362,7 @@ async function retroactiveClock() {
             const activityCodeInput = api.find('#patch-retroactive-activityCode');
             const activityCodeValue = activityCodeInput.value.trim() ?? '';
 
-            const noteTextBox = api.find('#patch-clockout-textarea-notes');
+            const noteTextBox = api.find('#patch-retroactive-notes');
             let notes = (noteTextBox && noteTextBox.value.length > 0) ? noteTextBox.value : '';
 
             $.ajax({
