@@ -336,26 +336,26 @@ async function retroactiveClock() {
         submit.onclick = function () {
             const csrf_token = document.querySelector('meta[name="X-CSRF-TOKEN"]')?.getAttribute('content')?.trim();
 
-            const taskInput = api.find('patch-retroactive-task');
+            const taskInput = api.find('#patch-retroactive-task');
             const taskID = parseInt(taskInput.value, 10);
             if (!Number.isInteger(taskID)) {
                 submitInputError(taskInput);
                 return { success: false, message: 'Task is required.' };
             }
 
-            const timeInInput = api.find('patch-retroactive-timeIn');
+            const timeInInput = api.find('#patch-retroactive-timeIn');
             if (!timeInInput.value) {
                 submitInputError(timeInInput);
                 return { success: false, message: 'Timestamp In is required' };
             }
-            const timeOutInput = api.find('patch-retroactive-timeOut');
+            const timeOutInput = api.find('#patch-retroactive-timeOut');
             if (!timeOutInput.value) {
                 submitInputError(timeIntimeOutInputnput);
                 return { success: false, message: 'Timestamp Out is required' };
             }
             const timeRange = `${formatDateTimeLocal(timeInInput.value)} - ${formatDateTimeLocal(timeOutInput.value)}`;
 
-            const activityCodeInput = api.find('patch-retroactive-activityCode');
+            const activityCodeInput = api.find('#patch-retroactive-activityCode');
             const activityCodeValue = activityCodeInput.value.trim() ?? '';
 
             const noteTextBox = api.find('#patch-clockout-textarea-notes');
