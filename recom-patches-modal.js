@@ -312,11 +312,12 @@ async function retroactiveClock() {
     });
     if (!api) return;
 
-    function submitInputError(obj) {
+    function submitInputError(obj, msg = null) {
         const errorMessage = document.createElement('span');
         errorMessage.setAttribute('style', 'display:block;width:100%;margin-top:0.5rem;font-size:0.95rem;color:var(--bs-danger-text);font-weight:400;');
-        errorMessage.textContent = 'Invalid value for input.';
+        errorMessage.textContent = msg || 'Invalid value for input.';
         obj.insertAdjacentElement('afterend', errorMessage);
+        return { success: false, message: msg || 'Invalid value for input.' }; 
     }
 
     function formatDateTimeLocal(value) {
@@ -342,21 +343,30 @@ async function retroactiveClock() {
 
             const taskInput = api.find('#patch-retroactive-task');
             const taskID = parseInt(taskInput.value, 10);
-            if (!Number.isInteger(taskID)) {
-                submitInputError(taskInput);
-                return { success: false, message: 'Task is required.' };
-            }
+            if (!Number.isInteger(taskID)) { return submitInputError(taskInput, 'Task is required.'); }
 
             const timeInInput = api.find('#patch-retroactive-timeIn');
-            if (!timeInInput.value) {
-                submitInputError(timeInInput);
-                return { success: false, message: 'Timestamp In is required' };
-            }
+            if (!timeInInput.value) { return submitInputError(timeInInput, 'Timestamp In is required'); }
             const timeOutInput = api.find('#patch-retroactive-timeOut');
-            if (!timeOutInput.value) {
-                submitInputError(timeOutInput);
-                return { success: false, message: 'Timestamp Out is required' };
-            }
+            if (!timeOutInput.value) { return submitInputError(timeOutInput, 'Timestamp Out is required'); }
+
+            // validate dates
+            const timeIn = new Date(timeInInput.value);
+            const timeOut = new Date(timeOutInput.value);
+            const now = new Date();
+
+            if (isNaN(timeIn.getTime())) { return submitInputError(timeInInput, 'Invalid Timestamp In'); }
+            if (isNaN(timeOut.getTime())) { return submitInputError(timeOutInput, 'Invalid Timestamp Out'); }
+
+            if (timeIn > now) { return submitInputError(timeInInput, 'Timestamp In cannot be in the future'); }
+            if (timeOut > now) { return submitInputError(timeOutInput, 'Timestamp Out cannot be in the future'); }
+
+            if (timeOut <= timeIn) { return submitInputError(timeOutInput, 'Timestamp Out must be after Timestamp In'); }
+
+            const diffMs = timeOut - timeIn;
+            const maxMs = 9 * 60 * 60 * 1000;
+            if (diffMs > maxMs) { return submitInputError(timeOutInput, 'Time range cannot exceed 9 hours'); }
+
             const timeRange = `${formatDateTimeLocal(timeInInput.value)} - ${formatDateTimeLocal(timeOutInput.value)}`;
 
             const activityCodeInput = api.find('#patch-retroactive-activityCode');
