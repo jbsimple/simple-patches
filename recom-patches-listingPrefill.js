@@ -226,11 +226,11 @@ async function handlePrefillLocationUpdate() {
                 console.log('PATCHES - Location Updated');
             } else {
                 console.error('PATCHES - Unable to Update Location:', updateLocationResponse);
-                alert(`Issue Updating Location: ${updateLocationResponse.message ?? 'Check Console'}`);
+                //alert(`Issue Updating Location: ${updateLocationResponse.message ?? 'Check Console'}`);
             }
         } catch (err) {
             console.error('PATCHES - Error during location update:', err);
-            alert('Failed to prefill location. Check console.');
+            //alert('Failed to prefill location. Check console.');
         }
     }
 
