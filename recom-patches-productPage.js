@@ -2027,7 +2027,7 @@ function wm_generateUPC() {
     return digits.join('');
 }
 function wm_generateButton() {
-	const select = document.querySelector('select[name="item[meta][7][value][]"]');
+	const select = document.querySelector('select[name="item[meta][8][value][]"]');
 	if (select) {
 		const upc = wm_generateUPC();
 		const randomId = Math.random().toString(36).substring(2, 8); 
