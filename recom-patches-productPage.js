@@ -2027,27 +2027,33 @@ function wm_generateUPC() {
     return digits.join('');
 }
 function wm_generateButton() {
-	const select = document.querySelector('select[name="item[meta][8][value][]"]');
-	if (select) {
-		const upc = wm_generateUPC();
-		const randomId = Math.random().toString(36).substring(2, 8); 
-        const randomId2 = Math.random().toString(36).substring(2, 8);
-          
-		const option = document.createElement('option');
-		option.setAttribute('value', upc);
-		option.setAttribute('data-select2-id', `select2-data-${randomId}-${randomId2}`);
-		option.setAttribute('data-select2-tag', 'true');
-		option.textContent = upc;
-		
-		select.appendChild(option);
-		select.value = upc;
-		select.dispatchEvent(new Event('change', { bubbles: true }));
-		
-		console.log("PATCHES - Generated UPC:", upc);
-	} else {
+    const label = [...document.querySelectorAll('label.form-label')].find(el => el.textContent.trim() === 'Walmart UPCs');
+    if (!label) {
+        console.warn("PATCHES - Select element not found.");
+        fireSwal('UHOH!', ['Something Failed:',`Unable to find the Label for the select?`], 'error', false);
+    }
+
+    const select = label.parentElement.querySelector('select');
+    if (!select) {
         console.warn("PATCHES - Select element not found.");
         fireSwal('UHOH!', ['Something Failed:',`Unable to find the Select?`], 'error', false);
     }
+
+	const upc = wm_generateUPC();
+    const randomId = Math.random().toString(36).substring(2, 8); 
+    const randomId2 = Math.random().toString(36).substring(2, 8);
+        
+    const option = document.createElement('option');
+    option.setAttribute('value', upc);
+    option.setAttribute('data-select2-id', `select2-data-${randomId}-${randomId2}`);
+    option.setAttribute('data-select2-tag', 'true');
+    option.textContent = upc;
+    
+    select.appendChild(option);
+    select.value = upc;
+    select.dispatchEvent(new Event('change', { bubbles: true }));
+    
+    console.log("PATCHES - Generated UPC:", upc);
 }
 function wm_resubmitAll() {
     let ajax = '/integrations/stores/listing/resubmit/';
