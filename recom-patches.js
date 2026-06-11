@@ -1107,56 +1107,38 @@ async function fetchSidDetails(SID, force = false) {
     }
 
     async function getItemDetails(SID) {
-        const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
-        if (!csrfMeta || csrfMeta.getAttribute('content').length === 0) {
-            return Promise.resolve(null);
-        }
-
-        const csrfToken = csrfMeta.getAttribute('content');
-
-        function makeRequest(statusValue) {
-            const request = {
-                report: {
-                    type: "item_images",
-                    columns: [
-                        "product_items.sku",
-                        "item_images.url",
-                        "product_items.status",
-                        "product_items.created_at"
-                    ],
-                    filters: [
-                        {
-                            column: "products.sid",
-                            opr: "{0} = '{1}'",
-                            value: `${SID}`
-                        },
-                        {
-                            column: "product_items.status",
-                            opr: "{0} = '{1}'",
-                            value: statusValue
-                        }
-                    ]
-                },
-                csrf_recom: csrfToken
-            };
-
-            return new Promise((resolve, reject) => {
-                $.ajax({
-                    type: "POST",
-                    dataType: "json",
-                    url: "/reports/create",
-                    data: request,
-                }).done(function (data) {
-                    if (data.success && Array.isArray(data.results?.results)) {
-                        resolve(data.results.results);
-                    } else {
-                        resolve([]);
+        async function makeRequest(statusValue) {
+            try {
+                const api_req = await fetchAPI("reports", {
+                    body: {
+                        type: "item_images",
+                        page: 1,
+                        per_page: 1000,
+                        filters: [
+                            {
+                                field: "products.sid",
+                                operator: "eq",
+                                value: `${SID}`
+                            },
+                            {
+                                field: "product_items.status",
+                                operator: "eq",
+                                value: statusValue
+                            }
+                        ],
+                        columns: [
+                            "product_items.sku",
+                            "item_images.url",
+                            "product_items.status",
+                        ]
                     }
-                }).fail(function (jqXHR, textStatus, errorThrown) {
-                    console.error("Request failed: " + textStatus + ", " + errorThrown);
-                    reject(new Error("Request failed: " + textStatus + ", " + errorThrown));
                 });
-            });
+
+                return api_req?.data?.data || [];
+            } catch (error) {
+                console.error("Request failed:", error);
+                return [];
+            }
         }
 
         return Promise.all([makeRequest("1"), makeRequest("0")])
@@ -1170,67 +1152,48 @@ async function fetchSidDetails(SID, force = false) {
     }
 
     async function getProductDetails(SID) {
-        const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
-        if (!csrfMeta || csrfMeta.getAttribute('content').length === 0) {
-            return null;
-        }
-
-        const csrfToken = csrfMeta.getAttribute('content');
-
-        function makeRequest(statusValue) {
-            const request = {
-                report: {
-                    type: "product_images",
-                    columns: [
-                        "product_images.url",
-                        "products.status",
-                        "products.created_at"
-                    ],
-                    filters: [
-                        {
-                            column: "products.sid",
-                            opr: "{0} = '{1}'",
-                            value: `${SID}`
-                        },
-                        {
-                            column: "products.status",
-                            opr: "{0} = '{1}'",
-                            value: statusValue
-                        }
-                    ]
-                },
-                csrf_recom: csrfToken
-            };
-
-            return new Promise((resolve, reject) => {
-                $.ajax({
-                    type: "POST",
-                    dataType: "json",
-                    url: "/reports/create",
-                    data: request,
-                }).done(function(data) {
-                    if (data.success && Array.isArray(data.results?.results)) {
-                        resolve(data.results.results);
-                    } else {
-                        resolve([]);
+        async function makeRequest(statusValue) {
+            try {
+                const api_req = await fetchAPI("reports", {
+                    body: {
+                        type: "product_images",
+                        page: 1,
+                        per_page: 1000,
+                        filters: [
+                            {
+                                field: "products.sid",
+                                operator: "eq",
+                                value: `${SID}`
+                            },
+                            {
+                                field: "products.status",
+                                operator: "eq",
+                                value: statusValue
+                            }
+                        ],
+                        columns: [
+                            "product_items.sku",
+                            "item_images.url",
+                            "product_items.status",
+                        ]
                     }
-                }).fail(function(jqXHR, textStatus, errorThrown) {
-                    console.error("Request failed: " + textStatus + ", " + errorThrown);
-                    reject(new Error("Request failed: " + textStatus + ", " + errorThrown));
                 });
-            });
+
+                return api_req?.data?.data || [];
+            } catch (error) {
+                console.error("Request failed:", error);
+                return [];
+            }
         }
 
-        try {
-            const [status1Results, status0Results] = await Promise.all([
-                makeRequest("1"),
-                makeRequest("0")
-            ]);
-            return [...status1Results, ...status0Results];
-        } catch (error) {
-            console.error("Error during combined product request:", error);
-            return null;
-        }
+        return Promise.all([makeRequest("1"), makeRequest("0")])
+            .then(([status1Results, status0Results]) => {
+                return [...status1Results, ...status0Results];
+            })
+            .catch(error => {
+                console.error("Error during combined request:", error);
+                return null;
+            });
     }
 
     function countUrlsBySku(data) {
