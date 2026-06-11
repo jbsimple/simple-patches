@@ -436,5 +436,5 @@ setTimeout(async function () {
     } catch (err) {
         console.error('PATCHES - Dashboard Edge config failed:', err);
     }
-    await dashboardStats();
+    // await dashboardStats();
 }, 200);
