@@ -1202,18 +1202,10 @@ function initExtraUploadMethods() {
 	}
 
     async function getPictures(type, thing) {
-        return null; //need to not do this
-        
-        function makeRequest(statusValue) {
-            const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
-            if (!csrfMeta || csrfMeta.getAttribute('content').length === 0) {
-                return Promise.resolve(null);
-            }
-
-            const csrfToken = csrfMeta.getAttribute('content');
-
+        async function makeRequest(statusValue) {
             let columns = [];
             let filters = [];
+
             if (type === "item_images") {
                 columns = [
                     "products.sid",
@@ -1225,13 +1217,13 @@ function initExtraUploadMethods() {
 
                 filters = [
                     {
-                        column: "product_items.sku",
-                        opr: "{0} = '{1}'",
-                        value: `${thing}`
+                        field: "product_items.sku",
+                        operator: "eq",
+                        value: String(thing)
                     },
                     {
-                        column: "product_items.status",
-                        opr: "{0} = '{1}'",
+                        field: "product_items.status",
+                        operator: "eq",
                         value: statusValue
                     }
                 ];
@@ -1241,59 +1233,54 @@ function initExtraUploadMethods() {
                     "products.status",
                     "products.created_at"
                 ];
-                
+
                 filters = [
                     {
-                        column: "products.sid",
-                        opr: "{0} = '{1}'",
-                        value: `${thing}`
+                        field: "products.sid",
+                        operator: "eq",
+                        value: String(thing)
                     },
                     {
-                        column: "products.status",
-                        opr: "{0} = '{1}'",
+                        field: "products.status",
+                        operator: "eq",
                         value: statusValue
                     }
                 ];
             }
 
-            if (columns.length === 0 || filters.length === 0) { return null; }
+            if (!columns.length || !filters.length) {
+                return [];
+            }
 
-            const request = {
-                report: {
-                    type: `${type}`,
-                    columns: columns,
-                    filters: filters
-                },
-                csrf_recom: csrfToken
-            };
-
-            return new Promise((resolve, reject) => {
-                $.ajax({
-                    type: "POST",
-                    dataType: "json",
-                    url: "/reports/create",
-                    data: request,
-                }).done(function (data) {
-                    if (data.success && Array.isArray(data.results?.results)) {
-                        resolve(data.results.results);
-                    } else {
-                        resolve([]);
+            try {
+                const api_req = await fetchAPI("reports", {
+                    body: {
+                        type,
+                        page: 1,
+                        per_page: 1000,
+                        filters,
+                        columns
                     }
-                }).fail(function (jqXHR, textStatus, errorThrown) {
-                    console.error("Request failed: " + textStatus + ", " + errorThrown);
-                    reject(new Error("Request failed: " + textStatus + ", " + errorThrown));
                 });
-            });
+
+                return api_req?.data?.data || [];
+            } catch (error) {
+                console.error("Request failed:", error);
+                return [];
+            }
         }
 
-        return Promise.all([makeRequest("1"), makeRequest("0")])
-            .then(([status1Results, status0Results]) => {
-                return [...status1Results, ...status0Results];
-            })
-            .catch(error => {
-                console.error("Error during combined request:", error);
-                return null;
-            });
+        try {
+            const [status1Results, status0Results] = await Promise.all([
+                makeRequest("1"),
+                makeRequest("0")
+            ]);
+
+            return [...status1Results, ...status0Results];
+        } catch (error) {
+            console.error("Error during combined request:", error);
+            return null;
+        }
     }
 
 	function initURLMedia() {
