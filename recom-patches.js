@@ -833,11 +833,19 @@ async function fireToast(title, message, color = 'primary', icon = 'warning') {
     }, 5000);
 }
 
+let clockTaskVisualRefreshRunning = false;
 function clockTaskVisualRefresh(ping = false) {
     const href = '/user/me';
     const checkButtonSelector = 'a[href^="javascript:clockInOut"]';
 
     async function checkAndUpdate() {
+        if (clockTaskVisualRefreshRunning) {
+            console.debug('clockTaskVisualRefresh: Previous request still running, skipping.');
+            return;
+        }
+
+        clockTaskVisualRefreshRunning = true;
+
         if (ping) {
             function sendPing() {
                 $.ajax({
@@ -860,10 +868,31 @@ function clockTaskVisualRefresh(ping = false) {
         }
 
         try {
+            //const response = await fetch(href);
+            const start = Date.now();
+
+            const timeout = setTimeout(() => {
+                fireToast('Not Responding', 'No response from the server in over 10 seconds!', 'primary', 'info');
+                console.error(`clockTaskVisualRefresh: ${href} has taken longer than 10 seconds to respond.`);
+            }, 10000);
+
             const response = await fetch(href);
-            if (!response.ok) throw new Error('Failed to fetch page content');
+
+            if (!response.ok) {
+                clearTimeout(timeout);
+                throw new Error('Failed to fetch page content');
+            }
 
             const text = await response.text();
+
+            clearTimeout(timeout);
+
+            const elapsed = Date.now() - start;
+            if (elapsed > 10000) {
+                console.warn(`clockTaskVisualRefresh: Response finally arrived after ${elapsed}ms.`);
+                fireToast('A response!', `Response finally arrived after ${elapsed}ms.`, 'danger', 'error');
+            }
+
             const parser = new DOMParser();
             const doc = parser.parseFromString(text, 'text/html');
 
@@ -896,10 +925,13 @@ function clockTaskVisualRefresh(ping = false) {
             }
         } catch (error) {
             console.error('Error updating clock task:', error);
+        } finally {
+            clearTimeout(timeout);
+            clockTaskVisualRefreshRunning = false;
         }
     }
     checkAndUpdate();
-    const id = setInterval(checkAndUpdate, 60000);
+    const id = setInterval(checkAndUpdate, 30000);
     checkAndUpdate.__isMine = true;
 }
 
