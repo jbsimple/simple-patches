@@ -933,7 +933,7 @@ function clockTaskVisualRefresh(ping = false) {
         }
     }
     checkAndUpdate();
-    const id = setInterval(checkAndUpdate, 30000);
+    const id = setInterval(checkAndUpdate, 60000);
     checkAndUpdate.__isMine = true;
 }
 
