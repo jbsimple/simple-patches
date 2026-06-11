@@ -1202,6 +1202,8 @@ function initExtraUploadMethods() {
 	}
 
     async function getPictures(type, thing) {
+        return null; //need to not do this
+        
         function makeRequest(statusValue) {
             const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
             if (!csrfMeta || csrfMeta.getAttribute('content').length === 0) {
