@@ -1055,6 +1055,11 @@ async function checkWeatherAndCreateEffects() {
 }
 
 async function fetchSidDetails(SID, force = false) {
+    // weird js timing issues are solved with great code
+    while (typeof fetchAPI !== 'function') {
+        await new Promise(resolve => setTimeout(resolve, 100));
+    }
+
     if (force) {
         delete sidDetailReference[SID];
         delete sidDetailInProgress[SID];
