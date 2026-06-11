@@ -870,7 +870,7 @@ function clockTaskVisualRefresh(ping = false) {
         let iterations = 1;
         const timeoutInterval = setInterval(() => {
             fireToast('HELLO?', `Lost connection over ${iterations * 10}s ago!`, 'danger');
-            console.error(`clockTaskVisualRefresh: ${href} has taken longer than another 10 seconds to respond.`);
+            console.error(`clockTaskVisualRefresh: ${href} has taken longer than another ${iterations * 10} seconds to respond.`);
             iterations++;
         }, 10000);
 
