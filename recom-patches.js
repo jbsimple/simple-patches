@@ -1129,6 +1129,7 @@ async function fetchSidDetails(SID, force = false) {
                         columns: [
                             "product_items.sku",
                             "item_images.url",
+                            "product_items.created_at",
                             "product_items.status",
                         ]
                     }
