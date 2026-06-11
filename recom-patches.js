@@ -881,13 +881,13 @@ function clockTaskVisualRefresh(ping = false) {
             const response = await fetch(href);
 
             if (!response.ok) {
-                clearTimeout(timeout);
+                clearInterval(timeoutInterval);
                 throw new Error('Failed to fetch page content');
             }
 
             const text = await response.text();
 
-            clearTimeout(timeout);
+            clearInterval(timeoutInterval);
 
             const elapsed = Date.now() - start;
             if (elapsed > 10000) {
