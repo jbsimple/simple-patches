@@ -1163,7 +1163,7 @@ async function fetchSidDetails(SID, force = false) {
                         filters: [
                             {
                                 field: "products.sid",
-                                operator: "contains",
+                                operator: "eq",
                                 value: `${SID}`
                             },
                             {
