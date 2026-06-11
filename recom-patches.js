@@ -1163,7 +1163,7 @@ async function fetchSidDetails(SID, force = false) {
                         filters: [
                             {
                                 field: "products.sid",
-                                operator: "eq",
+                                operator: "contains",
                                 value: `${SID}`
                             },
                             {
@@ -1173,9 +1173,9 @@ async function fetchSidDetails(SID, force = false) {
                             }
                         ],
                         columns: [
-                            "product_items.sku",
-                            "item_images.url",
-                            "product_items.status",
+                            "product_images.url",
+                            "products.status",
+                            "products.created_at"
                         ]
                     }
                 });
