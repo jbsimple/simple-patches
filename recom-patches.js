@@ -867,14 +867,14 @@ function clockTaskVisualRefresh(ping = false) {
             sendPing(); // user activity busting
         }
 
+        const timeout = setTimeout(() => {
+            fireToast('Not Responding', 'No response from the server in over 10 seconds!', 'primary', 'info');
+            console.error(`clockTaskVisualRefresh: ${href} has taken longer than 10 seconds to respond.`);
+        }, 10000);
+
         try {
             //const response = await fetch(href);
             const start = Date.now();
-
-            const timeout = setTimeout(() => {
-                fireToast('Not Responding', 'No response from the server in over 10 seconds!', 'primary', 'info');
-                console.error(`clockTaskVisualRefresh: ${href} has taken longer than 10 seconds to respond.`);
-            }, 10000);
 
             const response = await fetch(href);
 
