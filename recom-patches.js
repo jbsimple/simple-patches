@@ -867,9 +867,10 @@ function clockTaskVisualRefresh(ping = false) {
             sendPing(); // user activity busting
         }
 
-        const timeout = setTimeout(() => {
-            fireToast('Not Responding', 'No response from the server in over 10 seconds!', 'primary', 'info');
-            console.error(`clockTaskVisualRefresh: ${href} has taken longer than 10 seconds to respond.`);
+        let iterations = 1;
+        const timeoutInterval = setInterval(() => {
+            fireToast('HELLO?', `Lost connection ${iterations * 10}s ago!`, 'danger');
+            console.error(`clockTaskVisualRefresh: ${href} has taken longer than another 10 seconds to respond.`);
         }, 10000);
 
         try {
@@ -890,7 +891,7 @@ function clockTaskVisualRefresh(ping = false) {
             const elapsed = Date.now() - start;
             if (elapsed > 10000) {
                 console.warn(`clockTaskVisualRefresh: Response finally arrived after ${elapsed}ms.`);
-                fireToast('A response!', `Response finally arrived after ${elapsed}ms.`, 'danger', 'error');
+                fireToast('We\'re back!', `Down for ${elapsed / 1000}s.`, 'primary');
             }
 
             const parser = new DOMParser();
