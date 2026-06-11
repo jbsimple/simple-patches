@@ -928,7 +928,7 @@ function clockTaskVisualRefresh(ping = false) {
         } catch (error) {
             console.error('Error updating clock task:', error);
         } finally {
-            clearTimeout(timeout);
+            clearInterval(timeoutInterval);
             clockTaskVisualRefreshRunning = false;
         }
     }
