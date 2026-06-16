@@ -22,86 +22,57 @@ async function getTimeSpentInMinutes(sku) {
         }
     }
 
-    const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
-    if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
-        const csrfToken = csrfMeta.getAttribute('content');
+    const today = new Date();
+    const today_mm = String(today.getMonth() + 1).padStart(2, '0');
+    const today_dd = String(today.getDate()).padStart(2, '0');
+    const today_yyyy = today.getFullYear();
+    const todayFormatted = `${today_yyyy}-${today_mm}/${today_dd}`;
 
-        const today = new Date();
-        const today_mm = String(today.getMonth() + 1).padStart(2, '0');
-        const today_dd = String(today.getDate()).padStart(2, '0');
-        const today_yyyy = today.getFullYear();
-        const todayFormatted = `${today_mm}/${today_dd}/${today_yyyy}`;
-
-        let date = todayFormatted;
-        const userId = await getUserID();
-
-        let request = {
-            report: {
-                type: "user_clock",
-                columns: [
-                    "purchase_orders.id",
-                    "user_clock_activity.activity_id",
-                    "user_clock_activity.activity_code",
-                    "user_clock_activity.time_spent"
-                ],
-                filters: [{
-                        column: "user_profile.user_id",
-                        opr: "{0} = '{1}'",
-                        value: `${userId}`
-                    },
-                    {
-                        column: "user_clocks.clock_date",
-                        opr: "between",
-                        value: `${date} - ${date}`
-                    },
-                    {
-                        column: "product_items.sku",
-                        opr: "{0} = '{1}'",
-                        value: `${sku}`
-                    }
-                ]
-            },
-            csrf_recom: csrfToken
-        };
-
-        return new Promise((resolve, reject) => {
-            $.ajax({
-                type: "POST",
-                dataType: "json",
-                url: "/reports/create",
-                data: request,
-            }).done(function(data) {
-                if (data.success && Array.isArray(data.results?.results)) {
-                    console.debug("PATCHES - Listing Results received:", data.results.results);
-                    const matchingEntries = data.results.results.filter(
-                        entry => entry.Event_Code === "Inventory Listing" 
-                        && entry.hasOwnProperty("PO_Number")
-                        && entry.hasOwnProperty("Time_Spent_in_mintues")
-                        && entry.hasOwnProperty("Event_ID")
-                    );
-
-                    if (matchingEntries.length > 0) {
-                        const lastMatch = matchingEntries[matchingEntries.length - 1];
-                        resolve({
-                            po: lastMatch.PO_Number,
-                            time_spent: parseFloat(lastMatch.Time_Spent_in_mintues),
-                            event_id: parseInt(lastMatch.Event_ID)
-                        });
-                        return;
-                    }
+    const api = await fetchAPI("reports", {
+        body: {
+            type: "user_clock",
+            page: 1,
+            per_page: 10,
+            filters: [
+                {
+                    "field": "user_clocks.clock_date",
+                    "operator": "between",
+                    "value": [todayFormatted, todayFormatted]
+                },
+                {
+                    "field": "user_profile.user_id",
+                    "operator": "eq",
+                    "value": `${userId}`
+                },
+                {
+                    "field": "product_items.sku",
+                    "operator": "eq",
+                    "value": `${sku}`
                 }
+            ],
+            columns: [
+                "purchase_orders.id",
+                "user_clock_activity.activity_id",
+                "user_clock_activity.activity_code",
+                "user_clock_activity.time_spent"
+            ]
+        }
+    });
 
-                console.error("Request Data Not Expected or No Matching Entry: ", data);
-                resolve(null);
-            }).fail(function(jqXHR, textStatus, errorThrown) {
-                console.error("Request failed: " + textStatus + ", " + errorThrown);
-                reject(new Error("Request failed: " + textStatus + ", " + errorThrown));
-            });
-        });
-    } else {
-        console.error('Unable to get CSRF');
-        return null;
+    if (api.success && api.data && api.data.data) {
+        const matchingEntries = api.data.data.filter(
+            entry => entry.Event_Code === "Inventory Listing" 
+            && entry.hasOwnProperty("PO_Number")
+            && entry.hasOwnProperty("Time_Spent_in_mintues")
+            && entry.hasOwnProperty("Event_ID")
+        );
+
+        if (matchingEntries.length > 0) {
+            return matchingEntries;
+        }
     }
+
+    return null;
 }
 
 function inWrongTaskCheck() {
@@ -308,33 +279,28 @@ async function newUpdateLocation(sku, eventID = null, po = null) {
         }
         if (!Number.isInteger(po)) { return { success: false, message: "Invalid PO ID" }; }
 
-        // get existing location
-        const reportData = await $.ajax({
-            type: "POST",
-            dataType: "json",
-            url: "/reports/create",
-            data: {
-                report: {
-                    type: "pending_inventory",
-                    columns: ["inventory_receiving.location"],
-                    filters: [
-                        {
-                            column: "purchase_orders.id",
-                            opr: "{0} IN {1}",
-                            value: `${po}`
-                        },
-                        {
-                            column: "inventory_receiving.id",
-                            opr: "{0} = {1}",
-                            value: `${eventID}`
-                        }
-                    ]
-                },
-                csrf_recom: csrfToken
+        const api = await fetchAPI("reports", {
+            body: {
+                type: "pending_inventory",
+                page: 1,
+                per_page: 1,
+                filters: [
+                    {
+                        "field": "purchase_orders.id",
+                        "operator": "eq",
+                        "value": `${po}`
+                    },
+                    {
+                        "field": "inventory_receiving.id",
+                        "operator": "eq",
+                        "value": `${eventID}`
+                    }
+                ],
+                columns: ["inventory_receiving.location"]
             }
         });
-        if (!reportData.success) { return { success: false, message: "Failed to fetch original sorting location." }; }
-        const sortLocation = reportData.results?.results?.[0]?.Sort_Location ?? null;
+        let sortLocation = null;
+        if (api.success && api.data && api.data.data) { sortLocation = api.data.data[0].Sort_Location; }
         if (!sortLocation) { return { success: false, message: "Sort location not found" }; }
 
         // update
@@ -363,142 +329,11 @@ async function newUpdateLocation(sku, eventID = null, po = null) {
     }
 }
 
-async function updateLocation(sku, eventID) {
-    const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
-    if (!(csrfMeta && csrfMeta.getAttribute('content').length > 0)) {
-        return { success: false, message: "Missing CSRF token" };
-    }
-    const csrfToken = csrfMeta.getAttribute('content');
-
-    eventID = parseInt(eventID, 10);
-    if (!Number.isInteger(eventID)) {
-        return { success: false, message: "Invalid Event ID" };
-    }
-
-    const fba = `/datatables/FbaInventoryQueue?draw=1&columns%5B0%5D%5Bdata%5D=0&columns%5B0%5D%5Bname%5D=&columns%5B0%5D%5Bsearchable%5D=true&columns%5B0%5D%5Borderable%5D=true&columns%5B0%5D%5Bsearch%5D%5Bvalue%5D=${sku}&columns%5B0%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B1%5D%5Bdata%5D=1&columns%5B1%5D%5Bname%5D=&columns%5B1%5D%5Bsearchable%5D=true&columns%5B1%5D%5Borderable%5D=true&columns%5B1%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B1%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B2%5D%5Bdata%5D=2&columns%5B2%5D%5Bname%5D=&columns%5B2%5D%5Bsearchable%5D=true&columns%5B2%5D%5Borderable%5D=true&columns%5B2%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B2%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B3%5D%5Bdata%5D=3&columns%5B3%5D%5Bname%5D=&columns%5B3%5D%5Bsearchable%5D=true&columns%5B3%5D%5Borderable%5D=true&columns%5B3%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B3%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B4%5D%5Bdata%5D=4&columns%5B4%5D%5Bname%5D=&columns%5B4%5D%5Bsearchable%5D=true&columns%5B4%5D%5Borderable%5D=true&columns%5B4%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B4%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B5%5D%5Bdata%5D=5&columns%5B5%5D%5Bname%5D=&columns%5B5%5D%5Bsearchable%5D=true&columns%5B5%5D%5Borderable%5D=true&columns%5B5%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B5%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B6%5D%5Bdata%5D=6&columns%5B6%5D%5Bname%5D=&columns%5B6%5D%5Bsearchable%5D=true&columns%5B6%5D%5Borderable%5D=true&columns%5B6%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B6%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B7%5D%5Bdata%5D=7&columns%5B7%5D%5Bname%5D=&columns%5B7%5D%5Bsearchable%5D=true&columns%5B7%5D%5Borderable%5D=true&columns%5B7%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B7%5D%5Bsearch%5D%5Bregex%5D=false&start=0&length=20&search%5Bvalue%5D=&search%5Bregex%5D=false&reset_table=true&_=${Date.now()}`
-    const pi = `/datatables/inventoryqueue?draw=1&columns%5B0%5D%5Bdata%5D=0&columns%5B0%5D%5Bname%5D=&columns%5B0%5D%5Bsearchable%5D=true&columns%5B0%5D%5Borderable%5D=true&columns%5B0%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B0%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B1%5D%5Bdata%5D=1&columns%5B1%5D%5Bname%5D=&columns%5B1%5D%5Bsearchable%5D=true&columns%5B1%5D%5Borderable%5D=true&columns%5B1%5D%5Bsearch%5D%5Bvalue%5D=${sku}&columns%5B1%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B2%5D%5Bdata%5D=2&columns%5B2%5D%5Bname%5D=&columns%5B2%5D%5Bsearchable%5D=true&columns%5B2%5D%5Borderable%5D=true&columns%5B2%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B2%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B3%5D%5Bdata%5D=3&columns%5B3%5D%5Bname%5D=&columns%5B3%5D%5Bsearchable%5D=true&columns%5B3%5D%5Borderable%5D=true&columns%5B3%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B3%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B4%5D%5Bdata%5D=4&columns%5B4%5D%5Bname%5D=&columns%5B4%5D%5Bsearchable%5D=true&columns%5B4%5D%5Borderable%5D=true&columns%5B4%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B4%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B5%5D%5Bdata%5D=5&columns%5B5%5D%5Bname%5D=&columns%5B5%5D%5Bsearchable%5D=true&columns%5B5%5D%5Borderable%5D=true&columns%5B5%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B5%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B6%5D%5Bdata%5D=6&columns%5B6%5D%5Bname%5D=&columns%5B6%5D%5Bsearchable%5D=true&columns%5B6%5D%5Borderable%5D=true&columns%5B6%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B6%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B7%5D%5Bdata%5D=7&columns%5B7%5D%5Bname%5D=&columns%5B7%5D%5Bsearchable%5D=true&columns%5B7%5D%5Borderable%5D=true&columns%5B7%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B7%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B8%5D%5Bdata%5D=8&columns%5B8%5D%5Bname%5D=&columns%5B8%5D%5Bsearchable%5D=true&columns%5B8%5D%5Borderable%5D=true&columns%5B8%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B8%5D%5Bsearch%5D%5Bregex%5D=false&start=0&length=20&search%5Bvalue%5D=&search%5Bregex%5D=false&_=${Date.now()}`
-
-    /* new timeout handler */
-    const TIMEOUT_MS = 15000;
-    const MAX_RETRIES = 3;
-    const RETRY_BACKOFF_BASE = 500;
-    function sleep(ms) { return new Promise(res => setTimeout(res, ms)); }
-
-    const haveHelper = (typeof fetchJsonWithTimeout === 'function');
-    async function localFetchJsonWithTimeout(url, options = {}, { timeoutMs = TIMEOUT_MS, retries = MAX_RETRIES } = {}) {
-        let attempt = 0, lastErr = null;
-        while (attempt <= retries) {
-            const controller = new AbortController();
-            const timer = setTimeout(() => controller.abort(), timeoutMs);
-            try {
-                const res = await fetch(url, { ...options, signal: controller.signal });
-                clearTimeout(timer);
-
-                if (res.status === 429 || (res.status >= 500 && res.status <= 599)) {
-                    lastErr = new Error(`HTTP ${res.status}`);
-                } else if (!res.ok) {
-                    const text = await res.text().catch(() => '');
-                    return { ok: false, timedOut: false, status: res.status, data: null, error: new Error(`HTTP ${res.status}${text ? `: ${text.slice(0, 200)}` : ''}`) };
-                } else {
-                    try {
-                        const data = await res.json();
-                        return { ok: true, timedOut: false, status: res.status, data, error: null };
-                    } catch (e) {
-                        return { ok: false, timedOut: false, status: res.status, data: null, error: new Error(`Invalid JSON from ${url}: ${e.message}`) };
-                    }
-                }
-            } catch (e) {
-                clearTimeout(timer);
-                lastErr = (e.name === 'AbortError') ? Object.assign(new Error(`Request timed out after ${timeoutMs} ms`), { timedOut: true }) : e;
-            }
-
-            if (attempt < retries) {
-                const backoff = Math.round(RETRY_BACKOFF_BASE * Math.pow(2, attempt) + Math.random() * 250);
-                await sleep(backoff);
-                attempt++;
-            } else {
-                const timedOut = !!lastErr?.timedOut;
-                return { ok: false, timedOut, status: null, data: null, error: lastErr || new Error('Unknown fetch error') };
-            }
-        }
-        return { ok: false, timedOut: false, status: null, data: null, error: new Error('Unexpected fetch loop exit') };
-    }
-    const fetcher = haveHelper ? fetchJsonWithTimeout : localFetchJsonWithTimeout;
-
-    try {
-        const [fbaRes, piRes] = await Promise.allSettled([
-            fetcher(fba),
-            fetcher(pi)
-        ]);
-
-        const fbaOk = fbaRes.status === 'fulfilled' && fbaRes.value.ok && Array.isArray(fbaRes.value.data?.data);
-        const piOk  = piRes.status === 'fulfilled' && piRes.value.ok && Array.isArray(piRes.value.data?.data);
-
-        if (!fbaOk && !piOk) {
-            const fbaMsg = fbaRes.status === 'fulfilled'
-                ? (fbaRes.value.timedOut ? `FBA timed out after ${TIMEOUT_MS} ms` : `FBA failed: ${fbaRes.value.error?.message || 'Unknown error'}`)
-                : `FBA failed: ${fbaRes.reason?.message || 'Unknown error'}`;
-            const piMsg = piRes.status === 'fulfilled'
-                ? (piRes.value.timedOut ? `PI timed out after ${TIMEOUT_MS} ms` : `PI failed: ${piRes.value.error?.message || 'Unknown error'}`)
-                : `PI failed: ${piRes.reason?.message || 'Unknown error'}`;
-            return { success: false, message: `${fbaMsg} | ${piMsg}` };
-        }
-
-        const allData = [
-            ...(fbaOk ? fbaRes.value.data.data : []),
-            ...(piOk  ? piRes.value.data.data  : [])
-        ];
-
-        if (allData.length === 0) {
-            return { success: false, message: "No data available from either source", allData };
-        }
-
-        const parser = new DOMParser();
-
-        for (const row of allData) {
-            for (const cell of row) {
-                const doc = parser.parseFromString(cell, 'text/html');
-                const anchors = doc.querySelectorAll('a');
-
-                for (const a of anchors) {
-                    const href = a.getAttribute('href') || '';
-                    if (href.includes("quickCreate(") && href.includes("'Update Sorting Location'") && href.includes(`/updateSortingLocation/${eventID}`)) {
-                        const locationName = ('PICTURES ' + (a.textContent.trim() || '')).trimEnd();
-
-                        const formData = new FormData();
-                        formData.append('name', locationName);
-
-                        const postRes = await fetcher(
-                            `/ajax/actions/updateSortingLocation/${eventID}`,
-                            { method: 'POST', headers: { 'x-csrf-token': csrfToken }, body: formData }
-                        );
-
-                        if (postRes.ok && postRes.data?.success) {
-                            return { success: true, message: "Location Updated" };
-                        } else {
-                            const msg = postRes.timedOut
-                                ? `POST timed out after ${TIMEOUT_MS} ms`
-                                : (postRes.data?.message || postRes.error?.message || "Update failed");
-                            return { success: false, message: msg };
-                        }
-                    }
-                }
-            }
-        }
-
-        return { success: false, message: "Matching link not found for event ID" };
-
-    } catch (err) {
-        return { success: false, message: "Fetch failed: " + err.message };
-    }
-}
-
 async function handleLocationButton(e) {
-    // get le info
     const sku = e.getAttribute('data-sku');
     const eventID = parseInt(e.getAttribute('data-eventID'), 10);
+    const po = e.getAttribute('data-po');
 
-    // init le message
     const messageSpan = e.nextElementSibling;
     if (!Number.isInteger(eventID)) {
         messageSpan.textContent = "Invalid Event ID";
@@ -506,21 +341,16 @@ async function handleLocationButton(e) {
         return;
     }
 
-    // show le button press
     e.disabled = true;
     const oldButtonText = e.textContent;
     e.textContent = 'Loading...';
     e.style.setProperty('background-color', 'gray', 'important');
 
-    // do le update
-    //const response = await updateLocation(sku, eventID);
-    const response = await newUpdateLocation(sku, eventID);
+    const response = await newUpdateLocation(sku, eventID, po);
 
-    // show le response
     messageSpan.textContent = response.message;
     messageSpan.style.color = response.success ? 'var(--bs-primary)' : 'var(--bs-danger)';
 
-    // reset le button
     e.classList.remove('disabled');
     e.style.removeProperty('background-color');
     e.textContent = oldButtonText;
@@ -675,38 +505,18 @@ async function initListingPatch() {
                                             <span>View In Pending Inventory</span>
                                         </a>
                                     </div>
-                                    <span class="spacer"></span></div>`;
-                                
-                                if (autoLocationUpdate) {
-                                    const updateConditions = [1,2,3,4,5,6,7,8,9,18,31,32,34,35,42,44,45,71,92,94,95,99];
-                                    if (updateConditions.some(cond => sku.endsWith(`-${cond}`))) {
-                                        window.addEventListener('beforeunload', unloadWarning);
-                                        // const updateLocationResponse = await updateLocation(sku, eventID);
-                                        const updateLocationResponse = await newUpdateLocation(sku, eventID, po);
-                                        window.removeEventListener('beforeunload', unloadWarning);
-                                        if (updateLocationResponse.success) {
-                                            console.log('PATCHES - Location Updated');
-                                            code += '<p>Updated entry location with PICTURES.</p>';
-                                        } else {
-                                            console.error('PATCHES - Unable to Update Location:', updateLocationResponse);
-                                            code += `<p>Failed to update location with PICTURES: ${updateLocationResponse.message ?? 'Check Console'}</p>`;
-                                            //alert(`Issue Updating Location: ${updateLocationResponse.message ?? 'Check Console'}`);
-                                        }
-                                    } else {
-                                        code += '<p>This entry\'s condition does not need a location update.</p>';
-                                    }
-                                } else {
-                                    code += `<div class="patches-row" style="gap: 0.5rem; align-items: center; justify-content: center;">
-                                        <a class="btn btn-info btn-sm my-sm-1 ms-1" style="display: flex; flex-direction: row; gap: 0.25rem; align-items: center; justify-content: center;" title="Add PICTURES to Location" aria-label="Add PICTURES to Location" data-sku="${sku}" data-eventID="${eventID}" onclick="handleLocationButton(this);">
+                                    <span class="spacer"></span></div>
+                                    <div class="patches-row" style="gap: 0.5rem; align-items: center; justify-content: center;">
+                                        <a class="btn btn-info btn-sm my-sm-1 ms-1" style="display: flex; flex-direction: row; gap: 0.25rem; align-items: center; justify-content: center;" title="Add PICTURES to Location" aria-label="Add PICTURES to Location" data-sku="${sku}" data-eventID="${eventID}" data-po="${po}" onclick="handleLocationButton(this);">
                                             <i class="fas fa-map-marker-alt"></i>
                                             <span>Update Location</span>
                                         </a>
                                         <span></span>
-                                    </div>`;
-                                }
-                                code += `<span class="spacer"></span></div>`;
+                                    </div>
+                                    <span class="spacer"></span></div>`;
                             } else {
                                 console.error(justCreated);
+                                fireSwal('UHOH!', 'Unable to find what you just created??? LOL???', 'error', false);
                             }
                         }
 
