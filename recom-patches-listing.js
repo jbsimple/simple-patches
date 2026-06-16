@@ -42,7 +42,7 @@ async function getTimeSpentInMinutes(sku) {
                 {
                     "field": "user_profile.user_id",
                     "operator": "eq",
-                    "value": `${userId}`
+                    "value": `${getUserID()}`
                 },
                 {
                     "field": "product_items.sku",
