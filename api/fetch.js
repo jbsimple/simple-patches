@@ -1,3 +1,9 @@
+export const config = {
+    maxDuration: 60
+};
+const CACHE_TTL = 10 * 1000; // 10 seconds of cache
+const cache = new Map();
+
 export default async function handler(req, res) {
 
     const allowedOrigins = (process.env.ALLOWED_ORIGINS || "")
@@ -51,6 +57,24 @@ export default async function handler(req, res) {
         return res.status(400).json({ success: false, error: "Invalid route" });
     }
 
+    // Magical Cache
+    const cacheKey = JSON.stringify({
+        hostname,
+        route,
+        method: req.method,
+        body: req.body || null
+    });
+
+    const cached = cache.get(cacheKey);
+
+    if (cached && cached.expires > Date.now()) {
+        return res.status(cached.status).json(cached.payload);
+    }
+
+    if (cached) {
+        cache.delete(cacheKey);
+    }
+
     let apiURL;
 
     try {
@@ -72,10 +96,19 @@ export default async function handler(req, res) {
 
             const data = await response.json();
 
-            return res.status(response.status).json({
+            const payload = {
                 success: response.ok,
                 data
+            };
+
+            cache.set(cacheKey, {
+                status: response.status,
+                payload,
+                expires: Date.now() + CACHE_TTL
             });
+
+            return res.status(response.status).json(payload);
+
         }
 
         if (route === "reports") {
@@ -103,10 +136,18 @@ export default async function handler(req, res) {
 
             const data = await response.json();
 
-            return res.status(response.status).json({
+            const payload = {
                 success: response.ok,
                 data
+            };
+
+            cache.set(cacheKey, {
+                status: response.status,
+                payload,
+                expires: Date.now() + CACHE_TTL
             });
+
+            return res.status(response.status).json(payload);
         }
 
     } catch (err) {
