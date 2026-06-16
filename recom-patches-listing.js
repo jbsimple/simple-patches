@@ -80,7 +80,7 @@ function inWrongTaskCheck() {
     if (window.location.href.includes('/receiving/queues/listing/')) {
         const afterListing = window.location.href.split('/receiving/queues/listing/')[1];
         if (afterListing && afterListing.trim() !== '' && currentTask !== 'Listing') {
-            fireSwal('TASK CHECK?', ["You're about to list without being in the listing task.", "Are you sure you want to continue?", "* Gotacha to reload, Close to just proceed."], 'question', true);
+            fireSwal('TASK CHECK?', ["You're about to list without being in the listing task.", "This will not record your time properly.", "Are you sure you want to continue?", "* Green to refresh if clocked in elsewhere, gray to cancel and accept the risk."], 'question', true);
         }
     } else if (currentTask !== 'Listing') {
         const thecontent = document.getElementById('kt_app_content_container');
