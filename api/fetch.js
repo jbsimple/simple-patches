@@ -1,7 +1,7 @@
 export const config = {
     maxDuration: 60
 };
-const CACHE_TTL = 10 * 1000; // 10 seconds of cache
+const CACHE_TTL = 15 * 1000; // Cache max age for use
 const cache = new Map();
 
 export default async function handler(req, res) {
@@ -68,6 +68,7 @@ export default async function handler(req, res) {
     const cached = cache.get(cacheKey);
 
     if (cached && cached.expires > Date.now()) {
+        res.setHeader('X-Cache', 'TRUE');
         return res.status(cached.status).json(cached.payload);
     }
 
@@ -107,6 +108,7 @@ export default async function handler(req, res) {
                 expires: Date.now() + CACHE_TTL
             });
 
+            res.setHeader('X-Cache', 'FALSE');
             return res.status(response.status).json(payload);
 
         }
@@ -147,6 +149,7 @@ export default async function handler(req, res) {
                 expires: Date.now() + CACHE_TTL
             });
 
+            res.setHeader('X-Cache', 'FALSE');
             return res.status(response.status).json(payload);
         }
 
