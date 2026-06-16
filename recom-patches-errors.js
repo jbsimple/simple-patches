@@ -54,6 +54,9 @@ function initPrettyPrint() {
             pageNum++;
         }
 
+        // this is like this to work with the rest for now
+        return { data: items };
+
         async function getPage(page) {
             const req_body = {
                 type: "active_inventory",
