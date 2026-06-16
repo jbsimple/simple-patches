@@ -88,7 +88,7 @@ function initPrettyPrint() {
             if (sku === null) {
                 const today = new Date();
                 const past = new Date();
-                past.setDate(today.getDate() - 89); // last 89 days, which in an ideal world would hit everything in the error logs
+                past.setDate(today.getDate() - 29);
 
                 const formatDate = (date) => {
                     const mm = String(date.getMonth() + 1).padStart(2, '0');
@@ -536,4 +536,4 @@ async function initErrorLogPatch() {
 
 // unless the API is improved in a way to actually allow grabbing the full list, this is not possible
 // and with reports being updated to an enqueue, pretty print is officially dead unless I rotate API keys
-// setTimeout(initErrorLogPatch, 150);
+setTimeout(initErrorLogPatch, 150);
