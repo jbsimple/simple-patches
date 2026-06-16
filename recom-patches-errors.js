@@ -102,7 +102,7 @@ function initPrettyPrint() {
                 req_body.filters.push({
                     "field": "product_items.updated_at",
                     "operator": "between",
-                    "value": range 
+                    "value": [formatDate(past), formatDate(today)]
                 });
             } else {
                 req_body.filters.push({
