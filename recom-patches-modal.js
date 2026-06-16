@@ -49,7 +49,7 @@ function openPatchesModal(opts = {}) {
                         <h2 class="fw-bolder">${title}</h2>
                         <div class="btn btn-icon btn-sm btn-active-icon-primary" data-modal-close>${closeIcon}</div>
                     </div>
-                    <div class="modal-body scroll-y px-10 px-lg-15 pt-0 pb-15" style="padding-top: 1.5rem !important;">
+                    <div class="modal-body scroll-y px-10 px-lg-15 pt-0" style="padding-top: 1.5rem !important;">
                         ${body}
                         ${footer}
                     </div>
