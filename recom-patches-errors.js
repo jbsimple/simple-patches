@@ -1,527 +1,4 @@
-function initPrettyPrint() {
-    let itemData = null;
-    let manualData = {};
-    const fetchPromises = {};
-    const getWMFeed = false;
-
-    const actionButton = document.createElement('button');
-    actionButton.type = 'button';
-    actionButton.classList.add('btn', 'btn-primary', 'btn-sm');
-    actionButton.title = 'This adds SKU Links, In Stock Count, SID Links and Categories.';
-    actionButton.textContent = 'Pretty Print';
-    actionButton.addEventListener('click', async () => {
-        actionButton.disabled = true;
-        try {
-            toggleLDtTableoad('inherit');
-            await itemDetailsInit();
-            prettyLinkSkus();
-            toggleLDtTableoad('none');
-            const wrapper = document.getElementById('dtTable_wrapper');
-            if (wrapper) {
-                const observer = new MutationObserver(() => {
-                    clearTimeout(observer._debounce);
-                    observer._debounce = setTimeout(prettyLinkSkus, 500);
-                });
-
-                observer.observe(wrapper, { childList: true, subtree: true });
-            }
-        } catch (err) {
-            console.error(err);
-        }
-        actionButton.disabled = false;
-    });
-    return actionButton;
-
-    async function itemDetailsInit() {
-        const itemDataFetch = await fetchItemDetails();
-        if (itemDataFetch.data) {
-            itemData = Object.fromEntries(
-                itemDataFetch.data.map(item => [item.SKU, item])
-            );
-        }
-        return itemDataFetch.data;
-    }
-
-    async function fetchItemDetails(sku = null) {
-        const items = [];
-        let pageNum = 1;
-        let hasMore = true;
-        while (hasMore) {
-            const page = await getPage(pageNum);
-            if (!page?.data || !page?.meta) { break; }
-            items.push(...page.data);
-            hasMore = page.meta.has_more;
-            pageNum++;
-        }
-
-        // this is like this to work with the rest for now
-        return { data: items };
-
-        async function getPage(page) {
-            const req_body = {
-                type: "active_inventory",
-                page: page,
-                per_page: 1000,
-                filters: [
-                    {
-                        "field": "product_items.in_stock",
-                        "operator": "gte",
-                        "value": "-100"
-                    },
-                    {
-                        field: "product_items.condition_id",
-                        operator: "in",
-                        value: ["1","2","4","5","6","8","9","18","31","32","34","35","38","39","42","44","45","49","71","92","94","95","99"]
-                    }
-                ],
-                columns: [
-                    "products.sid",
-                    "product_items.id",
-                    "product_items.sku",
-                    "conditions.name",
-                    "product_items.in_stock",
-                    "product_items.price",
-                    "categories.name",
-                ]
-            };
-
-            if (sku === null) {
-                const today = new Date();
-                const past = new Date();
-                past.setDate(today.getDate() - 29);
-
-                const formatDate = (date) => {
-                    const mm = String(date.getMonth() + 1).padStart(2, '0');
-                    const dd = String(date.getDate()).padStart(2, '0');
-                    const yyyy = date.getFullYear();
-                    return `${yyyy}-${mm}-${dd}`
-                };
-
-                const range = `${formatDate(past)} - ${formatDate(today)}`;
-
-                req_body.filters.push({
-                    "field": "product_items.updated_at",
-                    "operator": "between",
-                    "value": [formatDate(past), formatDate(today)]
-                });
-            } else {
-                req_body.filters.push({
-                    "field": "product_items.sku",
-                    "operator": "eq",
-                    "value": sku
-                });
-                req_body.per_page = 1;
-            }
-
-            const req = await fetchAPI("reports", { body: req_body });
-            if (req.success && req.data) { return req.data; }
-            return null;
-        }
-    }
-
-    async function fetchItemDetailsOld(sku = null) {
-        // time to build a report
-        const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
-        if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
-            const csrfToken = csrfMeta.getAttribute('content');
-
-            let filters = [
-                {
-                    column: "product_items.in_stock",
-                    opr: "{0} >= {1}",
-                    value: -100
-                }
-            ];
-            
-            if (sku !== null) {
-                filters.push({
-                    column: "product_items.sku",
-                    opr: "{0} LIKE '%{1}%'",
-                    value: sku
-                });
-            } else {
-                const today = new Date();
-                const past = new Date();
-                past.setDate(today.getDate() - 89);
-
-                const formatDate = (date) => {
-                    const mm = String(date.getMonth() + 1).padStart(2, '0');
-                    const dd = String(date.getDate()).padStart(2, '0');
-                    const yyyy = date.getFullYear();
-                    return `${mm}/${dd}/${yyyy}`;
-                };
-
-                const range = `${formatDate(past)} - ${formatDate(today)}`;
-
-                filters.push({
-                    column: "product_items.updated_at",
-                    opr: "between",
-                    value: range 
-                });
-            }
-
-            var request = {
-                report: {
-                    type: "active_inventory",
-                    columns: [
-                        "products.sid",
-                        "product_items.id",
-                        "product_items.sku",
-                        "product_items.in_stock",
-                        "products.category_id"
-                    ],
-                    filters: filters
-                },
-                csrf_recom: csrfToken
-            };
-
-            console.debug('PATCHES - Fetching Item Detials report:', request);
-
-            return new Promise((resolve, reject) => {
-                $.ajax({
-                    type: "POST",
-                    dataType: "json",
-                    url: "/reports/create",
-                    data: request,
-                }).done(function(data) {
-                    if (data.success && data.results.results && Array.isArray(data.results.results)) {
-                        resolve({
-                            data: data.results.results,
-                            download: `/renderfile/download?folder=reports&path=${data.results.filename}`,
-                            filename: data.results.filename
-                        });
-                    } else {
-                        resolve(null);
-                    }
-                }).fail(function(jqXHR, textStatus, errorThrown) {
-                    console.error("Request failed: " + textStatus + ", " + errorThrown);
-                    reject(new Error("Request failed: " + textStatus + ", " + errorThrown));
-                });
-            });
-        } else {
-            return null;
-        }
-    }
-
-    async function prettyLinkSkus() {
-        toggleLDtTableoad('inherit');
-        const table = document.getElementById('dtTable');
-        if (!table) return;
-
-        const headerRow = table.querySelector('thead>tr');
-        const footerRow = table.querySelector('tfoot>tr');
-
-        if (headerRow && !table.hasAttribute('patched')) {
-            headerRow.insertBefore(addTableHeadings("ENTRY CATEGORY", 'cat-col'), headerRow.children[4]);
-            headerRow.insertBefore(addTableHeadings("ENTRY SID", 'sid-col'), headerRow.children[4]);
-            headerRow.insertBefore(addTableHeadings("ENTRY IN STOCK", 'in-stock-col'), headerRow.children[4]);
-        }
-
-        if (footerRow && !table.hasAttribute('patched')) {
-            footerRow.insertBefore(addTableHeadings("", 'cat-col'), footerRow.children[4]);
-            footerRow.insertBefore(addTableHeadings("", 'sid-col'), footerRow.children[4]);
-            footerRow.insertBefore(addTableHeadings("", 'in-stock-col'), footerRow.children[4]);
-        }
-
-        table.setAttribute('patched', 'true');
-
-        const rows = table.querySelectorAll('tbody tr');
-
-        for (const row of rows) {
-            await processRow(row);
-        }
-        toggleLDtTableoad('none');
-
-        async function processRow(row) {
-            if (row.dataset.processing === "true" || row.querySelector('td.in-stock-col')) return;
-            row.dataset.processing = "true";
-        
-            if (row.querySelector('td.in-stock-col')) return;
-
-            const cells = row.querySelectorAll('td');
-            const skuCell = cells[3];
-            if (!skuCell || !skuCell.textContent) return;
-            const text = skuCell.textContent?.trim();
-
-            const isItemSKU = text.startsWith('SC-') || text.startsWith('RF_SC-') || text.startsWith('DF-') || text.startsWith('CP_0_SC-') || text.startsWith('CP_1_SC-');
-            if (!isItemSKU) {
-                row.insertBefore(addCell('&nbsp;', 'in-stock-col', 'Not an item SKU'), cells[4]);
-                row.insertBefore(addCell('&nbsp;', 'sid-col', 'Not an item SKU'), cells[4]);
-                row.insertBefore(addCell('&nbsp;', 'cat-col', 'Not an item SKU'), cells[4]);
-                delete row.dataset.processing;
-                return;
-            }
-
-            // if (!(text.startsWith('SC-') || text.startsWith('RF_SC-') || text.startsWith('DF-') || text.startsWith('CP_0_SC-') || text.startsWith('CP_1_SC-'))) return;
-
-            let cleanedSku = text.replace(/^RF_/, '').replace(/^CP_0_/, '').replace(/^CP_1_/, '')
-            const href = `/product/items/${cleanedSku}`;
-            skuCell.innerHTML = `<a href="${href}" target="_blank">${text}</a>`;
-
-            let in_stock = null;
-            let sid = null;
-            let item_id = null;
-            let category = null;
-            let data = itemData[cleanedSku] || manualData[cleanedSku];
-
-            if (!data) {
-                console.warn(`PATCHES - Manually fetching data for ${cleanedSku}`);
-                if (!fetchPromises[cleanedSku]) {
-                    fetchPromises[cleanedSku] = (async () => {
-                        try {
-                            const reportFetch = await fetchItemDetails(cleanedSku);
-                            console.debug(`PATCHES - Manually fetched data:`, reportFetch);
-                            const fetched = Array.isArray(reportFetch?.data)
-                                ? reportFetch.data[0]
-                                : reportFetch?.data;
-
-                            if (fetched && (fetched['SID'] || fetched['In_Stock'] || fetched['MAIN_Qty'])) {
-                                manualData[cleanedSku] = fetched;
-                                console.debug(`PATCHES - Stored manualData for ${cleanedSku}`, fetched);
-                                return fetched;
-                            } else {
-                                console.warn(`PATCHES - No data returned for ${cleanedSku}:`, reportFetch);
-                                return null;
-                            }
-                        } catch (err) {
-                            console.error(`PATCHES - Error fetching data for ${cleanedSku}:`, err);
-                            return null;
-                        } finally {
-                            delete fetchPromises[cleanedSku];
-                        }
-                    })();
-                }
-                data = await fetchPromises[cleanedSku];
-            }
-
-            if (data) {
-                in_stock = data['MAIN_Qty'] ?? data['In_Stock'] ?? null;
-                sid = data['SID'] ?? null;
-                item_id = data['Item_ID'] ?? null;
-                category = data['Category'] ?? null;
-            }
-
-            row.insertBefore(addCell(`<span>${in_stock}</span>`, 'in-stock-col', "Main Quantity of SKU"), cells[4]);
-            row.insertBefore(addCell(`<a href="/products/${sid}" target="_blank">${sid}</a>`, 'sid-col', "Link to SID"), cells[4]);
-            row.insertBefore(addCell(`<span>${category}</span>`, 'cat-col', "Category"), cells[4]);
-
-            if (getWMFeed) {
-                const parser = new DOMParser();
-                const marketplaceCell = cells[1];
-                const marketplace = marketplaceCell.textContent.trim();
-                let wm_feedID = ""; 
-                if (marketplace === 'Walmart US' && item_id) {
-                    try {
-                        const feedRes = await fetch(`/integrations/stores/listing/item/${item_id}`);
-                        if (feedRes.ok) {
-                            const feedHtml = await feedRes.text();
-                            const feedDoc = parser.parseFromString(feedHtml, "text/html");
-
-                            const wmRow = [...feedDoc.querySelectorAll('tbody tr')].find(row => row.querySelector('td')?.textContent.trim() === 'Walmart US');
-
-                            if (wmRow) {
-                                const cols = wmRow.querySelectorAll('td');
-                                wm_feedID = cols[2]?.textContent.trim() || "";
-                            }
-                        }
-                    } catch (err) {
-                        console.error("Error fetching feed ID", err);
-                    }
-                }
-
-                if (wm_feedID) {
-                    cells[2].title = cells[2].textContent.trim();
-                    cells[2].textContent = wm_feedID;
-                }
-            }
-
-            delete row.dataset.processing;
-
-        }
-
-        function addTableHeadings(textContent, className = 'patches_newHeader') {
-            const th = document.createElement('th');
-            th.textContent = textContent;
-            th.classList.add(className, 'min-w-100px');
-            return th;
-        }
-
-        function addCell(innerHTML, className = 'patches_newcell', title = 'Patches New Cell', label = 'New Patch Cell') {
-            const newCell = document.createElement('td');
-            newCell.classList.add(className);
-            newCell.innerHTML = innerHTML;
-            newCell.title = title;
-            newCell.setAttribute('label', label);
-            return newCell;
-        }
-    }
-}
-
-function initExportAllRecords() {
-    const exportAll = document.createElement('button');
-    exportAll.type = 'button';
-    exportAll.classList.add('btn', 'btn-info', 'btn-sm');
-    exportAll.title = 'This downloads all records, not just the page.';
-    exportAll.textContent = 'Export All';
-    exportAll.addEventListener('click', async () => {
-        exportAll.disabled = true;
-        try {
-            await downloadAllRecords();
-        } catch (err) {
-            console.error(err);
-        }
-        exportAll.disabled = false;
-    });
-    return exportAll;
-
-    async function downloadAllRecords() {
-        const CHUNK_SIZE = 3000;
-        const allData = [];
-        const buildParams = (start, length) => {
-
-            const params = new URLSearchParams();
-
-            params.append('draw', 1);
-            params.append('start', start);
-            params.append('length', length);
-
-            params.append('search[value]', '');
-            params.append('search[regex]', false);
-
-            const footerCells = document.querySelectorAll('#dtfoot th');
-
-            for (let i = 0; i < footerCells.length; i++) {
-
-                const input = footerCells[i].querySelector('input, select');
-                const value = input ? input.value.trim() : '';
-
-                params.append(`columns[${i}][data]`, i);
-                params.append(`columns[${i}][name]`, '');
-                params.append(`columns[${i}][searchable]`, true);
-                params.append(`columns[${i}][orderable]`, true);
-                params.append(`columns[${i}][search][value]`, value);
-                params.append(`columns[${i}][search][regex]`, false);
-            }
-
-            params.append('v', Date.now());
-
-            return params;
-        };
-
-        try {
-            const firstUrl = `/datatables/storelogs?${buildParams(0, 1).toString()}`;
-            const firstResponse = await fetch(firstUrl);
-
-            if (!firstResponse.ok) { throw new Error(`Initial fetch failed: ${firstResponse.status}`); }
-
-            const firstData = await firstResponse.json();
-            const totalRecords = firstData.recordsFiltered || firstData.recordsTotal;
-
-            console.debug('PATCHES Total records:', totalRecords);
-
-            let start = 0;
-            while (start < totalRecords) {
-                console.debug(`Fetching ${start} → ${start + CHUNK_SIZE}`);
-
-                const url = `/datatables/storelogs?${buildParams(start, CHUNK_SIZE).toString()}`;
-                const response = await fetch(url);
-
-                if (!response.ok) {
-                    throw new Error(`Chunk fetch failed at ${start}: ${response.status}`);
-                }
-
-                const data = await response.json();
-                if (Array.isArray(data.data)) { allData.push(...data.data); }
-
-                start += CHUNK_SIZE;
-            }
-
-            console.debug('PATCHES - Finished fetching all records.', allData);
-            exportStoreLogsToCSV(allData);
-            return allData;
-
-        } catch (error) {
-            console.error('PATCHES - Download failed:', error);
-        }
-
-        function exportStoreLogsToCSV(allData) {
-
-            const rows = [];
-
-            rows.push(["Store","Store ID","Reference","Type","Details JSON","Timestamp"]);
-
-            for (const row of allData) {
-
-                const parser = new DOMParser();
-
-                const col1 = row[1];
-                const col2 = row[2];
-                const col3 = row[3];
-                const col4 = row[4];
-
-                let jsonString = '';
-                if (row[5]) {
-                    const doc = parser.parseFromString(row[5], 'text/html');
-                    const items = doc.querySelectorAll('.json__item');
-
-                    const obj = {};
-
-                    items.forEach(item => {
-                        const key = item.querySelector('.json__key')?.textContent?.trim();
-                        const value = item.querySelector('.json__value')?.textContent?.trim();
-                        if (key) obj[key] = value;
-                    });
-
-                    jsonString = JSON.stringify(obj);
-                }
-
-                let timestamp = '';
-                if (row[6]) {
-                    const doc = parser.parseFromString(row[6], 'text/html');
-                    const span = doc.querySelector('span');
-                    timestamp = span?.getAttribute('title') || '';
-                }
-
-                rows.push([
-                    col1,
-                    col2,
-                    col3,
-                    col4,
-                    jsonString,
-                    timestamp
-                ]);
-            }
-
-            const csvContent = rows
-                .map(r =>
-                    r.map(field => {
-                        if (field === null || field === undefined) return '';
-                        const escaped = String(field).replace(/"/g, '""');
-                        return `"${escaped}"`;
-                    }).join(',')
-                )
-                .join('\n');
-
-            const blob = new Blob([csvContent], {
-                type: 'text/csv;charset=utf-8;'
-            });
-            const url = URL.createObjectURL(blob);
-
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `storelogs_${Date.now()}.csv`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-
-            URL.revokeObjectURL(url);
-
-            console.log('PATCHES - CSV export complete.');
-        }
-    }
-}
-
-async function initErrorLogPatch() {
+setTimeout(async function() {
     const tableWrapper = document.getElementById('dtTable_wrapper');
     const card = tableWrapper.parentElement.parentElement;
     const card_toolbar = card.querySelector('.card-header > .card-toolbar');
@@ -530,9 +7,410 @@ async function initErrorLogPatch() {
     spacer.setAttribute('style', 'display:flex;flex:1;');
     card_toolbar.prepend(spacer);
 
-    // card_toolbar.prepend(initPrettyPrint());
-}
+    const normalizeSku = (value) => {
+        value = String(value || '').trim();
 
-// unless the API is improved in a way to actually allow grabbing the full list, this is not possible
-// and with reports being updated to an enqueue, pretty print is officially dead unless I rotate API keys
-setTimeout(initErrorLogPatch, 150);
+        const scIndex = value.indexOf('SC-');
+        return scIndex >= 0 ? value.substring(scIndex) : value;
+    };
+
+    // pretty tool
+    const prettyToolButton = document.createElement('button');
+    prettyToolButton.type = 'button';
+    prettyToolButton.classList.add('btn', 'btn-primary', 'btn-sm');
+    prettyToolButton.title = 'Tool to take exported reports, upload them and do the combining.';
+    prettyToolButton.textContent = 'Pretty Tool';
+    prettyToolButton.addEventListener('click', async () => {
+        const body = `
+		        <h3 class="page-heading d-flex flex-column justify-content-center text-dark fw-bold fs-3" style="margin-bottom: 1.5rem; text-align: center;">The New (and less improved) Pretty Print for Errors.</h3>
+		        
+		        <div class="d-flex flex-column mb-8">
+		            <p class="fs-6 fw-bold">How to use:</p>
+		            <p class="fs-6 fw-semibold form-label mb-2"><b>1</b>: Generate a product items report with at least the SKU column present. Add any other columns you want to appear in the final report.</p>
+		            <p class="fs-6 fw-semibold form-label mb-2"><b>2</b>: Get the error logs report by getting a list and then exporting the page. The main report doesn't work properly, so use Export Page. This means filters and the like for specific errors can be done before making the final combined list.</p>
+		            <p class="fs-6 fw-semibold form-label mb-2"><b>3</b>: Click or drag & drop to upload then hit submit. This tool will combine the two reports and then generate a new file combined.</p>
+		            <p class="fs-6 fw-semibold form-label mb-2"><i>* For the best results, generate a product items report of everything in the system, in stock greater than or equal to 1,000. It takes a while to generate, but it is enqueued now so it won't harm system performance. It just takes 10 minutes to generate.</i></p>
+		        </div>
+		        
+				    <div class="mb-5" style="display:flex;flex-direction:row;gap:1.25rem">
+				    		<div style="display:flex;flex-direction:column;gap:0.25rem;flex:1;">
+						        <label class="form-label fw-bold">Product Items Report</label>
+						        <input type="file" id="patches_prettyTool_productItems" class="form-control" accept=".csv,text/csv">
+						    </div>
+						    <div style="display:flex;flex-direction:column;gap:0.25rem;flex:1;">
+						        <label class="form-label fw-bold">Error Logs</label>
+						        <input type="file" id="patches_prettyTool_errorLogs" class="form-control" accept=".csv,text/csv">
+						    </div>
+						    
+				    </div>
+				`;
+
+        const footer = `
+		        <div class="text-center">
+		            <button type="button" class="btn btn-light me-3" data-modal-close>Cancel</button>
+		            <button type="button" id="patches_prettyTool_submit" class="btn btn-primary">
+		                <span class="indicator-label">Submit</span>
+		                <span class="indicator-progress" style="display: none;">Please wait...
+		                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+		                </span>
+		            </button>
+		        </div>
+		    `;
+
+        const modal = openPatchesModal({
+            id: 'patch_prettyTool_fullModal',
+            title: 'Pretty Tool',
+            body,
+            footer,
+            width: '800px',
+            focus: null,
+            escapeBlockedWhen: (ae) => ae
+        });
+
+        if (!modal) return;
+
+        const submit = modal.find('#patches_prettyTool_submit');
+        if (!submit) return;
+
+        submit.onclick = async function() {
+            const baseUrl = window.location.origin;
+            const productItemsFile = modal.find('#patches_prettyTool_productItems')?.files?.[0];
+            const errorLogsFile = modal.find('#patches_prettyTool_errorLogs')?.files?.[0];
+
+            if (!productItemsFile || !errorLogsFile) {
+                alert('Please select both CSV files.');
+                return;
+            }
+
+            try {
+                const [productItemsText, errorLogsText] = await Promise.all([
+                    readCsvFile(productItemsFile),
+                    readCsvFile(errorLogsFile)
+                ]);
+
+                const productKeys = Object.keys(productItemsText[0] || {});
+
+                const productLookup = new Map(
+                    productItemsText.map(product => [
+                        normalizeSku(product.SKU),
+                        product
+                    ])
+                );
+
+                const combined = errorLogsText.map(errorRow => {
+                    const sku = normalizeSku(
+                        errorRow.Ref ??
+                        errorRow['ENTRY REF']
+                    );
+
+                    const productRow = productLookup.get(sku);
+
+                    if (productRow) {
+                        const enhancedProductRow = {
+                            ...productRow
+                        };
+
+                        return {
+                            "SKU": enhancedProductRow.SKU ?? '',
+                            "SKU URL": enhancedProductRow.SKU ?
+                                `${baseUrl}/product/items/${encodeURIComponent(enhancedProductRow.SKU)}` :
+                                '',
+
+                            "SID": enhancedProductRow.SID ?? '',
+                            "SID URL": enhancedProductRow.SID ?
+                                `${baseUrl}/products/${encodeURIComponent(enhancedProductRow.SID)}` :
+                                '',
+
+                            ...Object.fromEntries(
+                                Object.entries(enhancedProductRow)
+                                .filter(([key]) => key !== 'SKU' && key !== 'SID')
+                            ),
+                            ...errorRow
+                        };
+                    }
+
+                    const blankProductRow = Object.fromEntries(
+                        productKeys.map(key => [key, ''])
+                    );
+
+                    blankProductRow.SKU = sku;
+
+                    return {
+                        "SKU": sku,
+                        "SKU URL": sku ?
+                            `${baseUrl}/product/items/${encodeURIComponent(sku)}` :
+                            '',
+
+                        "SID": '',
+                        "SID URL": '',
+
+                        ...Object.fromEntries(
+                            Object.entries(blankProductRow)
+                            .filter(([key]) => key !== 'SKU' && key !== 'SID')
+                        ),
+
+                        ...errorRow
+                    };
+                });
+
+                console.log(combined);
+
+                const csv = arrayToCsv(combined);
+
+                const blob = new Blob([csv], {
+                    type: 'text/csv;charset=utf-8;'
+                });
+
+                const url = URL.createObjectURL(blob);
+
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `error-logs-pretty-${Date.now()}.csv`;
+
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                URL.revokeObjectURL(url);
+
+            } catch (err) {
+                console.error('Failed to read files:', err);
+                alert('Failed to read one or more files.');
+            }
+        }
+
+        async function readCsvFile(file) {
+            let text = await file.text();
+
+            text = text.replace(/^\uFEFF/, '');
+            text = text.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
+            text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+
+            const lines = text
+                .split('\n')
+                .map(line => line.trim())
+                .filter(Boolean);
+
+            if (lines.length < 2) {
+                return [];
+            }
+
+            const headers = parseCsvLine(lines[0]);
+
+            return lines.slice(1).map(line => {
+                const values = parseCsvLine(line);
+
+                const row = {};
+                headers.forEach((header, i) => {
+                    row[header] = values[i] ?? '';
+                });
+
+                return row;
+            });
+        }
+
+        function parseCsvLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+
+                if (char === '"') {
+                    if (inQuotes && line[i + 1] === '"') {
+                        current += '"';
+                        i++;
+                    } else {
+                        inQuotes = !inQuotes;
+                    }
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current.trim());
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+
+            result.push(current.trim());
+            return result;
+        }
+
+        function arrayToCsv(rows) {
+            if (!rows || !rows.length) {
+                return '';
+            }
+
+            const headers = [...new Set(
+                rows.flatMap(row => Object.keys(row))
+            )];
+
+            const escapeCsv = (value) => {
+                if (value === null || value === undefined) {
+                    return '';
+                }
+
+                value = String(value);
+
+                if (
+                    value.includes(',') ||
+                    value.includes('"') ||
+                    value.includes('\n') ||
+                    value.includes('\r')
+                ) {
+                    return `"${value.replace(/"/g, '""')}"`;
+                }
+
+                return value;
+            };
+
+            const csvRows = [
+                headers.map(escapeCsv).join(',')
+            ];
+
+            rows.forEach(row => {
+                csvRows.push(
+                    headers
+                    .map(header => escapeCsv(row[header]))
+                    .join(',')
+                );
+            });
+
+            return csvRows.join('\r\n');
+        }
+
+    });
+    card_toolbar.prepend(prettyToolButton);
+
+    // list delete
+    const bulkIADButton = document.createElement('button');
+    bulkIADButton.type = 'button';
+    bulkIADButton.classList.add('btn', 'btn-danger', 'btn-sm');
+    bulkIADButton.title = 'Tool to take a list of line ids to ignore and delete.';
+    bulkIADButton.textContent = 'List Delete';
+    bulkIADButton.addEventListener('click', async () => {
+        const body = `
+		        <h3 class="page-heading d-flex flex-column justify-content-center text-dark fw-bold fs-3" style="margin-bottom: 1.5rem; text-align: center;">Bulk Ignore and Delete.</h3>
+		        
+		        <div class="d-flex flex-column mb-8">
+		            <p class="fs-6 fw-bold">How to use:</p>
+		            <p class="fs-6 fw-semibold form-label mb-2"><b>1</b>: From a page export, the first column "ID" (not ENTRY ID), get a list of those.</p>
+		            <p class="fs-6 fw-semibold form-label mb-2"><b>2</b>: Paste that list either comma separated or new line separated below.</p>
+		            <p class="fs-6 fw-semibold form-label mb-2"><b>3</b>: Submit and wait. This takes a while depending on how many you add.</p>
+		            <p class="fs-6 fw-semibold form-label mb-2"><i>* For the best results, keep it in batches of 1000 or less.</i></p>
+		        </div>
+		        
+				    <div class="mb-5">
+				    		<label class="form-label fw-bold">List of IDs:</label>
+				    		<textarea id="patches_bulkIAD_ids" class="form-control" rows="10" placeholder="12345, 12346, 12347&#10;or&#10;12345&#10;12346&#10;12347"></textarea>
+				    </div>
+				`;
+
+        const footer = `
+		        <div class="text-center">
+		            <button type="button" class="btn btn-light me-3" data-modal-close>Cancel</button>
+		            <button type="button" id="patches_bulkIAD_submit" class="btn btn-primary">
+		                <span class="indicator-label">Submit</span>
+		                <span class="indicator-progress" style="display: none;">Please wait...
+		                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+		                </span>
+		            </button>
+		        </div>
+		    `;
+
+        const modal = openPatchesModal({
+            id: 'patches_bulkIAD_fullModal',
+            title: 'Bulk Ignore and Delete',
+            body,
+            footer,
+            width: '800px',
+            focus: null,
+            escapeBlockedWhen: (ae) => ae
+        });
+
+        if (!modal) return;
+
+        const submit = modal.find('#patches_bulkIAD_submit');
+        if (!submit) return;
+
+        submit.onclick = async function() {
+            const textarea = modal.find('#patches_bulkIAD_ids');
+            if (!textarea) return;
+
+            const ids = textarea.value
+                .split(/[\n,]+/) // split on commas OR newlines
+                .map(v => v.trim())
+                .filter(Boolean) // remove blanks
+                .filter(v => /^\d+$/.test(v)); // keep only numeric IDs
+
+            if (ids.length === 0) {
+                fireSwal('UHOH', 'No valid IDs were found.', 'error');
+                return;
+            }
+
+            const url = `/ajax/actions/BulkActions/store_logs`;
+            const CHUNK_SIZE = 200;
+
+            const csrf_token = document.querySelector('meta[name="X-CSRF-TOKEN"]')?.getAttribute('content')?.trim();
+
+            try {
+                for (let i = 0; i < ids.length; i += CHUNK_SIZE) {
+                    const chunk = ids.slice(i, i + CHUNK_SIZE);
+
+                    const formData = new FormData();
+                    for (const id of chunk) {
+                        formData.append('ids[]', id);
+                    }
+                    formData.append('action', 'delete-log');
+
+                    const request = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'X-Csrf-Token': csrf_token,
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: formData
+                    });
+
+                    const response = await request.json();
+
+                    if (!request.ok || !response.success) {
+                        throw new Error(response.message || `HTTP ${request.status}`);
+                    }
+
+                    console.debug(`Processed chunk ${Math.floor(i / CHUNK_SIZE) + 1}`, response);
+
+                }
+
+                fireSwal('Done', 'IDs have been ignored and deleted.', 'success', true);
+                return {
+                    success: true
+                };
+            } catch (err) {
+                console.error('Error with bulk Ignore and Delete:', err);
+                fireSwal('UHOH', ['Error with bulk Ignore and Delete:', err.message], 'error');
+                return {
+                    success: false,
+                    message: err.message
+                }
+            }
+        }
+    });
+    card_toolbar.prepend(bulkIADButton);
+
+    // pretty print links
+    const skuEvents = ["Item Feed", "Remove Item", "Adjust Inventory", "Adjust Price", "Delete Item", "Remove Item", "Adjust Inventory", "Update Item", "Create Item"];
+    const dtTable = document.getElementById('dtTable');
+    if (!dtTable) return;
+    const dtBody = dtTable.querySelector('tbody');
+    if (!dtBody) return;
+    const dtRows = dtBody.querySelectorAll('tr');
+    dtRows.forEach(tr => {
+        const td = tr.querySelectorAll('td');
+        if (skuEvents.includes(td[4].textContent)) {
+            let cleanedSKU = normalizeSku(td[3].textContent);
+            td[3].innerHTML = `<a target="_blank" href="/product/items/${cleanedSKU}">${td[3].textContent}</a>`;
+        }
+    });
+
+}, 300);
