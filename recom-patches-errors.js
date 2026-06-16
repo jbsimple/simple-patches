@@ -534,4 +534,6 @@ async function initErrorLogPatch() {
     card_toolbar.prepend(initPrettyPrint());
 }
 
-setTimeout(initErrorLogPatch, 150);
+// unless the API is improved in a way to actually allow grabbing the full list, this is not possible
+// and with reports being updated to an enqueue, pretty print is officially dead unless I rotate API keys
+// setTimeout(initErrorLogPatch, 150);
