@@ -421,12 +421,12 @@ setTimeout(async function() {
                     if (data.results && data.results.length > 0 && data.results[0].result_id) {
                         window.open(`/orders/${data.results[0].result_id}`, '_blank');
                     } else {
-                        fireSwal('UHOH', `Order "${orderNumber}" was not found.`, error);
+                        fireSwal('UHOH', `Order "${orderNumber}" was not found.`, 'error');
                         console.error('PATCHES - Failed to find, results:', data);
                     }
                 } catch (err) {
                     console.error('Order lookup failed:', err);
-                    fireSwal('UHOH', `Order "${orderNumber}" failed to load.`, error);
+                    fireSwal('UHOH', `Order "${orderNumber}" failed to load.`, 'error');
                 }
             });
             td[3].innerHTML = '';
