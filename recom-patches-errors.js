@@ -91,7 +91,7 @@ function initPrettyPrint() {
                     "value": sku
                 });
             }
-            const req = await fetchAPI("reports", { body: body });
+            const req = await fetchAPI("reports", { body: req_body });
             if (req.success && req.data) { return req.data; }
             return null;
         }
