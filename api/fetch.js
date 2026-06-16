@@ -68,7 +68,7 @@ export default async function handler(req, res) {
     const cached = cache.get(cacheKey);
 
     if (cached && cached.expires > Date.now()) {
-        res.setHeader('X-Cache', 'TRUE');
+        res.setHeader('X-Fetch-Cache', 'HIT');
         return res.status(cached.status).json(cached.payload);
     }
 
@@ -108,7 +108,7 @@ export default async function handler(req, res) {
                 expires: Date.now() + CACHE_TTL
             });
 
-            res.setHeader('X-Cache', 'FALSE');
+            res.setHeader('X-Fetch-Cache', 'MISS');
             return res.status(response.status).json(payload);
 
         }
@@ -149,7 +149,7 @@ export default async function handler(req, res) {
                 expires: Date.now() + CACHE_TTL
             });
 
-            res.setHeader('X-Cache', 'FALSE');
+            res.setHeader('X-Fetch-Cache', 'MISS');
             return res.status(response.status).json(payload);
         }
 
