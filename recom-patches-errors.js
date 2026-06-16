@@ -67,6 +67,11 @@ function initPrettyPrint() {
                         "field": "product_items.in_stock",
                         "operator": "gte",
                         "value": "1"
+                    },
+                    {
+                        field: "product_items.condition_id",
+                        operator: "in",
+                        value: [1,2,4,5,6,8,9,18,31,32,34,35,38,39,42,44,45,49,71,92,94,95,99]
                     }
                 ],
                 columns: [
