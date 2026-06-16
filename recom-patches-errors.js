@@ -43,6 +43,54 @@ function initPrettyPrint() {
     }
 
     async function fetchItemDetails(sku = null) {
+        const items = [];
+        let pageNum = 1;
+        let hasMore = true;
+        while (hasMore) {
+            const page = await getPage(pageNum);
+            if (!page?.data || !page?.meta) { break; }
+            items.push(...page.data);
+            hasMore = page.meta.has_more;
+            pageNum++;
+        }
+
+        async function getPage(page) {
+            const req_body = {
+                type: "active_inventory",
+                page: page,
+                per_page: 1000,
+                filters: [
+                    {
+                        "field": "product_items.in_stock",
+                        "operator": "gte",
+                        "value": "1"
+                    }
+                ],
+                columns: [
+                    "products.sid",
+                    "product_items.id",
+                    "product_items.sku",
+                    "conditions.name",
+                    "product_items.in_stock",
+                    "product_items.price",
+                    "categories.name",
+                ]
+            };
+            if (sku !== null) {
+                req_body.filters.push({
+                    "field": "product_items.sku",
+                    "operator": "eq",
+                    "value": sku
+                });
+            }
+            const req = await fetchAPI("reports", { body: body });
+            if (req.success && req.data) { return req.data; }
+            return null;
+        }
+
+    }
+
+    async function fetchItemDetailsOld(sku = null) {
         // time to build a report
         const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
         if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {

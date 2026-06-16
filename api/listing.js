@@ -101,7 +101,7 @@ export default async function handler(req, res) {
                         }
                     ]);
                     break;
-                case "lte": // all in stock items, neondb reference to-do
+                case "lte": // all out of stock, neondb reference to-do
                     items = await itemSet([
                         {
                             field: "product_items.in_stock",
