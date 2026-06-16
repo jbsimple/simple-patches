@@ -530,8 +530,8 @@ async function initErrorLogPatch() {
     spacer.setAttribute('style', 'display:flex;flex:1;');
     card_toolbar.prepend(spacer);
 
-    card_toolbar.prepend(initExportAllRecords());
-    card_toolbar.prepend(initPrettyPrint());
+    // card_toolbar.prepend(initExportAllRecords());
+    // card_toolbar.prepend(initPrettyPrint());
 }
 
 // unless the API is improved in a way to actually allow grabbing the full list, this is not possible
