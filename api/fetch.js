@@ -4,13 +4,6 @@ export const config = {
 const CACHE_TTL = 15 * 1000; // Cache max age for use
 const cache = new Map();
 
-// token rotate
-let tokenIndex = 0;
-
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 export default async function handler(req, res) {
 
     const allowedOrigins = (process.env.ALLOWED_ORIGINS || "")
@@ -50,75 +43,12 @@ export default async function handler(req, res) {
         return res.status(400).json({ success: false, error: "Invalid referrer" });
     }
 
-    let tokens = [];
-    if (hostname.startsWith("dev.")) {
-        tokens = [
-            process.env.DEV_API_KEY
-        ].filter(Boolean);
-    } else {
-        tokens = [
-            process.env.PROD_API_KEY,
-            process.env.LISTING_DASHBOARD_API1,
-            process.env.LISTING_DASHBOARD_API2,
-            process.env.LISTING_DASHBOARD_API3,
-        ].filter(Boolean);
-    }
-    if (tokens.length === 0) {
+    let token = hostname.startsWith("dev.")
+        ? process.env.DEV_API_KEY
+        : process.env.PROD_API_KEY;
+
+    if (!token) {
         return res.status(500).json({ success: false, error: "Missing API token" });
-    }
-    function getCurrentToken() {
-        return tokens[tokenIndex];
-    }
-    function rotateToken() {
-        tokenIndex = (tokenIndex + 1) % tokens.length;
-        return getCurrentToken();
-    }
-    async function fetchWithRotation(url, options = {}) {
-        const maxAttempts = tokens.length;
-
-        for (let attempt = 0; attempt < maxAttempts; attempt++) {
-
-            const token = getCurrentToken();
-
-            const response = await fetch(url, {
-                ...options,
-                headers: {
-                    ...(options.headers || {}),
-                    Authorization: `Bearer ${token}`
-                }
-            });
-
-            let data;
-
-            try {
-                data = await response.json();
-            } catch {
-                data = null;
-            }
-
-            const errorMessage =
-                data?.message ||
-                data?.error ||
-                data?.errors?.[0]?.message ||
-                "";
-
-            const rateLimited =
-                response.status === 429 ||
-                errorMessage.includes("Too many requests");
-
-            if (rateLimited) {
-                rotateToken();
-
-                if (attempt < maxAttempts - 1) {
-                    await sleep(250);
-                    continue;
-                }
-            }
-
-            return { response, data };
-        }
-
-        throw new Error("All API tokens exhausted");
     }
 
     const route = req.query.route;
@@ -158,9 +88,14 @@ export default async function handler(req, res) {
             //apiURL = `https://${hostname}/v1/reports/meta`;
             apiURL = `https://${hostname}/api/v1/reports/meta`;
 
-            const { response, data } = await fetchWithRotation(apiURL, {
-                method: "GET"
+            const response = await fetch(apiURL, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
             });
+
+            const data = await response.json();
 
             const payload = {
                 success: response.ok,
@@ -192,14 +127,16 @@ export default async function handler(req, res) {
                 return res.status(400).json({ success: false, error: "Missing report type" });
             }
 
-            const { response, data } = await fetchWithRotation(apiURL, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(body)
-                }
-            );
+            const response = await fetch(apiURL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(body)
+            });
+
+            const data = await response.json();
 
             const payload = {
                 success: response.ok,
