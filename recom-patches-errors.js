@@ -66,7 +66,7 @@ function initPrettyPrint() {
                     {
                         "field": "product_items.in_stock",
                         "operator": "gte",
-                        "value": "1"
+                        "value": "-100"
                     },
                     {
                         field: "product_items.condition_id",
@@ -84,18 +84,39 @@ function initPrettyPrint() {
                     "categories.name",
                 ]
             };
-            if (sku !== null) {
+
+            if (sku === null) {
+                const today = new Date();
+                const past = new Date();
+                past.setDate(today.getDate() - 89); // last 89 days, which in an ideal world would hit everything in the error logs
+
+                const formatDate = (date) => {
+                    const mm = String(date.getMonth() + 1).padStart(2, '0');
+                    const dd = String(date.getDate()).padStart(2, '0');
+                    const yyyy = date.getFullYear();
+                    return `${mm}/${dd}/${yyyy}`;
+                };
+
+                const range = `${formatDate(past)} - ${formatDate(today)}`;
+
+                req_body.filters.push({
+                    "field": "product_items.updated_at",
+                    "operator": "between",
+                    "value": range 
+                });
+            } else {
                 req_body.filters.push({
                     "field": "product_items.sku",
                     "operator": "eq",
                     "value": sku
                 });
+                req_body.per_page = 1;
             }
+
             const req = await fetchAPI("reports", { body: req_body });
             if (req.success && req.data) { return req.data; }
             return null;
         }
-
     }
 
     async function fetchItemDetailsOld(sku = null) {
