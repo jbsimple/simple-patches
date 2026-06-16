@@ -530,7 +530,6 @@ async function initErrorLogPatch() {
     spacer.setAttribute('style', 'display:flex;flex:1;');
     card_toolbar.prepend(spacer);
 
-    // card_toolbar.prepend(initExportAllRecords());
     // card_toolbar.prepend(initPrettyPrint());
 }
 
