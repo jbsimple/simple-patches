@@ -156,8 +156,7 @@ function injectGoods() {
 
     } else if (location.pathname.includes('/integrations/store/logs')) {
 
-        // disabling this, will be refactored to a tool to upload two reports to do the generation automatically
-        // loadPatchScript('recom-patches-errors.js');
+        loadPatchScript('recom-patches-errors.js');
 
     } else if (location.pathname.includes('/productivity') && !location.pathname.includes('/productivity/board')) {
 
