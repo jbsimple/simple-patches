@@ -436,16 +436,17 @@ setTimeout(async function() {
             }
         });   
     }
+    window.prettyLinkSkus = prettyLinkSkus;
     setTimeout(prettyLinkSkus, 500);
-    const wrapper = document.getElementById('dtTable');
-    if (wrapper) {
-        const observer = new MutationObserver(() => {
-            console.debug('PATCHES - Error Table Updated!');
-            clearTimeout(observer._debounce);
-            observer._debounce = setTimeout(prettyLinkSkus, 500);
-        });
-
-        observer.observe(wrapper, { childList: true, subtree: true });
-    }
 
 }, 300);
+
+const wrapper = document.getElementById('dtTable_wrapper');
+if (wrapper) {
+    const observer = new MutationObserver(() => {
+        clearTimeout(observer._debounce);
+        observer._debounce = setTimeout(window.prettyLinkSkus, 500);
+    });
+
+    observer.observe(wrapper, { childList: true, subtree: true });
+}
