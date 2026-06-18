@@ -399,7 +399,7 @@ setTimeout(async function() {
     card_toolbar.prepend(bulkIADButton);
 
     // pretty print links
-    function prettyPrintLinks() {
+    function prettyLinkSkus() {
         const skuEvents = ["Item Feed", "Remove Item", "Adjust Inventory", "Adjust Price", "Delete Item", "Remove Item", "Adjust Inventory", "Update Item", "Create Item"];
         const dtTable = document.getElementById('dtTable');
         if (!dtTable) return;
@@ -409,7 +409,6 @@ setTimeout(async function() {
         dtRows.forEach(tr => {
             const td = tr.querySelectorAll('td');
             if (td[3].querySelector('a')) return;
-            
             if (skuEvents.includes(td[4].textContent)) {
                 td[3].innerHTML = `<a target="_blank" href="/product/items/${normalizeSku(td[3].textContent)}">${td[3].textContent}</a>`;
             } else {
@@ -437,7 +436,15 @@ setTimeout(async function() {
             }
         });   
     }
+    setTimeout(prettyLinkSkus, 500);
+    const wrapper = document.getElementById('dtTable_wrapper');
+    if (wrapper) {
+        const observer = new MutationObserver(() => {
+            clearTimeout(observer._debounce);
+            observer._debounce = setTimeout(prettyLinkSkus, 500);
+        });
 
-    $('#dtTable').on('draw.dt', function () { prettyPrintLinks(); });
+        observer.observe(wrapper, { childList: true, subtree: true });
+    }
 
 }, 300);
