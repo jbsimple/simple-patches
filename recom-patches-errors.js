@@ -437,13 +437,25 @@ setTimeout(async function() {
         });   
     }
     setTimeout(prettyLinkSkus, 500);
-    const wrapper = document.getElementById('dtTable_wrapper');
-    if (wrapper) {
-        const observer = new MutationObserver(() => {
-            clearTimeout(observer._debounce);
-            observer._debounce = setTimeout(prettyLinkSkus, 500);
+    const bodyObserver = new MutationObserver(() => {
+        const wrapper = document.getElementById('dtTable_wrapper');
+        if (!wrapper) return;
+        console.debug('PATCHES - Found dtTable_wrapper');
+        bodyObserver.disconnect();
+        const tableObserver = new MutationObserver(() => {
+            clearTimeout(tableObserver._debounce);
+            tableObserver._debounce = setTimeout(prettyLinkSkus, 500);
+        });
+        tableObserver.observe(wrapper, {
+            childList: true,
+            subtree: true
         });
 
-        observer.observe(wrapper, { childList: true, subtree: true });
-    }
+        prettyLinkSkus();
+    });
+
+    bodyObserver.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
 }, 300);
