@@ -408,6 +408,8 @@ setTimeout(async function() {
         const dtRows = dtBody.querySelectorAll('tr');
         dtRows.forEach(tr => {
             const td = tr.querySelectorAll('td');
+            if (td[3].querySelector('a')) return;
+            
             if (skuEvents.includes(td[4].textContent)) {
                 td[3].innerHTML = `<a target="_blank" href="/product/items/${normalizeSku(td[3].textContent)}">${td[3].textContent}</a>`;
             } else {
@@ -436,18 +438,6 @@ setTimeout(async function() {
         });   
     }
 
-    function watchTableBody() {
-        const dtTable = document.getElementById('dtTable');
-        if (!dtTable) return;
-
-        const dtBody = dtTable.querySelector('tbody');
-        if (!dtBody) return;
-
-        const observer = new MutationObserver(() => { prettyPrintLinks(); });
-        observer.observe(dtBody, { childList: true, subtree: true, characterData: true });
-    }
-
-    prettyPrintLinks();
-    watchTableBody();
+    $('#dtTable').on('draw.dt', function () { prettyPrintLinks(); });
 
 }, 300);
