@@ -180,6 +180,10 @@ function injectGoods() {
 
         loadPatchScript('recom-patches-dtTableParams.js');
 
+    } else if (location.pathname.includes('/orders/')) {
+
+        loadPatchScript('recom-patches-orders.js');
+
     } else if (document.title.includes('Dashboard - ')) {
 
         loadPatchStyle('recom-patches-dashboard.css');

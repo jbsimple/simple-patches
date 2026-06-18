@@ -99,3 +99,46 @@ function downloadUserLogsInit() {
 
 // this is already in source html so this should be fine to run
 downloadUserLogsInit();
+
+async function fetchFullUserInfo() {
+    const kt_user_view_details = document.getElementById('kt_user_view_details');
+    if (!kt_user_view_details) return null;
+
+    const texts = kt_user_view_details.querySelectorAll('.text-gray-600');
+    let userId = null;
+
+    texts.forEach(el => {
+        const content = el.textContent.trim();
+        if (content.startsWith("ID-")) {
+            userId = content.substring(3).trim();
+        }
+    });
+
+    if (!userId) return null;
+
+    const baseUrl = `/ajax/actions/LogEntriesByUser/${userId}`;
+    let allEntries = [];
+    let page = 200;
+    let more = true;
+
+    while (more && page <= 250) {
+        try {
+            const res = await fetch(`${baseUrl}?page=${page}`);
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const data = await res.json();
+
+            if (data?.data) {
+                allEntries = allEntries.concat(data.data);
+            }
+
+            more = data?.pagination?.more === true;
+            page++;
+        } catch (err) {
+            console.error("Fetch error:", err);
+            break;
+        }
+    }
+
+    console.log("Fetched entries:", allEntries);
+    return allEntries;
+}
