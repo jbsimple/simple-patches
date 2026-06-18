@@ -764,6 +764,7 @@ function initKeyboardSaveShortcut() {
     });
 }
 waitForElement('#el_product_form', initKeyboardSaveShortcut);
+waitForElement('#el_item_form', initKeyboardSaveShortcut);
 
 /* photo stuff */
 function modifyMediaTable() {
