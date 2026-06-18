@@ -444,6 +444,7 @@ setTimeout(async function() {
             }
         });
     }
+    setTimeout(prettyLinkSkus, 300);
     document.addEventListener('click', (event) => {
         if (!event.target.closest('#dtsearchbtns')) return;
 
