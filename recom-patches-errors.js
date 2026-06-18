@@ -399,39 +399,55 @@ setTimeout(async function() {
     card_toolbar.prepend(bulkIADButton);
 
     // pretty print links
-    const skuEvents = ["Item Feed", "Remove Item", "Adjust Inventory", "Adjust Price", "Delete Item", "Remove Item", "Adjust Inventory", "Update Item", "Create Item"];
-    const dtTable = document.getElementById('dtTable');
-    if (!dtTable) return;
-    const dtBody = dtTable.querySelector('tbody');
-    if (!dtBody) return;
-    const dtRows = dtBody.querySelectorAll('tr');
-    dtRows.forEach(tr => {
-        const td = tr.querySelectorAll('td');
-        if (skuEvents.includes(td[4].textContent)) {
-            td[3].innerHTML = `<a target="_blank" href="/product/items/${normalizeSku(td[3].textContent)}">${td[3].textContent}</a>`;
-        } else {
-            const orderNumber = td[3].textContent.trim();
-            const orderClick = document.createElement('a');
-            orderClick.textContent = orderNumber;
-            orderClick.href = 'javascript:void(0);';
-            orderClick.addEventListener('click', async function() {
-                try {
-                    const response = await fetch(`/ajax/actions/advancedSearch?keyword=${encodeURIComponent(orderNumber)}`);
-                    const data = await response.json();
-                    if (data.results && data.results.length > 0 && data.results[0].result_id) {
-                        window.open(`/orders/${data.results[0].result_id}`, '_blank');
-                    } else {
-                        fireSwal('UHOH', `Order "${orderNumber}" was not found.`, 'error');
-                        console.error('PATCHES - Failed to find, results:', data);
+    function prettyPrintLinks() {
+        const skuEvents = ["Item Feed", "Remove Item", "Adjust Inventory", "Adjust Price", "Delete Item", "Remove Item", "Adjust Inventory", "Update Item", "Create Item"];
+        const dtTable = document.getElementById('dtTable');
+        if (!dtTable) return;
+        const dtBody = dtTable.querySelector('tbody');
+        if (!dtBody) return;
+        const dtRows = dtBody.querySelectorAll('tr');
+        dtRows.forEach(tr => {
+            const td = tr.querySelectorAll('td');
+            if (skuEvents.includes(td[4].textContent)) {
+                td[3].innerHTML = `<a target="_blank" href="/product/items/${normalizeSku(td[3].textContent)}">${td[3].textContent}</a>`;
+            } else {
+                const orderNumber = td[3].textContent.trim();
+                const orderClick = document.createElement('a');
+                orderClick.textContent = orderNumber;
+                orderClick.href = 'javascript:void(0);';
+                orderClick.addEventListener('click', async function() {
+                    try {
+                        const response = await fetch(`/ajax/actions/advancedSearch?keyword=${encodeURIComponent(orderNumber)}`);
+                        const data = await response.json();
+                        if (data.results && data.results.length > 0 && data.results[0].result_id) {
+                            window.open(`/orders/${data.results[0].result_id}`, '_blank');
+                        } else {
+                            fireSwal('UHOH', `Order "${orderNumber}" was not found.`, 'error');
+                            console.error('PATCHES - Failed to find, results:', data);
+                        }
+                    } catch (err) {
+                        console.error('Order lookup failed:', err);
+                        fireSwal('UHOH', `Order "${orderNumber}" failed to load.`, 'error');
                     }
-                } catch (err) {
-                    console.error('Order lookup failed:', err);
-                    fireSwal('UHOH', `Order "${orderNumber}" failed to load.`, 'error');
-                }
-            });
-            td[3].innerHTML = '';
-            td[3].appendChild(orderClick);
-        }
-    });
+                });
+                td[3].innerHTML = '';
+                td[3].appendChild(orderClick);
+            }
+        });   
+    }
+
+    function watchTableBody() {
+        const dtTable = document.getElementById('dtTable');
+        if (!dtTable) return;
+
+        const dtBody = dtTable.querySelector('tbody');
+        if (!dtBody) return;
+
+        const observer = new MutationObserver(() => { prettyPrintLinks(); });
+        observer.observe(dtBody, { childList: true, subtree: true, characterData: true });
+    }
+
+    prettyPrintLinks();
+    watchTableBody();
 
 }, 300);
