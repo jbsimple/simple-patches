@@ -440,6 +440,7 @@ setTimeout(async function() {
     const wrapper = document.getElementById('dtTable_wrapper');
     if (wrapper) {
         const observer = new MutationObserver(() => {
+            console.log('MUTATION', mutations);
             clearTimeout(observer._debounce);
             observer._debounce = setTimeout(prettyLinkSkus, 500);
         });
