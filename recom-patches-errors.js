@@ -437,10 +437,10 @@ setTimeout(async function() {
         });   
     }
     setTimeout(prettyLinkSkus, 500);
-    const wrapper = document.getElementById('dtTable_wrapper');
+    const wrapper = document.getElementById('dtTable');
     if (wrapper) {
         const observer = new MutationObserver(() => {
-            console.log('MUTATION', mutations);
+            console.debug('PATCHES - Error Table Updated!');
             clearTimeout(observer._debounce);
             observer._debounce = setTimeout(prettyLinkSkus, 500);
         });
