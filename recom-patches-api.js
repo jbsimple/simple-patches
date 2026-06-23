@@ -1067,7 +1067,7 @@ async function listing_autofill_desc(title = null, description = null) {
 
     const response = await groq(prompt);
     console.log(response.response);
-    fireSwal('Custom Autofill Description', response.response, 'success');
+    fireSwal('Custom Autofill Description', [`Model: ${response.model}`,`<textarea class="form-control form-control-solid form-control-lg">${response.response}</textarea>`], 'success');
     return response.response;
 
 }
