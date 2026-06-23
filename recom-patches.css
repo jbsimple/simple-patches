@@ -538,3 +538,7 @@ table.dataTable.table-striped>tbody>tr.odd.danger {
 #kt_drawer_chat_toggle { display: none !important; }
 
 #kt_app_header_navbar a[aria-label="System Updates"] { display: none !important; }
+
+.swal2-container .swal2-html-container {
+    max-height: 600px !important;
+}
