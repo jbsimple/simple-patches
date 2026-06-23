@@ -975,6 +975,24 @@ async function groq(prompt, model = 'llama-3.3-70b-versatile') {
 }
 
 async function listing_autofill_desc(title = null, description = null) {
+    if (title === null) {
+        const product_name = document.querySelector('input[name="product[name]"]');
+        if (product_name) {
+            title = product_name.value.trim();
+        }
+    }
+
+    if (description === null) {
+        const product_description = document.querySelector('input[product[description]]');
+        if (product_description) {
+            description = product_description.value.trim();
+        }
+    }
+
+    if (title === null) {
+        return "Please Provide a Product Title";
+    }
+
     let prompt = [
         "I am a third-party seller that purchases overstock products and resells them on marketplaces like eBay and Shopify.",
 
