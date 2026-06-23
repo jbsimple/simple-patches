@@ -983,14 +983,16 @@ async function listing_autofill_desc(title = null, description = null) {
     }
 
     if (description === null) {
-        const product_description = document.querySelector('input[product[description]]');
+        const product_description = document.querySelector('input[name="product[description]"]');
         if (product_description) {
             description = product_description.value.trim();
         }
     }
 
     if (title === null) {
-        return "Please Provide a Product Title";
+        fireSwal('Custom Autofill Description', ["Error:","Please provide a product title."], 'error');
+        console.error('PATCH - API: No title.');
+        return null;
     }
 
     let prompt = [
@@ -1065,6 +1067,7 @@ async function listing_autofill_desc(title = null, description = null) {
 
     const response = await groq(prompt);
     console.log(response.response);
+    fireSwal('Custom Autofill Description', response.response, 'success');
     return response.response;
 
 }
