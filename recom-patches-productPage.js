@@ -483,6 +483,7 @@ function initAttributeExtraActions() {
             exportButton.innerHTML = `<i class="fa-solid fa-copy"></i>`;
             exportButton.onclick = listAttribForWM;
             reload_aspects.parentNode.insertBefore(exportButton, reload_aspects);
+            
 
             const bulkButton = document.createElement('button');
             bulkButton.classList.add('btn', 'btn-icon', 'btn-sm', 'btn-primary', 'ms-2');
@@ -711,11 +712,20 @@ function initBetterDescriptionCopy() {
     const container = document.createElement('div');
     container.setAttribute('style', 'display:flex;flex-drection:row;justify-content:end;align-items:end');
 
+    const autofillButton = document.createElement('button');
+    autofillButton.classList.add('btn', 'btn-icon', 'btn-sm', 'btn-primary', 'ms-2');
+    autofillButton.title = `Better description autofill using GROQ and Llama`;
+    autofillButton.type = "button";
+    autofillButton.id = "patches_autofillDesc";
+    autofillButton.innerHTML = `<i class="fa-solid fa-brain"></i>`;
+    autofillButton.onclick = listing_autofill_desc;
+    container.appendChild(autofillButton);
+
     const exportButton = document.createElement('button');
     exportButton.classList.add('btn', 'btn-icon', 'btn-sm', 'btn-success', 'ms-2');
     exportButton.title = `Non-html copy of the description.`;
     exportButton.type = "button";
-    exportButton.id = "patches_exportAttribs";
+    exportButton.id = "patches_exportDesc";
     exportButton.innerHTML = `<i class="fa-solid fa-copy"></i>`;
     exportButton.onclick = getPlainTextDesc;
     container.appendChild(exportButton);
