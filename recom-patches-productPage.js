@@ -718,7 +718,14 @@ function initBetterDescriptionCopy() {
     autofillButton.type = "button";
     autofillButton.id = "patches_autofillDesc";
     autofillButton.innerHTML = `<i class="fa-solid fa-brain"></i>`;
-    autofillButton.onclick = listing_autofill_desc;
+    autofillButton.onclick = (...args) => {
+        if (typeof listing_autofill_desc === 'function') {
+            listing_autofill_desc(...args);
+        } else {
+            fireSwal('UHOH', 'This did not load in properly, please refresh.', 'error', true);
+            console.error('PATCHES; typeOf Function Call', typeof listing_autofill_desc);
+        }
+    };
     container.appendChild(autofillButton);
 
     const exportButton = document.createElement('button');
