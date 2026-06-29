@@ -14,16 +14,6 @@ setTimeout(async function() {
         return scIndex >= 0 ? value.substring(scIndex) : value;
     };
 
-    const jumpToReport = document.createElement('button');
-    jumpToReport.type = 'button';
-    jumpToReport.classList.add('btn', 'btn-primary', 'btn-sm');
-    jumpToReport.title = 'Jumps to report template for all error logs with pretty print columns.';
-    jumpToReport.textContent = 'Generate Report';
-    jumpToReport.addEventListener('click', async () => {
-        window.open('/reports?template=errorlogsalltime', '_blank');
-    });
-    card_toolbar.prepend(jumpToReport);
-
     // list delete
     const bulkIADButton = document.createElement('button');
     bulkIADButton.type = 'button';
@@ -140,7 +130,18 @@ setTimeout(async function() {
     });
     card_toolbar.prepend(bulkIADButton);
 
-    // pretty print the links
+    // report template button (pretty print v2 no longer needed)
+    const jumpToReport = document.createElement('button');
+    jumpToReport.type = 'button';
+    jumpToReport.classList.add('btn', 'btn-primary', 'btn-sm');
+    jumpToReport.title = 'Jumps to report template for all error logs with pretty print columns.';
+    jumpToReport.textContent = 'Generate Report';
+    jumpToReport.addEventListener('click', async () => {
+        window.open('/reports?template=errorlogsalltime', '_blank');
+    });
+    card_toolbar.prepend(jumpToReport);
+
+    // pretty print the links (v1.5)
     function prettyLinkSkus() {
         const skuEvents = ["Item Feed", "Remove Item", "Adjust Inventory", "Adjust Price", "Delete Item", "Remove Item", "Adjust Inventory", "Update Item", "Create Item"];
 
