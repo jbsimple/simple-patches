@@ -535,8 +535,13 @@ function report_preset(name) {
             details.title = "All Error Logs";
             break;
     }
-    return report_initHTML(details) ?? document.createElement('span');
-    
+    let elem = report_initHTML(details);
+    if (elem === null) {
+        elem = document.createElement('span');
+        elem.textContent = `Issue with Template: ${name}`;
+        elem.setAttribute('style', 'color:var(--bs-danger);font-weight:500;');
+    }
+    return elem;
 }
 
 function formatDate(date) {
