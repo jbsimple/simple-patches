@@ -169,9 +169,9 @@ function parseFetchResults() {
         table += '<tr>';
         keys.forEach(key => {
             if (key === 'SKU') {
-                table += `<td data-key="${key}"><a href="https://simplecell.recomapp.com/product/items/${item[key]}" target="_blank" rel="noreferrer">${item[key]}</a></td>`;
+                table += `<td data-key="${key}"><a href="/product/items/${item[key]}" target="_blank" rel="noreferrer">${item[key]}</a></td>`;
             } else if (key === 'SID') {
-                table += `<td data-key="${key}"><a href="https://simplecell.recomapp.com/products/${item[key]}" target="_blank" rel="noreferrer">${item[key]}</a></td>`;
+                table += `<td data-key="${key}"><a href="/products/${item[key]}" target="_blank" rel="noreferrer">${item[key]}</a></td>`;
             } else {
                 table += `<td data-key="${key}"><span>${item[key]}</span></td>`;
             }
@@ -237,6 +237,7 @@ function initPreset() {
         card_body.appendChild(report_preset('product_highQty'));
         card_body.appendChild(report_preset('items_createdRecent'));
    
+        card.body.appendChild(report_preset('errorlogsalltime'));
         card_body.appendChild(report_preset('marketplaceStatusExtended'));
 
         card_body.appendChild(report_preset('picture_missingFull'));
@@ -533,6 +534,14 @@ function report_preset(name) {
         details.func = `report_marketplaceStatusExtended();`;
         details.desc = "Every item and its status on marketplaces. Extended because it cleans up data and makes it useful.";
         details.title = "Extended Marketplace Status";
+        return report_initHTML(details);
+    } else if (name === 'errorlogsalltime') {
+        var details = {};
+        details.id = `patches-reports-errorlogsalltime`;
+        details.name = `patches-reports-errorlogsalltime`;
+        details.func = `report_errorLogsAllTime();`;
+        details.desc = "A list of all error logs that exist right now.<br>Includes Category, Condition, Available and In Stock.";
+        details.title = "All Error Logs";
         return report_initHTML(details);
     } else {
         return null;
@@ -1986,14 +1995,13 @@ async function report_findImgUrlsFromKeyword() {
 }
 
 async function activePendingInventoryReport(page = 1, max_pages = null) {
-	
-		let createButton = document.querySelector(`button[data-id="patches-reports-pending-inventory-all"]`);
-		if (createButton) {
+    let createButton = document.querySelector(`button[data-id="patches-reports-pending-inventory-all"]`);
+    if (createButton) {
         createButton.textContent = 'Loading...';
         createButton.setAttribute('style', 'background-color: gray !important;');
     }
 	
-		const allReports = [];
+    const allReports = [];
     let more = true;
     let fetched = 0; // how many pages we've fetched
 
@@ -2460,6 +2468,42 @@ async function report_marketplaceStatusExtended() {
 
     generateReportTableFromList(itemsStatusCollapsed, 'marketplace-status-extended', false);
 
+}
+
+// wow this is actually not that bad to run...
+async function report_errorLogsAllTime() {
+    let today = new Date();
+    let todayFormatted = formatDate(today);
+    const csrfToken = document.querySelector('input[name="csrf_recom"]').value;
+    let error_report = await report_getSpecial({
+        report: {
+            type: "error_log_report",
+            columns: [
+                "store_logs.entry_id",
+                "store_logs.entry_ref",
+                "product_items.condition_id",
+                "product_items.price",
+                "product_items.available",
+                "product_items.in_stock",
+                "products.category_id",
+                "store_logs.entry_model",
+                "store_logs.entry_action",
+                "store_logs.log_data",
+                "store_logs.store_id",
+                "store_logs.created_at"
+            ],
+            filters: [
+                {
+                    column: "store_logs.created_at",
+                    opr: "between",
+                    value: `06/26/2023 - ${today}`
+                }
+            ]
+        },
+        csrf_recom: csrfToken
+    });
+    console.debug('PATCHES - error_report:', error_report);
+    generateReportTableFromList(error_report, "Error-Log-Report", false);
 }
 
 initPreset();

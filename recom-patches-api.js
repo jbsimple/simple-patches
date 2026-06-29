@@ -942,12 +942,17 @@ async function api_test(type = null, page = 1, per_page = 200) {
                         {
                             "field": "store_logs.created_at",
                             "operator": "between",
-                            "value": datestamp('year', 1)
+                            "value": datestamp('month', 1)
                         }
                     ],
                     columns: [
                         "store_logs.entry_id",
                         "store_logs.entry_ref",
+                        "product_items.condition_id",
+                        "product_items.price",
+                        "product_items.available",
+                        "product_items.in_stock",
+                        "products.category_id",
                         "store_logs.entry_model",
                         "store_logs.entry_action",
                         "store_logs.log_data",
