@@ -17,8 +17,8 @@ setTimeout(async function() {
     const jumpToReport = document.createElement('button');
     jumpToReport.type = 'button';
     jumpToReport.classList.add('btn', 'btn-primary', 'btn-sm');
-    jumpToReport.title = 'Tool to take exported reports, upload them and do the combining.';
-    jumpToReport.textContent = 'Pretty Tool';
+    jumpToReport.title = 'Jumps to report template for all error logs with pretty print columns.';
+    jumpToReport.textContent = 'Generate Report';
     jumpToReport.addEventListener('click', async () => {
         window.open('/reports?template=errorlogsalltime', '_blank');
     });
