@@ -237,7 +237,7 @@ function initPreset() {
         card_body.appendChild(report_preset('product_highQty'));
         card_body.appendChild(report_preset('items_createdRecent'));
    
-        card.body.appendChild(report_preset('errorlogsalltime'));
+        card_body.appendChild(report_preset('errorlogsalltime'));
         card_body.appendChild(report_preset('marketplaceStatusExtended'));
 
         card_body.appendChild(report_preset('picture_missingFull'));
