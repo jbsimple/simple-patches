@@ -632,6 +632,9 @@ function modifiedClockInit() {
         
         recordTime_parent.insertBefore(newButton, recordTime_button.nextSibling);
 
+        // enable logout bust because I still hate it
+        if (task.toLowerCase().includes('pictures')) { bustUserTracker(); }
+
         if (task === 'Pictures' || task === 'Testing') {
             const updatePuctureLocationsButton = document.createElement('a');
             updatePuctureLocationsButton.id = 'patches_bulkUpdateLocationsClock';
@@ -641,10 +644,8 @@ function modifiedClockInit() {
             updatePuctureLocationsButton.title = 'Update Picture Locations';
             updatePuctureLocationsButton.style.display = 'none'; // this needs to update if actually true, doing in resolve LOL
             recordTime_parent.insertBefore(updatePuctureLocationsButton, recordTime_button);
-
-            // enable logout bust because I still hate it
-            bustUserTracker();
         }
+
 	} else if (clockIn_button) {
         const clockIn_parent = clockIn_button.parentElement;
         if (!clockIn_parent) return;
@@ -1647,7 +1648,6 @@ async function fetchPurchaseOrdersList(onlyIds = false) {
 
 function bustUserTracker() {
     function simulateUserActivity() {
-        console.debug('PATCHES - [User Tracker Buster]: Simulated events for userTracker.');
         const target = document.body || document.documentElement || window;
         const events = [
             new MouseEvent('mousemove', {
@@ -1677,6 +1677,7 @@ function bustUserTracker() {
         ];
 
         events.forEach(event => { target.dispatchEvent(event); });
+        console.debug('PATCHES - [User Tracker Buster]: Simulated events for userTracker.');
     }
 
     const workerCode = `
@@ -1709,15 +1710,15 @@ function bustUserTracker() {
     document.addEventListener('visibilitychange', () => {
         console.debug('Document visibility changed:', document.visibilityState);
         if (document.visibilityState === 'hidden') {
-            console.debug('PATCHES - [User Tracker Buster]: Visibility changed, Entering aggressive simulation mode.');
+            console.debug('PATCHES - [User Tracker Buster]: Visibility hidden, Entering aggressive simulation mode.');
 
             if (!aggressiveIntervalId) {
                 aggressiveIntervalId = setInterval(() => {
                     simulateUserActivity();
-                }, 10000); // when tab not visible, change to 10s to "bypass" browser inactive tab behavior
+                }, 15000); // when tab not visible, change to 15s to "bypass" browser inactive tab behavior
             }
         } else {
-            console.debug('PATCHES - [User Tracker Buster]: Visibility changed, Entering normal simulation mode.');
+            console.debug('PATCHES - [User Tracker Buster]: Visibility active, Entering normal simulation mode.');
             if (aggressiveIntervalId) {
                 clearInterval(aggressiveIntervalId);
                 aggressiveIntervalId = null;
