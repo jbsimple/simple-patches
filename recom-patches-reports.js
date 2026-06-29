@@ -388,164 +388,155 @@ function report_initHTML(det) {
 }
 
 function report_preset(name) {
-
-    if (name === 'listing_productivity') {
-        var details = {};
-        details.id = `patches-reports-listing_productivity`;
-        details.name = `patches-userInput-dateListing`;
-        details.func = `report_listingProducivity_submit();`;
-        details.input = "date";
-        details.val = "today";
-        details.desc = "Generate a productivity report for Listing.<br>Click the calendar icon to select date or double click numbers and type date.";
-        details.title = "Listing Productivity";
-        return report_initHTML(details);
-    } else if (name === 'marketing_productivity') {
-        var details = {};
-        details.id = `patches-reports-marketing_productivity`;
-        details.name = `patches-userInput-dateMarketing`;
-        details.func = `report_marketingProducivity_submit();`;
-        details.input = "date";
-        details.val = "today";
-        details.desc = "Generate a productivity report for Marketing.<br>Click the calendar icon to select date or double click numbers and type date.";
-        details.title = "Marketing Productivity";
-        return report_initHTML(details);
-    } else if (name === 'picture_missingSpecial') {
-        var details = {};
-        details.id = `patches-reports-picturesMissing1`;
-        details.name = `patches-reports-picturesMissing1Name`;
-        details.func = `report_pictureMissingSpecial_submit();`;
-        details.desc = "Generates a list of all conditions that need specific pictures created in the last 30 days with no pictures.<br>In and out of stock included.";
-        details.title = "Recent Picture Check";
-        return report_initHTML(details);
-    } else if (name === 'product_highQty') {
-        var details = {};
-        details.id = `patches-reports-highQty`;
-        details.name = `patches-reports-highQtyName`;
-        details.func = `report_productHighQty();`;
-        details.desc = "Generate a report of high quantity items.<br>Includes in stock 50+ qty items. Columns for ASIN and dates included.";
-        details.title = "High Qty Items";
-        return report_initHTML(details);
-    } else if (name === 'picture_missingFull') {
-        var details = {};
-        details.id = `patches-reports-picturesMissingFull`;
-        details.name = `patches-reports-picturesMissingFullName`;
-        details.func = `report_pictureMissingFull_init();`;
-        details.desc = "Generate a complete missing picture items & products report. Like, the real deaal one.<br>Generates three different reports to get a list of all things that needs pictures.";
-        details.title = "Missing Pictures";
-        return report_initHTML(details);
-    } else if (name === 'items_createdRecent') {
-        var details = {};
-        details.id = `patches-reports-createdRecent`;
-        details.name = `patches-userInput-createdRecent`;
-        details.func = `report_createdRecent_submit();`;
-        details.input = "date";
-        details.val = "today";
-        details.desc = "Generate a report of all created items from a specific date.<br>Includes ASIN, MPN, Category, Shipping Template and Has FBA";
-        details.title = "Created Recent Check";
-        return report_initHTML(details);
-    } else if (name === 'productivity_eventIDLookup') {
-        var details = {};
-        details.id = `patches-reports-eventIDLookup`;
-        details.name = `patches-reports-eventIDLookup`;
-        details.func = `report_eventIDLookup_submit();`;
-        details.input = "int";
-        details.desc = "Generate a report of all employee producitivty associated with an event id.<br>Includes all possible pieces of data from the employee productivity report.";
-        details.title = "Event ID Lookup";
-        return report_initHTML(details);
-    } else if (name === 'productivity_eventSIDLookup') {
-        var details = {};
-        details.id = `patches-reports-eventSIDLookup`;
-        details.name = `patches-reports-eventSIDLookup`;
-        details.func = `report_eventSIDLookup_submit();`;
-        details.input = "string";
-        details.desc = "Generate a report of all employee producitivty associated with a SID.<br>Includes all possible pieces of data from the employee productivity report.";
-        details.title = "Event SID Lookup";
-        return report_initHTML(details);
-    } else if (name === 'productivity_eventSKULookup') {
-        var details = {};
-        details.id = `patches-reports-eventSKULookup`;
-        details.name = `patches-reports-eventSKULookup`;
-        details.func = `report_eventSKULookup_submit();`;
-        details.input = "string";
-        details.desc = "Generate a report of all employee producitivty associated with a SKU.<br>Includes all possible pieces of data from the employee productivity report.";
-        details.title = "Event SKU Lookup";
-        return report_initHTML(details);
-    } else if (name === 'attributes_color') {
-        var details = {};
-        details.id = `patches-reports-attributesColorCheck`;
-        details.name = `patches-reports-attributesColorCheck`;
-        details.func = `report_attributesColorCheck();`;
-        details.desc = "Invalid color value in attributes special report.<br>Only includes in stock.";
-        details.title = "Color Attribute Check";
-        return report_initHTML(details);
-    } else if (name === 'product_stockandvalue') {
-        var details = {};
-        details.id = `patches-reports-sidTotalQuantityAndValue`;
-        details.name = `patches-reports-sidTotalQuantityAndValue`;
-        details.func = `report_sidTotalQuantityAndValue();`;
-        details.desc = "Products with Total Inventory and Total Value.";
-        details.title = "Special Products Report";
-        return report_initHTML(details);
-    } else if (name === 'picture_imagecount') {
-        var details = {};
-        details.id = `patches-reports-pictureURLs`;
-        details.name = `patches-reports-pictureURLs`;
-        details.func = `report_pictureURLSComplete_init();`;
-        details.desc = "Gets Image URLS Comma Separated for each Item->Product.<br>To get a list of images per sku, count the number of commas and add one.";
-        details.title = "Picture URLs";
-        return report_initHTML(details);
-    } else if (name === 'picture_resolution') {
-        var details = {};
-        details.id = `patches-reports-pictureResolution`;
-        details.name = `patches-reports-pictureResolution`;
-        details.func = `report_pictureURLSComplete_init(true);`;
-        details.desc = "Gets Image URLs and Resolutions for each Item->Product.<br>DO NOT RUN. This report takes 30 minutes to run and a ton of resources.";
-        details.title = "Picture URLs + Resolutions";
-        return report_initHTML(details);
-    } else if (name === 'productivity_meetingNotes') {
-        var details = {};
-        details.id = `patches-reports-meetingNotes`;
-        details.name = `patches-reports-meetingNotes`;
-        details.func = `report_meetingNotes();`;
-        details.desc = "Get all meeting notes in one report with timestamps.<br>For just user 38.";
-        details.title = "Meeting Notes Collection";
-        return report_initHTML(details);
-    } else if (name === 'pendinginventory_all') {
-        var details = {};
-        details.id = `patches-reports-pending-inventory-all`;
-        details.name = `patches-reports-pending-inventory-all`;
-        details.func = `activePendingInventoryReport();`;
-        details.desc = "Yeah, this will give you everything that has ever been in pending inventory.<br>This is the mother of all reports, so don't generate it on a whim.";
-        details.title = "All Pending Inventory";
-        return report_initHTML(details);
-    } else if (name === 'findImgUrlsFromKeyword') {
-        var details = {};
-        details.id = `patches-reports-findImgUrlsFromKeyword`;
-        details.name = `patches-reports-findImgUrlsFromKeyword`;
-        details.func = `report_findImgUrlsFromKeyword();`;
-        details.input = "string";
-        details.desc = "Because I am lazy and tired of pressing the Copy URL Button";
-        details.title = "Image URL Fetcher";
-        return report_initHTML(details);
-    } else if (name === 'marketplaceStatusExtended') {
-        var details = {};
-        details.id = `patches-reports-marketplaceStatusExtended`;
-        details.name = `patches-reports-marketplaceStatusExtended`;
-        details.func = `report_marketplaceStatusExtended();`;
-        details.desc = "Every item and its status on marketplaces. Extended because it cleans up data and makes it useful.";
-        details.title = "Extended Marketplace Status";
-        return report_initHTML(details);
-    } else if (name === 'errorlogsalltime') {
-        var details = {};
-        details.id = `patches-reports-errorlogsalltime`;
-        details.name = `patches-reports-errorlogsalltime`;
-        details.func = `report_errorLogsAllTime();`;
-        details.desc = "A list of all error logs that exist right now.<br>Includes Category, Condition, Available and In Stock.";
-        details.title = "All Error Logs";
-        return report_initHTML(details);
-    } else {
-        return null;
+    var details = {};
+    switch (name) {
+        case 'listing_productivity':
+            details.id = `patches-reports-listing_productivity`;
+            details.name = `patches-userInput-dateListing`;
+            details.func = `report_listingProducivity_submit();`;
+            details.input = "date";
+            details.val = "today";
+            details.desc = "Generate a productivity report for Listing.<br>Click the calendar icon to select date or double click numbers and type date.";
+            details.title = "Listing Productivity";
+            break;
+        case 'marketing_productivity':
+            details.id = `patches-reports-marketing_productivity`;
+            details.name = `patches-userInput-dateMarketing`;
+            details.func = `report_marketingProducivity_submit();`;
+            details.input = "date";
+            details.val = "today";
+            details.desc = "Generate a productivity report for Marketing.<br>Click the calendar icon to select date or double click numbers and type date.";
+            details.title = "Marketing Productivity";
+            break;
+        case 'picture_missingSpecial':
+            details.id = `patches-reports-picturesMissing1`;
+            details.name = `patches-reports-picturesMissing1Name`;
+            details.func = `report_pictureMissingSpecial_submit();`;
+            details.desc = "Generates a list of all conditions that need specific pictures created in the last 30 days with no pictures.<br>In and out of stock included.";
+            details.title = "Recent Picture Check";
+            break;
+        case 'product_highQty':
+            details.id = `patches-reports-highQty`;
+            details.name = `patches-reports-highQtyName`;
+            details.func = `report_productHighQty();`;
+            details.desc = "Generate a report of high quantity items.<br>Includes in stock 50+ qty items. Columns for ASIN and dates included.";
+            details.title = "High Qty Items";
+            break;
+        case 'picture_missingFull':
+            details.id = `patches-reports-picturesMissingFull`;
+            details.name = `patches-reports-picturesMissingFullName`;
+            details.func = `report_pictureMissingFull_init();`;
+            details.desc = "Generate a complete missing picture items & products report. Like, the real deaal one.<br>Generates three different reports to get a list of all things that needs pictures.";
+            details.title = "Missing Pictures";
+            break;
+        case 'items_createdRecent':
+            details.id = `patches-reports-createdRecent`;
+            details.name = `patches-userInput-createdRecent`;
+            details.func = `report_createdRecent_submit();`;
+            details.input = "date";
+            details.val = "today";
+            details.desc = "Generate a report of all created items from a specific date.<br>Includes ASIN, MPN, Category, Shipping Template and Has FBA";
+            details.title = "Created Recent Check";
+            break;
+        case 'productivity_eventIDLookup':
+            details.id = `patches-reports-eventIDLookup`;
+            details.name = `patches-reports-eventIDLookup`;
+            details.func = `report_eventIDLookup_submit();`;
+            details.input = "int";
+            details.desc = "Generate a report of all employee producitivty associated with an event id.<br>Includes all possible pieces of data from the employee productivity report.";
+            details.title = "Event ID Lookup";
+            break;
+        case 'productivity_eventIDLookup':
+            details.id = `patches-reports-eventIDLookup`;
+            details.name = `patches-reports-eventIDLookup`;
+            details.func = `report_eventIDLookup_submit();`;
+            details.input = "int";
+            details.desc = "Generate a report of all employee producitivty associated with an event id.<br>Includes all possible pieces of data from the employee productivity report.";
+            details.title = "Event ID Lookup";
+            break;
+        case 'productivity_eventSIDLookup':
+            details.id = `patches-reports-eventSIDLookup`;
+            details.name = `patches-reports-eventSIDLookup`;
+            details.func = `report_eventSIDLookup_submit();`;
+            details.input = "string";
+            details.desc = "Generate a report of all employee producitivty associated with a SID.<br>Includes all possible pieces of data from the employee productivity report.";
+            details.title = "Event SID Lookup";
+            break;
+        case 'productivity_eventSKULookup':
+            details.id = `patches-reports-eventSKULookup`;
+            details.name = `patches-reports-eventSKULookup`;
+            details.func = `report_eventSKULookup_submit();`;
+            details.input = "string";
+            details.desc = "Generate a report of all employee producitivty associated with a SKU.<br>Includes all possible pieces of data from the employee productivity report.";
+            details.title = "Event SKU Lookup";
+            break;
+        case 'attributes_color':
+            details.id = `patches-reports-attributesColorCheck`;
+            details.name = `patches-reports-attributesColorCheck`;
+            details.func = `report_attributesColorCheck();`;
+            details.desc = "Invalid color value in attributes special report.<br>Only includes in stock.";
+            details.title = "Color Attribute Check";
+            break;
+        case 'product_stockandvalue':
+            details.id = `patches-reports-sidTotalQuantityAndValue`;
+            details.name = `patches-reports-sidTotalQuantityAndValue`;
+            details.func = `report_sidTotalQuantityAndValue();`;
+            details.desc = "Products with Total Inventory and Total Value.";
+            details.title = "Special Products Report";
+            break;
+        case 'picture_imagecount':
+            details.id = `patches-reports-pictureURLs`;
+            details.name = `patches-reports-pictureURLs`;
+            details.func = `report_pictureURLSComplete_init();`;
+            details.desc = "Gets Image URLS Comma Separated for each Item->Product.<br>To get a list of images per sku, count the number of commas and add one.";
+            details.title = "Picture URLs";
+            break;
+        case 'picture_resolution':
+            details.id = `patches-reports-pictureResolution`;
+            details.name = `patches-reports-pictureResolution`;
+            details.func = `report_pictureURLSComplete_init(true);`;
+            details.desc = "Gets Image URLs and Resolutions for each Item->Product.<br>DO NOT RUN. This report takes 30 minutes to run and a ton of resources.";
+            details.title = "Picture URLs + Resolutions";
+            break;
+        case 'productivity_meetingNotes':
+            details.id = `patches-reports-meetingNotes`;
+            details.name = `patches-reports-meetingNotes`;
+            details.func = `report_meetingNotes();`;
+            details.desc = "Get all meeting notes in one report with timestamps.<br>For just user 38.";
+            details.title = "Meeting Notes Collection";
+            break;
+        case 'pendinginventory_all':
+            details.id = `patches-reports-pending-inventory-all`;
+            details.name = `patches-reports-pending-inventory-all`;
+            details.func = `activePendingInventoryReport();`;
+            details.desc = "Yeah, this will give you everything that has ever been in pending inventory.<br>This is the mother of all reports, so don't generate it on a whim.";
+            details.title = "All Pending Inventory";
+            break;
+        case 'findImgUrlsFromKeyword':
+            details.id = `patches-reports-findImgUrlsFromKeyword`;
+            details.name = `patches-reports-findImgUrlsFromKeyword`;
+            details.func = `report_findImgUrlsFromKeyword();`;
+            details.input = "string";
+            details.desc = "Because I am lazy and tired of pressing the Copy URL Button";
+            details.title = "Image URL Fetcher";
+            break;
+        case 'marketplaceStatusExtended':
+            details.id = `patches-reports-marketplaceStatusExtended`;
+            details.name = `patches-reports-marketplaceStatusExtended`;
+            details.func = `report_marketplaceStatusExtended();`;
+            details.desc = "Every item and its status on marketplaces. Extended because it cleans up data and makes it useful.";
+            details.title = "Extended Marketplace Status";
+            break;
+        case 'errorlogsalltime':
+            details.id = `patches-reports-errorlogsalltime`;
+            details.name = `patches-reports-errorlogsalltime`;
+            details.func = `report_errorLogsAllTime();`;
+            details.desc = "A list of all error logs that exist right now.<br>Includes Category, Condition, Available and In Stock.";
+            details.title = "All Error Logs";
+            break;
     }
+    return report_initHTML(details) ?? document.createElement('span');
+    
 }
 
 function formatDate(date) {
