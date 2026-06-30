@@ -33,16 +33,20 @@ async function fetchAPI(route, { params = {}, body = null } = {}, options = {}) 
 
     const res = await fetch(url, fetchOptions);
 
-    if (!res.ok) {
-        const text = await res.text();
-        console.error("API Error:", res.status, text);
-        throw new Error(`API Error ${res.status}`);
+    let data;
+    try {
+        data = await res.json();
+    } catch {
+        data = await res.text();
     }
 
-    const data = await res.json();
-
+    if (!res.ok) {
+        console.error("API Error:", res.status, data);
+        const message = typeof data === "object" && data !== null ? (data.message || data.error || `API Error ${res.status}`) : `API Error ${res.status}`;
+        throw new Error(message);
+    }
+    
     console.log("API Response:", data);
-
     return data;
 }
 
