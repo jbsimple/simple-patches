@@ -515,9 +515,11 @@ async function initListingPatch() {
                                     <span class="spacer"></span></div>`;
                             } else {
                                 console.error(justCreated);
-                                //fireSwal('UHOH!', ['Your product was created fine.', 'But we were unable to find it to show you the time spent on it.'], 'error', false);
                                 code += `<br><br><p>So what's supposed to be here is that time spend in minutes figure. But the patch or the API failed to find it. Could be a system glitch but it's probably an issue with the patch.</p>`;
                             }
+                        } else {
+                            console.error(getCreatedSKU);
+                            code += `<br><br><p>So what's supposed to be here is that time spend in minutes figure. But the patch couldn't find the SKU to search. What a great error!</p>`;
                         }
 
                         if (initGTIN !== curGTIN) {
