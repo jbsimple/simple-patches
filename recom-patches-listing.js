@@ -572,13 +572,43 @@ async function initListingPatch() {
         }
 
         // i guess this goes here akkoShrug
-        setTimeout(async function() {
-            const listing_form =  document.getElementById('rc_create_listing_form');
-            if (listing_form) {
-                duplicateMPN(listing_form.querySelector('input[name="product[mpn]"]'));
-                duplicateAsin(listing_form.querySelector('input[name="product[asin]"]'));
-            }
+        setTimeout(async function () {
+            const listing_form = document.getElementById('rc_create_listing_form');
+            if (!listing_form) return;
+
+            duplicateMPN(listing_form.querySelector('input[name="product[mpn]"]'));
+            duplicateAsin(listing_form.querySelector('input[name="product[asin]"]'));
+
+            // Potential issue where CSRF tokens are updated while working in the wizard.
+            // Every minute, fetch the current page and update the token if it changed.
+            setInterval(async function () {
+                try {
+                    const response = await fetch(window.location.href, {
+                        cache: 'no-store',
+                        credentials: 'same-origin'
+                    });
+
+                    if (!response.ok) return;
+
+                    const html = await response.text();
+                    const doc = new DOMParser().parseFromString(html, 'text/html');
+
+                    const newToken = doc.querySelector('#rc_create_listing_form input[name="csrf_recom"]');
+                    const currentToken = listing_form.querySelector('input[name="csrf_recom"]');
+
+                    if (!newToken || !currentToken) return;
+
+                    if (newToken.value !== currentToken.value) {
+                        currentToken.value = newToken.value;
+                        console.log('Updated CSRF token.');
+                    }
+                } catch (err) {
+                    console.error('Failed to refresh CSRF token:', err);
+                }
+            }, 60000);
         }, 500);
+
+
 
         function unloadWarning(e) {
             e.preventDefault();
