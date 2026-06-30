@@ -970,15 +970,18 @@ async function groq(prompt, model = 'llama-3.3-70b-versatile') {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt })
     });
-
     const data = await res.json();
-
     console.log("GROQ Response:", data);
-
     return data;
 }
 
-async function listing_autofill_desc(title = null, description = null) {
+async function groq_desc_btn() {
+    const response = await listing_autofill_desc();
+    fireSwal('Custom Autofill Description', [`Model: ${response.model}<br>`,`<textarea class="form-control form-control-solid form-control-lg" style="height:300px;">${response.response}</textarea>`], 'success', false, "600px");
+    return response;
+}
+
+async function groq_desc(title = null, description = null) {
     function handleError(message) {
         fireSwal('Custom Autofill Description', ["Error:",message], 'error');
         console.error(`PATCH - API: ${message}`);
@@ -1077,10 +1080,6 @@ async function listing_autofill_desc(title = null, description = null) {
         `Product Title:\n${title}`,
         description ? `Addiitonal Product Details:\n${description}` : '',
     ].filter(Boolean).join("\n\n");
-
     const response = await groq(prompt);
-    console.log(response.response);
-    fireSwal('Custom Autofill Description', [`Model: ${response.model}<br>`,`<textarea class="form-control form-control-solid form-control-lg" style="height:300px;">${response.response}</textarea>`], 'success', false, "600px");
-    return response.response;
-
+    return response;
 }

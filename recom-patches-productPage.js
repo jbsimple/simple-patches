@@ -718,7 +718,7 @@ function initBetterDescriptionCopy() {
     autofillButton.type = "button";
     autofillButton.id = "patches_autofillDesc";
     autofillButton.innerHTML = `<i class="fa-solid fa-brain"></i>`;
-    autofillButton.setAttribute('onClick', 'listing_autofill_desc();');
+    autofillButton.setAttribute('onClick', 'groq_desc_btn();');
     container.appendChild(autofillButton);
 
     const exportButton = document.createElement('button');
