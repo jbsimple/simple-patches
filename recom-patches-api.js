@@ -1,10 +1,6 @@
 // api fetch
 async function fetchAPI(route, { params = {}, body = null } = {}, options = {}) {
-
-    if (!["meta", "reports"].includes(route)) {
-        throw new Error("Invalid route");
-    }
-
+    if (!["meta", "reports"].includes(route)) { throw new Error("Invalid route"); }
     let url = `https://simple-patches.vercel.app/api/fetch?route=${route}`;
 
     if (route === "meta" && params && Object.keys(params).length > 0) {
@@ -15,24 +11,16 @@ async function fetchAPI(route, { params = {}, body = null } = {}, options = {}) 
     const fetchOptions = {
         method: route === "meta" ? "GET" : "POST",
         ...options,
-        headers: {
-            "Content-Type": "application/json",
-            ...(options.headers || {})
-        }
+        headers: { "Content-Type": "application/json", ...(options.headers || {}) }
     };
 
     if (route === "reports") {
-        if (!body || !body.type) {
-            throw new Error("Missing report body or type");
-        }
-
+        if (!body || !body.type) { throw new Error("Missing report body or type"); }
         body.filters = Array.isArray(body.filters) ? body.filters : [];
-
         fetchOptions.body = JSON.stringify(body);
     }
 
     const res = await fetch(url, fetchOptions);
-
     let data;
     try {
         data = await res.json();
@@ -42,6 +30,7 @@ async function fetchAPI(route, { params = {}, body = null } = {}, options = {}) 
 
     if (!res.ok) {
         console.error("API Error:", res.status, data);
+
         let message = `API Error ${res.status}`;
         let type = 'Unknown';
         if (typeof data === "object" && data !== null && data.data.message && data.data.type) {
@@ -1009,6 +998,9 @@ async function listing_autofill_desc(title = null, description = null) {
         console.error('PATCH - API: No title.');
         return null;
     }
+
+    console.log(title, description);
+    return null;
 
     let prompt = [
         "I am a third-party seller that purchases overstock products and resells them on marketplaces like eBay and Shopify.",
