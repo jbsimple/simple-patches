@@ -976,7 +976,7 @@ async function groq(prompt, model = 'llama-3.3-70b-versatile') {
 }
 
 async function groq_desc_btn() {
-    const response = await listing_autofill_desc();
+    const response = await groq_desc();
     fireSwal('Custom Autofill Description', [`Model: ${response.model}<br>`,`<textarea class="form-control form-control-solid form-control-lg" style="height:300px;">${response.response}</textarea>`], 'success', false, "600px");
     return response;
 }
