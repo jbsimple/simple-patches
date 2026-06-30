@@ -399,33 +399,28 @@ async function initListingPatch() {
     var initGTIN = null;
     var curGTIN = null;
 
+    // Get rid of the same error message printing like 5 million times
     const observer = new MutationObserver(() => {
-        const elements = document.querySelectorAll('.fv-plugins-message-container.invalid-feedback');
-        let previousText = null;
-        elements.forEach((element, index) => {
-            const currentText = element.textContent.trim();
-            if (currentText === previousText) {
+        let previousText = '';
+
+        document.querySelectorAll('.fv-plugins-message-container.invalid-feedback').forEach(element => {
+            const text = element.textContent.trim();
+            if (text === previousText) {
                 element.remove();
-            } else {
-                previousText = currentText;
-                const block = element.querySelector('div');
-                if (block) {
-                    const field = block.getAttribute('data-field');
-                    const validation = block.getAttribute('data-validator');
-                    if (field) {
-                        const input = document.querySelector(`input[name="${field}"]`);
-                        if (input) {
-                            input.addEventListener('input', function handleError() {
-                                if (validation === "notEmpty" && input.value.length > 0) {
-                                    element.style.display = 'none';
-                                } else {
-                                    element.style.display = 'inherit';
-                                }
-                            });
-                        }
-                    }
-                }
+                return;
             }
+            previousText = text;
+
+            const block = element.querySelector('div[data-field]');
+            if (!block) return;
+
+            const input = document.querySelector(`input[name="${block.dataset.field}"]`);
+            if (!input || input.dataset.errorListenerAttached) return;
+
+            input.dataset.errorListenerAttached = '1';
+            input.addEventListener('input', () => {
+                element.style.display = block.dataset.validator === 'notEmpty' && input.value.length > 0 ? 'none' : '';
+            });
         });
     });
 
