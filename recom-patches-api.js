@@ -42,10 +42,16 @@ async function fetchAPI(route, { params = {}, body = null } = {}, options = {}) 
 
     if (!res.ok) {
         console.error("API Error:", res.status, data);
-        const message = typeof data === "object" && data !== null ? (data.message || data.error || `API Error ${res.status}`) : `API Error ${res.status}`;
+        let message = `API Error ${res.status}`;
+        let type = 'Unknown';
+        if (typeof data === "object" && data !== null && data.data.message && data.data.type) {
+            message = data.data.message;
+            type = data.data.type;
+        }
         throw new Error(message);
+        if (res.status === 429) { fireToast("API Issue", `Issue with ${type}: ${message}`); }
     }
-    
+
     console.log("API Response:", data);
     return data;
 }
