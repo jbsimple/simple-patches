@@ -979,28 +979,34 @@ async function groq(prompt, model = 'llama-3.3-70b-versatile') {
 }
 
 async function listing_autofill_desc(title = null, description = null) {
-    if (title === null) {
-        const product_name = document.querySelector('input[name="product[name]"]');
-        if (product_name) {
-            title = product_name.value.trim();
-        }
-    }
-
-    if (description === null) {
-        const product_description = document.querySelector('input[name="product[description]"]');
-        if (product_description) {
-            description = product_description.value.trim();
-        }
-    }
-
-    if (title === null) {
-        fireSwal('Custom Autofill Description', ["Error:","Please provide a product title."], 'error');
-        console.error('PATCH - API: No title.');
+    function handleError(message) {
+        fireSwal('Custom Autofill Description', ["Error:",message], 'error');
+        console.error(`PATCH - API: ${message}`);
         return null;
     }
 
-    console.log(title, description);
-    return null;
+    if (title === null || typeof title !== 'string') {
+        const product_name = document.querySelector('input[name="product[name]"]');
+        if (product_name) {
+            title = product_name.value.trim();
+        } else {
+            title = null;
+        }
+    }
+
+    if (description === null || typeof description !== 'string') {
+        const product_description = document.querySelector('input[name="product[description]"]');
+        if (product_description) {
+            description = product_description.value.trim();
+        } else {
+            description = null;
+        }
+    }
+    
+    if (typeof title !== 'string') { return handleError("Please provide a product title"); }
+    title = title.trim();
+    if (title.length === 0) { return handleError("Please provide a product title"); }
+    if (title.length > 80) { return handleError("This is not a valid product title, it is longer than 80 characters." ); }
 
     let prompt = [
         "I am a third-party seller that purchases overstock products and resells them on marketplaces like eBay and Shopify.",
