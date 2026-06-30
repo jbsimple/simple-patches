@@ -375,49 +375,35 @@ async function hijackFindProductButton() {
 }
 
 async function initListingPatch() {
-    console.debug('PATCHES - initListingPatch for wizard');
-    var gtin_input = document.querySelector('input[name="product[gtin]"]');
-    if (!gtin_input) {
-        console.error('PATCHES - No GTIN Input?');
+    function handleSpecialError(message) {
+        console.error(`PATCHES - ${message}`);
+        fireSwal('OH NO!', ["An error has happened while starting up the listing patch. Sadge", `<p>${message}</p>`]);
         return null;
     }
+
+    const gtin_input = document.querySelector('input[name="product[gtin]"]');
+    if (!gtin_input) { return handleSpecialError("No GTIN Input?"); }
 
     const listing_form = document.getElementById('rc_create_listing_form');
-    if (!listing_form) {
-        console.error('PATCHES - No Listing Form?');
-        return null;
-    }
+    if (!listing_form) { return handleSpecialError("No Listing Form?"); }
 
-    var listingNext = document.querySelector('button[data-kt-stepper-action="next"]');
-    if (!listingNext) {
-        console.error('PATCHES - No Listing Form?');
-        return null;
-    }
+    const listingNext = document.querySelector('button[data-kt-stepper-action="next"]');
+    if (!listingNext) { return handleSpecialError("No Listing Stepper?"); }
 
-    var listingSubmit = document.querySelector('button[data-kt-stepper-action="submit"]');
-    if (!listingSubmit) {
-        console.error('PATCHES - No Listing Submit?');
-        return null;
-    }
+    const listingSubmit = document.querySelector('button[data-kt-stepper-action="submit"]');
+    if (!listingSubmit) { return handleSpecialError("No Listing Submit?"); }
 
-    var listingResults = document.getElementById('listing-results');
-    if (!listingResults) {
-        console.error('PATCHES - No Listing Results?');
-        return null;
-    }
+    const listingResults = document.getElementById('listing-results');
+    if (!listingResults) { return handleSpecialError("No Listing Results?"); }
 
     var initGTIN = null;
     var curGTIN = null;
 
-    var generateButton = document.querySelector('a[href="javascript:generateGtin();"]');
-
     const observer = new MutationObserver(() => {
         const elements = document.querySelectorAll('.fv-plugins-message-container.invalid-feedback');
-      
         let previousText = null;
         elements.forEach((element, index) => {
             const currentText = element.textContent.trim();
-      
             if (currentText === previousText) {
                 element.remove();
             } else {
@@ -457,115 +443,111 @@ async function initListingPatch() {
     
     gtin_input.addEventListener('input', function() { verifyGTIN(); });
     
+    var generateButton = document.querySelector('a[href="javascript:generateGtin();"]');
     if (generateButton) {
         generateButton.addEventListener('click', function() {
             setTimeout(function() { verifyGTIN(); }, 500); // yikes
         });
     }
 
-    setTimeout(async function() {
-        listingSubmit.addEventListener('click', function() {
-            setTimeout(async function() {
-                let code = '';
-                const getCreatedSKU = listingResults.querySelectorAll('h2');
-                if (!getCreatedSKU || !getCreatedSKU[0]) {
-                    console.error('PATCHES - No created SKU?');
-                    return null;
-                }
+    duplicateMPN(listing_form.querySelector('input[name="product[mpn]"]'));
+    duplicateAsin(listing_form.querySelector('input[name="product[asin]"]'));
 
-                const sku = getCreatedSKU[0].textContent;
-                const justCreated = await getTimeSpentInMinutes(sku);
-                if (justCreated !== null && justCreated.time_spent && justCreated.event_id) {
-                    const po = justCreated.po ?? null;
-                    const timespent = justCreated.time_spent;
-                    const eventID = justCreated.event_id;
-                    code += `<br><br><p style="color: var(--bs-info);"><b>Time Spent in Minutes:</b>&nbsp;${timespent} minutes.</p>`;
-                    code += `<div class="patches-row patches-gap">
-                        <div class="patches-row" style="gap: 0.5rem; align-items: center; justify-content: center;">
-                            <a class="btn btn-info btn-sm my-sm-1 ms-1" style="display: flex; flex-direction: row; gap: 0.25rem; align-items: center; justify-content: center;" title="View in Pending Inventory" aria-label="View in Pending Inventory" href="/receiving/queues/fba-check?column=0&keyword=${sku}" target="_blank">
-                                <i class="fas fa-shipping-fast"></i>
-                                <span>View In FBA Check</span>
-                            </a>
-                            <a class="btn btn-success btn-sm my-sm-1 ms-1" style="display: flex; flex-direction: row; gap: 0.25rem; align-items: center; justify-content: center;" title="View in Pending Inventory" aria-label="View in Pending Inventory" href="/receiving/queues/inventory?column=1&keyword=${sku}" target="_blank">
-                                <i class="fas fa-boxes"></i>
-                                <span>View In Pending Inventory</span>
-                            </a>
-                        </div>
-                        <span class="spacer"></span></div>
-                        <div class="patches-row" style="gap: 0.5rem; align-items: center; justify-content: center;">
-                            <a class="btn btn-info btn-sm my-sm-1 ms-1" style="display: flex; flex-direction: row; gap: 0.25rem; align-items: center; justify-content: center;" title="Add PICTURES to Location" aria-label="Add PICTURES to Location" data-sku="${sku}" data-eventID="${eventID}" data-po="${po}" onclick="handleLocationButton(this);">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>Update Location</span>
-                            </a>
-                            <span></span>
-                        </div>
-                        <span class="spacer"></span></div>`;
-                } else {
-                    console.error(justCreated);
-                    code += `<br><br><p>So what's supposed to be here is that time spend in minutes figure. But the patch or the API failed to find it. Could be a system glitch but it's probably an issue with the patch.</p>`;
-                }
+    setInterval(checkRenewCSRF, 60000);
+    listingNext.addEventListener('click', async function(e) {
+        setTimeout(async function () { await checkRenewCSRF(); }, 500);
+    });
 
-                if (initGTIN !== curGTIN) {
-                    code += `<br><br>
-                    <strong class="patches-warning">
-                        <i class="fa fa-triangle-exclamation fs-2"></i>
-                        <span>GTIN Change Detected!</span>
-                        <i class="fa fa-triangle-exclamation fs-2"></i>
-                    </strong>
-                    <br>
-                    <div class="patches-column">
-                        <div class="patches-row">
-                            <strong>Original Queue GTIN:</strong>
-                            <input type="text" class="form-control form-control-solid form-control-lg" disabled value="${initGTIN}"></input>
-                        </div>
-                        <div class="patches-row">
-                            <strong>Created Listing GTIN:</strong>
-                            <input type="text" class="form-control form-control-solid form-control-lg" disabled value="${curGTIN}"></input>
-                        </div>
+    listingSubmit.addEventListener('click', function() {
+        setTimeout(async function() {
+            let code = '';
+            const getCreatedSKU = listingResults.querySelectorAll('h2');
+            if (!getCreatedSKU || !getCreatedSKU[0]) {
+                console.error('PATCHES - No created SKU?');
+                return null;
+            }
+
+            const sku = getCreatedSKU[0].textContent;
+            const justCreated = await getTimeSpentInMinutes(sku);
+            if (justCreated !== null && justCreated.time_spent && justCreated.event_id) {
+                const po = justCreated.po ?? null;
+                const timespent = justCreated.time_spent;
+                const eventID = justCreated.event_id;
+                code += `<br><br><p style="color: var(--bs-info);"><b>Time Spent in Minutes:</b>&nbsp;${timespent} minutes.</p>`;
+                code += `<div class="patches-row patches-gap">
+                    <div class="patches-row" style="gap: 0.5rem; align-items: center; justify-content: center;">
+                        <a class="btn btn-info btn-sm my-sm-1 ms-1" style="display: flex; flex-direction: row; gap: 0.25rem; align-items: center; justify-content: center;" title="View in Pending Inventory" aria-label="View in Pending Inventory" href="/receiving/queues/fba-check?column=0&keyword=${sku}" target="_blank">
+                            <i class="fas fa-shipping-fast"></i>
+                            <span>View In FBA Check</span>
+                        </a>
+                        <a class="btn btn-success btn-sm my-sm-1 ms-1" style="display: flex; flex-direction: row; gap: 0.25rem; align-items: center; justify-content: center;" title="View in Pending Inventory" aria-label="View in Pending Inventory" href="/receiving/queues/inventory?column=1&keyword=${sku}" target="_blank">
+                            <i class="fas fa-boxes"></i>
+                            <span>View In Pending Inventory</span>
+                        </a>
                     </div>
-                    <div class="patches-column">
-                        <span>With the GTIN change detected, you can change it back here. The fields below will update the product.</span>
+                    <span class="spacer"></span></div>
+                    <div class="patches-row" style="gap: 0.5rem; align-items: center; justify-content: center;">
+                        <a class="btn btn-info btn-sm my-sm-1 ms-1" style="display: flex; flex-direction: row; gap: 0.25rem; align-items: center; justify-content: center;" title="Add PICTURES to Location" aria-label="Add PICTURES to Location" data-sku="${sku}" data-eventID="${eventID}" data-po="${po}" onclick="handleLocationButton(this);">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Update Location</span>
+                        </a>
+                        <span></span>
                     </div>
-                    <div class="patches-column">
-                        <label for="patches-oldgtin">Product GTIN:</label>
-                        <input type="text" id="patches-oldgtin" class="form-control form-control-solid form-control-lg" value="${initGTIN}"></input>
-                    </div>
-                    <div class="patches-column">
-                        <label for="patches-newgtin">Product Secondary GTIN:</label>
-                        <input type="text" id="patches-newgtin" class="form-control form-control-solid form-control-lg" value="${curGTIN}"></input>
-                    </div>
-                    <div class="patches-column">
-                        <span style="flex: 1;">You can set the GTIN back to the original and the generated GTIN as the secondary by pressing the button below.<br><br>
-                            * Old GTIN becomes the product's real GTIN.<br>
-                            * Current GTIN becomes the product's secondary GTIN.
-                            * If it doesn't save here, the GTIN is REALLY invalid and there's nothing that can be done.
-                        </span>
-                        <strong>In order for the switch to happen, you must hit the 'Update GTINS' button! It is NOT Automatic!</strong>
+                    <span class="spacer"></span></div>`;
+            } else {
+                console.error(justCreated);
+                code += `<br><br><p>So what's supposed to be here is that time spend in minutes figure. But the patch or the API failed to find it. Could be a system glitch but it's probably an issue with the patch.</p>`;
+            }
+
+            if (initGTIN !== curGTIN) {
+                code += `<br><br>
+                <strong class="patches-warning">
+                    <i class="fa fa-triangle-exclamation fs-2"></i>
+                    <span>GTIN Change Detected!</span>
+                    <i class="fa fa-triangle-exclamation fs-2"></i>
+                </strong>
+                <br>
+                <div class="patches-column">
+                    <div class="patches-row">
+                        <strong>Original Queue GTIN:</strong>
+                        <input type="text" class="form-control form-control-solid form-control-lg" disabled value="${initGTIN}"></input>
                     </div>
                     <div class="patches-row">
-                        <a class="btn btn-lg btn-light-warning me-3" onclick="productGTIN()">Update GTINS</a>
-                        <div style="flex: 1;" id="productsGTIN-response"></div>
-                    </div>`;
-                } else {
-                    code += `<br><br><p>Hey, check that out! No GTIN change detected. Celebrate!</p>`;
-                }
+                        <strong>Created Listing GTIN:</strong>
+                        <input type="text" class="form-control form-control-solid form-control-lg" disabled value="${curGTIN}"></input>
+                    </div>
+                </div>
+                <div class="patches-column">
+                    <span>With the GTIN change detected, you can change it back here. The fields below will update the product.</span>
+                </div>
+                <div class="patches-column">
+                    <label for="patches-oldgtin">Product GTIN:</label>
+                    <input type="text" id="patches-oldgtin" class="form-control form-control-solid form-control-lg" value="${initGTIN}"></input>
+                </div>
+                <div class="patches-column">
+                    <label for="patches-newgtin">Product Secondary GTIN:</label>
+                    <input type="text" id="patches-newgtin" class="form-control form-control-solid form-control-lg" value="${curGTIN}"></input>
+                </div>
+                <div class="patches-column">
+                    <span style="flex: 1;">You can set the GTIN back to the original and the generated GTIN as the secondary by pressing the button below.<br><br>
+                        * Old GTIN becomes the product's real GTIN.<br>
+                        * Current GTIN becomes the product's secondary GTIN.
+                        * If it doesn't save here, the GTIN is REALLY invalid and there's nothing that can be done.
+                    </span>
+                    <strong>In order for the switch to happen, you must hit the 'Update GTINS' button! It is NOT Automatic!</strong>
+                </div>
+                <div class="patches-row">
+                    <a class="btn btn-lg btn-light-warning me-3" onclick="productGTIN()">Update GTINS</a>
+                    <div style="flex: 1;" id="productsGTIN-response"></div>
+                </div>`;
+            } else {
+                code += `<br><br><p>Hey, check that out! No GTIN change detected. Celebrate!</p>`;
+            }
 
-                listingResults.innerHTML += code;
+            listingResults.innerHTML += code;
 
-            }, 500); // yikes
-        });
-    }, 1000); // wait a second there champ!
-
-    // i guess this goes here akkoShrug
-    setTimeout(async function () {
-        duplicateMPN(listing_form.querySelector('input[name="product[mpn]"]'));
-        duplicateAsin(listing_form.querySelector('input[name="product[asin]"]'));
-
-        setInterval(checkRenewCSRF, 60000);
-        listingNext.addEventListener('click', async function(e) {
-            setTimeout(async function () { await checkRenewCSRF(); }, 500);
-        });
-    }, 500);
+        }, 500); // yikes
+    });
     
     function verifyGTIN() {
         // update flag
@@ -638,9 +620,11 @@ async function initListingPatch() {
 }
 
 (async () => {
-    if (window.location.href.includes('/receiving/queues/listing/') || window.location.href.includes('/products/new')) { 
-        initListingPatch();
-        hijackFindProductButton();
+    if (window.location.href.includes('/receiving/queues/listing/') || window.location.href.includes('/products/new')) {
+        setTimeout(function() {
+            initListingPatch();
+            hijackFindProductButton();
+        }, 500); // yikes
     } else {
         hijackCreateItemButton();
     }
