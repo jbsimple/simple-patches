@@ -388,6 +388,12 @@ async function initListingPatch() {
         return null;
     }
 
+    var listingNext = document.querySelector('button[data-kt-stepper-action="next"]');
+    if (!listingNext) {
+        console.error('PATCHES - No Listing Form?');
+        return null;
+    }
+
     var listingSubmit = document.querySelector('button[data-kt-stepper-action="submit"]');
     if (!listingSubmit) {
         console.error('PATCHES - No Listing Submit?');
@@ -556,9 +562,10 @@ async function initListingPatch() {
         duplicateAsin(listing_form.querySelector('input[name="product[asin]"]'));
 
         setInterval(checkRenewCSRF, 60000);
-
+        listingNext.addEventListener('click', async function(e) {
+            setTimeout(async function () { await checkRenewCSRF(); }, 500);
+        });
     }, 500);
-
     
     function verifyGTIN() {
         // update flag
