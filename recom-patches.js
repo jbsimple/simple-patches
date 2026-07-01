@@ -1635,12 +1635,14 @@ setTimeout(function() {
 }, 500); //500ms to allow click listener to be replaced
 
 // a really cool mutation observer to just eliminate the old clock in window with the new one
+let patches_clockIn_mutAct = false;
 const observer = new MutationObserver(() => {
-    if (!window.Swal?.isVisible()) return;
+    if (patches_clockIn_mutAct || !window.Swal?.isVisible()) return;
 
     const body = Swal.getHtmlContainer()?.textContent?.trim() ?? "";
 
     if (body.includes("Select Clock Task")) {
+        patches_clockIn_mutAct = true;
         Swal.close();
         setTimeout(patches_clockIn_window, 200);
     }
