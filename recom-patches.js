@@ -128,6 +128,13 @@ function injectGoods() {
         loadPatchStyle('recom-patches-listing.css');
         loadPatchScript('recom-patches-listing.js');
 
+        // Luke's heading
+        const pageHeading = document.querySelector('.page-heading');
+        if (pageHeading && pageHeading.textContent.toLowerCase().includes('listing queue')) {
+            pageHeading.textContent = 'Listing Queue';
+            pageHeading.parentElement.parentElement.parentElement.parentElement.setAttribute('style','background-color:color-mix(in srgb, var(--bs-primary) 15%, var(--bs-card-bg) 85%) !important;');
+        }
+
     } else if (location.pathname.includes('/queues/conditions/')) {
         
         loadPatchScript('recom-patches-condqueue.js');
@@ -174,6 +181,13 @@ function injectGoods() {
 
         loadPatchScript('recom-patches-pendinginv.js');
         loadPatchScript('recom-patches-dtTableParams.js');
+        
+        // Luke's heading
+        const pageHeading = document.querySelector('.page-heading');
+        if (pageHeading) {
+            pageHeading.textContent = 'Pending Inventory Queue';
+            pageHeading.parentElement.parentElement.parentElement.parentElement.setAttribute('style','background-color:color-mix(in srgb, var(--bs-danger) 15%, var(--bs-card-bg) 85%) !important;');
+        }
 
     } else if (location.pathname.includes('/receiving/queues/fba-check')) {
 
