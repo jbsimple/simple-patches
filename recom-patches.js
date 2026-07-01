@@ -173,7 +173,17 @@ function injectGoods() {
     } else if (location.pathname.includes('/receiving/queues/inventory')) {
 
         loadPatchScript('recom-patches-pendinginv.js');
-        // ensure this loads since dt is not in source
+        loadPatchScript('recom-patches-dtTableParams.js');
+
+    } else if (location.pathname.includes('/receiving/queues/inventory')) {
+
+        // Luke's custom heading
+        const pageHeading = document.querySelector('.page-heading');
+        if (pageHeading) {
+            pageHeading.textContent = 'FBA Check Queue';
+            pageHeading.parentElement.parentElement.parentElement.parentElement.setAttribute('style','background-color:color-mix(in srgb, var(--bs-warning) 20%, transparent 70%)');
+        }
+
         loadPatchScript('recom-patches-dtTableParams.js');
 
     } else if (location.pathname.includes('/order/lines')) {
