@@ -1262,10 +1262,6 @@ function hijackAjaxModal() {
                 if (target && (target.id === "rc_ajax_modal" && target.querySelector('.fw-bold.fs-6.text-gray-400')?.textContent.trim() === 'GTIN' && target.querySelector('table').classList.contains('table-row-bordered')) 
                         || (target.tagName === 'A' && target.hasAttribute('data-url') && target.getAttribute('data-url').includes('ajax/modals/productitems/') && target.classList.contains('ajax-modal'))) {
                     modalProduct();
-                } else if (target.getAttribute('href') === "javascript:clockInOut('in');") {
-                    modalClockIn();
-                } else {
-                    console.warn('PATCHES - AJAX modal not defined modal:', target);
                 }
             }
         }
@@ -1480,63 +1476,6 @@ function hijackAjaxModal() {
             console.debug('Patch: Modal has been hidden.');
         });
     }
-
-    async function modalClockIn() {
-        modal = document.querySelector('.swal2-container');
-        const selects = document.querySelectorAll('select');
-        if (selects) {
-            console.debug(selects);
-            selects.forEach(select => {
-                const hasDisabledOption = Array.from(select.options).some(option => 
-                    option.disabled && option.value === "" && option.text.trim() === "Select a task"
-                );
-
-                if (hasDisabledOption) {
-                    console.debug('Patches - Found Select, Attempting to add.');
-                    const quickTasks = [
-                        { value: "7", text: "BREAK", title: "BREAK (Off System)" },
-                        { value: "8", text: "LUNCH", title: "LUNCH (Off System)" },
-                        { value: "5", text: "Meeting", title: "ADHOC - Meeting (Off System)" },
-                        { value: "22", text: "Listing", title: "Listing (On System)" },
-                        { value: "28", text: "Listing Side Work", title: "Listing Side Work (Off System)" },
-                        { value: "29", text: "Pictures", title: "Pictures (Off System)" },
-                        { value: "31", text: "Pictures Side Work", title: "Pictures Side Work (Off System)" }
-                    ];
-        
-                    const buttonContainer = document.createElement("div");
-                    buttonContainer.setAttribute('style', 'display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; align-items: center; justify-content: center;')
-                    buttonContainer.style.display = "flex";
-                    buttonContainer.style.flexWrap = "wrap";
-                    buttonContainer.style.gap = "0.5rem";
-                    buttonContainer.style.marginBottom = "1rem";
-        
-                    quickTasks.forEach(task => {
-                        const button = document.createElement("button");
-                        button.textContent = task.text;
-                        button.setAttribute("data-value", task.value);
-                        button.title = task.title;
-                        button.classList.add('btn', 'btn-color-gray-700', 'btn-active-color-white', 'btn-outline', 'btn-outline-success');
-        
-                        button.addEventListener("click", () => {
-                            select.value = task.value;
-                            console.log(`Selected task: ${task.text}`);
-        
-                            const submitButton = modal.querySelector(".swal2-confirm");
-                            if (submitButton) {
-                                submitButton.click();
-                            }
-                        });
-        
-                        buttonContainer.appendChild(button);
-                    });
-        
-                    select.parentNode.insertBefore(buttonContainer, select);
-                }
-            });
-        } else {
-            console.error('Patches - Unable to find select.');
-        }
-    }
 }
 
 function adjustToolbar() {
@@ -1549,6 +1488,160 @@ function adjustToolbar() {
         toolbar.classList.remove('app-toolbar');
     }
 }
+
+/* new replacement clock in */
+const patches_clockIn_ids = [7,8,5,22,28,29,31];
+//  7 - BREAK
+//  8 - LUNCH
+//  5 - Meeting
+// 22 - Listing
+// 28 - Listing Side Work
+// 29 - Pictures
+// 31 - Pictures Side Work
+
+function patches_clockIn_error(msg, obj = null) {
+    const patches_clockIn_err = document.getElementById('patches_clockIn_err');
+    if (patches_clockIn_err) {
+        patches_clockIn_err.textContent = msg;
+        patches_clockIn_err.style.display = block;
+    }
+
+    if (obj !== null) {
+        console.error(`[PATCHES] Error - ${msg}`, obj);
+    } else {
+        console.error(`[PATCHES] Error - ${msg}`);
+    }
+
+    return null;
+}
+
+// new button onclick function, this could be inside onclick listener but nah
+async function patches_clockIn_window() {
+    try {
+        const response = await fetch(`ajax/actions/ClockInTasks`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+        const data = await response.json();
+        if (!data) return null;
+
+        // building modal html
+        let selectTask_html = '<select class="swal2-select" style="display:flex;" id="quickTask-select">';
+        Object.entries(data).forEach(([id, text]) => {
+            let cleanedTaskName = text.replace(" (Off System)", "").replace(" (No PO Tracking)", "");
+            selectTask_html += `<option value="${id}">${cleanedTaskName}</option>`;
+        });
+        selectTask_html += '</select>';
+        let quickTasks_html = '';
+        if (patches_clockIn_ids.length > 0) {
+            quickTasks_html = '<div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;justify-content:center;">';
+            patches_clockIn_ids.forEach(id => {
+                if (data[id]) {
+                    cleanedTaskName = data[id].replace(" (Off System)", "").replace(" (No PO Tracking)", "");
+                    quickTasks_html += `<button onclick="patches_clockIn_req(${id});" href="javascript:patches_clockIn_req(${id});" class="btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-success">${cleanedTaskName}</button>`;
+                }
+            })
+            quickTasks_html += "</div>";
+        }
+        let html = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.75rem;">
+		    		<strong>Quick Clock In Tasks:</strong>
+		    		<div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;justify-content:center;">${quickTasks_html}</div>
+		    		<strong>Dropdown:</strong>
+		    		${selectTask_html}
+		    		<p style="display:none;color:var(--bs-danger);font-weight:700;text-align:center;width:100%;" id="patches_clockIn_err"></p>
+		    </div>`;
+
+        // swal library is available in recom
+        const result = await Swal.fire({
+            title: "Clock In",
+            html: html,
+            icon: "warning",
+            width: `${Math.min(Math.max(patches_clockIn_ids.length * 75 + 300, 400), 800)}px`,
+            showCancelButton: true,
+            confirmButtonText: "Clock In",
+            cancelButtonText: "Cancel",
+            customClass: {
+                htmlContainer: 'quickTasks',
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false,
+            reverseButtons: true,
+            allowOutsideClick: false,
+            allowEscapeKey: true
+        });
+        // bottom submit, assumes value from dropdown is selected
+        if (result.isConfirmed) {
+            await patches_clockIn_req(document.getElementById('quickTask-select').value);
+        }
+    } catch (error) {
+        patches_clockIn_error("Clock In Window ran into an issue.", error);
+    }
+}
+
+// clock in routine and request, makes setting up modal html not a nightmare
+async function patches_clockIn_req(task) {
+    try {
+        const response = await fetch("/ajax/actions/clockinout/in", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+                "X-CSRF-TOKEN": document.querySelector('meta[name="X-CSRF-TOKEN"]')?.content ?? ""
+            },
+            body: new URLSearchParams({
+                task: task
+            })
+        });
+        const data = await response.json();
+        if (!data.success) {
+            patches_clockIn_error("Issue with Clock In Request Response.", data);
+            return false;
+        }
+        location.reload();
+        return data;
+    } catch (error) {
+        patches_clockIn_error("Failed with Clock In Request.", error);
+        return error;
+    }
+}
+
+// init, domOnLoad listener is broken in recom
+setTimeout(function() {
+    const clockInButton = document.querySelector(`a[href="javascript:clockInOut('in');"]`);
+    if (!clockInButton) return;
+
+    if (!document.getElementById("quickTasks-style")) {
+        const style = document.createElement("style");
+        style.id = "quickTasks-style";
+        style.textContent = `.quickTasks { max-height: 75vh !important; }`;
+        document.head.appendChild(style);
+    }
+
+    clockInButton.addEventListener('click', async function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        await patches_clockIn_window();
+    });
+}, 500); //500ms to allow click listener to be replaced
+
+// a really cool mutation observer to just eliminate the old clock in window with the new one
+const observer = new MutationObserver(() => {
+    if (!window.Swal?.isVisible()) return;
+
+    const body = Swal.getHtmlContainer()?.textContent?.trim() ?? "";
+
+    if (body.includes("Select Clock Task")) {
+        Swal.close();
+        setTimeout(patches_clockIn_window, 200);
+    }
+});
+observer.observe(document.body, { childList: true, subtree: true });
 
 // epic search of the datalist
 // to be used when assembling auto reports
