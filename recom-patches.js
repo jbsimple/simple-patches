@@ -1543,7 +1543,7 @@ async function patches_clockIn_window() {
             patches_clockIn_ids.forEach(id => {
                 if (data[id]) {
                     cleanedTaskName = data[id].replace(" (Off System)", "").replace(" (No PO Tracking)", "");
-                    quickTasks_html += `<button onclick="patches_clockIn_req(${id});" href="javascript:patches_clockIn_req(${id});" class="btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-success">${cleanedTaskName}</button>`;
+                    quickTasks_html += `<button onclick="patches_clockIn_req(${id});" href="javascript:patches_clockIn_req(${id});" title="Quick clock into ${cleanedTaskName} task." class="btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-success">${cleanedTaskName}</button>`;
                 }
             })
             quickTasks_html += "</div>";
@@ -1551,7 +1551,7 @@ async function patches_clockIn_window() {
         let html = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.75rem;">
 		    		<strong>Quick Clock In Tasks:</strong>
 		    		<div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;justify-content:center;max-width:300px;">${quickTasks_html}</div>
-		    		<strong style="margin-top:1rem;">Dropdown:</strong>
+		    		<strong style="margin-top:1.5rem;">Dropdown:</strong>
 		    		${selectTask_html}
 		    		<p style="display:none;color:var(--bs-danger);font-weight:700;text-align:center;width:100%;" id="patches_clockIn_err"></p>
 		    </div>`;
