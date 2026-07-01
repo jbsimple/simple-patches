@@ -1561,7 +1561,7 @@ async function patches_clockIn_window() {
             title: "Clock In",
             html: html,
             icon: "warning",
-            width: `${Math.min(Math.max(patches_clockIn_ids.length * 75 + 300, 400), 800)}px`,
+            width: `${Math.min(Math.max(patches_clockIn_ids.length * 75 + 300, 400), 600)}px`,
             showCancelButton: true,
             confirmButtonText: "Clock In",
             cancelButtonText: "Cancel",
