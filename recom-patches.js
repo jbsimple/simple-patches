@@ -1550,7 +1550,7 @@ async function patches_clockIn_window() {
         }
         let html = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.75rem;">
 		    		<strong>Quick Clock In Tasks:</strong>
-		    		<div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;justify-content:center;">${quickTasks_html}</div>
+		    		<div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;justify-content:center;max-width:300px;">${quickTasks_html}</div>
 		    		<strong style="margin-top:1rem;">Dropdown:</strong>
 		    		${selectTask_html}
 		    		<p style="display:none;color:var(--bs-danger);font-weight:700;text-align:center;width:100%;" id="patches_clockIn_err"></p>
@@ -1561,7 +1561,7 @@ async function patches_clockIn_window() {
             title: "Clock In",
             html: html,
             icon: "warning",
-            width: "400px",
+            width: "500px",
             showCancelButton: true,
             confirmButtonText: "Clock In",
             cancelButtonText: "Cancel",
