@@ -1548,6 +1548,10 @@ async function patches_clockIn_window() {
             })
             quickTasks_html += "</div>";
         }
+        let width = patches_clockIn_ids.length * 75;
+        if (width < 400) { width = 400; }
+        if (width > 600) { width = 600; }
+
         let html = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.75rem;">
 		    		<strong>Quick Clock In Tasks:</strong>
 		    		<div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;justify-content:center;max-width:300px;">${quickTasks_html}</div>
@@ -1561,7 +1565,7 @@ async function patches_clockIn_window() {
             title: "Clock In",
             html: html,
             icon: "warning",
-            width: "500px",
+            width: `${width}px`,
             showCancelButton: true,
             confirmButtonText: "Clock In",
             cancelButtonText: "Cancel",
