@@ -1515,7 +1515,6 @@ function patches_clockIn_error(msg, obj = null) {
     return null;
 }
 
-// new button onclick function, this could be inside onclick listener but nah
 async function patches_clockIn_window() {
     try {
         const response = await fetch(`ajax/actions/ClockInTasks`, {
@@ -1530,7 +1529,6 @@ async function patches_clockIn_window() {
         const data = await response.json();
         if (!data) return null;
 
-        // building modal html
         let selectTask_html = '<select class="swal2-select" style="display:flex;" id="quickTask-select">';
         Object.entries(data).forEach(([id, text]) => {
             let cleanedTaskName = text.replace(" (Off System)", "").replace(" (No PO Tracking)", "");
@@ -1559,8 +1557,7 @@ async function patches_clockIn_window() {
 		    		${selectTask_html}
 		    		<p style="display:none;color:var(--bs-danger);font-weight:700;text-align:center;width:100%;" id="patches_clockIn_err"></p>
 		    </div>`;
-
-        // swal library is available in recom
+        
         const result = await Swal.fire({
             title: "Clock In",
             html: html,
@@ -1579,7 +1576,6 @@ async function patches_clockIn_window() {
             allowOutsideClick: false,
             allowEscapeKey: true
         });
-        // bottom submit, assumes value from dropdown is selected
         if (result.isConfirmed) {
             await patches_clockIn_req(document.getElementById('quickTask-select').value);
         }
@@ -1588,7 +1584,6 @@ async function patches_clockIn_window() {
     }
 }
 
-// clock in routine and request, makes setting up modal html not a nightmare
 async function patches_clockIn_req(task) {
     try {
         const response = await fetch("/ajax/actions/clockinout/in", {
@@ -1614,7 +1609,6 @@ async function patches_clockIn_req(task) {
     }
 }
 
-// init, domOnLoad listener is broken in recom
 setTimeout(function() {
     const clockInButton = document.querySelector(`a[href="javascript:clockInOut('in');"]`);
     if (!clockInButton) return;
@@ -1634,7 +1628,6 @@ setTimeout(function() {
     });
 }, 500); //500ms to allow click listener to be replaced
 
-// a really cool mutation observer to just eliminate the old clock in window with the new one
 let patches_clockIn_mutAct = false;
 const observer = new MutationObserver(() => {
     if (patches_clockIn_mutAct || !window.Swal?.isVisible()) return;
