@@ -175,7 +175,7 @@ function injectGoods() {
         loadPatchScript('recom-patches-pendinginv.js');
         loadPatchScript('recom-patches-dtTableParams.js');
 
-    } else if (location.pathname.includes('/receiving/queues/inventory')) {
+    } else if (location.pathname.includes('/receiving/queues/fba-check')) {
 
         // Luke's custom heading
         const pageHeading = document.querySelector('.page-heading');
