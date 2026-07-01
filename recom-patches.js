@@ -181,7 +181,7 @@ function injectGoods() {
         const pageHeading = document.querySelector('.page-heading');
         if (pageHeading) {
             pageHeading.textContent = 'FBA Check Queue';
-            pageHeading.parentElement.parentElement.parentElement.parentElement.setAttribute('style','background-color:color-mix(in srgb, var(--bs-warning) 20%, transparent 70%)');
+            pageHeading.parentElement.parentElement.parentElement.parentElement.setAttribute('style','background-color:color-mix(in srgb, var(--bs-warning) 15%, transparent 85%) !important;');
         }
 
         loadPatchScript('recom-patches-dtTableParams.js');

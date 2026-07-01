@@ -652,7 +652,7 @@ function initToolbarButtons() {
     const pageHeading = document.querySelector('.page-heading');
     if (pageHeading) {
         pageHeading.textContent = 'Pending Inventory';
-        pageHeading.parentElement.parentElement.parentElement.parentElement.setAttribute('style','background-color:color-mix(in srgb, var(--bs-danger) 20%, transparent 70%)');
+        pageHeading.parentElement.parentElement.parentElement.parentElement.setAttribute('style','background-color:color-mix(in srgb, var(--bs-danger) 15%, transparent 85%) !important;');
     }
     
 }
