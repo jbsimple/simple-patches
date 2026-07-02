@@ -648,11 +648,11 @@ function modifiedClockInit() {
         newButton.className = 'btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-warning me-2';
         newButton.href = `javascript:modifiedClock('${task}');`;
         newButton.innerHTML = '<i class="bi bi-stopwatch-fill fs-2 mobilefix"></i><span class="mobilefix">Record Clock Out</span>';
-        newButton.title = 'Off System: Clock Out';
+        newButton.title = 'Record Clock Out';
         // newButton.setAttribute('onclick', 'modifiedClock();');
 
         recordTime_button.innerHTML = '<i class="bi bi-hourglass fs-2 mobilefix"></i><span class="mobilefix">Record Time</span>';
-        recordTime_button.title = 'Off System: Record Time';
+        recordTime_button.title = 'Record Time';
         
         recordTime_parent.insertBefore(newButton, recordTime_button.nextSibling);
 
