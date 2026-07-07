@@ -1445,6 +1445,9 @@ function hijackAjaxModal() {
                                 if (filename !== 'no-image.png') {
                                     createDetailBox('Number of Pictures', String(product_images?.length ?? 0), 'Number of pictures on the SID.');
                                     createDetailBox('Image Filename', filename, 'Filename of the first image on the SID.');
+                                    if (filename.toLowerCase().includes('stock')) {
+                                        createDetailBox('Picture Note', 'Stock Photo!', 'Filename of the first image on the SID.', 'text-danger');
+                                    }
                                 } else {
                                     createDetailBox('Number of Pictures', '0', 'Number of pictures on the SID.');
                                 }
