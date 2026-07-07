@@ -2294,6 +2294,7 @@ function initStoreListingsReload() {
         cardToolbar.setAttribute('style', 'display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1rem;');
 
         const refreshButton = document.createElement('button');
+        refreshButton.title = 'Refresh the Store Listings tab.';
         refreshButton.setAttribute('class', 'btn btn-icon btn-sm btn-light my-sm-1 ms-1');
         refreshButton.innerHTML = `<i class="fas fa-rotate-right fs-2"></i>`;
         refreshButton.addEventListener('click', async function() {
