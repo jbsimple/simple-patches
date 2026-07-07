@@ -2268,3 +2268,58 @@ function hijackNewItem() {
     })
 }
 waitForElement('#kt_app_content_container', hijackNewItem);
+
+function initStoreListingsReload() {
+    const tab = document.getElementById("rc_product_listing_tab");
+    if (!tab) return;
+
+    injectReloadButton();
+    const observer = new MutationObserver(() => {
+        injectReloadButton();
+    });
+    observer.observe(tab, {
+        childList: true,
+        subtree: true
+    });
+
+    function injectReloadButton() {
+        if (tab.querySelector('.card-toolbar[data-patches="true"]')) return;
+
+        const cardHeader = tab.querySelector('.card-header');
+        if (!cardHeader) return;
+
+        const cardToolbar = document.createElement('div');
+        cardToolbar.setAttribute('class', 'card-toolbar');
+        cardToolbar.setAttribute('data-patches', 'true');
+        cardToolbar.setAttribute('style', 'display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1rem;');
+
+        const refreshButton = document.createElement('button');
+        refreshButton.setAttribute('class', 'btn btn-icon btn-sm btn-light my-sm-1 ms-1');
+        refreshButton.innerHTML = `<i class="fas fa-rotate-right fs-2"></i>`;
+        refreshButton.addEventListener('click', async function() {
+            try {
+                const id = window.location.pathname.split("/").filter(Boolean).pop();
+                const fetchURL = `/integrations/stores/listing/item/${id}`;
+                const response = await fetch(fetchURL, {
+                    method: "GET",
+                    headers: { "X-Requested-With": "XMLHttpRequest" }
+                });
+                if (!response.ok) { throw new Error(`HTTP ${response.status}`); }
+                const html = await response.text();
+                const doc = new DOMParser().parseFromString(html, "text/html");
+                const newCardBody = doc.querySelector(".card-body");
+                const currentCardBody = tab.querySelector(".card-body");
+                if (!newCardBody) { throw new Error("Fetched page did not contain .card-body"); }
+                if (!currentCardBody) { throw new Error("Current page does not contain .card-body"); }
+                currentCardBody.replaceWith(newCardBody);
+                fireSwal('Refreshed', 'Wow! Just refreshed the store listings!', 'success');
+            } catch (err) {
+                console.error("Failed to refresh listings:", err);
+            }
+        });
+        cardToolbar.appendChild(refreshButton);
+        cardHeader.appendChild(cardToolbar);
+    }
+
+}
+waitForElement('#rc_product_listing_tab', initStoreListingsReload);
