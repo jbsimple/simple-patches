@@ -383,6 +383,18 @@ async function initListingWizard() {
         });
     }
 
+    const description_input = document.querySelector('input[name="product[description]"]');
+    if (description_input) {
+        const groqDesc = document.createElement('button');
+        groqDesc.classList.add('btn', 'btn-icon', 'btn-sm', 'btn-primary', 'ms-2');
+        groqDesc.title = `Better description autofill using GROQ and Llama`;
+        groqDesc.type = "button";
+        groqDesc.id = "patches_autofillDesc";
+        groqDesc.innerHTML = `<i class="fa-solid fa-brain"></i>`;
+        groqDesc.setAttribute('onClick', 'groq_desc_btn();');
+        description_input.insertAdjacentElement('afterend', groqDesc);
+    }
+
     const listingSubmit = document.querySelector('button[data-kt-stepper-action="submit"]');
     if (!listingSubmit) { console.error('PATCHES - Listing Wizard Init - Unable to find Listing Submit'); return; }
 
