@@ -369,6 +369,7 @@ async function initListingWizard() {
                 gtinWarning.setAttribute('patches-gtinWarning', '');
                 gtinWarning.setAttribute('class', 'text-muted fs-7 mt-3 mx-2');
                 gtinWarning.setAttribute('style', 'color: var(--bs-danger) !important;');
+                gtinWarning.textContent = 'GTIN looks weird.';
                 gtin_input.insertAdjacentElement('afterend', gtinWarning);
             }
         }
@@ -379,6 +380,7 @@ async function initListingWizard() {
     if (description_input) {
         const groqDesc = document.createElement('button');
         groqDesc.classList.add('btn', 'btn-icon', 'btn-sm', 'btn-primary');
+        groqDesc.style.marginLeft = '0.5rem';
         groqDesc.title = `Better description autofill using GROQ and Llama`;
         groqDesc.type = "button";
         groqDesc.id = "patches_autofillDesc";
