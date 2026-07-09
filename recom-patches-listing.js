@@ -344,12 +344,12 @@ async function initListingWizard() {
 
         function checkGTIN() {
             setTimeout(function() {
-                let valid = false;
+                let valid = '';
 
                 gtin_input.value = gtin_input.value.replace(/\D/g, '');
                 const value = gtin_input.value;
                 if (value.length === 0) {
-                    valid = true;
+                    valid = '';
                 } else if ([12, 13, 14].includes(value.length)) {
                     let sum = 0;
                     let odd = true;
@@ -359,20 +359,21 @@ async function initListingWizard() {
                         odd = !odd;
                     }
                     const expectedCheckDigit = (10 - (sum % 10)) % 10;
-                    valid = expectedCheckDigit === Number(value[value.length - 1]);
+                    valid = expectedCheckDigit === Number(value[value.length - 1]) ? 'Checksum' : '';
                 } else {
-                    valid = false;
+                    valid = 'Length';
                 }
 
                 let gtinWarning = listing_form.querySelector('[patches-gtinwarning]');
-                if (valid && gtinWarning) {
+                if (valid === '' && gtinWarning) {
                     gtinWarning.remove();
                 } else if (!gtinWarning) {
                     gtinWarning = document.createElement('p');
                     gtinWarning.setAttribute('patches-gtinwarning', '');
                     gtinWarning.setAttribute('class', 'text-muted fs-7 mt-3 mx-2');
                     gtinWarning.setAttribute('style', 'color: var(--bs-danger) !important;');
-                    gtinWarning.textContent = 'GTIN looks weird.';
+                    gtinWarning.textContent = `GTIN is weird: ${gtinWarning}`;
+                    gtinWarning.title = `The GTIN is weird because of its ${gtinWarning}. It will still save.`;
                     gtin_input.insertAdjacentElement('afterend', gtinWarning);
                 }
             }, 200);
