@@ -61,7 +61,6 @@ async function getEmployeeProductivity(sku) {
             columns: [
                 "purchase_orders.id",
                 "user_clock_activity.activity_id",
-                "user_clock_activity.activity_code",
                 "user_clock_activity.time_spent"
             ]
         }
@@ -408,7 +407,8 @@ async function initListingWizard() {
     listingSubmit.addEventListener('click', async function() {
         setTimeout(async function() {
             const listing_results = document.getElementById('listing-results');
-            if (!listing-listing_results) { console.error('PATCHES - Listing Wizard Submit - Unable to find Listing Results'); return; }
+            if (!listing_results) { console.error('PATCHES - Listing Wizard Submit - Unable to find Listing Results'); return; }
+            listing_results.appendChild(document.createElement('br'));
 
             // find the SKU
             const skuElement = listing_results.querySelector('h2');
@@ -423,11 +423,44 @@ async function initListingWizard() {
                 return;
             }
 
-            const justCreated = await getTimeSpentInMinutes(SKU);
-            if (!justCreated || !justCreated.time_spent || !justCreated.event_id) {
-                console.error('PATCHES - Listing Wizard Submit - Bad response from justCreated.', justCreated);
-            }
+            // queue quick links
+            const queueLinks = document.createElement('div');
+            queueLinks.setAttribute('style', 'display:flex; flex-wrap:wrap; gap:0.7rem;');
+            queueLinks.innerHTML = `<a class="btn btn-info btn-sm my-sm-1 ms-1" style="display:flex; flex-direction:row; gap:0.25rem; align-items:center; justify-content:center;" title="View in Pending Inventory" aria-label="View in Pending Inventory" href="/receiving/queues/fba-check?column=0&keyword=${sku}" target="_blank">
+                <i class="fas fa-shipping-fast"></i>
+                <span>View In FBA Check</span>
+            </a>
+            <a class="btn btn-success btn-sm my-sm-1 ms-1" style="display:flex; flex-direction:row; gap:0.25rem; align-items:center; justify-content:center;" title="View in Pending Inventory" aria-label="View in Pending Inventory" href="/receiving/queues/inventory?column=1&keyword=${sku}" target="_blank">
+                <i class="fas fa-boxes"></i>
+                <span>View In Pending Inventory</span>
+            </a>`;
+            listing_results.appendChild(queueLinks);
 
+            // time spent and location update
+            const justCreated = await getEmployeeProductivity(SKU);
+            if (!justCreated) {
+                console.error('PATCHES - Listing Wizard Submit - Bad response from justCreated.', justCreated);
+                return;
+            }
+            let eventID = justCreated['Event_ID'] ?? null;
+            let po = justCreated['PO_Number'] ?? null;
+
+            let timeSpent = justCreated['Time_Spent_in_mintues'] ?? null;
+            if (timeSpent) {
+                const timeSpentLine = document.createElement('p');
+                timeSpentLine.innerHTML = `<strong>Time Spent in Minutes: ${timeSpent}`;
+                listing_results.appendChild(timeSpentLine);
+            } else {
+                console.error('PATCHES - Listing Wizard Submit - No time spent in minutes.', timeSpent, justCreated);
+            }
+            
+            const locationUpdateRow = document.createElement('div');
+            locationUpdateRow.setAttribute('style', 'display:flex; flex-wrap:wrap; gap:0.7rem;');
+            locationUpdateRow.innerHTML = `<a class="btn btn-info btn-sm my-sm-1 ms-1" style="display: flex; flex-direction: row; gap: 0.25rem; align-items: center; justify-content: center;" title="Add PICTURES to Location" aria-label="Add PICTURES to Location" data-sku="${sku}" data-eventID="${eventID}" data-po="${po}" onclick="handleLocationButton(this);">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Update Location</span>
+            </a>`;
+            listing_results.appendChild(locationUpdateRow);
 
         }, 500); // yikes
     });
