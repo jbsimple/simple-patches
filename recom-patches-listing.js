@@ -404,6 +404,9 @@ async function initListingWizard() {
             if (!listing_results) { console.error('PATCHES - Listing Wizard Submit - Unable to find Listing Results'); return; }
             listing_results.appendChild(document.createElement('br'));
 
+            // fix links to open in a new tab
+            listing_results.querySelectorAll('a').forEach(a => { a.addAttribute('target', '_blank'); });
+
             // find the SKU
             const skuElement = listing_results.querySelector('h2');
             if (!skuElement) {
@@ -416,6 +419,9 @@ async function initListingWizard() {
                 console.error('PATCHES - Listing Wizard Submit - SKU is empty');
                 return;
             }
+            
+            // add link to view sku
+            skuElement.innerHTML = `<a style="color: white; font-weight: 700;" href="/product/items/${SKU}" target="_blank">${SKU}</a>`;
 
             // queue quick links
             const queueLinks = document.createElement('div');
