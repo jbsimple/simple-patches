@@ -670,6 +670,11 @@ function modifiedClockInit() {
             recordTime_parent.insertBefore(updatePuctureLocationsButton, recordTime_button);
         }
 
+        if (!(task.toLowerCase().includes('lunch') || task.toLowerCase().includes('break'))) {
+            const clockOutButton = document.querySelector(`[href="javascript:clockInOut('out');"]`);
+            if (clockOutButton) { clockOutButton.classList.replace('btn-outline-danger', 'btn-outline-success'); }
+        }
+
 	} else if (clockIn_button) {
         const clockIn_parent = clockIn_button.parentElement;
         if (!clockIn_parent) return;
@@ -907,9 +912,7 @@ function clockTaskVisualRefresh(ping = false) {
         try {
             //const response = await fetch(href);
             const start = Date.now();
-
             const response = await fetch(href);
-
             if (!response.ok) {
                 clearInterval(timeoutInterval);
                 throw new Error('Failed to fetch page content');
