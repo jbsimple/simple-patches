@@ -386,7 +386,7 @@ async function initListingWizard() {
     const description_input = document.querySelector('input[name="product[description]"]');
     if (description_input) {
         const groqDesc = document.createElement('button');
-        groqDesc.classList.add('btn', 'btn-icon', 'btn-sm', 'btn-primary', 'ms-2');
+        groqDesc.classList.add('btn', 'btn-icon', 'btn-sm', 'btn-primary');
         groqDesc.title = `Better description autofill using GROQ and Llama`;
         groqDesc.type = "button";
         groqDesc.id = "patches_autofillDesc";
@@ -405,7 +405,28 @@ async function initListingWizard() {
     // new submit
     listingSubmit.addEventListener('click', async function() {
         setTimeout(async function() {
-            console.log('Submit Clicked');
+            const listing_results = document.getElementById('listing-results');
+            if (!listing-results) { console.error('PATCHES - Listing Wizard Submit - Unable to find Listing Results'); return; }
+
+            // find the SKU
+            const skuElement = listing_results.querySelector('h2');
+            if (!skuElement) {
+                console.error('PATCHES - Listing Wizard Submit - Unable to find SKU h2');
+                return;
+            }
+
+            const SKU = skuElement.textContent.trim();
+            if (!SKU) {
+                console.error('PATCHES - Listing Wizard Submit - SKU is empty');
+                return;
+            }
+
+            const justCreated = await getTimeSpentInMinutes(SKU);
+            if (!justCreated || !justCreated.time_spent || !justCreated.event_id) {
+                console.error('PATCHES - Listing Wizard Submit - Bad response from justCreated.', justCreated);
+            }
+
+
         }, 500); // yikes
     });
 
