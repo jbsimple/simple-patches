@@ -361,12 +361,12 @@ async function initListingWizard() {
                 valid = false;
             }
 
-            let gtinWarning = listing_form.querySelector('[patches-gtinWarning]');
+            let gtinWarning = listing_form.querySelector('[patches-gtinwarning]');
             if (valid && gtinWarning) {
                 gtinWarning.remove();
             } else {
                 gtinWarning = document.createElement('p');
-                gtinWarning.setAttribute('patches-gtinWarning', '');
+                gtinWarning.setAttribute('patches-gtinwarning', '');
                 gtinWarning.setAttribute('class', 'text-muted fs-7 mt-3 mx-2');
                 gtinWarning.setAttribute('style', 'color: var(--bs-danger) !important;');
                 gtinWarning.textContent = 'GTIN looks weird.';
