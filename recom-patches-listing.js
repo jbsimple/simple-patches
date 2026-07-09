@@ -361,10 +361,11 @@ async function initListingWizard() {
                 valid = false;
             }
 
-            if (valid && listing_form.querySelector('[patches-gtinWarning]')) {
+            let gtinWarning = listing_form.querySelector('[patches-gtinWarning]');
+            if (valid && gtinWarning) {
                 listing_form.querySelector('[patches-gtinWarning]').remove();
             } else {
-                const gtinWarning = document.createElement('p');
+                gtinWarning = document.createElement('p');
                 gtinWarning.setAttribute('patches-gtinWarning', '');
                 gtinWarning.setAttribute('class', 'text-muted fs-7 mt-3 mx-2');
                 gtinWarning.setAttribute('style', 'color: var(--bs-danger) !important;');
