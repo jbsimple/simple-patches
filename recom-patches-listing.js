@@ -67,16 +67,10 @@ async function getEmployeeProductivity(sku) {
         }
     });
 
-    if (api.success && api.data && api.data.data) {
-        const matchingEntries = api.data.data.filter(
-            entry => entry.Event_Code === "Inventory Listing" 
-            && entry.hasOwnProperty("PO_Number")
-            && entry.hasOwnProperty("Time_Spent_in_mintues")
-            && entry.hasOwnProperty("Event_ID")
-        );
-
-        if (matchingEntries.length > 0) {
-            return matchingEntries;
+    if (api.success && api.data?.data?.[0]) {
+        const entry = api.data.data[0];
+        if (entry.hasOwnProperty("PO_Number") && entry.hasOwnProperty("Time_Spent_in_mintues") && entry.hasOwnProperty("Event_ID")) {
+            return entry;
         }
     }
 
