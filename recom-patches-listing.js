@@ -128,95 +128,6 @@ function isValidBarcode(value) {
     return ((10 - (result % 10)) % 10) === parseInt(paddedValue.charAt(13), 10);
 }
 
-function productGTIN(listingResults) {
-    const gtin_input = document.getElementById('patches-oldgtin');
-    const secondary_input = document.getElementById('patches-newgtin');
-    var listingResults = document.getElementById('listing-results');
-
-    if (gtin_input && secondary_input && listingResults) {
-        const gtin = gtin_input.value;
-        const secondary = secondary_input.value;
-
-        console.debug('Patches - gtin', gtin);
-        console.debug('Patches - secondary', secondary);
-
-        const atags = listingResults.querySelectorAll('a');
-        if (atags) {
-            atags.forEach(atag => {
-                const href = atag.getAttribute('href');
-                if (href && href.includes('products/')) {
-                    const productid = href.replace('products/', '');
-                    console.debug('Patches - product id', productid);
-                    const update = `/products/update/${productid}`;
-                    const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]')
-                    if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
-                        const csrfToken = csrfMeta.getAttribute('content');
-                        let meta_id = 5;
-                        if (document.location.href.includes('dev.')) {
-                            meta_id = 14;
-                        } else if (document.location.href.includes('cell.')) {
-                            meta_id = 5;
-                        }
-                        const request = {
-                            product: {
-                                gtin: gtin,
-                            },
-                            meta: [{
-                                    meta_id: meta_id,
-                                    value: secondary,
-                                }
-                            ],
-                            csrf_recom: csrfToken,
-                        };
-
-                        $.ajax({
-                            type: "POST",
-                            dataType: "json",
-                            url: update,
-                            data: request,
-                        }).done(function(data) {
-                            const responseBlock = document.getElementById('productsGTIN-response');
-                            if (responseBlock && data.success) {
-                                responseBlock.innerHTML = '<span style="color: var(--bs-primary);">Updated!</span>';
-                            }
-                        
-                            console.debug('Patches - Response:', data);
-                        }).fail(function(jqXHR, textStatus, errorThrown) {
-                            console.error("Request failed: " + textStatus + ", " + errorThrown);
-                            
-                            const responseBlock = document.getElementById('productsGTIN-response');
-                            let errors = 'Loading...';
-                            if (jqXHR.responseText) {
-                                try {
-                                    const errorResponse = JSON.parse(jqXHR.responseText);
-                                    errors = '[';
-                                    if (errorResponse.errors) {
-                                        Object.entries(errorResponse.errors).forEach(([key, value]) => {
-                                            errors += `${key} => ${value}, `;
-                                        });
-                                        errors = errors.slice(0, -2) + ']';
-                                    } else {
-                                        errors = '[Unknown Error]';
-                                    }
-                                } catch (e) {
-                                    errors = `[${jqXHR.responseText}]`;
-                                }
-                            } else {
-                                errors = '[Unknown Error, See Console]';
-                            }
-                        
-                            if (responseBlock) {
-                                responseBlock.innerHTML = `<span style="color: var(--bs-danger);">Could not Update: ${errors}</span>`;
-                            }
-                        });
-                        
-                    }
-                }
-            })
-        }
-    }
-}
-
 function fixSimilarProduct() {
     const titleInput = document.querySelector('[name="product[name]"]');
     
@@ -372,6 +283,62 @@ async function hijackFindProductButton() {
     findProductButton.addEventListener('click', function(event) {
         hijackPrefillWindow();
     });
+}
+
+async function initListingWizard() {
+    // Get rid of the same error message printing like 5 million times
+    const observer = new MutationObserver(() => {
+        let previousText = '';
+
+        document.querySelectorAll('.fv-plugins-message-container.invalid-feedback').forEach(element => {
+            const text = element.textContent.trim();
+            if (text === previousText) {
+                element.remove();
+                return;
+            }
+            previousText = text;
+
+            const block = element.querySelector('div[data-field]');
+            if (!block) return;
+
+            const input = document.querySelector(`input[name="${block.dataset.field}"]`);
+            if (!input || input.dataset.errorListenerAttached) return;
+
+            input.dataset.errorListenerAttached = '1';
+            input.addEventListener('input', () => {
+                element.style.display = block.dataset.validator === 'notEmpty' && input.value.length > 0 ? 'none' : '';
+            });
+        });
+    });
+
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+    });
+
+    const listing_form = document.getElementById('rc_create_listing_form');
+    if (!listing_form) { console.error('PATCHES - Listing Wizard Init - Unable to find Listing Form'); }
+
+    const listingSubmit = document.querySelector('button[data-kt-stepper-action="submit"]');
+    if (!listingSubmit) { console.error('PATCHES - Listing Wizard Init - Unable to find Listing Submit'); }
+
+    // duplicate warnings
+    duplicateMPN(listing_form.querySelector('input[name="product[mpn]"]'));
+    duplicateAsin(listing_form.querySelector('input[name="product[asin]"]'));
+
+    // issue to get around random csrf expiry
+    setInterval(checkRenewCSRF, 60000);
+    listingNext.addEventListener('click', async function(e) {
+        setTimeout(async function () { await checkRenewCSRF(); }, 500);
+    });
+
+    // new submit
+    listingSubmit.addEventListener('click', async function() {
+        setTimeout(async function() {
+            console.log('Submit Clicked');
+        }, 500); // yikes
+    });
+
 }
 
 async function initListingPatch() {
@@ -617,7 +584,7 @@ async function initListingPatch() {
 (async () => {
     if (window.location.href.includes('/receiving/queues/listing/') || window.location.href.includes('/products/new')) {
         setTimeout(function() {
-            initListingPatch();
+            initListingWizard();
             hijackFindProductButton();
         }, 500); // yikes
     } else {
