@@ -319,6 +319,9 @@ async function initListingWizard() {
     const listing_form = document.getElementById('rc_create_listing_form');
     if (!listing_form) { console.error('PATCHES - Listing Wizard Init - Unable to find Listing Form'); }
 
+    const listingNext = document.querySelector('button[data-kt-stepper-action="next"]');
+    if (!listingNext) { console.error('PATCHES - Listing Wizard Init - Unable to find Listing Wizard Stepper'); }
+
     const listingSubmit = document.querySelector('button[data-kt-stepper-action="submit"]');
     if (!listingSubmit) { console.error('PATCHES - Listing Wizard Init - Unable to find Listing Submit'); }
 
