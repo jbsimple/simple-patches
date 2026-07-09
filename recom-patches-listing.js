@@ -422,7 +422,7 @@ async function initListingWizard() {
             }
             
             // add link to view sku
-            skuElement.innerHTML = `<a style="color: white; font-weight: 700;" href="/product/items/${SKU}" target="_blank">${SKU}</a>`;
+            skuElement.innerHTML = `<a style="color: var(--bs-primary); text-decoration: underline; cursor: pointer; font-weight: 700;" href="/product/items/${SKU}" target="_blank">${SKU}</a>`;
 
             // queue quick links
             const queueLinks = document.createElement('div');
