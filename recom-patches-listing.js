@@ -340,7 +340,7 @@ async function initListingWizard() {
         
         checkGTIN();
         gtin_input.addEventListener('input', checkGTIN);
-        document.querySelector('a[href="javascript:generateGtin();"]')?.addEventListener('input', checkGTIN);
+        document.querySelector('a[href="javascript:generateGtin();"]')?.addEventListener('click', checkGTIN);
 
         function checkGTIN() {
             setTimeout(function() {
