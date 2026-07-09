@@ -403,6 +403,7 @@ async function initListingWizard() {
             const listing_results = document.getElementById('listing-results');
             if (!listing_results) { console.error('PATCHES - Listing Wizard Submit - Unable to find Listing Results'); return; }
             listing_results.appendChild(document.createElement('br'));
+            listing_results.appendChild(document.createElement('br'));
 
             // fix links to open in a new tab
             listing_results.querySelectorAll('a').forEach(a => { a.target = '_blank'; });
@@ -435,6 +436,8 @@ async function initListingWizard() {
                 <span>View In Pending Inventory</span>
             </a>`;
             listing_results.appendChild(queueLinks);
+            listing_results.appendChild(document.createElement('br'));
+            listing_results.appendChild(document.createElement('br'));
 
             // time spent and location update
             const justCreated = await getEmployeeProductivity(SKU);
@@ -448,6 +451,8 @@ async function initListingWizard() {
                 const timeSpentLine = document.createElement('p');
                 timeSpentLine.innerHTML = `<strong>Time Spent in Minutes: ${timeSpent}`;
                 listing_results.appendChild(timeSpentLine);
+                listing_results.appendChild(document.createElement('br'));
+                listing_results.appendChild(document.createElement('br'));
             } else {
                 console.error('PATCHES - Listing Wizard Submit - No time spent in minutes.', timeSpent, justCreated);
             }
@@ -462,6 +467,8 @@ async function initListingWizard() {
                     <span>Update Location</span>
                 </a>`;
                 listing_results.appendChild(locationUpdateRow);
+                listing_results.appendChild(document.createElement('br'));
+                listing_results.appendChild(document.createElement('br'));
             } else {
                 console.error('PATCHES - Listing Wizard Submit - No eventID or PO.', eventID, po, justCreated);
             }
