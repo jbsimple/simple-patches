@@ -1,25 +1,28 @@
 async function getTimeSpentInMinutes(sku) {
-    async function getUserID() {
-        try {
-            const response = await fetch('/user/me');
-            const html = await response.text();
-    
-            const scriptMatch = html.match(/<script[^>]*>([\s\S]*?)<\/script>/gi);
-            if (scriptMatch) {
-                for (const script of scriptMatch) {
-                    const userIdMatch = script.match(/userID\s*=\s*(\d+);/);
-                    if (userIdMatch) {
-                        console.debug('PATCHES - Extracted userID:', userIdMatch[1]);
-                        return parseInt(userIdMatch[1], 10);
-                    }
+    let userID = null;
+    try {
+        const response = await fetch('/user/me');
+        const html = await response.text();
+
+        const scriptMatch = html.match(/<script[^>]*>([\s\S]*?)<\/script>/gi);
+        if (scriptMatch) {
+            for (const script of scriptMatch) {
+                const match = script.match(/userID\s*=\s*(\d+);/);
+                if (match) {
+                    userID = parseInt(match[1], 10);
+                    console.debug('PATCHES - Extracted userID:', userID);
+                    break;
                 }
             }
-            console.log('userID not found');
-            return null;
-        } catch (error) {
-            console.error('Error fetching the page:', error);
+        }
+
+        if (!userID) {
+            console.error('PATCHES - userID not found');
             return null;
         }
+    } catch (error) {
+        console.error('PATCHES - Error fetching user ID:', error);
+        return null;
     }
 
     const today = new Date();
@@ -42,7 +45,7 @@ async function getTimeSpentInMinutes(sku) {
                 {
                     "field": "user_profile.user_id",
                     "operator": "eq",
-                    "value": `${getUserID()}`
+                    "value": `${userID}`
                 },
                 {
                     "field": "product_items.sku",
