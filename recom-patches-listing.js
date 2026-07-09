@@ -337,12 +337,16 @@ async function initListingWizard() {
         gtin_input.setAttribute('type', 'text');
         gtin_input.setAttribute('inputmode', 'numeric');
         gtin_input.setAttribute('pattern', '[0-9]*');
-        gtin_input.addEventListener('input', () => {
-            gtin_input.value = gtin_input.value.replace(/\D/g, '');
+        gtin_input.addEventListener('input', checkGTIN);
+        checkGTIN();
 
+        function checkGTIN() {
+            let valid = false;
+
+            gtin_input.value = gtin_input.value.replace(/\D/g, '');
             const value = gtin_input.value;
             if (value.length === 0) {
-                gtin_input.setCustomValidity('');
+                valid = true;
             } else if ([12, 13, 14].includes(value.length)) {
                 let sum = 0;
                 let odd = true;
@@ -352,12 +356,21 @@ async function initListingWizard() {
                     odd = !odd;
                 }
                 const expectedCheckDigit = (10 - (sum % 10)) % 10;
-                 const validGTIN = expectedCheckDigit === Number(value[value.length - 1]);
-                gtin_input.setCustomValidity(validGTIN ? '' : 'Invalid GTIN.');
+                valid = expectedCheckDigit === Number(value[value.length - 1]);
             } else {
-                gtin_input.setCustomValidity('GTIN must be 12, 13, or 14 digits.');
+                valid = false;
             }
-        });
+
+            if (valid && listing_form.querySelector('[patches-gtinWarning]')) {
+                listing_form.querySelector('[patches-gtinWarning]').remove();
+            } else {
+                const gtinWarning = document.createElement('p');
+                gtinWarning.setAttribute('patches-gtinWarning', '');
+                gtinWarning.setAttribute('class', 'text-muted fs-7 mt-3 mx-2');
+                gtinWarning.setAttribute('style', 'color: var(--bs-danger) !important;');
+                gtin_input.insertAdjacentElement('afterend', gtinWarning);
+            }
+        }
     }
 
     // groq generate description button
