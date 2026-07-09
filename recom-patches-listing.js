@@ -405,7 +405,7 @@ async function initListingWizard() {
             listing_results.appendChild(document.createElement('br'));
 
             // fix links to open in a new tab
-            listing_results.querySelectorAll('a').forEach(a => { a.addAttribute('target', '_blank'); });
+            listing_results.querySelectorAll('a').forEach(a => { a.target = '_blank'; });
 
             // find the SKU
             const skuElement = listing_results.querySelector('h2');
