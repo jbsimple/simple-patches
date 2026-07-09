@@ -331,6 +331,31 @@ async function initListingWizard() {
     listingNext.addEventListener('click', async function(e) {
         setTimeout(async function () { await checkRenewCSRF(); }, 500);
     });
+    async function checkRenewCSRF() {
+        try {
+            const response = await fetch(window.location.href, {
+                cache: 'no-store',
+                credentials: 'same-origin'
+            });
+
+            if (!response.ok) return;
+
+            const html = await response.text();
+            const doc = new DOMParser().parseFromString(html, 'text/html');
+
+            const newToken = doc.querySelector('#rc_create_listing_form input[name="csrf_recom"]');
+            const currentToken = listing_form.querySelector('input[name="csrf_recom"]');
+
+            if (!newToken || !currentToken) return;
+
+            if (newToken.value !== currentToken.value) {
+                currentToken.value = newToken.value;
+                console.log('Updated CSRF token.');
+            }
+        } catch (err) {
+            console.error('Failed to refresh CSRF token:', err);
+        }
+    }
 
     // new submit
     listingSubmit.addEventListener('click', async function() {
