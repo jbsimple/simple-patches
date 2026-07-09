@@ -1,4 +1,4 @@
-async function getTimeSpentInMinutes(sku) {
+async function getEmployeeProductivity(sku) {
     let userID = null;
     try {
         const response = await fetch('/user/me');
@@ -35,7 +35,7 @@ async function getTimeSpentInMinutes(sku) {
         body: {
             type: "user_clock",
             page: 1,
-            per_page: 10,
+            per_page: 1,
             filters: [
                 {
                     "field": "user_clocks.clock_date",
@@ -46,6 +46,11 @@ async function getTimeSpentInMinutes(sku) {
                     "field": "user_profile.user_id",
                     "operator": "eq",
                     "value": `${userID}`
+                },
+                {
+                    "field": "user_clock_activity.activity_code",
+                    "operator": "eq",
+                    "value": `receiving_listing`
                 },
                 {
                     "field": "product_items.sku",
