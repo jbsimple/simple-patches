@@ -317,23 +317,17 @@ async function initListingWizard() {
     });
 
     const listing_form = document.getElementById('rc_create_listing_form');
-    if (!listing_form) { console.error('PATCHES - Listing Wizard Init - Unable to find Listing Form'); }
+    if (!listing_form) { console.error('PATCHES - Listing Wizard Init - Unable to find Listing Form'); return; }
 
+    // fix for csrf reissue due to internet loss
     const listingNext = document.querySelector('button[data-kt-stepper-action="next"]');
-    if (!listingNext) { console.error('PATCHES - Listing Wizard Init - Unable to find Listing Wizard Stepper'); }
-
-    const listingSubmit = document.querySelector('button[data-kt-stepper-action="submit"]');
-    if (!listingSubmit) { console.error('PATCHES - Listing Wizard Init - Unable to find Listing Submit'); }
-
-    // duplicate warnings
-    duplicateMPN(listing_form.querySelector('input[name="product[mpn]"]'));
-    duplicateAsin(listing_form.querySelector('input[name="product[asin]"]'));
-
-    // issue to get around random csrf expiry
-    setInterval(checkRenewCSRF, 60000);
-    listingNext.addEventListener('click', async function(e) {
-        setTimeout(async function () { await checkRenewCSRF(); }, 500);
-    });
+    if (listingNext) {
+        listingNext.addEventListener('click', async function(e) {
+            setTimeout(async function () { await checkRenewCSRF(); }, 500);
+        });
+    } else {
+        setInterval(checkRenewCSRF, 60000);
+    }
     async function checkRenewCSRF() {
         try {
             const response = await fetch(window.location.href, {
@@ -359,6 +353,42 @@ async function initListingWizard() {
             console.error('Failed to refresh CSRF token:', err);
         }
     }
+
+    // gtin field accepts everything now so this is a REAL gtin validation
+    const gtin_input = document.querySelector('input[name="product[gtin]"]');
+    if (gtin_input) {
+        gtin_input.setAttribute('type', 'text');
+        gtin_input.setAttribute('inputmode', 'numeric');
+        gtin_input.setAttribute('pattern', '[0-9]*');
+        gtin_input.addEventListener('input', () => {
+            gtin_input.value = gtin_input.value.replace(/\D/g, '');
+
+            const value = gtin_input.value;
+            if (value.length === 0) {
+                gtin_input.setCustomValidity('');
+            } else if ([12, 13, 14].includes(value.length)) {
+                let sum = 0;
+                let odd = true;
+                for (let i = gtin.length - 2; i >= 0; i--) {
+                    const digit = Number(gtin[i]);
+                    sum += odd ? digit * 3 : digit;
+                    odd = !odd;
+                }
+                const expectedCheckDigit = (10 - (sum % 10)) % 10;
+                const validGTIN = expectedCheckDigit === Number(gtin[gtin.length - 1]);
+                gtin_input.setCustomValidity(validGTIN ? '' : 'Invalid GTIN.');
+            } else {
+                gtin_input.setCustomValidity('GTIN must be 12, 13, or 14 digits.');
+            }
+        });
+    }
+
+    const listingSubmit = document.querySelector('button[data-kt-stepper-action="submit"]');
+    if (!listingSubmit) { console.error('PATCHES - Listing Wizard Init - Unable to find Listing Submit'); return; }
+
+    // duplicate warnings
+    duplicateMPN(listing_form.querySelector('input[name="product[mpn]"]'));
+    duplicateAsin(listing_form.querySelector('input[name="product[asin]"]'));
 
     // new submit
     listingSubmit.addEventListener('click', async function() {
