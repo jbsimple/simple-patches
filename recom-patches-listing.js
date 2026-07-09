@@ -363,7 +363,7 @@ async function initListingWizard() {
 
             let gtinWarning = listing_form.querySelector('[patches-gtinWarning]');
             if (valid && gtinWarning) {
-                listing_form.querySelector('[patches-gtinWarning]').remove();
+                gtinWarning.remove();
             } else {
                 gtinWarning = document.createElement('p');
                 gtinWarning.setAttribute('patches-gtinWarning', '');
