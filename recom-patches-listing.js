@@ -111,24 +111,6 @@ function inWrongTaskCheck() {
     }
 }
 
-// https://stackoverflow.com/questions/13605340/how-to-validate-a-ean-gtin-barcode-in-javascript
-// There are more checks in place for valid gtins I guess.
-function isValidBarcode(value) {
-    // We only allow correct length barcodes
-    if (!value.match(/^(\d{8}|\d{12,14})$/)) {
-      return false;
-    }
-  
-    const paddedValue = value.padStart(14, '0');
-  
-    let result = 0;
-    for (let i = 0; i < paddedValue.length - 1; i += 1) {
-      result += parseInt(paddedValue.charAt(i), 10) * ((i % 2 === 0) ? 3 : 1);
-    }
-  
-    return ((10 - (result % 10)) % 10) === parseInt(paddedValue.charAt(13), 10);
-}
-
 function fixSimilarProduct() {
     const titleInput = document.querySelector('[name="product[name]"]');
     
@@ -292,13 +274,9 @@ async function initListingWizard() {
     // Get rid of the same error message printing like 5 million times
     const observer = new MutationObserver(() => {
         let previousText = '';
-
         document.querySelectorAll('.fv-plugins-message-container.invalid-feedback').forEach(element => {
             const text = element.textContent.trim();
-            if (text === previousText) {
-                element.remove();
-                return;
-            }
+            if (text === previousText) { element.remove(); return; }
             previousText = text;
 
             const block = element.querySelector('div[data-field]');
@@ -313,11 +291,7 @@ async function initListingWizard() {
             });
         });
     });
-
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true,
-    });
+    observer.observe(document.body, {childList: true, subtree: true});
 
     const listing_form = document.getElementById('rc_create_listing_form');
     if (!listing_form) { console.error('PATCHES - Listing Wizard Init - Unable to find Listing Form'); return; }
@@ -372,13 +346,13 @@ async function initListingWizard() {
             } else if ([12, 13, 14].includes(value.length)) {
                 let sum = 0;
                 let odd = true;
-                for (let i = gtin.length - 2; i >= 0; i--) {
-                    const digit = Number(gtin[i]);
+                for (let i = value.length - 2; i >= 0; i--) {
+                    const digit = Number(value[i]);
                     sum += odd ? digit * 3 : digit;
                     odd = !odd;
                 }
                 const expectedCheckDigit = (10 - (sum % 10)) % 10;
-                const validGTIN = expectedCheckDigit === Number(gtin[gtin.length - 1]);
+                 const validGTIN = expectedCheckDigit === Number(value[value.length - 1]);
                 gtin_input.setCustomValidity(validGTIN ? '' : 'Invalid GTIN.');
             } else {
                 gtin_input.setCustomValidity('GTIN must be 12, 13, or 14 digits.');
@@ -386,6 +360,7 @@ async function initListingWizard() {
         });
     }
 
+    // groq generate description button
     const description_input = document.querySelector('input[name="product[description]"]');
     if (description_input) {
         const groqDesc = document.createElement('button');
@@ -398,14 +373,13 @@ async function initListingWizard() {
         description_input.insertAdjacentElement('afterend', groqDesc);
     }
 
-    const listingSubmit = document.querySelector('button[data-kt-stepper-action="submit"]');
-    if (!listingSubmit) { console.error('PATCHES - Listing Wizard Init - Unable to find Listing Submit'); return; }
-
     // duplicate warnings
     duplicateMPN(listing_form.querySelector('input[name="product[mpn]"]'));
     duplicateAsin(listing_form.querySelector('input[name="product[asin]"]'));
 
-    // new submit
+    // new post listing wizard submit
+    const listingSubmit = document.querySelector('button[data-kt-stepper-action="submit"]');
+    if (!listingSubmit) { console.error('PATCHES - Listing Wizard Init - Unable to find Listing Submit'); return; }
     listingSubmit.addEventListener('click', async function() {
         setTimeout(async function() {
             const listing_results = document.getElementById('listing-results');
@@ -468,7 +442,7 @@ async function initListingWizard() {
                 console.error('PATCHES - Listing Wizard Submit - No eventID or PO.', eventID, po, justCreated);
             }
 
-        }, 500); // yikes
+        }, 500); // so it can be created first
     });
 
 }
