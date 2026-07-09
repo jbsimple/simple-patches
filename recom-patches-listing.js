@@ -337,41 +337,45 @@ async function initListingWizard() {
         gtin_input.setAttribute('type', 'text');
         gtin_input.setAttribute('inputmode', 'numeric');
         gtin_input.setAttribute('pattern', '[0-9]*');
-        gtin_input.addEventListener('input', checkGTIN);
+        
         checkGTIN();
+        gtin_input.addEventListener('input', checkGTIN);
+        document.querySelector('a[href="javascript:generateGtin();"]')?.addEventListener('input', checkGTIN);
 
         function checkGTIN() {
-            let valid = false;
+            setTimeout(function() {
+                let valid = false;
 
-            gtin_input.value = gtin_input.value.replace(/\D/g, '');
-            const value = gtin_input.value;
-            if (value.length === 0) {
-                valid = true;
-            } else if ([12, 13, 14].includes(value.length)) {
-                let sum = 0;
-                let odd = true;
-                for (let i = value.length - 2; i >= 0; i--) {
-                    const digit = Number(value[i]);
-                    sum += odd ? digit * 3 : digit;
-                    odd = !odd;
+                gtin_input.value = gtin_input.value.replace(/\D/g, '');
+                const value = gtin_input.value;
+                if (value.length === 0) {
+                    valid = true;
+                } else if ([12, 13, 14].includes(value.length)) {
+                    let sum = 0;
+                    let odd = true;
+                    for (let i = value.length - 2; i >= 0; i--) {
+                        const digit = Number(value[i]);
+                        sum += odd ? digit * 3 : digit;
+                        odd = !odd;
+                    }
+                    const expectedCheckDigit = (10 - (sum % 10)) % 10;
+                    valid = expectedCheckDigit === Number(value[value.length - 1]);
+                } else {
+                    valid = false;
                 }
-                const expectedCheckDigit = (10 - (sum % 10)) % 10;
-                valid = expectedCheckDigit === Number(value[value.length - 1]);
-            } else {
-                valid = false;
-            }
 
-            let gtinWarning = listing_form.querySelector('[patches-gtinwarning]');
-            if (valid && gtinWarning) {
-                gtinWarning.remove();
-            } else if (!gtinWarning) {
-                gtinWarning = document.createElement('p');
-                gtinWarning.setAttribute('patches-gtinwarning', '');
-                gtinWarning.setAttribute('class', 'text-muted fs-7 mt-3 mx-2');
-                gtinWarning.setAttribute('style', 'color: var(--bs-danger) !important;');
-                gtinWarning.textContent = 'GTIN looks weird.';
-                gtin_input.insertAdjacentElement('afterend', gtinWarning);
-            }
+                let gtinWarning = listing_form.querySelector('[patches-gtinwarning]');
+                if (valid && gtinWarning) {
+                    gtinWarning.remove();
+                } else if (!gtinWarning) {
+                    gtinWarning = document.createElement('p');
+                    gtinWarning.setAttribute('patches-gtinwarning', '');
+                    gtinWarning.setAttribute('class', 'text-muted fs-7 mt-3 mx-2');
+                    gtinWarning.setAttribute('style', 'color: var(--bs-danger) !important;');
+                    gtinWarning.textContent = 'GTIN looks weird.';
+                    gtin_input.insertAdjacentElement('afterend', gtinWarning);
+                }
+            }, 200);
         }
     }
 
