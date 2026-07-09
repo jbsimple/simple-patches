@@ -26,7 +26,7 @@ async function getTimeSpentInMinutes(sku) {
     const today_mm = String(today.getMonth() + 1).padStart(2, '0');
     const today_dd = String(today.getDate()).padStart(2, '0');
     const today_yyyy = today.getFullYear();
-    const todayFormatted = `${today_yyyy}-${today_mm}/${today_dd}`;
+    const todayFormatted = `${today_yyyy}-${today_mm}-${today_dd}`;
 
     const api = await fetchAPI("reports", {
         body: {
@@ -406,7 +406,7 @@ async function initListingWizard() {
     listingSubmit.addEventListener('click', async function() {
         setTimeout(async function() {
             const listing_results = document.getElementById('listing-results');
-            if (!listing-results) { console.error('PATCHES - Listing Wizard Submit - Unable to find Listing Results'); return; }
+            if (!listing-listing_results) { console.error('PATCHES - Listing Wizard Submit - Unable to find Listing Results'); return; }
 
             // find the SKU
             const skuElement = listing_results.querySelector('h2');
