@@ -372,8 +372,8 @@ async function initListingWizard() {
                     gtinWarning.setAttribute('patches-gtinwarning', '');
                     gtinWarning.setAttribute('class', 'text-muted fs-7 mt-3 mx-2');
                     gtinWarning.setAttribute('style', 'color: var(--bs-danger) !important;');
-                    gtinWarning.textContent = `GTIN is weird: ${gtinWarning}`;
-                    gtinWarning.title = `The GTIN is weird because of its ${gtinWarning}. It will still save.`;
+                    gtinWarning.textContent = `GTIN is weird: ${valid}`;
+                    gtinWarning.title = `The GTIN is weird because of its ${valid}. It will still save.`;
                     gtin_input.insertAdjacentElement('afterend', gtinWarning);
                 }
             }, 200);
