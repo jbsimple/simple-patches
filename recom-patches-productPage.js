@@ -745,7 +745,7 @@ function initBetterDescriptionCopy() {
         plaintext = plaintext
             .replace(/\n{3,}/g, '\n\n')
             .trim();
-        fireSwal('Copy This!', `<textarea class="form-control form-control-solid" style="max-height:50vh;font-size:14px;text-align:left;">${plaintext}</textarea>`, 'success', false);
+        fireSwal('Copy This!', `<textarea class="form-control form-control-solid form-control-lg" style="height:400px;max-height:65vh;font-size:13px;text-align:left;resize:vertical;">${plaintext}</textarea>`, 'success', false, '800px');
 
     }
 }
