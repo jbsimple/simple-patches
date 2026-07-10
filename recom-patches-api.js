@@ -1078,7 +1078,7 @@ async function groq_desc(title = null, description = null) {
         "- Do not incorrectly apply this rule to unrelated products.",
 
         "Rules for warnings:",
-        "Warnings are extra pieces of information we need to include in the listing for the customer. This only applies to tablets, smartwatches and smartphones.",
+        "Warnings are extra pieces of information we need to include in the listing for the customer. Only add warnings to Smartphones, Smartwatches and Tablets, NOTHING ELSE.",
         
         "Smartphones require a warning line about its carrier. Below are the specific warnings to include for each carrier. If a carrier is not in the list below, do your best to follow the format. List:",
         "Unlocked (No Carrier, GSM + CDMA): Please Note: This is an Unlocked device and can be used on GSM and CDMA carriers such as T-Mobile, AT&T, and Verizon Wireless in the USA. Device is not cleared to use with international carriers.",
