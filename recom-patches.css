@@ -26,22 +26,17 @@ body {
 
 /* small clock in buttons */
 .app-navbar-item
-a.btn.btn-outline
-i.fs-2.mobilefix:not(.btn-outline-danger) {
+a.btn.btn-outline:not(.btn-outline-danger, .btn-outline-success)
+i.fs-2.mobilefix {
     display: inherit !important;
-}
-
-.app-navbar-item
-a.btn.btn-outline
-span.mobilefix:not(.btn-outline-danger span) {
-    display: none !important;
-}
-
-.app-navbar-item
-a.btn.btn-outline
-i.fs-2.mobilefix:not(.btn-outline-danger .fs-2.mobilefix) {
     margin: 0 !important;
     padding: 0 !important;
+}
+
+.app-navbar-item
+a.btn.btn-outline:not(.btn-outline-danger, .btn-outline-success)
+span.mobilefix {
+    display: none !important;
 }
 
 .ms-lg-4 {
