@@ -670,7 +670,7 @@ function modifiedClockInit() {
             recordTime_parent.insertBefore(updatePuctureLocationsButton, recordTime_button);
         }
 
-        if (!(task.toLowerCase().includes('lunch') || task.toLowerCase().includes('break'))) {
+        if (task.toLowerCase().includes('lunch') || task.toLowerCase().includes('break')) {
             const clockOutButton = document.querySelector(`[href="javascript:clockInOut('out');"]`);
             if (clockOutButton) { clockOutButton.classList.replace('btn-outline-danger', 'btn-outline-success'); }
         }
