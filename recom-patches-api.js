@@ -1063,6 +1063,7 @@ async function groq_desc(title = null, description = null) {
         "- Keep bullets concise and informative.",
         "- Focus on compatibility, materials, functionality, dimensions, connectivity, included items, or practical usage when known.",
         "- Do not repeat the same information excessively.",
+        "- Do not make statements like 'It is a...' or 'It has a '. Instead, make it sound appealing.",
 
         "Global restrictions:",
         "- Do not mention warranties or manufacturer coverage.",
