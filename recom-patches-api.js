@@ -1012,14 +1012,13 @@ async function groq_desc(title = null, description = null) {
     if (title.length > 80) { return handleError("This is not a valid product title, it is longer than 80 characters." ); }
 
     let prompt = [
-        "I am a third-party seller that purchases overstock products and resells them on marketplaces like eBay and Shopify.",
-
-        "Generate a clean, factual, marketplace-style product description in plain text only.",
+        "I am a third-party seller that purchases overstock products and resells them on marketplaces like eBay and Shopify. Generate a clean, factual, marketplace-style product description in plain text only.",
 
         "Your response must follow this exact structure:",
-
         "{Rewritten Title}",
         "",
+        "{Warnings (if applicable)}",
+        "(extra line if there is a warning)",
         "{2-4 sentence overview paragraph}",
         "",
         "Features:",
@@ -1077,6 +1076,32 @@ async function groq_desc(title = null, description = null) {
         "- If the product uses Apple's Lightning connector, do not use the word 'Lightning'.",
         "- Instead, refer to it as an 'MFI (Made For Apple) 8-pin connector' or 'MFI 8-pin cable' when appropriate.",
         "- Do not incorrectly apply this rule to unrelated products.",
+
+        "Rules for warnings:",
+        "Warnings are extra pieces of information we need to include in the listing for the customer. This only applies to specific types of products.",
+        
+        "Smartphones require a warning line about its carrier. Below are the specific warnings to include for each carrier. If a carrier is not in the list below, do your best to follow the format. List:",
+        "Unlocked (No Carrier, GSM + CDMA): Please Note: This is an Unlocked device and can be used on GSM and CDMA carriers such as T-Mobile, AT&T, and Verizon Wireless in the USA. Device is not cleared to use with international carriers.",
+        "Verizon: Please Note: This is a Verizon Wireless device and can only be used or activated on the Verizon Wireless Network in the USA. Device is not cleared to use with international carriers.",
+        "AT&T: Please Note: This is an AT&T device and can only be used or activated on the AT&T Network in the USA. Device is not cleared to use with international carriers.",
+        "T-Mobile: Please Note: This is a T-Mobile device and can only be used or activated on the T-Mobile Network in the USA. Device is not cleared to use with international carriers.",
+        "Verizon Prepaid: Please Note: This is a pre-paid device for the Verizon Wireless Network and can only be activated through Verizon in the USA on a pre-paid plan. Device is not cleared to use with international carriers.",
+        "Tracfone: Please Note: This is a pre-paid device for the Tracfone Network and can only be activated through Tracfone in the US. Device is not cleared to use with international carriers.",
+
+        "If the smartphone is a DEMO model (in the title), the warning to include:",
+        "Please Note: This is a DEMO Unit device and will not serve full functionality as a normal device would. This phone is NOT capable of being activated on any cellular networks.",
+
+        "Tablets are either cellular enabled or wi-fi only.",
+        "Warning for cellular enabled tablets follow the same format as smarpthones unocked.",
+        "Wi-fi Only: Please Note: This is a Wi-Fi Only device and is not capable of cellular data or connectivity.",
+
+        "For Cellular Enabled Smartwatches, the warning is:",
+        "Please Note: This is the GPS + Cellular Model. Device has been cleared for use on GSM and CDMA carriers such as T-Mobile, AT&T, and Verizon Wireless in the USA. Device is not cleared to use with international carriers.",
+        
+        "For Smartphones, Cellular Enabled Tablets and Cellular Enabled Smartwatches, an additonal warning line is needed. Put this:",
+        "The IMEI number of each device is recorded and will be tracked for customer service reasons. Failure to return the correct item or damage received will be reflected in the process.",
+        "For Wi-Fi only Tablets and Non-Cellular Smartwatches, put this extra warning:",
+        "The serial number of each device is recorded and will be tracked for customer service reasons. Failure to return the correct item or damage received will be reflected in the process.",
 
         `Product Title:\n${title}`,
         description ? `Addiitonal Product Details:\n${description}` : '',
