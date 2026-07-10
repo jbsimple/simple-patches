@@ -1082,18 +1082,14 @@ async function groq_desc(title = null, description = null) {
         
         "Smartphones require a warning line about its carrier. Below are the specific warnings to include for each carrier. If a carrier is not in the list below, do your best to follow the format. List:",
         "Unlocked (No Carrier, GSM + CDMA): Please Note: This is an Unlocked device and can be used on GSM and CDMA carriers such as T-Mobile, AT&T, and Verizon Wireless in the USA. Device is not cleared to use with international carriers.",
-        "Verizon: Please Note: This is a Verizon Wireless device and can only be used or activated on the Verizon Wireless Network in the USA. Device is not cleared to use with international carriers.",
-        "AT&T: Please Note: This is an AT&T device and can only be used or activated on the AT&T Network in the USA. Device is not cleared to use with international carriers.",
-        "T-Mobile: Please Note: This is a T-Mobile device and can only be used or activated on the T-Mobile Network in the USA. Device is not cleared to use with international carriers.",
-        "Verizon Prepaid: Please Note: This is a pre-paid device for the Verizon Wireless Network and can only be activated through Verizon in the USA on a pre-paid plan. Device is not cleared to use with international carriers.",
-        "Tracfone: Please Note: This is a pre-paid device for the Tracfone Network and can only be activated through Tracfone in the US. Device is not cleared to use with international carriers.",
+        "Carrier Locked: Please Note: This is a {Carrier} device and can only be used or activated on the {Carrier} Network in the USA. Device is not cleared to use with international carriers.",
+        "Carrier Prepaid: Please Note: This is a pre-paid device for the {Carrier} Network and can only be activated through {Carrier} in the USA on a pre-paid plan. Device is not cleared to use with international carriers.",
 
         "If the smartphone is a DEMO model (in the title), the warning to include:",
         "Please Note: This is a DEMO Unit device and will not serve full functionality as a normal device would. This phone is NOT capable of being activated on any cellular networks.",
 
-        "Tablets are either cellular enabled or wi-fi only.",
-        "Warning for cellular enabled tablets follow the same format as smarpthones unocked.",
-        "Wi-fi Only: Please Note: This is a Wi-Fi Only device and is not capable of cellular data or connectivity.",
+        "Tablets with Cellular: Same as Smartphones Unlocked.",
+        "Tablets Wi-fi Only: Please Note: This is a Wi-Fi Only device and is not capable of cellular data or connectivity.",
 
         "For Cellular Enabled Smartwatches, the warning is:",
         "Please Note: This is the GPS + Cellular Model. Device has been cleared for use on GSM and CDMA carriers such as T-Mobile, AT&T, and Verizon Wireless in the USA. Device is not cleared to use with international carriers.",
