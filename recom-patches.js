@@ -672,7 +672,7 @@ function modifiedClockInit() {
 
         if (task.toLowerCase().includes('lunch') || task.toLowerCase().includes('break')) {
             const clockOutButton = document.querySelector(`[href="javascript:clockInOut('out');"]`);
-            if (clockOutButton) { clockOutButton.classList.replace('btn-outline-danger', 'btn-outline-success'); }
+            if (clockOutButton) { clockOutButton.classList.replace('btn-outline-danger', 'btn-outline-warning'); }
         }
 
 	} else if (clockIn_button) {
