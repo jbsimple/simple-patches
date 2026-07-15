@@ -30,6 +30,7 @@ export default async function handler(req, res) {
         return res.status(400).json({ success: false, error: "Invalid referrer" });
     }
 
+    // magical token rotation
     let tokens = hostname.startsWith("dev.") ? [process.env.DEV_API_KEY] : [process.env.PROD_API_KEY, process.env.LISTING_DASHBOARD_API1, process.env.LISTING_DASHBOARD_API2, process.env.LISTING_DASHBOARD_API3];
     tokens = tokens.filter(Boolean);
     if (!tokens.length) { return res.status(500).json({ success: false, error: "Missing API token" }); }
@@ -54,6 +55,7 @@ export default async function handler(req, res) {
     async function apiRequest(cacheKey, apiURL, tokens, method, body = null) {
         let response;
 
+        // always use the first one, fall back to other tokens if rate limit hits (because I am evil)
         for (const token of tokens) {
             const request = {
                 method,
@@ -68,8 +70,9 @@ export default async function handler(req, res) {
             response = await fetch(apiURL, request);
             if (response.status !== 429) { break; }
         }
-        const text = await response.text();
 
+        // super safe parse
+        const text = await response.text();
         let data;
         try {
             data = text ? JSON.parse(text) : null;
@@ -94,10 +97,10 @@ export default async function handler(req, res) {
         return result;
     }
 
-
     try {
         if (route === "meta") {
             if (req.method !== "GET") { return res.status(405).json({ success: false, error: "Meta requires GET" }); }
+
             const { status, payload, cache: cacheStatus } = await apiRequest(cacheKey, `https://${hostname}/api/v1/reports/meta`, tokens, "GET");
             res.setHeader("X-Fetch-Cache", cacheStatus);
             return res.status(status).json(payload);
