@@ -6,56 +6,33 @@ const cache = new Map();
 
 export default async function handler(req, res) {
 
-    const allowedOrigins = (process.env.ALLOWED_ORIGINS || "")
-        .split(",")
-        .map(o => o.trim())
-        .filter(Boolean);
-
+    const allowedOrigins = (process.env.ALLOWED_ORIGINS || "").split(",").map(o => o.trim()).filter(Boolean);
     const origin = req.headers.origin;
-
-    if (!origin || !allowedOrigins.includes(origin)) {
-        return res.status(403).json({ success: false, error: "Origin not allowed" });
-    }
+    if (!origin || !allowedOrigins.includes(origin)) { return res.status(403).json({ success: false, error: "Origin not allowed" }); }
 
     res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
-    if (req.method === "OPTIONS") {
-        return res.status(200).end();
-    }
-
-    if (!["GET", "POST"].includes(req.method)) {
-        return res.status(405).json({ success: false, error: "Method not allowed" });
-    }
+    if (req.method === "OPTIONS") { return res.status(200).end(); }
+    if (!["GET", "POST"].includes(req.method)) { return res.status(405).json({ success: false, error: "Method not allowed" }); }
 
     const referrerHeader = req.headers.referer || req.headers.origin;
+    if (!referrerHeader) { return res.status(403).json({ success: false, error: "Missing referrer" });}
 
-    if (!referrerHeader) {
-        return res.status(403).json({ success: false, error: "Missing referrer" });
-    }
+    const route = req.query.route;
+    if (!route || !["meta", "reports"].includes(route)) { return res.status(400).json({ success: false, error: "Invalid route" }); }
 
     let hostname;
-
     try {
         hostname = new URL(referrerHeader).hostname;
     } catch {
         return res.status(400).json({ success: false, error: "Invalid referrer" });
     }
 
-    let token = hostname.startsWith("dev.")
-        ? process.env.DEV_API_KEY
-        : process.env.PROD_API_KEY;
-
-    if (!token) {
-        return res.status(500).json({ success: false, error: "Missing API token" });
-    }
-
-    const route = req.query.route;
-
-    if (!route || !["meta", "reports"].includes(route)) {
-        return res.status(400).json({ success: false, error: "Invalid route" });
-    }
+    let tokens = hostname.startsWith("dev.") ? [process.env.DEV_API_KEY] : [process.env.PROD_API_KEY, process.env.LISTING_DASHBOARD_API1, process.env.LISTING_DASHBOARD_API2, process.env.LISTING_DASHBOARD_API3];
+    tokens = tokens.filter(Boolean);
+    if (!tokens.length) { return res.status(500).json({ success: false, error: "Missing API token" }); }
 
     // Magical Cache
     const cacheKey = JSON.stringify({
@@ -72,85 +49,69 @@ export default async function handler(req, res) {
         return res.status(cached.status).json(cached.payload);
     }
 
-    if (cached) {
-        cache.delete(cacheKey);
+    if (cached) { cache.delete(cacheKey); }
+
+    async function apiRequest(cacheKey, apiURL, tokens, method, body = null) {
+        let response;
+
+        for (const token of tokens) {
+            const request = {
+                method,
+                headers: { "Authorization": `Bearer ${token}` }
+            };
+
+            if (body) {
+                request.headers["Content-Type"] = "application/json";
+                request.body = JSON.stringify(body);
+            }
+
+            response = await fetch(apiURL, request);
+            if (response.status !== 429) { break; }
+        }
+        const text = await response.text();
+
+        let data;
+        try {
+            data = text ? JSON.parse(text) : null;
+        } catch {
+            data = text;
+        }
+
+        const result = {
+            status: response.status,
+            payload: { success: response.ok, data },
+            cache: "MISS"
+        };
+
+        if (response.ok) {
+            cache.set(cacheKey, {
+                status: result.status,
+                payload: result.payload,
+                expires: Date.now() + CACHE_TTL
+            });
+        }
+
+        return result;
     }
 
-    let apiURL;
 
     try {
         if (route === "meta") {
-
-            if (req.method !== "GET") {
-                return res.status(405).json({ success: false, error: "Meta requires GET" });
-            }
-
-            //apiURL = `https://${hostname}/v1/reports/meta`;
-            apiURL = `https://${hostname}/api/v1/reports/meta`;
-
-            const response = await fetch(apiURL, {
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
-            });
-
-            const data = await response.json();
-
-            const payload = {
-                success: response.ok,
-                data
-            };
-
-            cache.set(cacheKey, {
-                status: response.status,
-                payload,
-                expires: Date.now() + CACHE_TTL
-            });
-
-            res.setHeader('X-Fetch-Cache', 'MISS');
-            return res.status(response.status).json(payload);
-
+            if (req.method !== "GET") { return res.status(405).json({ success: false, error: "Meta requires GET" }); }
+            const { status, payload, cache: cacheStatus } = await apiRequest(cacheKey, `https://${hostname}/api/v1/reports/meta`, tokens, "GET");
+            res.setHeader("X-Fetch-Cache", cacheStatus);
+            return res.status(status).json(payload);
         }
 
         if (route === "reports") {
-
-            if (req.method !== "POST") {
-                return res.status(405).json({ success: false, error: "Reports require POST" });
-            }
-
-            apiURL = `https://${hostname}/api/v1/reports`;
+            if (req.method !== "POST") { return res.status(405).json({ success: false, error: "Reports require POST" }); }
 
             const body = req.body;
+            if (!body || !body.type) { return res.status(400).json({ success: false, error: "Missing report type" }); }
 
-            if (!body || !body.type) {
-                return res.status(400).json({ success: false, error: "Missing report type" });
-            }
-
-            const response = await fetch(apiURL, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
-                body: JSON.stringify(body)
-            });
-
-            const data = await response.json();
-
-            const payload = {
-                success: response.ok,
-                data
-            };
-
-            cache.set(cacheKey, {
-                status: response.status,
-                payload,
-                expires: Date.now() + CACHE_TTL
-            });
-
-            res.setHeader('X-Fetch-Cache', 'MISS');
-            return res.status(response.status).json(payload);
+            const { status, payload, cache: cacheStatus } = await apiRequest(cacheKey, `https://${hostname}/api/v1/reports`, tokens, "POST", body);
+            res.setHeader("X-Fetch-Cache", cacheStatus);
+            return res.status(status).json(payload);
         }
 
     } catch (err) {
