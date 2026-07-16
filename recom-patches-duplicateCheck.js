@@ -12,6 +12,7 @@ async function duplicateMPN(mpn_input, swal = true, self = null) {
         clearTimeout(timeout);
         timeout = setTimeout(async () => {
             const value = mpn_input.value.trim();
+            if (!value || value === '') return;
             try {
                 const mpn_check = await fetchExistingMPN(value);
                 let products = [];
@@ -101,6 +102,7 @@ async function duplicateAsin(asin_field, swal = true, self = null) {
         clearTimeout(timeout);
         timeout = setTimeout(async () => {
             const value = asin_field.value.trim();
+            if (!value || value === '') return;
             if (value.length === 10) {
                 try {
                     const main_asin = await fetchExistingAsins(value);
