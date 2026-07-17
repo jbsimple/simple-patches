@@ -210,5 +210,5 @@ setTimeout(async function() {
             attributes: true,
             attributeFilter: ["style", "class"]
         });
-    }, 1000);
+    }, 300);
 }, 300);
