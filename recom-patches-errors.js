@@ -187,11 +187,28 @@ setTimeout(async function() {
             }
         });
     }
-    setTimeout(prettyLinkSkus, 1000);
-    document.addEventListener('click', (event) => {
-        if (!event.target.closest('#dtsearchbtns')) return;
+    setTimeout(() => {
+        prettyLinkSkus(); //init
 
-        clearTimeout(window._prettyLinkTimer);
-        window._prettyLinkTimer = setTimeout(prettyLinkSkus, 1000);
-    });
+        const processing = document.getElementById("dtTable_processing");
+        if (!processing) {
+            console.error("PATCHES - Unable to find #dtTable_processing");
+            return;
+        }
+
+        let wasVisible = getComputedStyle(processing).display !== "none";
+
+        new MutationObserver(() => {
+            const visible = getComputedStyle(processing).display !== "none";
+
+            if (wasVisible && !visible) {
+                setTimeout(prettyLinkSkus, 300);
+            }
+
+            wasVisible = visible;
+        }).observe(processing, {
+            attributes: true,
+            attributeFilter: ["style", "class"]
+        });
+    }, 1000);
 }, 300);
