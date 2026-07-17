@@ -187,11 +187,11 @@ setTimeout(async function() {
             }
         });
     }
-    setTimeout(prettyLinkSkus, 300);
+    setTimeout(prettyLinkSkus, 1000);
     document.addEventListener('click', (event) => {
         if (!event.target.closest('#dtsearchbtns')) return;
 
         clearTimeout(window._prettyLinkTimer);
-        window._prettyLinkTimer = setTimeout(prettyLinkSkus, 500);
+        window._prettyLinkTimer = setTimeout(prettyLinkSkus, 1000);
     });
 }, 300);
