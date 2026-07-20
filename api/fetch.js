@@ -1,6 +1,4 @@
-export const config = {
-    maxDuration: 60
-};
+export const config = { maxDuration: 60 };
 const CACHE_TTL = 2 * 1000; // Cache max age for use, lowered to 2s
 const cache = new Map();
 
@@ -36,22 +34,15 @@ export default async function handler(req, res) {
     if (!tokens.length) { return res.status(500).json({ success: false, error: "Missing API token" }); }
 
     // Magical Cache
-    const cacheKey = JSON.stringify({
-        hostname,
-        route,
-        method: req.method,
-        body: req.body || null
-    });
-
+    const cacheKey = JSON.stringify({hostname, route, method: req.method, body: req.body || null});
     const cached = cache.get(cacheKey);
-
     if (cached && cached.expires > Date.now()) {
         res.setHeader('X-Fetch-Cache', 'HIT');
         return res.status(cached.status).json(cached.payload);
     }
-
     if (cached) { cache.delete(cacheKey); }
 
+    // this handles request to api
     async function apiRequest(cacheKey, apiURL, tokens, method, body = null) {
         let response;
 
@@ -97,6 +88,7 @@ export default async function handler(req, res) {
         return result;
     }
 
+    // this handles the request from user
     try {
         if (route === "meta") {
             if (req.method !== "GET") { return res.status(405).json({ success: false, error: "Meta requires GET" }); }
