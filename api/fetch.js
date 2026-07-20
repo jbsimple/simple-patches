@@ -1,7 +1,7 @@
 export const config = {
     maxDuration: 60
 };
-const CACHE_TTL = 15 * 1000; // Cache max age for use
+const CACHE_TTL = 2 * 1000; // Cache max age for use, lowered to 2s
 const cache = new Map();
 
 export default async function handler(req, res) {
