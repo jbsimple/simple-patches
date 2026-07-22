@@ -1094,21 +1094,31 @@ async function report_createdRecent_submit() {
                 "product_items.sku",
                 "product_items.condition_id",
                 "products.price",
+                "products.msrp",
                 "products.brand_id",
                 "products.category_id",
+                "products.weight",
                 "products.mpn",
                 "products.gtin",
                 "products.asin",
-                "products.asin",
+                "products.dimensions",
                 "product_items.store_settings",
                 "product_items.has_fba",
-                "product_items.created_at"
+                "product_items.created_at",
+                "metafield|products.id|1",
+                "metafield|products.id|2",
+                "metafield|products.id|3",
+                "metafield|product_items.id|4",
+                "metafield|products.id|5",
+                "metafield|products.id|7",
+                "metafield|products.id|20",
+                "metafield|products.id|26"
             ],
             filters: [
                 {
                     column: "product_items.in_stock",
                     opr: "{0} >= {1}",
-                    value: -100
+                    value: -1000
                 },
                 {
                     column: "product_items.created_at",
