@@ -891,8 +891,8 @@ function report_eventIDLookup_submit() {
 }
 
 function report_eventSIDLookup_submit() {
-    const eventIdInput = document.getElementById('patches-reports-eventSKULookup-input');
-    const eventIdValue = eventIdInput?.value;
+    const sidInput = document.getElementById('patches-reports-eventSIDLookup-input');
+    const sidValue = sidInput?.value;
     
     const today = new Date();
     const date = `${String(today.getMonth() + 1).padStart(2, '0')}/${String(today.getDate()).padStart(2, '0')}/${today.getFullYear()}`;
@@ -912,7 +912,7 @@ function report_eventSIDLookup_submit() {
                 {
                     column: "products.sid",
                     opr: "{0} LIKE '%{1}%'",
-                    value: eventIdValue
+                    value: sidValue
                 }
             ]
         },
@@ -923,8 +923,8 @@ function report_eventSIDLookup_submit() {
 }
 
 function report_eventSKULookup_submit() {
-    const eventIdInput = document.getElementById('patches-reports-eventSKULookup-input');
-    const eventIdValue = eventIdInput?.value;
+    const skuInput = document.getElementById('patches-reports-eventSKULookup-input');
+    const skuValue = skuInput?.value;
     
     const today = new Date();
     const date = `${String(today.getMonth() + 1).padStart(2, '0')}/${String(today.getDate()).padStart(2, '0')}/${today.getFullYear()}`;
@@ -944,7 +944,7 @@ function report_eventSKULookup_submit() {
                 {
                     column: "product_items.sku",
                     opr: "{0} LIKE '%{1}%'",
-                    value: eventIdValue
+                    value: skuValue
                 }
             ]
         },
