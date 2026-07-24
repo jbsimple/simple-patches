@@ -1019,8 +1019,6 @@ async function groq_desc(title = null, description = null) {
         "",
         "{2-4 sentence overview paragraph}",
         "",
-        "{Warnings (each warning has its own line followed by a blank line)}",
-        "",
         "Features:",
         "- Feature bullet 1",
         "- Feature bullet 2",
@@ -1076,28 +1074,6 @@ async function groq_desc(title = null, description = null) {
         "- If the product uses Apple's Lightning connector, do not use the word 'Lightning'.",
         "- Instead, refer to it as an 'MFI (Made For Apple) 8-pin connector' or 'MFI 8-pin cable' when appropriate.",
         "- Do not incorrectly apply this rule to unrelated products.",
-
-        "Rules for warnings:",
-        "Warnings are extra pieces of information we need to include in the listing for the customer. Only add warnings to Smartphones, Smartwatches and Tablets, NOTHING ELSE.",
-        
-        "Smartphones require a warning line about its carrier. Below are the specific warnings to include for each carrier. If a carrier is not in the list below, do your best to follow the format. List:",
-        "Unlocked (No Carrier, GSM + CDMA): Please Note: This is an Unlocked device and can be used on GSM and CDMA carriers such as T-Mobile, AT&T, and Verizon Wireless in the USA. Device is not cleared to use with international carriers.",
-        "Carrier Locked: Please Note: This is a {Carrier} device and can only be used or activated on the {Carrier} Network in the USA. Device is not cleared to use with international carriers.",
-        "Carrier Prepaid: Please Note: This is a pre-paid device for the {Carrier} Network and can only be activated through {Carrier} in the USA on a pre-paid plan. Device is not cleared to use with international carriers.",
-
-        "If the smartphone is a DEMO model (in the title), the warning to include:",
-        "Please Note: This is a DEMO Unit device and will not serve full functionality as a normal device would. This phone is NOT capable of being activated on any cellular networks.",
-
-        "Tablets with Cellular: Same as Smartphones Unlocked.",
-        "Tablets Wi-fi Only: Please Note: This is a Wi-Fi Only device and is not capable of cellular data or connectivity.",
-
-        "For Cellular Enabled Smartwatches, the warning is:",
-        "Please Note: This is the GPS + Cellular Model. Device has been cleared for use on GSM and CDMA carriers such as T-Mobile, AT&T, and Verizon Wireless in the USA. Device is not cleared to use with international carriers.",
-        
-        "For Smartphones, Cellular Enabled Tablets and Cellular Enabled Smartwatches, an additonal warning line is needed. Put this:",
-        "The IMEI number of each device is recorded and will be tracked for customer service reasons. Failure to return the correct item or damage received will be reflected in the process.",
-        "For Wi-Fi only Tablets and Non-Cellular Smartwatches, put this extra warning:",
-        "The serial number of each device is recorded and will be tracked for customer service reasons. Failure to return the correct item or damage received will be reflected in the process.",
 
         `Product Title:\n${title}`,
         description ? `Addiitonal Product Details:\n${description}` : '',
