@@ -981,7 +981,7 @@ async function groq_desc_btn() {
     return response;
 }
 
-async function groq_desc(title = null, description = null) {
+async function groq_desc(title = null, description = null, category = null) {
     function handleError(message) {
         fireSwal('Custom Autofill Description', ["Error:",message], 'error');
         console.error(`PATCH - API: ${message}`);
@@ -1003,6 +1003,39 @@ async function groq_desc(title = null, description = null) {
             description = product_description.value.trim();
         } else {
             description = null;
+        }
+    }
+
+    if (category === null || typeof category !== 'string') {
+        const product_category = document.querySelector('select[name="product[category_id]"]');
+        if (product_category) {
+            try {
+                const categoryId = parseInt(product_category.value);
+                if (!Number.isNaN(categoryId)) {
+                    const response = await fetch(`/ajax/datalist/categories?term=${encodeURIComponent(categoryId)}&page=1`, {
+                        method: 'GET',
+                        headers: {'Accept': 'application/json'}
+                    });
+                    if (response.ok) {
+                        const data = await response.json();
+                        const result = data.results?.[0];
+                        if (parseInt(result?.id, 10) === categoryId) {
+                            category = result.text;
+                        } else {
+                            category = null;
+                        }
+                    } else {
+                        category = null;
+                    }
+                } else {
+                    category = null;
+                }
+            } catch {
+                console.error('PATCHES - Unable to handle getting the category:', err);
+                category = null;
+            }
+        } else {
+            category = null;
         }
     }
     
@@ -1076,7 +1109,8 @@ async function groq_desc(title = null, description = null) {
         "- Do not incorrectly apply this rule to unrelated products.",
 
         `Product Title:\n${title}`,
-        description ? `Addiitonal Product Details:\n${description}` : '',
+        description ? `Additional Product Details:\n${description}` : '',
+        category ? `Product category:\n${category}` : '',
     ].filter(Boolean).join("\n\n");
     const response = await groq(prompt);
     return response;
