@@ -312,6 +312,7 @@ function loadPatchSettings() {
                 } else {
                     bgImg.src = `https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/${bgsrc}`;
                 }
+
                 if (bgpos !== null && bgpos !== '') { bgImg.style.objectPosition = bgpos; } else { bgImg.style.objectPosition = 'center center'; }
                 if (bgobf !== null && bgobf !== '') { bgImg.style.objectFit = bgobf; } else { bgImg.style.objectFit = 'cover'; }
 
@@ -328,13 +329,11 @@ function loadPatchSettings() {
                 }
 
                 bgImg.className = "dynamic-bgimg";
-
                 const computedStyle = window.getComputedStyle(container);
-                if (computedStyle.position === "static") {
-                    container.style.position = "relative";
-                }
-                
+                if (computedStyle.position === "static") { container.style.position = "relative"; }
+                bgImg.style.display = 'block';
                 container.appendChild(bgImg);
+
                 const styleTag = document.createElement("style");
                 styleTag.id = 'dynamic-bgimg-style';
                 styleTag.textContent = `
@@ -391,6 +390,13 @@ function loadPatchSettings() {
                         bgImg.style.opacity = bgImgOpa;
                     });
                 });
+
+                const bgImgQuickToggle = document.createElement('button');
+                bgImgQuickToggle.setAttribute('style', 'background-color: var(--bs-info); box-shadow: var(--bs-scrolltop-box-shadow); border-radius: .475rem; position: fixed; right: 20px; bottom: 20px; z-index: 99999; border: none; padding: 1rem; opacity: 0.25');
+                bgImgQuickToggle.title = 'Toggle background image for screenshots.';
+                bgImgQuickToggle.innerHTML = '<i class="fas fa-image" style="color: white; font-size: 1.75rem;"></i>';
+                bgImgQuickToggle.addEventListener('click', function() { bgImg.style.display = (bgImg.style.display === 'none') ? 'block' : 'none'; });
+                document.body.appendChild(bgImgQuickToggle);
 
                 function updatePadding() {
                     const sidebarWidth = sidebar ? sidebar.offsetWidth : 0;
