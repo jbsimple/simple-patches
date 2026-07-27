@@ -332,8 +332,11 @@ async function initListingWizard() {
     }
 
     // gtin field accepts everything now so this is a REAL gtin validation
+    // also track any changes from the original gtin
     const gtin_input = document.querySelector('input[name="product[gtin]"]');
+    let ogGtin = null;
     if (gtin_input) {
+        ogGtin = gtin_input.value.trim();
         gtin_input.setAttribute('type', 'text');
         gtin_input.setAttribute('inputmode', 'numeric');
         gtin_input.setAttribute('pattern', '[0-9]*');
@@ -471,6 +474,15 @@ async function initListingWizard() {
                 listing_results.appendChild(document.createElement('br'));
             } else {
                 console.error('PATCHES - Listing Wizard Submit - No eventID or PO.', eventID, po, justCreated);
+            }
+
+            if (gtin_input && ogGtin && gtin_input.value.trim() !== ogGtin) {
+                const gtinUpdateRow = document.createElement('div');
+                gtinUpdateRow.setAttribute('style', 'display:flex; flex-wrap:wrap; gap:0.7rem;');
+                gtinUpdateRow.innerHTML = `<span class="btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-danger">I noticed, you changed the GTIN. Write the SKU on a post-it note, please.</span>`;
+                listing_results.appendChild(gtinUpdateRow);
+                listing_results.appendChild(document.createElement('br'));
+                listing_results.appendChild(document.createElement('br'));
             }
 
         }, 500); // so it can be created first
