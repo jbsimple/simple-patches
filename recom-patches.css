@@ -542,3 +542,5 @@ table.dataTable.table-striped>tbody>tr.odd.danger {
     max-width: 1500px;
     margin: auto;
 }
+
+#kt_scrolltop { display: none !important; }
