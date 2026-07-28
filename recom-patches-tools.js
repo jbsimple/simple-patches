@@ -139,6 +139,7 @@ function customTools(tool) {
                         <p>Any negative difference is in threat of an oversell: Swappa is reporting a larger stock than we have.</p>
                         <p>Any positive difference is a potential sales loss: We have more than what Swappa is saying.</p>
                     </div>
+                    <hr style="border:0;border-bottom:1px solid var(--bs-card-border-color);margin:0;padding:0;width:100%">
                     <div style="display:flex;flex-direction:row;gap:1rem;">
                         <div style="display:flex;flex-direction:column;gap:0.75rem;flex:1;">
                             <strong>System Inventory</strong>
@@ -152,7 +153,6 @@ function customTools(tool) {
                         </div>
                     </div>
                 </div>
-                <hr style="border:0;border-bottom:1px solid var(--bs-card-border-color);margin:0;padding:0;width:100%">
                 <div class="card-footer" style="display:flex;flex-direction:row;">
                     <div style="flex:1;"></div>
                     <button id="patches-tools-swappa-submit" class="btn btn-lg btn-primary">
