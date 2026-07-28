@@ -133,16 +133,21 @@ function customTools(tool) {
                         <h2>Swappa Inventory Tool</h2>
                     </div>
                 </div>
-                <div class="card-body" style="display:flex;flex-direction:row;gap:1rem;">
-                    <div style="display:flex;flex-direction:column;gap:0.75rem;flex:1;">
-                        <strong>System Inventory</strong>
-                        <p>Upload a <a href="/reports" target="_blank">Product Items report</a> with at least columns SKU and Main_QTY present.</p>
-                        <input id="patches-tools-swappa-systemInventoryFile" type="file" accept=".csv,text/csv">
-                    </div>
-                    <div style="display:flex;flex-direction:column;gap:0.75rem;flex:1;">
-                        <strong>Swappa Export</strong>
-                        <p>Upload the Swappa Export CSV file here.</p>
-                        <input id="patches-tools-swappa-swappaExportFile" type="file" accept=".csv,text/csv">
+                <div class="card-body" style="display:flex;flex-direction:column;gap:1rem;">
+                    <p>This gets the differences between system main quantity and Swappa quantity.</p>
+                    <p>Any negative difference is in threat of an oversell: Swappa is reporting a larger stock than we have.</p>
+                    <p>Any positive difference is a potential sales loss: We have more than what Swappa is saying.</p>
+                    <div style="display:flex;flex-direction:row;gap:1rem;">
+                        <div style="display:flex;flex-direction:column;gap:0.75rem;flex:1;">
+                            <strong>System Inventory</strong>
+                            <p>Upload a <a href="/reports" target="_blank">Product Items report</a> with at least columns SKU and Main_QTY present.</p>
+                            <input id="patches-tools-swappa-systemInventoryFile" type="file" accept=".csv,text/csv">
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:0.75rem;flex:1;">
+                            <strong>Swappa Export</strong>
+                            <p>Upload the Swappa Export CSV file here.</p>
+                            <input id="patches-tools-swappa-swappaExportFile" type="file" accept=".csv,text/csv">
+                        </div>
                     </div>
                 </div>
                 <div class="card-footer" style="display:flex;flex-direction:row;">
@@ -164,7 +169,7 @@ function customTools(tool) {
                         <h2>Results</h2>
                     </div>
                     <div class="card-toolbar">
-                        <button id="patches-tools-swappa-download" class="btn btn-icon btn-sm btn-light my-sm-1 ms-1"><i class="fas fa-download fs-2"></i></button>
+                        <button id="patches-tools-swappa-download" title="Download results table into CSV" class="btn btn-icon btn-sm btn-light my-sm-1 ms-1"><i class="fas fa-download fs-2"></i></button>
                     </div>
                 </div>
                 <div class="card-body" style="max-height:60rem;overflow:scroll;">
@@ -221,7 +226,7 @@ function customTools(tool) {
                             'SKU': line['seller_ref'],
                             'swappa': swappaQTY,
                             'system': sysQTY,
-                            'difference': (swappaQTY - sysQTY)
+                            'difference': (sysQTY - swappaQTY)
                         });
                     }
                 });
