@@ -116,7 +116,9 @@ function addButtonCard(title, bullets, href) {
 function customTools(tool) {
     const toolContainer = document.getElementById('kt_app_content_container');
     if (!toolContainer) return;
+    toolContainer.setAttribute('style', 'display:flex;flex-direction:column;gap:1rem');
     toolContainer.innerHTML = '';
+
     switch (tool) {
         case 'swappa':
             console.log('swappa tool');
@@ -127,12 +129,12 @@ function customTools(tool) {
                     </div>
                 </div>
                 <div class="card-body" style="display:flex;flex-direction:row;gap:1rem;">
-                    <div style="display:flex;flex-direction:column;gap:0.75rem;">
+                    <div style="display:flex;flex-direction:column;gap:0.75rem;flex:1;">
                         <strong>System Inventory</strong>
                         <p>Upload a <a href="/reports" target="_blank">Product Items report</a> with at least columns SKU and Main_QTY present.</p>
                         <input id="patches-tools-swappa-systemInventoryFile" type="file" accept=".csv,text/csv">
                     </div>
-                    <div style="display:flex;flex-direction:column;gap:0.75rem;">
+                    <div style="display:flex;flex-direction:column;gap:0.75rem;flex:1;">
                         <strong>Swappa Export</strong>
                         <p>Upload the Swappa Export CSV file here.</p>
                         <input id="patches-tools-swappa-swappaExportFile" type="file" accept=".csv,text/csv">
@@ -298,6 +300,7 @@ function customTools(tool) {
             break;
         default:
             console.error('Invalid Tool Name');
+            toolContainer.innerHTML = '<strong>No tool with that name was found.</strong>';
     }
 }
 
