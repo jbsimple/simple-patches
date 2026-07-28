@@ -401,6 +401,13 @@ async function initListingWizard() {
         };
         createASINLink();
         asin_input.addEventListener('input', createASINLink);
+
+        // max length indicator removal for asin input
+        const observer = new MutationObserver(() => {
+            if (document.activeElement !== asin_input) return;
+            document.querySelectorAll('.bootstrap-maxlength').forEach(el => { el.remove(); });
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
     }
 
     // groq generate description button
