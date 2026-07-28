@@ -119,9 +119,14 @@ function customTools(tool) {
     toolContainer.setAttribute('style', 'display:flex;flex-direction:column;gap:2.5rem');
     toolContainer.innerHTML = '';
 
+    const toolbar = document.getElementById('kt_app_toolbar_container');
+    if (!toolbar) return;
+    const heading = toolbar.querySelector('h1.page-heading');
+    if (!heading) return;
+
     switch (tool) {
         case 'swappa':
-            console.log('swappa tool');
+            heading.textContent = 'Swappa Tool';
             toolContainer.innerHTML = `<div class="card">
                 <div class="card-header">
                     <div class="card-title">
