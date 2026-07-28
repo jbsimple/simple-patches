@@ -116,7 +116,7 @@ function addButtonCard(title, bullets, href) {
 function customTools(tool) {
     const toolContainer = document.getElementById('kt_app_content_container');
     if (!toolContainer) return;
-    toolContainer.setAttribute('style', 'display:flex;flex-direction:column;gap:1rem');
+    toolContainer.setAttribute('style', 'display:flex;flex-direction:column;gap:2.5rem');
     toolContainer.innerHTML = '';
 
     switch (tool) {
@@ -163,7 +163,7 @@ function customTools(tool) {
                     </div>
                 </div>
                 <div class="card-body" style="max-height:60rem;overflow:scroll;">
-                    <table class="table table-striped" style="width:100%;max-width:100%;overflow:auto;">
+                    <table id="patches-tools-swappa-resultsTable" class="table table-striped" style="width:100%;max-width:100%;overflow:auto;">
                         <thead>
                             <tr>
                                 <th>SKU</th>
@@ -296,6 +296,37 @@ function customTools(tool) {
                             return obj;
                         });
                 }
+            });
+
+            document.getElementById('patches-tools-swappa-download').addEventListener('click', async function() {
+                const table = document.getElementById('patches-tools-swappa-resultsTable');
+                if (!table) return;
+
+                const rows = [];
+
+                table.querySelectorAll('tr').forEach(tr => {
+                    const cells = tr.querySelectorAll('th, td');
+
+                    rows.push(
+                        [...cells].map(cell =>
+                            `"${cell.textContent.replace(/"/g, '""').trim()}"`
+                        ).join(',')
+                    );
+                });
+
+                const csv = rows.join('\r\n');
+
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `patches-tools-swappa-${Math.floor(Date.now() / 1000)}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+
+                URL.revokeObjectURL(url);
             });
             break;
         default:
