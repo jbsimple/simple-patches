@@ -183,96 +183,105 @@ waitForElement('#LogEntriesTable', prettyPrintMeta);
 
 function prettyLinkAsins() {
     const productForm = document.getElementById('el_product_form');
-    if (productForm) {
-        const labels = productForm.querySelectorAll('.form-label');
-        if (labels) {
-            labels.forEach(label => {
-                const parent = label.parentElement;
-                if (label.textContent === 'Secondary ASINs' && parent) {
-                    const select = parent.querySelector('select');
-                    if (select) {
-                        const createASINLinks = () => {
-                            const existingLinks = document.getElementById('patches-meta-secondaryAsins');
-                            if (existingLinks) {
-                                existingLinks.remove();
-                            }
-                            const asinLinks = document.createElement('div');
-                            asinLinks.setAttribute('style', 'display: flex; flex-wrap: wrap; gap: 1rem; margin-top: .75rem !important; margin-right: .5rem !important; margin-left: .5rem !important;');
-                            asinLinks.id = 'patches-meta-secondaryAsins';
+    if (!productForm) return;
 
-                            const options = select.querySelectorAll('option');
-                            options.forEach(option => {
-                                if (option.value && option.value !== '') {
-                                    const asinLink = document.createElement('a');
-                                    asinLink.target = '_blank';
-                                    asinLink.href = `https://amazon.com/dp/${option.value}`;
-                                    asinLink.textContent = option.value;
-                                    asinLinks.appendChild(asinLink);
-                                }
-                            });
+    const labels = productForm.querySelectorAll('.form-label');
+    if (!labels.length) return;
 
-                            parent.appendChild(asinLinks);
-                        };
+    labels.forEach(label => {
+        const parent = label.parentElement;
+        if (!parent) return;
 
-                        createASINLinks();
+        switch (label.textContent) {
+            case 'Secondary ASINs': {
+                const select = parent.querySelector('select');
+                if (!select) return;
 
-                        const observer = new MutationObserver(() => {
-                            createASINLinks();
-                        });
+                const createASINLinks = () => {
+                    const existingLinks = document.getElementById('patches-asinlinks-secondary');
+                    if (existingLinks) { existingLinks.remove(); }
 
-                        observer.observe(select, {
-                            childList: true
-                        });
-                    }
-                } else if (label.textContent === 'ASIN Renewed' && parent) {
-                    asinSingleLink(parent, 'patches-meta-renewedAsin');
-                } else if (label.textContent === 'Renewed Premium ASIN' && parent) {
-                    asinSingleLink(parent, 'patches-meta-premium');
-                } else if (label.textContent === 'ASIN' && parent) {
-                    asinSingleLink(parent, 'patches-meta-asin');
+                    const asinLinks = document.createElement('div');
+                    asinLinks.setAttribute('style', 'display: flex; flex-wrap: wrap; gap: 1rem; margin-top: .75rem !important; margin-right: .5rem !important; margin-left: .5rem !important;');
+                    asinLinks.id = 'patches-asinlinks-secondary';
+
+                    const options = select.querySelectorAll('option');
+                    options.forEach(option => {
+                        if (option.value) { asinLinks.appendChild(asinLink(option.value)); }
+                    });
+
+                    parent.appendChild(asinLinks);
+                };
+                createASINLinks();
+
+                const observer = new MutationObserver(() => { createASINLinks(); });
+                observer.observe(select, { childList: true });
+
+                break;
+            }
+
+            case 'ASIN': {
+                const findAsinParent = document.getElementById('findAsin-product')?.parentElement;
+                const mainAsinInput = document.querySelector('input[name="product[asin]"]');
+                if (findAsinParent && mainAsinInput) {
+                    const createASINLinks = () => {
+                        const existingMainAsinLink = document.getElementById('patches-asinlinks-main');
+                        if (existingMainAsinLink) { existingMainAsinLink.remove(); }
+
+                        const asinValue = mainAsinInput.value.trim();
+                        if (!asinValue) return;
+                        
+                        findAsinParent.appendChild(asinLink(asinValue, 'patches-asinlinks-main'));
+                    };
+                    createASINLinks();
+                    mainAsinInput.addEventListener('input', createASINLinks);
+                } else {
+                    asinSingleRow(parent, 'patches-asinlinks-main');
                 }
-            });
-        } else {
-            console.error(labels);
+
+                break;
+            }
+
+            case 'ASIN Renewed': {
+                asinSingleRow(parent, 'patches-asinlinks-renewed');
+                break;
+            }
+
+            case 'Renewed Premium ASIN': {
+                asinSingleRow(parent, 'patches-asinlinks-renewedPremium');
+                break;
+            }
+                
         }
+    });
+
+    function asinLink(asin, id = null) {
+        const asinLink = document.createElement('a');
+        asinLink.target = '_blank';
+        asinLink.href = `https://amazon.com/dp/${asin}`;
+        asinLink.textContent = asin;
+        if (id !== null) { asinLink.id = id; }
+        return asinLink;
     }
 
-    function asinSingleLink(parent, id) {
+    function asinSingleRow(parent, id) {
         const input = parent.querySelector('input[type="text"]');
-        if (input) {
-            const createASINLink = () => {
-                const existingLinks = document.getElementById(id);
-                if (existingLinks) {
-                    existingLinks.remove();
-                }
-                if (input.value && input.value !== '') {
-                    const asinLink = document.createElement('div');
-                    asinLink.setAttribute('style', 'display: flex; flex-wrap: wrap; gap: 1rem; margin-top: .75rem !important; margin-right: .5rem !important; margin-left: .5rem !important;');
-                    asinLink.id = id;
-                    const link = document.createElement('a');
-                    link.target = '_blank';
-                    link.href = `https://amazon.com/dp/${input.value}`;
-                    link.textContent = input.value;
-                    asinLink.appendChild(link);
-                    parent.appendChild(asinLink);
-                }
-            };
+        if (!input) return;
 
-            createASINLink();
-
-            const observer = new MutationObserver(() => {
-                createASINLink();
-            });
-
-            observer.observe(input, {
-                attributes: true,
-                attributeFilter: ['value']
-            });
-
-            input.addEventListener('input', () => {
-                createASINLink();
-            });
-        }
+        const createASINLink = () => {
+            const existingLinks = document.getElementById(id);
+            if (existingLinks) { existingLinks.remove(); }
+            
+            if (input.value) {
+                const asinRow = document.createElement('div');
+                asinRow.setAttribute('style', 'display: flex; flex-wrap: wrap; gap: 1rem; margin-top: .75rem !important; margin-right: .5rem !important; margin-left: .5rem !important;');
+                asinRow.id = id;
+                asinRow.appendChild(asinLink(input.value));
+                parent.appendChild(asinRow);
+            }
+        };
+        createASINLink();
+        input.addEventListener('input', () => { createASINLink(); });
     }
 }
 waitForElement('#kt_app_content_container', prettyLinkAsins);
