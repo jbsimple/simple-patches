@@ -133,7 +133,7 @@ function customTools(tool) {
                         <h2>Swappa Inventory Tool</h2>
                     </div>
                 </div>
-                <div class="card-body" style="display:flex;flex-direction:column;gap:1rem;">
+                <div class="card-body" style="display:flex;flex-direction:column;gap:2rem;">
                     <div style="display:flex;flex-direction:column;gap:0.25rem;">
                         <p style="margin:0">This gets the differences between system main quantity and Swappa quantity.</p>
                         <p style="margin:0">Any negative difference is in threat of an oversell: Swappa is reporting a larger stock than we have.</p>
