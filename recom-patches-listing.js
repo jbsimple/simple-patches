@@ -380,6 +380,29 @@ async function initListingWizard() {
         }
     }
 
+    // pretty print the asin
+    const asin_input = document.querySelector('input[name="product[asin]"]');
+    const asin_row = document.getElementById('findAsin-product')?.parentElement;
+    if (asin_input && asin_row) {
+        asin_row.setAttribute('style', 'display:flex;justify-content:space-between;');
+        const createASINLink = () => {
+            const existingASINLink = document.getElementById('patches-listing-asinlink');
+            if (existingASINLink) { existingASINLink.remove(); }
+
+            const asinValue = asin_input.value.trim();
+            if (!asinValue) return;
+
+            const asinLink = document.createElement('a');
+            asinLink.target = '_blank';
+            asinLink.href = `https://amazon.com/dp/${asin}`;
+            asinLink.textContent = asin;
+            asinLink.id = 'patches-listing-asinlink';
+            asin_row.appendChild(asinLink);
+        };
+        createASINLink();
+        asin_input.addEventListener('input', createASINLink);
+    }
+
     // groq generate description button
     const description_input = document.querySelector('input[name="product[description]"]');
     if (description_input) {
