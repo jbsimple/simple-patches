@@ -32,7 +32,16 @@ function initAddTools() {
             "Generate random GTINS that are actually valid, or at least pass GTIN checks for validity.",
             "Simple Patches Tool"
         ],
-        "/tools?tool=desc"
+        "/tools?tool=gtin"
+    );
+
+    addButtonCard(
+        'Valid GTIN Generator',
+        [
+            "Generate random GTINS that are actually valid, or at least pass GTIN checks for validity.",
+            "Simple Patches Tool"
+        ],
+        "/tools?tool=swappa"
     );
 }
 
@@ -112,12 +121,30 @@ function addButtonCard(title, bullets, href) {
     });
 }
 
+function customTools(tool) {
+    const toolContainer = document.getElementById('kt_app_content_container');
+    if (!toolContainer) return;
+    toolContainer.innerHTML = '';
+    switch (tool) {
+        case 'desc':
+            console.log('desc tool');
+            break;
+        case 'gtin':
+            console.log('gtin tool');
+            break;
+        case 'swappa':
+            console.log('swappa tool');
+            break;
+        default:
+            console.error('Invalid Tool Name');
+    }
+}
+
 (async () => {
     const params = new URLSearchParams(window.location.search);
     const tool = params.get('tool');
 
     if (!tool) {
-        // Only run if ?tool is missing or has no value
         console.debug('PATCHES - No tool parameter detected, initializing Add Tools...');
         initAddTools();
     } else {
