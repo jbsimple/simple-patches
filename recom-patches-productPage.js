@@ -224,7 +224,7 @@ function prettyLinkAsins() {
                 const findAsinParent = document.getElementById('findAsin-product')?.parentElement;
                 const mainAsinInput = document.querySelector('input[name="product[asin]"]');
                 if (findAsinParent && mainAsinInput) {
-                    findAsinParent.setAttribute('style', 'display:flex;justify-content:space-between;')
+                    findAsinParent.setAttribute('style', 'display:flex;justify-content:space-between;');
                     const createASINLinks = () => {
                         const existingMainAsinLink = document.getElementById('patches-asinlinks-main');
                         if (existingMainAsinLink) { existingMainAsinLink.remove(); }
