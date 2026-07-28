@@ -21,7 +21,7 @@ function initAddTools() {
         'Bulk Description Download',
         [
             "Bulk download the descriptions from a list of products.",
-            "Requires good computer."
+            "Extension tool."
         ],
         "/tools?tool=desc"
     );
@@ -30,16 +30,16 @@ function initAddTools() {
         'Valid GTIN Generator',
         [
             "Generate random GTINS that are actually valid, or at least pass GTIN checks for validity.",
-            "Simple Patches Tool"
+            "Extension tool"
         ],
         "/tools?tool=gtin"
     );
 
     addButtonCard(
-        'Valid GTIN Generator',
+        'Swappa Inventory Count Checker',
         [
-            "Generate random GTINS that are actually valid, or at least pass GTIN checks for validity.",
-            "Simple Patches Tool"
+            "Check for any discrepancies between the quantity on Swappa and the quantity on system.",
+            "Extension tool"
         ],
         "/tools?tool=swappa"
     );
