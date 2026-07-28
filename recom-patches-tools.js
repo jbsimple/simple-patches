@@ -208,7 +208,7 @@ function customTools(tool) {
                 let list = [];
                 swappaCsv.forEach(line => {
                     const swappaQTY = Number(line.quantity) || 0;
-                    const sysQTY = Number(systemInventory[line['seller_ref']]) ?? 0;
+                    const sysQTY = systemInventory[line.seller_ref.trim()] ?? 0;
                     if (swappaQTY !== sysQTY) {
                         list.push({
                             'SKU': line['seller_ref'],
