@@ -134,9 +134,11 @@ function customTools(tool) {
                     </div>
                 </div>
                 <div class="card-body" style="display:flex;flex-direction:column;gap:1rem;">
-                    <p>This gets the differences between system main quantity and Swappa quantity.</p>
-                    <p>Any negative difference is in threat of an oversell: Swappa is reporting a larger stock than we have.</p>
-                    <p>Any positive difference is a potential sales loss: We have more than what Swappa is saying.</p>
+                    <div style="display:flex;flex-direction:column;gap:0.25rem;">
+                        <p>This gets the differences between system main quantity and Swappa quantity.</p>
+                        <p>Any negative difference is in threat of an oversell: Swappa is reporting a larger stock than we have.</p>
+                        <p>Any positive difference is a potential sales loss: We have more than what Swappa is saying.</p>
+                    </div>
                     <div style="display:flex;flex-direction:row;gap:1rem;">
                         <div style="display:flex;flex-direction:column;gap:0.75rem;flex:1;">
                             <strong>System Inventory</strong>
