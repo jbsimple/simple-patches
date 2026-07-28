@@ -143,12 +143,12 @@ function customTools(tool) {
 (async () => {
     const params = new URLSearchParams(window.location.search);
     const tool = params.get('tool');
-
     if (!tool) {
         console.debug('PATCHES - No tool parameter detected, initializing Add Tools...');
         initAddTools();
     } else {
         console.debug(`PATCHES - Skipping initAddTools(), found tool=${tool}`);
+        customTools(tool);
     }
 })();
 
