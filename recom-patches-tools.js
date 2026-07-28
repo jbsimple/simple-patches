@@ -30,9 +30,9 @@ function initAddTools() {
         'Valid GTIN Generator',
         [
             "Generate random GTINS that are actually valid, or at least pass GTIN checks for validity.",
-            "Extension tool"
+            "Simple Patches"
         ],
-        "/tools?tool=gtin"
+        "https://simple-patches.vercel.app/gtin%20generator.html"
     );
 
     addButtonCard(
