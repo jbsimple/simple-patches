@@ -152,7 +152,7 @@ function customTools(tool) {
                         </div>
                     </div>
                 </div>
-                <hr style="border:none;bprder-bottom:1px solid var(--bs-card-border-color);margin:0;padding:0;width:100%">
+                <hr style="border:none;border-bottom:1px solid var(--bs-card-border-color);margin:0;padding:0;width:100%">
                 <div class="card-footer" style="display:flex;flex-direction:row;">
                     <div style="flex:1;"></div>
                     <button id="patches-tools-swappa-submit" class="btn btn-lg btn-primary">
