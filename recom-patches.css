@@ -544,3 +544,5 @@ table.dataTable.table-striped>tbody>tr.odd.danger {
 }
 
 #kt_scrolltop { display: none !important; }
+
+#findAsin-product { display: none !important; }
