@@ -127,6 +127,7 @@ function customTools(tool) {
     switch (tool) {
         case 'swappa':
             heading.textContent = 'Swappa Tool';
+            document.title = document.title.replace('Tools', 'Swappa Tool');
             toolContainer.innerHTML = `<div class="card">
                 <div class="card-header">
                     <div class="card-title">
