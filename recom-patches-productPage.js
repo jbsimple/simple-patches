@@ -236,6 +236,13 @@ function prettyLinkAsins() {
                     };
                     createASINLinks();
                     mainAsinInput.addEventListener('input', createASINLinks);
+
+                    // max length indicator removal for asin input
+                    const observer = new MutationObserver(() => {
+                        if (document.activeElement !== mainAsinInput) return;
+                        document.querySelectorAll('.bootstrap-maxlength').forEach(el => { el.remove(); });
+                    });
+                    observer.observe(document.body, { childList: true, subtree: true });
                 } else {
                     asinSingleRow(parent, 'patches-asinlinks-main');
                 }
