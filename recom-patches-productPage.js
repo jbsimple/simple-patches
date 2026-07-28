@@ -268,6 +268,7 @@ function prettyLinkAsins() {
         asinLink.target = '_blank';
         asinLink.href = `https://amazon.com/dp/${asin}`;
         asinLink.textContent = asin;
+        asinLink.classList = 'asinPrettyLink';
         if (id !== null) { asinLink.id = id; }
         return asinLink;
     }

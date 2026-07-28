@@ -397,6 +397,7 @@ async function initListingWizard() {
             asinLink.href = `https://amazon.com/dp/${asinValue}`;
             asinLink.textContent = asinValue;
             asinLink.id = 'patches-listing-asinlink';
+            asinLink.classList = 'asinPrettyLink';
             asin_row.appendChild(asinLink);
         };
         createASINLink();
