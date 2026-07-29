@@ -125,7 +125,7 @@ function customTools(tool) {
     if (!heading) return;
 
     switch (tool) {
-        case 'swappa':
+        case 'swappa': {
             heading.textContent = 'Swappa Tool';
             document.title = document.title.replace('Tools', 'Swappa Tool');
             toolContainer.innerHTML = `<div class="card">
@@ -194,9 +194,6 @@ function customTools(tool) {
             document.getElementById('patches-tools-swappa-submit').addEventListener('click', async function() {
                 document.querySelectorAll('.patches-tools-swappa-error').forEach(e => e.remove());
 
-                const systemFile = document.getElementById('patches-tools-swappa-systemInventoryFile');
-                if (!systemFile.files.length) { return showError(systemFile, 'File is required.'); }
-
                 const swappaFile = document.getElementById('patches-tools-swappa-swappaExportFile');
                 if (!swappaFile.files.length) { return showError(swappaFile, 'File is required.'); }
 
@@ -208,10 +205,10 @@ function customTools(tool) {
                 if (!resultsCard) return;
                 resultsCard.setAttribute('style', 'display:none;');
 
-                const systemCsv = parseCSV(await systemFile.files[0].text());
-                if (!systemCsv.length || typeof systemCsv[0] !== 'object' || !Object.hasOwn(systemCsv[0], 'SKU') || !Object.hasOwn(systemCsv[0], 'MAIN_Qty')) { return showError(systemFile, 'Invalid System Inventory CSV. Required columns: SKU, MAIN_Qty.'); }
+                const systemReport = await getReport();
+                if (!systemReport.data) { return showError(swappaFile, 'Unable to get inventory data.'); }
                 const systemInventory = Object.fromEntries(
-                    systemCsv.map(row => [
+                    systemReport.data.map(row => [
                         row.SKU.trim(),
                         Number(row.MAIN_Qty) || 0
                     ])
@@ -310,6 +307,52 @@ function customTools(tool) {
                             return obj;
                         });
                 }
+
+                async function getReport() {
+                    const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
+                    if (csrfMeta && csrfMeta.getAttribute('content').length > 0) {
+                        return new Promise((resolve, reject) => {
+                            $.ajax({
+                                type: "POST",
+                                dataType: "json",
+                                url: "/reports/create",
+                                data: {
+                                    report: {
+                                        type: "active_inventory",
+                                        columns: [
+                                            "product_items.sku",
+                                            "product_items.in_stock",
+                                        ],
+                                        filters: [
+                                            {
+                                                column: "product_items.in_stock",
+                                                opr: "{0} >= {1}",
+                                                value: 1
+                                            }
+                                        ]
+                                    },
+                                    csrf_recom: csrfMeta.getAttribute('content')
+                                },
+                            }).done(function(data) {
+                                if (data.success && data.results.results && Array.isArray(data.results.results)) {
+                                    resolve({
+                                        data: data.results.results,
+                                        download: `/renderfile/download?folder=reports&path=${data.results.filename}`,
+                                        filename: data.results.filename
+                                    });
+                                } else {
+                                    resolve(null);
+                                }
+                            }).fail(function(jqXHR, textStatus, errorThrown) {
+                                console.error("Request failed: " + textStatus + ", " + errorThrown);
+                                reject(new Error("Request failed: " + textStatus + ", " + errorThrown));
+                            });
+                        });
+                    } else {
+                        console.error('Unable to get CSRF');
+                        return null;
+                    }
+                }
             });
 
             document.getElementById('patches-tools-swappa-download').addEventListener('click', async function() {
@@ -343,6 +386,8 @@ function customTools(tool) {
                 URL.revokeObjectURL(url);
             });
             break;
+        }
+
         default:
             console.error('Invalid Tool Name');
             toolContainer.innerHTML = '<strong>No tool with that name was found.</strong>';
