@@ -141,17 +141,10 @@ function customTools(tool) {
                         <p style="margin:0">Any positive difference is a potential sales loss: We have more than what Swappa is saying.</p>
                     </div>
                     <hr style="border:0;border-bottom:1px solid var(--bs-card-border-color);margin:0;padding:0;width:100%">
-                    <div style="display:flex;flex-direction:row;gap:1rem;">
-                        <div style="display:flex;flex-direction:column;gap:0.75rem;flex:1;">
-                            <strong>System Inventory</strong>
-                            <p>Upload a <a href="/reports" target="_blank">Product Items report</a> with at least columns SKU and Main_QTY present.</p>
-                            <input id="patches-tools-swappa-systemInventoryFile" type="file" accept=".csv,text/csv">
-                        </div>
-                        <div style="display:flex;flex-direction:column;gap:0.75rem;flex:1;">
-                            <strong>Swappa Export</strong>
-                            <p>Upload the Swappa Export CSV file here.</p>
-                            <input id="patches-tools-swappa-swappaExportFile" type="file" accept=".csv,text/csv">
-                        </div>
+                    <div style="display:flex;flex-direction:column;gap:0.75rem;flex:1;">
+                        <strong>Swappa Export</strong>
+                        <p>Upload the Swappa Export CSV file here.</p>
+                        <input id="patches-tools-swappa-swappaExportFile" type="file" accept=".csv,text/csv">
                     </div>
                 </div>
                 <div class="card-footer" style="display:flex;flex-direction:row;">
