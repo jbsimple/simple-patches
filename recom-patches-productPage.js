@@ -234,7 +234,7 @@ function prettyLinkAsins() {
                         
                         findAsinParent.appendChild(asinLink(asinValue, 'patches-asinlinks-main'));
                     };
-                    createASINLinks();
+                    createASINLink();
 
                     mainAsinInput.addEventListener('input', createASINLink);
                     mainAsinInput.addEventListener('change', createASINLink);
