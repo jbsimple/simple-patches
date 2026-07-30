@@ -382,8 +382,8 @@ async function initListingWizard() {
 
     // pretty print the asin
     const asin_input = document.querySelector('input[name="product[asin]"]');
-    const asin_find = document.getElementById('findAsin-product');
-    if (asin_input && asin_find) {
+    const asin_row = document.getElementById('findAsin-product')?.parentElement;
+    if (asin_input && asin_row) {
         asin_row.setAttribute('style', 'display:flex;justify-content:space-between;flex-direction:row-reverse;');
         const createASINLink = () => {
             const existingASINLink = document.getElementById('patches-listing-asinlink');
@@ -398,7 +398,7 @@ async function initListingWizard() {
             asinLink.textContent = asinValue;
             asinLink.id = 'patches-listing-asinlink';
             asinLink.classList = 'asinPrettyLink';
-            asin_find.parentElement.appendChild(asinLink);
+            asin_row.appendChild(asinLink);
         };
         createASINLink();
 
