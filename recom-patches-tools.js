@@ -131,8 +131,8 @@ function customTools(tool) {
             toolContainer.innerHTML = `
             <div class="card">
                 <div class="card-body" style="display:flex;flex-direction:row;gap:2rem;">
-                    <a class="btn btn-lg btn-primary" href="/integrations/stores/76" target="_blank">Manage Integration</a>
-                    <a class="btn btn-lg btn-warning" href="/integrations/stores/edit/76" target="_blank">Edit Integration</a>
+                    <a class="btn btn-sm btn-primary" href="/integrations/stores/76" target="_blank">Manage Integration</a>
+                    <a class="btn btn-sm btn-warning" href="/integrations/stores/edit/76" target="_blank">Edit Integration</a>
                     <div style="flex:1"></div>
                     <button type="button" class="btn btn-danger btn-sm ajax-modal" data-url="ajax/modals/SkuImporter?import_type=marketplace_status&ref=76">Force Sync SKUs</button>
                 </div>
