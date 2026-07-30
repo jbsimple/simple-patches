@@ -225,7 +225,7 @@ function prettyLinkAsins() {
                 const mainAsinInput = document.querySelector('input[name="product[asin]"]');
                 if (findAsinParent && mainAsinInput) {
                     findAsinParent.setAttribute('style', 'display:flex;justify-content:space-between;flex-direction:row-reverse;');
-                    const createASINLinks = () => {
+                    const createASINLink = () => {
                         const existingMainAsinLink = document.getElementById('patches-asinlinks-main');
                         if (existingMainAsinLink) { existingMainAsinLink.remove(); }
 
@@ -235,7 +235,9 @@ function prettyLinkAsins() {
                         findAsinParent.appendChild(asinLink(asinValue, 'patches-asinlinks-main'));
                     };
                     createASINLinks();
-                    mainAsinInput.addEventListener('input', createASINLinks);
+
+                    mainAsinInput.addEventListener('input', createASINLink);
+                    mainAsinInput.addEventListener('change', createASINLink);
 
                     // max length indicator removal for asin input
                     const observer = new MutationObserver(() => {
