@@ -384,7 +384,7 @@ async function initListingWizard() {
     const asin_input = document.querySelector('input[name="product[asin]"]');
     const asin_row = document.getElementById('findAsin-product')?.parentElement;
     if (asin_input && asin_row) {
-        asin_row.setAttribute('style', 'display:flex;justify-content:space-between;');
+        asin_row.setAttribute('style', 'display:flex;justify-content:space-between;flex-direction:row-reverse;');
         const createASINLink = () => {
             const existingASINLink = document.getElementById('patches-listing-asinlink');
             if (existingASINLink) { existingASINLink.remove(); }
