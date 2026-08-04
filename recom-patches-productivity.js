@@ -684,7 +684,7 @@ async function injectTeamReport() {
 
         const aiSummaryWrapper = document.createElement('div');
         aiSummaryWrapper.setAttribute('class', 'card card-bordered');
-        aiSummaryWrapper.setAttribute('style', 'margin: 2rem 30px !important; margin-bottom: 0 !important;');
+        aiSummaryWrapper.setAttribute('style', 'margin: 2rem 30px !important; margin-bottom: 40px !important;');
         aiSummaryWrapper.innerHTML = `
         <div class="card-header">
             <div class="card-title">
@@ -715,11 +715,18 @@ async function injectTeamReport() {
             let prompt = [
                 "I am looking for a quick summary of the team's productivity I can copy and paste into an email.",
 
-                "Your response should be lines outlining each person's productivity numbers and tasks done that day.",
+                "In the first part of your response, give a brief overview of the team's tasks and the time spent on each task in a nicely worded paragraph.",
+                "Format it so it is easy to read and digest, while also being informative so it gives a clear picture what the team worked on and roughly how long it took.",
+
+                "Put a line gap. Then, a breakdown for each user. The breakdown consists of lines outlining each person's productivity numbers and tasks done that day.",
                 "Each person's line follows this format:",
                 "{Person's first name}: {Total number of units for Inventory Listing and Invenotry Create} Listed Items, {Comma list of other tasks}",
 
-                "Rules for rewriting the title:",
+                "Example output lines:",
+                "Joesph: 15 Listed Items, Putaways, ASIN Check Sheet",
+                "Kyle: 7 Listed Items, Small Quantity Bins, Walmart Attributes",
+
+                "Follow these general rules in your response:",
                 "- If there are no Inventory Listing or Invenotry Create units, then do not print the Listed Items part and just print the task list.",
                 "- Do not fabricate any numbers, follow the numbers provided exactly when formatting a response.",
                 "- Preserve important product information exactly as written.",
@@ -728,13 +735,6 @@ async function injectTeamReport() {
                 "- Omit any time reporting in your response. The focus is on getting the productivity numbers and list of tasks only.",
                 "- Tasks should be formatted to look clean, so 'PUTAWAYS' as a task should be changed to 'Putaways' on print. But things like 'ASIN CHECK' should be 'ASIN Check'.",
                 "- Sometimes the task name is cut off. Please try your best to finish the cutoff word in your response.",
-
-                "Example output line:",
-                "Joesph: 15 Listed Items, Putaways, ASIN Check Sheet",
-                "Kyle: 7 Listed Items, Small Quantity Bins, Walmart Attributes",
-
-                "Example rewritten title:",
-                "The Apple 44mm Sport Band Clasp for Apple Watch 42/44/45mm cases. Pink Sand version.",
 
                 `Team Productivity:\n${JSON.stringify(userDataParsed, null, 2)}`
             ].filter(Boolean).join("\n\n");
