@@ -732,6 +732,7 @@ async function injectTeamReport() {
                 "- Omit any time reporting in your response. The focus is on getting the productivity numbers and list of tasks only.",
                 "- Tasks should be formatted to look clean, so 'PUTAWAYS' as a task should be changed to 'Putaways' on print. But things like 'ASIN CHECK' should be 'ASIN Check'.",
                 "- Sometimes the task name is cut off. Please try your best to finish the cutoff word in your response.",
+                "- ONLY OUTPUT THE LIST and nothing else." // LOL
 
                 `Team Productivity:\n${JSON.stringify(userDataParsed, null, 2)}`
             ].filter(Boolean).join("\n\n");
