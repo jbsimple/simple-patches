@@ -676,11 +676,79 @@ async function injectTeamReport() {
             userDataMap[user][task][eventCode].totalUnits += parseFloat(row.Units) || 0;
         });
 
+        let userDataParsed = {};
+
         const summaryWrapper = document.createElement('div');
         summaryWrapper.setAttribute('style', 'display: flex; flex-direction: column; gap: 40px; margin-bottom: 30px;');
         summaryWrapper.setAttribute('elem', 'summaryWrapper');
 
+        const aiSummaryWrapper = document.createElement('div');
+        aiSummaryWrapper.setAttribute('class', 'card card-bordered');
+        aiSummaryWrapper.setAttribute('style', 'margin: 2rem 30px !important; margin-bottom: 0 !important;');
+        aiSummaryWrapper.innerHTML = `
+        <div class="card-header">
+            <div class="card-title">
+                <h2>AI Summary (for Huddle Emails)</h2>
+            </div>
+        </div>
+        <div class="card-body" style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <textarea id="aiSummaryTextarea" class="form-control form-control-solid form-control-lg" rows="5" placeholder="Generate a summary for the huddle email."></textarea>
+            <div style="display: flex; flex-direction: row; width: 100%;">
+                <button id="aiSummaryGenerate" class="btn btn-sm btn-light-primary" style="cursor: pointer;">Generate AI Summary</button>
+                <div style="flex:1;"></div>
+            </div>
+        </div>
+        `;
+        content.appendChild(aiSummaryWrapper);
+        document.getElementById('aiSummaryGenerate')?.addEventListener('click', async function() {
+            if (typeof groq !== 'function') {
+                fireSwal('UHOH!', 'The AI is not available. Sadge.', 'error');
+                return null;
+            }
+
+            const hasData = Object.values(userDataParsed).some(arr => Array.isArray(arr) && arr.length > 0);
+            if (!hasData) {
+                fireSwal('UHOH!', 'There is no data to investigate? Susge', 'error');
+                return null;
+            }
+
+            let prompt = [
+                "I am looking for a quick summary of the team's productivity I can copy and paste into an email.",
+
+                "Your response should be lines outlining each person's productivity numbers and tasks done that day.",
+                "Each person's line follows this format:",
+                "{Person's first name}: {Total number of units for Inventory Listing and Invenotry Create}, {Comma list of other tasks}",
+
+                "Rules for rewriting the title:",
+                "- Do not fabricate any numbers, follow the numbers provided exactly when formatting a response.",
+                "- Preserve important product information exactly as written.",
+                "- The task name is inside of the quotes of each name. So '\"Fixing Issues\" while in Listing Side Work' means the task was 'Fixing Issues'.",
+                "- Do not print 'Inventory Listing while in Listing' in the list of tasks.", 
+                "- Omit any time reporting in your response. The focus is on getting the productivity numbers and list of tasks only.",
+                "- Tasks should be formatted to look clean, so 'PUTAWAYS' as a task should be changed to 'Putaways' on print. But things like 'ASIN CHECK' should be 'ASIN Check'.",
+
+                "Example output line:",
+                "Joesph: 15 Listed Items, Putaways, ASIN Check Sheet",
+                "Kyle: 7 Listed Items, Small Quantity Bins, Walmart Attributes",
+
+                "Example rewritten title:",
+                "The Apple 44mm Sport Band Clasp for Apple Watch 42/44/45mm cases. Pink Sand version.",
+
+                `Team Productivity:\n${JSON.stringify(userDataParsed, null, 2)}`
+            ].filter(Boolean).join("\n\n");
+            const response = await groq(prompt);
+            if (response.response) {
+                document.getElementById('aiSummaryTextarea').textContent = response.response;
+                return null;
+            } else {
+                fireSwal('UHOH!', 'Unable to generate. Sadge', 'error');
+                return null;
+            }
+        });
+
         Object.keys(userDataMap).forEach(user => {
+            userDataParsed[user] = [];
+
             const userContainer = document.createElement('div');
             userContainer.style.marginBottom = '30px';
 
@@ -737,6 +805,15 @@ async function injectTeamReport() {
                     `;
 
                     userSummaryWrapper.innerHTML += unitBox + timeBox;
+
+                    userDataParsed[user].push({
+                        'name': label,
+                        'units': totalUnits,
+                        'time per unit': timePerUnit,
+                        'time spent in minutes': totalTime.toFixed(2),
+                        'time spent in hours': timeSpentHours
+                    });
+
                 });
             });
 
