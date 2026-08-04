@@ -715,10 +715,7 @@ async function injectTeamReport() {
             let prompt = [
                 "I am looking for a quick summary of the team's productivity I can copy and paste into an email.",
 
-                "In the first part of your response, give a brief overview of the team's tasks and the time spent on each task in a nicely worded paragraph.",
-                "Format it so it is easy to read and digest, while also being informative so it gives a clear picture what the team worked on and roughly how long it took.",
-
-                "Put a line gap. Then, a breakdown for each user. The breakdown consists of lines outlining each person's productivity numbers and tasks done that day.",
+                "I am looking for a breakdown of tasks for each user. The breakdown consists of a list; lines outlining each person's productivity numbers and tasks done that day.",
                 "Each person's line follows this format:",
                 "{Person's first name}: {Total number of units for Inventory Listing and Invenotry Create} Listed Items, {Comma list of other tasks}",
 
