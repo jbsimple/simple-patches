@@ -570,11 +570,8 @@ async function injectUserReport() {
         });
 
         const summaryWrapper = document.createElement('div');
-        summaryWrapper.style.display = 'flex';
-        summaryWrapper.style.flexWrap = 'wrap';
-        summaryWrapper.style.gap = '20px';
-        summaryWrapper.style.marginBottom = '30px';
-        summaryWrapper.style.margin = '2rem 30px';
+        summaryWrapper.setAttribute('style', 'display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 30px; margin: 2rem 30px;');
+        summaryWrapper.setAttribute('elem', 'summaryWrapper');
 
         Object.keys(taskData).forEach(task => {
             Object.keys(taskData[task]).forEach(eventCode => {
