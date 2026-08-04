@@ -717,15 +717,17 @@ async function injectTeamReport() {
 
                 "Your response should be lines outlining each person's productivity numbers and tasks done that day.",
                 "Each person's line follows this format:",
-                "{Person's first name}: {Total number of units for Inventory Listing and Invenotry Create}, {Comma list of other tasks}",
+                "{Person's first name}: {Total number of units for Inventory Listing and Invenotry Create} Listed Items, {Comma list of other tasks}",
 
                 "Rules for rewriting the title:",
+                "- If there are no Inventory Listing or Invenotry Create units, then do not print the Listed Items part and just print the task list.",
                 "- Do not fabricate any numbers, follow the numbers provided exactly when formatting a response.",
                 "- Preserve important product information exactly as written.",
                 "- The task name is inside of the quotes of each name. So '\"Fixing Issues\" while in Listing Side Work' means the task was 'Fixing Issues'.",
                 "- Do not print 'Inventory Listing while in Listing' in the list of tasks.", 
                 "- Omit any time reporting in your response. The focus is on getting the productivity numbers and list of tasks only.",
                 "- Tasks should be formatted to look clean, so 'PUTAWAYS' as a task should be changed to 'Putaways' on print. But things like 'ASIN CHECK' should be 'ASIN Check'.",
+                "- Sometimes the task name is cut off. Please try your best to finish the cutoff word in your response.",
 
                 "Example output line:",
                 "Joesph: 15 Listed Items, Putaways, ASIN Check Sheet",
