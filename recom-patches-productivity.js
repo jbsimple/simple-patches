@@ -677,10 +677,8 @@ async function injectTeamReport() {
         });
 
         const summaryWrapper = document.createElement('div');
-        summaryWrapper.style.display = 'flex';
-        summaryWrapper.style.flexDirection = 'column';
-        summaryWrapper.style.gap = '40px';
-        summaryWrapper.style.marginBottom = '30px';
+        summaryWrapper.setAttribute('style', 'display: flex; flex-direction: column; gap: 40px; margin-bottom: 30px;');
+        summaryWrapper.setAttribute('elem', 'summaryWrapper');
 
         Object.keys(userDataMap).forEach(user => {
             const userContainer = document.createElement('div');
@@ -689,7 +687,7 @@ async function injectTeamReport() {
             const userHeader = document.createElement('h2');
             userHeader.textContent = `Productivity Breakdown for ${user}`;
             userHeader.classList.add('card');
-            userHeader.setAttribute('style', 'padding: 2rem 2rem !important;margin: 2rem 30px !important;margin-bottom: 0 !important;');
+            userHeader.setAttribute('style', 'padding: 2rem 2rem !important; margin: 2rem 30px !important; margin-bottom: 0 !important;');
 
             userContainer.appendChild(userHeader);
 
