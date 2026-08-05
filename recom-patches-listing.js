@@ -513,7 +513,12 @@ async function initListingWizard() {
             if (gtin_input && ogGtin && gtin_input.value.trim() !== ogGtin) {
                 const gtinUpdateRow = document.createElement('div');
                 gtinUpdateRow.setAttribute('style', 'display:flex; flex-wrap:wrap; gap:0.7rem;');
-                gtinUpdateRow.innerHTML = `<span class="btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-danger">I noticed, you changed the GTIN. Write the SKU on a post-it note, please.</span>`;
+                gtinUpdateRow.innerHTML = `<div class="btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-danger" style="display: flex; flex-direction: column; gap: 0.25rem; align-items: center; justify-content: center;">
+                    <img src="https://cdn.7tv.app/emote/01HR2J2PW00007A6HAQTCEPCAP/2x.avif" width="64" height="64" alt="GTINING" style="margin-bottom:1rem">
+                    <h1>WOAH BUDDY!</h1>
+                    <h2>You changed the GTIN!</h2>
+                    <h3 style="font-style:italic">Better share that SKU with the next person...</h3>
+                </div>`;
                 listing_results.appendChild(gtinUpdateRow);
                 listing_results.appendChild(document.createElement('br'));
                 listing_results.appendChild(document.createElement('br'));
