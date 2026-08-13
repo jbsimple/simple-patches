@@ -1080,12 +1080,14 @@ async function groq_desc(title = null, description = null, category = null) {
         "The Apple 44mm Sport Band Clasp for Apple Watch 42/44/45mm cases. Pink Sand version.",
 
         "Rules for the overview paragraph:",
+        "- Between 4 and 6 total feature bullet points; no less than 4 and no more than 6.",
         "- Write 2 to 4 informative sentences.",
         "- Keep the tone neutral and marketplace-friendly.",
         "- The paragraph should sound helpful, not sales-heavy.",
         "- Do not use exaggerated marketing language.",
         "- Do not invent specifications or compatibility.",
         "- Only mention details that are known or highly reliable.",
+        "- Do not repeat points or information in multiple bullets.",
 
         "Rules for the feature bullets:",
         "- Write 4 to 6 bullet points.",
