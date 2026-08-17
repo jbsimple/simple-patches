@@ -54,7 +54,7 @@ export default async function handler(req, res) {
                 max_completion_tokens: 2048,
                 top_p: 0.95,
                 reasoning_effort: "default",
-                stream: true,
+                stream: false,
                 stop: "None"
             })
         });
