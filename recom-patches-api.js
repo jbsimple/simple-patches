@@ -964,7 +964,7 @@ async function api_test(type = null, page = 1, per_page = 200) {
     }
 }
 
-async function groq(prompt, model = 'llama-3.3-70b-versatile') {
+async function groq(prompt, model = '"openai/gpt-oss-120b') {
     const res = await fetch(`https://simple-patches.vercel.app/api/groq?model=${model}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
