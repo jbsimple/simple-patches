@@ -27,10 +27,10 @@ export default async function handler(req, res) {
 
     if (!token) { return res.status(500).json({ success: false, error: "Missing API token" }); }
 
-    const allowedModels = ['openai/gpt-oss-120b', 'openai/gpt-oss-20b', 'qwen/qwen3.6-27b'];
+    const allowedModels = ['openai/gpt-oss-120b', 'openai/gpt-oss-20b'];
 
     const requestedModel = req.query.model;
-    const model = allowedModels.includes(requestedModel) ? requestedModel : 'qwen/qwen3.6-27b';
+    const model = allowedModels.includes(requestedModel) ? requestedModel : 'openai/gpt-oss-120b';
     const prompt = req.body?.prompt;
 
     if (!prompt || typeof prompt !== 'string') { return res.status(400).json({ success: false, error: "No Prompt Provided" }); }
@@ -52,8 +52,8 @@ export default async function handler(req, res) {
                 ],
                 temperature: 0.6,
                 max_completion_tokens: 2048,
-                top_p: 0.95,
-                reasoning_effort: "default",
+                top_p: 1,
+                reasoning_effort: "medium",
                 stream: false,
                 stop: "None"
             })
