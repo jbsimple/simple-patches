@@ -50,10 +50,10 @@ export default async function handler(req, res) {
                         content: prompt
                     }
                 ],
-                temperature: 1,
+                temperature: 0.6,
                 max_completion_tokens: 2048,
-                top_p: 1,
-                reasoning_effort: "medium",
+                top_p: 0.95,
+                reasoning_effort: "default",
                 stream: true,
                 stop: "None"
             })
