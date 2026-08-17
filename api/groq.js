@@ -27,10 +27,10 @@ export default async function handler(req, res) {
 
     if (!token) { return res.status(500).json({ success: false, error: "Missing API token" }); }
 
-    const allowedModels = ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant', 'llama3-70b-8192', 'llama3-8b-8192', 'mixtral-8x7b-32768', 'gemma2-9b-it'];
+    const allowedModels = ['openai/gpt-oss-120b', 'openai/gpt-oss-20b', 'qwen/qwen3.6-27b'];
 
     const requestedModel = req.query.model;
-    const model = allowedModels.includes(requestedModel) ? requestedModel : 'llama-3.3-70b-versatile';
+    const model = allowedModels.includes(requestedModel) ? requestedModel : 'qwen/qwen3.6-27b';
     const prompt = req.body?.prompt;
 
     if (!prompt || typeof prompt !== 'string') { return res.status(400).json({ success: false, error: "No Prompt Provided" }); }
