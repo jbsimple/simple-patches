@@ -1676,6 +1676,92 @@ async function initItemImageOptions() {
     }
 }
 
+async function mediaSortByFilename() {
+    // get product or item id
+    let id = null;
+    let type = null;
+
+    const item_stats = document.getElementById('item-units-stats');
+    if (item_stats) {
+        type = 'item';
+        id = item_stats.querySelector('.fs-5.text-info.fw-bolder.lh-1')?.textContent?.trim();
+    } else {
+        for (const elem of document.querySelectorAll('.mb-5')) {
+            if (elem.textContent.includes("Product#")) {
+                id = elem.querySelector('.text-info')?.textContent?.trim();
+                break;
+            }
+        }
+    }
+
+    if (!id) { return {success: false, message: 'Product or Item ID Not Found'}; }
+    if (!type) type = 'product';
+
+    const allImages_container = document.getElementById('product-images-container');
+    if (!allImages_container) { return {success: false, message: 'Image Container Not Found'}; }
+
+    const image_containers = allImages_container.querySelectorAll('div.draggable[data-id]');
+    if (!image_containers.length) { return {success: false, message: 'No Pictures Found'}; }
+
+    const sorted = Array.from(image_containers).sort((a, b) => {
+        const nameA = a.querySelector('.text-muted')?.textContent?.trim().toLowerCase() || '';
+        const nameB = b.querySelector('.text-muted')?.textContent?.trim().toLowerCase() || '';
+        return nameA.localeCompare(nameB, undefined, { numeric: true });
+    });
+
+    const formData = new FormData();
+    formData.append('type', type);
+
+    sorted.forEach((image_container, index) => {
+        const newPos = index + 1;
+        const imgId = image_container.getAttribute('data-id');
+
+        if (imgId) {
+            formData.append(`inputs[${index}][id]`, imgId);
+            formData.append(`inputs[${index}][position]`, newPos);
+        }
+    });
+
+    try {
+        const response = await fetch(`/ajax/actions/productimageposition/${id}`, {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": document.querySelector('meta[name="X-CSRF-TOKEN"]')?.content
+            },
+            body: formData
+        });
+
+        const result = await response.json();
+
+        if (!result.success) {
+            console.error('PATCHES - Error sorting images:', result);
+            return {success: false, message: result.message || 'Failed to Sort Pictures'};
+        }
+
+        sorted.forEach((image_container, index) => {
+            const newPos = index + 1;
+
+            allImages_container.appendChild(image_container);
+
+            const indicator = image_container.querySelector('.imgpos');
+            if (indicator) { indicator.textContent = newPos; }
+        });
+
+        return {
+            success: true,
+            message: 'Pictures Sorted'
+        };
+
+    } catch (error) {
+        console.error('Fetch failed:', error);
+
+        return {
+            success: false,
+            message: error.message || 'Failed to Sort Pictures'
+        };
+    }
+}
+
 function extraMediaInit() {
     // Getting rid of bad gallery viewer
     var media_tab = document.getElementById('rc_product_media_tab');
@@ -1867,82 +1953,9 @@ function extraMediaInit() {
         });
     }
 
-    function sortAllImages() {
-        // get product or item id
-        let id = null;
-        let type = null;
-
-        const item_stats = document.getElementById('item-units-stats');
-        if (item_stats) {
-            type = 'item';
-            id = item_stats.querySelector('.fs-5.text-info.fw-bolder.lh-1')?.textContent?.trim();
-        } else {
-            for (const elem of document.querySelectorAll('.mb-5')) {
-                if (elem.textContent.includes("Product#")) {
-                    id = elem.querySelector('.text-info')?.textContent?.trim();
-                    break;
-                }
-            }
-        }
-
-        if (!id) return null;
-        if (!type) type = 'product';
-
-        const allImages_container = document.getElementById('product-images-container');
-        if (!allImages_container) return null;
-
-        const image_containers = allImages_container.querySelectorAll('div.draggable[data-id]');
-        if (!image_containers.length) return null;
-
-        const sorted = Array.from(image_containers).sort((a, b) => {
-            const nameA = a.querySelector('.text-muted')?.textContent?.trim().toLowerCase() || '';
-            const nameB = b.querySelector('.text-muted')?.textContent?.trim().toLowerCase() || '';
-            return nameA.localeCompare(nameB, undefined, { numeric: true });
-        });
-
-        const formData = new FormData();
-        formData.append('type', type);
-
-        sorted.forEach((image_container, index) => {
-            const newPos = index + 1;
-            const imgId = image_container.getAttribute('data-id');
-
-            if (imgId) {
-                formData.append(`inputs[${index}][id]`, imgId);
-                formData.append(`inputs[${index}][position]`, newPos);
-            }
-        });
-
-        fetch(`/ajax/actions/productimageposition/${id}`, {
-            method: "POST",
-            headers: {
-                "X-CSRF-TOKEN": document.querySelector('meta[name="X-CSRF-TOKEN"]')?.content
-            },
-            body: formData
-        })
-        .then(response => response.json())
-        .then(result => {
-            if (result.success) {
-                sorted.forEach((image_container, index) => {
-                    const newPos = index + 1;
-
-                    allImages_container.appendChild(image_container);
-
-                    const indicator = image_container.querySelector('.imgpos');
-                    if (indicator) {
-                        indicator.textContent = newPos;
-                    }
-                });
-                fireSwal('YAY', 'Positions Updated!', 'success');
-            } else {
-                fireSwal('UHOH', ['Something did NOT work.', 'See Console for More Details'], 'error');
-                console.error('PATCHES - Error sorting images:', result);
-            }
-        })
-        .catch((error) => {
-            fireSwal('UHOH', ['Something did NOT work.', 'Just... try again or refresh.'], 'error');
-            console.error('Fetch failed:', error);
-        });
+    async function sortAllImages() {
+        const sortMediaResult = await mediaSortByFilename();
+        fireSwal((sortMediaResult.success ? 'YAY' : 'OH NO!'), sortMediaResult.message, (sortMediaResult.success ? 'success' : 'error'));
     }
 
     function checkPopup() {
