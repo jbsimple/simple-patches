@@ -1676,6 +1676,7 @@ async function initItemImageOptions() {
     }
 }
 
+// the main system got an update (a request I made actually got accepted) so this doesn't need to be separate anymore (WOW)!
 async function mediaSortByFilename() {
     // get product or item id
     let id = null;
@@ -1812,20 +1813,16 @@ function extraMediaInit() {
     }
 
     const dropbox = document.getElementById('rc_product_media');
-
     if (dropbox) {
         const expectedClasses = ['dropzone', 'dz-clickable'];
 
         window.onbeforeunload = function () {
-            const hasExactClasses = 
-                dropbox.classList.length === expectedClasses.length &&
-                expectedClasses.every(cls => dropbox.classList.contains(cls));
-
-            if (!hasExactClasses) {
-                return "Are you sure you want to leave? Images are still uploading.";
-            }
+            const hasExactClasses = dropbox.classList.length === expectedClasses.length && expectedClasses.every(cls => dropbox.classList.contains(cls));
+            if (!dropbox.classList.length === expectedClasses.length && expectedClasses.every(cls => dropbox.classList.contains(cls))) { return "Are you sure you want to leave? Images are still uploading."; }
             return undefined;
         };
+
+        // add a mutationobserver to class changes to dropbox. if class had dz-started and then removed, log console
     }
 
     if (media_tab && media_tree) {
