@@ -280,21 +280,14 @@ function loadPatchSettings() {
 
         const icon = (settings && settings.pfpurl && settings.pfpurl !== '') ? settings.pfpurl.trim() : null;
         if (!panic && icon !== null && icon !== '') {
-            const allImgs = document.getElementById('kt_app_header_container').querySelectorAll('img');
-            allImgs.forEach(avatar => {
-                const src = avatar.getAttribute('src') || '';
-                if (src.includes('assets') && src.includes('avatars')) {
-                    console.debug('PATCHES - Swapping Avatar:', src);
-                    if (icon.startsWith('https://')) {
-                        avatar.src = icon;
-                    } else {
-                        avatar.src = `https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/${icon}`;
-                    }
-                }
-            });
-            // change hover menu pfp size
+            let iconRel = icon;
+            if (!iconRel.startsWith('https://')) { iconRel = `https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/${icon}`;}
+
+            const headerimg = document.querySelector('#kt_app_header_container img[alt="user"]');
+            if (headerimg) { headerimg.src = iconRel; }
+
             const menuicon = document.querySelector('#kt_header_user_menu_toggle .menu .symbol img');
-            if (menuicon) { menuicon.style.width = "96px"; menuicon.style.height = "96px"; }
+            if (menuicon) { menuicon.src = iconRel; menuicon.style.width = "96px"; menuicon.style.height = "96px"; }
         }
 
         const bgsrc = (settings && settings.bgurl && settings.bgurl !== '') ? settings.bgurl.trim() : null;
