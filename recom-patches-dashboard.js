@@ -52,10 +52,8 @@ function replaceEngagewidget() {
         const selectedImage = randomImages[Math.floor(Math.random() * randomImages.length)];
         engagewidget.innerHTML = `<div class="card-body d-flex flex-column">
             <div class="m-0">
-                <h1 class="fw-semibold text-white text-center lh-lg">
-                    You have the Patches!<br>
-                    <span class="fw-bolder">See all the changes made!</span>
-                </h1>
+                <h1 class="fw-bolder text-gray-800 text-center lh-lg">You have the Patches!</h1<
+                <h4 class="fw-semibold text-gray-700">See all the changes made!</h4>
                 <img src="${selectedImage.url}" 
                     title="${selectedImage.title}"
                     patches="noEnlarge"
