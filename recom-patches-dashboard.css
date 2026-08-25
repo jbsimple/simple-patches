@@ -13,6 +13,7 @@
     margin-bottom: 0 !important;
     text-decoration: unset !important;
     transition: all 0.1s ease;
+    border: color-mix(in srgb, var(--bs-card-bg) 50%, gray 50%) !important;
 }
 
 @media (max-width: 1600px) {
@@ -26,7 +27,7 @@
 }
 
 #patches-dashboard-quicklinks .item.green { --bs-card-bg: rgb(100, 170, 170, 0.25); }
-#patches-dashboard-quicklinks .item.green:hover { --bs-card-bg: rgba(50, 180, 180, 0.25); }
+#patches-dashboard-quicklinks .item.green:hover { --bs-card-bg: rgba(125, 200, 200, 0.25); }
 
 #patches-dashboard-quicklinks .item.blue { --bs-card-bg: rgb(100, 100, 170, 0.25); }
 #patches-dashboard-quicklinks .item.blue:hover { --bs-card-bg: rgb(120, 140, 200, 0.25); }
