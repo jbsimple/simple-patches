@@ -44,6 +44,15 @@ function initAddTools() {
         ],
         "/tools?tool=swappa"
     );
+
+    addButtonCard(
+        'IMEI Import to Labels',
+        [
+            "Take a bulk IMEI import sheet and generate labels for it.",
+            "Simple Patches"
+        ],
+        "https://simple-patches.vercel.app/tools/csv_search.html"
+    );
 }
 
 function addButtonCard(title, bullets, href) {
