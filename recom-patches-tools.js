@@ -51,7 +51,7 @@ function initAddTools() {
             "Take a bulk IMEI import sheet and generate labels for it.",
             "Simple Patches"
         ],
-        "https://simple-patches.vercel.app/tools/csv_search.html"
+        "https://simple-patches.vercel.app/tools/imei_to_labels.html"
     );
 }
 
