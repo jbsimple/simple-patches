@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+
+        <title>IMEI Import to Labels</title>
+        <style>
+            :root {
+                --accent: rgb(40, 120, 200);
+                --background: color-mix(in srgb, var(--accent) 15%, transparent 85%);
+                --border: color-mix(in srgb, var(--accent) 25%, transparent 75%);
+            }
+            *,*::before,*::after { box-sizing: border-box; }
+            html { margin: 0; padding: 0; min-width: 100%; min-height: 100%; font-size: 14px; }
+            body { margin: 0; padding: 0; padding-top: 1.5rem; padding-bottom: 1rem; min-width: 100%; min-height: 100vh; display: flex; flex-direction: column; gap: 1.5rem; align-items: center; font-family: "Nunito", sans-serif; }
+            header,main,footer { width: 90%; max-width: 1200px; }
+            main { flex: 1; }
+
+            h1,h2,h3,h4,h5,p { padding: 0; margin: 0; }
+
+            button { appearance: none; padding: 0.5rem 1rem; border: 1px solid var(--accent); border-radius: 0.5rem; background: var(--accent); color: white; font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease; }
+            button:hover { background-color: color-mix(in srgb, var(--accent) 85%, black 15%); box-shadow: 0 2px 6px color-mix(in srgb, var(--accent) 30%, transparent); }
+            button:active { transform: translateY(1px); box-shadow: none; }
+            button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+            button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+            input { width: 100%; padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; background: white; color: inherit; font-family: inherit; font-size: 1rem; outline: none; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+            input:hover { border-color: var(--accent); }
+            input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 20%, transparent); }
+            input:disabled { opacity: 0.5; cursor: not-allowed; }
+            input::file-selector-button { margin: -0.5rem 0.75rem -0.5rem -0.75rem; padding: 0.5rem 0.75rem; border: none; border-right: 1px solid var(--border); background: var(--background); color: inherit; font-family: inherit; font-weight: 700; cursor: pointer; }
+            input::file-selector-button:hover { background: color-mix(in srgb, var(--accent) 25%, transparent); }
+
+            .column,.row,.wrap { gap: var(--gap); }
+            .column { display: flex; flex-direction: column; }
+            .row { display: flex; flex-direction: row; }
+            .wrap { display: flex; flex-wrap: wrap; }
+            .spacer { flex: 1; }
+            .box { padding: 1rem; border-radius: 0.75rem; background-color: var(--background); }
+            .border { border: 1px solid var(--border); }
+            .gapXL { --gap: 1.5rem; }
+            .gapL { --gap: 1rem; }
+            .gapM { --gap: 0.5rem; }
+            .gapS { --gap: 0.25rem; }
+            .gapT { --gap: 0.1rem; }
+            .row > .line { margin-right: var(--gap); padding-right: var(--gap); border: none; border-right: 1px solid var(--border); height: 100%; }
+            .column > .line { margin-bottom: var(--gap); padding-bottom: var(--gap); border: none; border-bottom: 1px solid var(--border); width: 100%; }
+            .center { align-items: center; justify-content: center; }
+        </style>
+    </head>
+    <body>
+        <header class="box column gapM">
+            <h1 class="line">Convert IMEI Import List to Labels</h1>
+            <div class="column gapT">
+                <p>This converts an IMEI import sheet to a bunch of labels that can be printed.</p>
+                <p>Select the IMEI file below and hit submit. Nothing is actually uploaded, it's all done in browser.</p>
+            </div>
+            <div id="form" class="row gapS center">
+                <input type="file" class="spacer" id="form_file" accept=".csv,text/csv">
+                <button type="button" id="form_submit">Submit</button>
+            </div>
+        </header>
+        <main class="box column gapM">
+
+        </main>
+        <footer class="box column gapM">
+            
+        </footer>
+    </body>
+</html>
