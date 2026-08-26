@@ -1265,6 +1265,9 @@ async function betterProductModalInit() {
         });
     }
 
+    const processedContent = new Set();
+    const inProgressContent = new Set();
+
     const ajaxModalButtons = document.querySelectorAll('.ajax-modal');
     if (!ajaxModalButtons.length) return;
 
@@ -1277,7 +1280,11 @@ async function betterProductModalInit() {
         button.addEventListener('click', () => { waitForProductModal(modal); });
     });
 
-    modal.addEventListener('hidden.bs.modal', () => { console.debug('PATCHES: Product modal hidden.'); });
+    modal.addEventListener('hidden.bs.modal', () => {
+        processedContent.clear();
+        inProgressContent.clear();
+        console.debug('PATCHES: Product modal hidden.');
+    });
 
     function waitForProductModal(modal) {
         const observer = new MutationObserver(() => {
