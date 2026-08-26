@@ -1258,6 +1258,262 @@ async function fetchSidDetails(SID, force = false) {
     }
 }
 
+async function betterProductModalInit() {
+    if (document.readyState !== 'complete') {
+        await new Promise(resolve => {
+            window.addEventListener('load', resolve, { once: true });
+        });
+    }
+
+    const ajaxModalButtons = document.querySelectorAll('.ajax-modal');
+    if (!ajaxModalButtons.length) return;
+
+    const modal = document.getElementById('rc_ajax_modal');
+    if (!modal) return;
+
+    ajaxModalButtons.forEach(button => {
+        const url = button.getAttribute('data-url') ?? '';
+        if (!url.includes('ajax/modals/productitems/')) return;
+        button.addEventListener('click', () => { waitForProductModal(modal); });
+    });
+
+    modal.addEventListener('hidden.bs.modal', () => { console.debug('PATCHES: Product modal hidden.'); });
+
+    function waitForProductModal(modal) {
+        const observer = new MutationObserver(() => {
+            const descriptionDiv = modal.querySelector(
+                'div.d-flex.flex-wrap.fw-bold.mb-4.fs-5.text-gray-400'
+            );
+
+            if (!descriptionDiv) return;
+
+            observer.disconnect();
+            processProductModal(modal, descriptionDiv);
+        });
+
+        observer.observe(modal, {
+            childList: true,
+            subtree: true
+        });
+    }
+
+    async function processProductModal(modal, descriptionDiv) {
+        const descriptionText = descriptionDiv.textContent.trim();
+        if (!descriptionText) return;
+        if (processedContent.has(descriptionText) || inProgressContent.has(descriptionText)) {
+            console.debug('PATCHES: API call already in progress or completed for:', descriptionText);
+            return;
+        }
+
+        inProgressContent.add(descriptionText);
+
+        try {
+            const sidDetails = await fetchSidDetails(descriptionText);
+            processedContent.add(descriptionText);
+            const itemImages = sidDetails.item_images ?? [];
+            const productImages = sidDetails.product_images ?? [];
+            const imageCounts = sidDetails.image_counts ?? [];
+            updateProductTable(modal, imageCounts);
+            updateProductDetails(modal, productImages);
+
+        } catch (error) {
+            console.error('PATCHES: API call failed for:', descriptionText, error);
+        } finally {
+            inProgressContent.delete(descriptionText);
+        }
+    }
+
+    function updateProductTable(modal, imageCounts) {
+        const table = modal.querySelector('table.table-row-bordered');
+        if (!table) {
+            console.debug('PATCHES: Table not found in modal.');
+            return;
+        }
+
+        const headerRow = table.querySelector('thead tr');
+        if (headerRow) { updateTableHeader(headerRow); }
+        table.querySelectorAll('tbody tr').forEach(row => { updateTableRow(row, imageCounts); });
+    }
+
+
+    function updateTableHeader(headerRow) {
+        headerRow.querySelectorAll('.w-50').forEach(element => {
+            element.classList.remove('w-50');
+            element.style.setProperty('width', '35%', 'important');
+        });
+
+        const headings = [...headerRow.querySelectorAll('th')];
+        const getHeading = text => headings.find(th => th.textContent.trim() === text);
+        const skuHeading = getHeading('SKU');
+        if (skuHeading) { skuHeading.style.setProperty('width', '12%', 'important'); }
+
+
+        const conditionHeading = getHeading('Condition');
+        if (conditionHeading) { conditionHeading.style.setProperty('width', '15%', 'important'); }
+
+
+        const stockHeading = getHeading('In Stock');
+        if (stockHeading) {
+            stockHeading.textContent = 'Stock';
+            stockHeading.title = 'In Stock';
+        }
+
+
+        const availableHeading = getHeading('Total Available');
+        if (availableHeading) {
+            availableHeading.textContent = 'Avai..';
+            availableHeading.title = 'Total Available';
+        }
+
+
+        const priceHeading = getHeading('Base Price');
+        if (priceHeading) {
+            priceHeading.textContent = 'Price';
+            priceHeading.title = 'Base Price';
+        }
+
+
+        if (!headerRow.querySelector('[data-patches-created]')) {
+            const createdHeader = document.createElement('th');
+            createdHeader.dataset.patchesCreated = '';
+            createdHeader.style.setProperty('width', '16%', 'important');
+            createdHeader.textContent = 'Created At';
+            headerRow.appendChild(createdHeader);
+        }
+
+
+        if (!headerRow.querySelector('[data-patches-pictures]')) {
+            const pictureHeader = document.createElement('th');
+            pictureHeader.dataset.patchesPictures = '';
+            pictureHeader.textContent = 'Pictures';
+            headerRow.appendChild(pictureHeader);
+        }
+    }
+
+
+    function updateTableRow(row, imageCounts) {
+        const link = row.querySelector('td:first-child a');
+        if (!link) return;
+
+        const sku = getDirectText(link);
+        if (!sku) return;
+
+        const skuObj = imageCounts.find(item => item.sku?.trim() === sku);
+        if (skuObj?.Item_Status === 'Inactive' && !link.querySelector('[data-patches-inactive]')) {
+            const badge = document.createElement('span');
+            badge.dataset.patchesInactive = '';
+            badge.className = 'badge badge-danger ms-2';
+            badge.textContent = 'Inactive';
+            link.appendChild(badge);
+        }
+
+        if (!row.querySelector('[data-patches-created]')) {
+            const createdCell = document.createElement('td');
+            createdCell.dataset.patchesCreated = '';
+            createdCell.textContent = skuObj?.Created_Date ? formatDate(skuObj.Created_Date) : '';
+            row.appendChild(createdCell);
+            if (!skuObj?.Created_Date) { console.error(`PATCHES: Unable to get created date for ${sku}:`, skuObj); }
+        }
+
+        if (!row.querySelector('[data-patches-pictures]')) {
+            const pictureCell = document.createElement('td');
+            pictureCell.dataset.patchesPictures = '';
+            pictureCell.textContent = String(skuObj?.count ?? 0);
+            row.appendChild(pictureCell);
+        }
+    }
+
+    function updateProductDetails(modal, productImages) {
+        const img = modal.querySelector('img');
+        if (!img) {
+            console.debug('PATCHES: No images found.');
+            return;
+        }
+
+        const parentContainer = modal.querySelector('.d-flex.flex-wrap.justify-content-start');
+        if (!parentContainer) {
+            console.error('PATCHES: Product details parent container not found.');
+            return;
+        }
+
+        const targetContainer = parentContainer.querySelector('.d-flex.flex-wrap');
+        if (!targetContainer) {
+            console.error('PATCHES: Product details target container not found.');
+            return;
+        }
+
+        const product = productImages[0];
+        const filename = getFilename(img.src);
+
+        if (product) {
+            if (product.Created_Date) { createDetailBox(targetContainer, 'Created At', formatDate(product.Created_Date), 'SID Created Timestamp.'); }
+            if (product.Product_Status) { createDetailBox(targetContainer, 'Status', product.Product_Status, 'SID Status.', (product.Product_Status === 'Inactive' ? 'text-danger' : 'text-success')); }
+        } else {
+            console.error('PATCHES: Unable to get product details.', productImages);
+        }
+
+        if (filename !== 'no-image.png') {
+            createDetailBox(targetContainer, 'Number of Pictures', String(productImages.length), 'Number of pictures on the SID.');
+            createDetailBox(targetContainer, 'Image Filename', filename, 'Filename of the first image on the SID.');
+            if (filename.toLowerCase().includes('stock')) { createDetailBox(targetContainer, 'Picture Note', 'Stock Photo!', 'The filename contains "stock" so it is flagged.', 'text-danger');}
+        } else {
+            createDetailBox(targetContainer, 'Number of Pictures', '0', 'Number of pictures on the SID.');
+        }
+    }
+
+    function createDetailBox(container, label, value, title = '', colorClass = '') {
+        const newElement = document.createElement('div');
+        newElement.title = title;
+        newElement.className = 'border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3';
+
+        const numberContainer = document.createElement('div');
+        numberContainer.className = 'd-flex align-items-center';
+
+        const valueDiv = document.createElement('div');
+        valueDiv.className = `fs-4 fw-bolder ${colorClass}`;
+        valueDiv.textContent = value;
+
+        const labelDiv = document.createElement('div');
+        labelDiv.className = 'fw-bold fs-6 text-gray-400';
+        labelDiv.textContent = label;
+
+        numberContainer.appendChild(valueDiv);
+        newElement.appendChild(numberContainer);
+        newElement.appendChild(labelDiv);
+        container.appendChild(newElement);
+    }
+
+
+    function formatDate(date) {
+        const dateObj = new Date(date);
+        if (Number.isNaN(dateObj.getTime())) return '';
+        const month = new Intl.DateTimeFormat('en-US', {month: 'short'}).format(dateObj);
+        const day = String(dateObj.getDate()).padStart(2, '0');
+        const year = dateObj.getFullYear();
+        const time = dateObj.toTimeString().split(' ')[0];
+        return `${month} ${day} ${year} ${time}`;
+    }
+
+
+    function getDirectText(element) {
+        for (const node of element.childNodes) {
+            if (node.nodeType === Node.TEXT_NODE) {
+                const text = node.textContent.trim();
+                if (text) return text;
+            }
+        }
+        return '';
+    }
+
+    function getFilename(src) {
+        try {
+            return new URL(src, location.href).pathname.split('/').pop();
+        } catch {
+            return src.split('/').pop();
+        }
+    }
+}
+
 function hijackAjaxModal() {
     let modal = document.getElementById('rc_ajax_modal');
     let lastEvent = null;
@@ -1305,205 +1561,7 @@ function hijackAjaxModal() {
     console.debug('Patch: MutationObserver is now monitoring the modal content.');
 
     async function modalProduct() {
-        const descriptionDiv = modal.querySelector('div.d-flex.flex-wrap.fw-bold.mb-4.fs-5.text-gray-400');
-        if (descriptionDiv) {
-            const descriptionText = descriptionDiv.textContent.trim();
-    
-            if (!processedContent.has(descriptionText) && !inProgressContent.has(descriptionText)) {
-                inProgressContent.add(descriptionText);
-    
-                try {
-                    const sidDetails = await fetchSidDetails(descriptionText);
-                    processedContent.add(descriptionText);
-                    if (sidDetails.item_images) { item_images = sidDetails.item_images; }
-                    if (sidDetails.product_images) { product_images = sidDetails.product_images; }
-                    if (sidDetails.image_counts) { image_counts = sidDetails.image_counts; }
-
-                    const table = modal.querySelector('table.table-row-bordered');
-                    if (table) {
-                        const thead = table.querySelector('thead');
-                        if (thead) {
-                            const headerRow = thead.querySelector('tr');
-                            if (headerRow) {
-                                const w50s = headerRow.querySelectorAll('.w-50');
-                                w50s.forEach(w50 => {
-                                    w50.classList.remove('w-50');
-                                    w50.setAttribute('style', 'width: 35% !important;');
-                                });
-
-                                const headings = headerRow.querySelectorAll('th');
-
-                                const skuHeading = Array.from(headings).find(th => th.textContent.trim() === 'SKU');
-                                skuHeading.setAttribute('style', 'width: 12% !important;');
-
-                                const conditionHeading = Array.from(headings).find(th => th.textContent.trim() === 'Condition');
-                                conditionHeading.setAttribute('style', 'width: 15% !important;');
-
-                                const stockHeading = Array.from(headings).find(th => th.textContent.trim() === 'In Stock');
-                                stockHeading.textContent = 'Stock';
-                                stockHeading.title = 'In Stock';
-
-                                const availableHeading = Array.from(headings).find(th => th.textContent.trim() === 'Total Available');
-                                availableHeading.textContent = 'Avai..';
-                                availableHeading.title = "Total Available";
-
-                                const priceHeading = Array.from(headings).find(th => th.textContent.trim() === 'Base Price');
-                                priceHeading.textContent = 'Price';
-                                priceHeading.title = 'Base Price';
-
-                                const createdHeader = document.createElement('th');
-                                createdHeader.setAttribute('style', 'width: 16% !important;');
-                                createdHeader.textContent = 'Creaated At';
-                                headerRow.appendChild(createdHeader);
-
-                                const pictureHeader = document.createElement('th');
-                                pictureHeader.textContent = 'Pictures';
-                                headerRow.appendChild(pictureHeader);
-                            }
-                        }
-    
-                        const rows = table.querySelectorAll('tbody tr');
-                        rows.forEach((row) => {
-                            const td = row.querySelector('td:nth-child(1)');
-                            let sku = '';
-                            if (td) {
-                                const link = td.querySelector('a');
-                                if (link) {
-                                    for (const node of link.childNodes) {
-                                        if (node.nodeType === Node.TEXT_NODE) {
-                                            sku = node.textContent.trim();
-                                            break;
-                                        }
-                                    }
-
-                                    if (sku !== '') {
-                                        const skuObj = image_counts.find((item) => item.sku.trim() === sku);
-                                        if (skuObj.Item_Status === 'Inactive') { link.innerHTML += `<span class="badge badge-danger ms-2">Inactive</span>`; }
-
-                                        const createdCell = document.createElement('td');
-                                        if (skuObj && skuObj.Created_Date) {
-                                            const dateObj = new Date(skuObj.Created_Date);
-                                            const options = { month: 'short' };
-                                            const month = new Intl.DateTimeFormat('en-US', options).format(dateObj);
-                                            const day = String(dateObj.getDate()).padStart(2, '0');
-                                            const year = dateObj.getFullYear();
-                                            const time = dateObj.toTimeString().split(' ')[0];
-
-                                            createdCell.innerHTML = `${month} ${day} ${year} ${time}`;
-                                        } else {
-                                            createdCell.textContent = '';
-                                            console.error(`PATCHES: Unable to get created date for ${sku}:`, skuObj);
-                                        }
-                                        row.appendChild(createdCell);
-                
-                                        const pictureCell = document.createElement('td');
-                                        pictureCell.textContent = skuObj ? skuObj.count : '0';
-                                        row.appendChild(pictureCell);
-                                    }
-                                }
-                            }
-                        });
-                        
-                    } else {
-                        console.debug('Patch: Table not found in the modal content.');
-                    }
-    
-                    const images = modal.querySelectorAll('img');
-    
-                    if (images.length > 0) {
-                        const img = images[0];
-                        const filename = img.src.split('/').pop();
-    
-                        const parentContainer = modal.querySelector(
-                            '.d-flex.flex-wrap.justify-content-start'
-                        );
-
-                        if (parentContainer) {
-                            const targetContainer = parentContainer.querySelector('.d-flex.flex-wrap');
-
-                            if (targetContainer) {
-
-                                if (product_images !== null && product_images.length > 0) {
-                                    if (product_images[0].Created_Date) {
-                                        const dateObj = new Date(product_images[0].Created_Date);
-                                        const options = { month: 'short' };
-                                        const month = new Intl.DateTimeFormat('en-US', options).format(dateObj);
-                                        const day = String(dateObj.getDate()).padStart(2, '0');
-                                        const year = dateObj.getFullYear();
-                                        const time = dateObj.toTimeString().split(' ')[0];
-                                        createDetailBox('Created At', `${month} ${day} ${year} ${time}`, 'SID Created Timestamp.');
-                                    }
-
-                                    if (product_images[0].Product_Status && product_images[0].Product_Status === 'Inactive') {
-                                        createDetailBox('Status', product_images[0].Product_Status, 'SID Status.', 'text-danger');
-                                    } else if (product_images[0].Product_Status) {
-                                        createDetailBox('Status', product_images[0].Product_Status, 'SID Status.', 'text-success');
-                                    }
-                                    
-                                } else {
-                                    console.error('PATCHES: Unable to get product details.', product_images);
-                                }
-
-                                if (filename !== 'no-image.png') {
-                                    createDetailBox('Number of Pictures', String(product_images?.length ?? 0), 'Number of pictures on the SID.');
-                                    createDetailBox('Image Filename', filename, 'Filename of the first image on the SID.');
-                                    if (filename.toLowerCase().includes('stock')) {
-                                        createDetailBox('Picture Note', 'Stock Photo!', 'The filename contains "stock" so it is flagged.', 'text-danger');
-                                    }
-                                } else {
-                                    createDetailBox('Number of Pictures', '0', 'Number of pictures on the SID.');
-                                }
-
-                                function createDetailBox(bold, value, title = '', color = '') {
-                                    const newElement = document.createElement('div');
-                                    newElement.title = title;
-                                    newElement.className = 'border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3';
-    
-                                    const numberContainer = document.createElement('div');
-                                    numberContainer.className = 'd-flex align-items-center';
-                                    const filenameDiv = document.createElement('div');
-                                    filenameDiv.className = 'fs-4 fw-bolder';
-                                    if (color !== '') {
-                                        console.debug('PATCHES: There is a COLOR!', color); // this HAS to be here or the color wont be set, dont ask me why
-                                        filenameDiv.setAttribute('style', `color: var(--bs-${color}) !important;`);
-                                    }
-                                    filenameDiv.textContent = value;
-    
-                                    numberContainer.appendChild(filenameDiv);
-    
-                                    const labelDiv = document.createElement('div');
-                                    labelDiv.className = 'fw-bold fs-6 text-gray-400';
-                                    labelDiv.textContent = bold;
-    
-                                    newElement.appendChild(numberContainer);
-                                    newElement.appendChild(labelDiv);
-    
-                                    targetContainer.appendChild(newElement);
-                                }
-                            } else {
-                                console.error('Patches - Target container with class "d-flex flex-wrap" not found.');
-                            }
-                        } else {
-                            console.error('Patches - Parent container with class "d-flex flex-wrap justify-content-start" not found.');
-                        }
-                    } else {
-                        console.debug('Patches - No images found.');
-                    }
-                } catch (error) {
-                    console.error('Patches - API call failed for:', descriptionText, error);
-                } finally {
-                    inProgressContent.delete(descriptionText);
-                }
-            } else {
-                console.debug('Patches - API call already in progress or completed for:', descriptionText);
-            }
-        } else {
-            console.debug('Patches - Description div not found in the modal content.');
-        }
-    
-        modal.addEventListener('hidden.bs.modal', () => {
-            console.debug('Patch: Modal has been hidden.');
-        });
+        
     }
 }
 
@@ -2144,7 +2202,7 @@ async function patchInit() {
         console.error('PATCHES - Edge config failed:', err);
     });
 
-    setTimeout(hijackAjaxModal, 500);
+    setTimeout(betterProductModalInit, 500);
     console.log('PATCHES - Loading Complete');
 }
 window.onload = patchInit;
