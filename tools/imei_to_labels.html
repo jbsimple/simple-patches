@@ -7,6 +7,8 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
 
+        <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.12.1/dist/JsBarcode.all.min.js"></script>
+
         <title>IMEI Import to Labels</title>
         <style>
             :root {
@@ -14,11 +16,11 @@
                 --background: color-mix(in srgb, var(--accent) 15%, transparent 85%);
                 --border: color-mix(in srgb, var(--accent) 25%, transparent 75%);
             }
+
             *,*::before,*::after { box-sizing: border-box; }
             html { margin: 0; padding: 0; min-width: 100%; min-height: 100%; font-size: 14px; }
             body { margin: 0; padding: 0; padding-top: 1.5rem; padding-bottom: 1rem; min-width: 100%; min-height: 100vh; display: flex; flex-direction: column; gap: 1.5rem; align-items: center; font-family: "Nunito", sans-serif; }
             header,main,footer { width: 90%; max-width: 1200px; }
-            main { flex: 1; }
 
             h1,h2,h3,h4,h5,p { padding: 0; margin: 0; }
 
@@ -28,7 +30,7 @@
             button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
             button:disabled { opacity: 0.5; cursor: not-allowed; }
 
-            input { width: 100%; padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; background: white; color: inherit; font-family: inherit; font-size: 1rem; outline: none; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+            input { padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; background: white; color: inherit; font-family: inherit; font-size: 1rem; outline: none; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
             input:hover { border-color: var(--accent); }
             input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 20%, transparent); }
             input:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -39,7 +41,7 @@
             .column { display: flex; flex-direction: column; }
             .row { display: flex; flex-direction: row; }
             .wrap { display: flex; flex-wrap: wrap; }
-            .spacer { flex: 1; }
+            .spacer { flex: 1 1 0; min-width: 0; }
             .box { padding: 1rem; border-radius: 0.75rem; background-color: var(--background); }
             .border { border: 1px solid var(--border); }
             .gapXL { --gap: 1.5rem; }
@@ -50,6 +52,43 @@
             .row > .line { margin-right: var(--gap); padding-right: var(--gap); border: none; border-right: 1px solid var(--border); height: 100%; }
             .column > .line { margin-bottom: var(--gap); padding-bottom: var(--gap); border: none; border-bottom: 1px solid var(--border); width: 100%; }
             .center { align-items: center; justify-content: center; }
+
+            #error_modal { border: none; border-radius: 0.75rem; padding: 1.5rem; min-width: 300px; max-width: 90%; box-shadow: 0 5px 30px rgba(0, 0, 0, 0.25); }
+            #error_modal::backdrop { background: rgba(0, 0, 0, 0.5); }
+            #error_modal[open] { animation: dialogOpen 0.1s ease-out forwards; }
+            #error_modal.closing { animation: dialogClose 0.07s ease-in forwards; }
+            #error_modal::backdrop { background: rgba(0, 0, 0, 0.5); animation: backdropOpen 0.2s ease-out forwards; }
+            #error_modal.closing::backdrop { animation: backdropClose 0.07s ease-in forwards; }
+            @keyframes dialogOpen {
+                from { opacity: 0; transform: scale(0.85); }
+                to { opacity: 1; transform: scale(1); }
+            }
+            @keyframes dialogClose {
+                from { opacity: 1; transform: scale(1); }
+                to { opacity: 0; transform: scale(0.85); }
+            }
+            @keyframes backdropOpen {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            @keyframes backdropClose {
+                from { opacity: 1; }
+                to { opacity: 0; }
+            }
+
+            #form, #form input { min-width: 0; }
+            .label { width: 2in; height: 1in; padding: 0.06in; background: white; color: black; display: flex; flex-direction: column; gap: 0.03in; font-family: Arial, Helvetica, sans-serif; font-size: 8pt; font-weight: 700; overflow: hidden; flex: 0 0 auto; }
+
+            /* print stuff */
+            @page { size: 2in 1in; margin: 0; }
+            @media print {
+                html,body { margin: 0; padding: 0; width: 2in; height: auto; }
+                body > * { display: none !important; }
+                body > #form_results { display: block !important; width: 2in; max-width: none; margin: 0; padding: 0; background: none; }
+                html,body { width: 2in; margin: 0; padding: 0; }
+                .label { display: flex; width: 2in; height: 1in; margin: 0; break-after: page; page-break-after: always; }
+                .label:last-child { break-after: auto; page-break-after: auto; }
+            }
         </style>
     </head>
     <body>
@@ -60,15 +99,204 @@
                 <p>Select the IMEI file below and hit submit. Nothing is actually uploaded, it's all done in browser.</p>
             </div>
             <div id="form" class="row gapL center">
+                <input type="text" id="form_initials" style="width:110px;" placeholder="Label Initials">
                 <input type="file" class="spacer" id="form_file" accept=".csv,text/csv">
                 <button type="button" id="form_submit">Submit</button>
             </div>
         </header>
-        <main class="box column gapM">
-
-        </main>
-        <footer class="box column gapM">
-
+        <!-- I put the footer first because it makes more sense for the user that uses this -->
+        <footer class="box column gapM" id="form_controls">
+            <strong>Page Print Setup will appear here.</strong>
         </footer>
+        <main class="box wrap center gapM" id="form_results">
+            <strong>Labels will appear here.</strong>
+        </main>
+        <dialog id="error_modal">
+            <div class="column gapL">
+                <h2>Error</h2>
+                <h4 id="error_modal_message"></h4>
+                <div class="row">
+                    <span class="spacer"></span>
+                    <button type="button" id="error_modal_close">OK</button>
+                    <span class="spacer"></span>
+                </div>
+            </div>
+        </dialog>
+        <script type="text/javascript">(async function() {
+            const pageSize = 50; // how many labels in a job
+            let labelElements = [];
+            let currentPage = 0;
+            let totalPages = 0;
+            
+            const form_initials = document.getElementById('form_initials');
+            const form_file = document.getElementById('form_file');
+            const form_submit = document.getElementById('form_submit');
+            const form_results = document.getElementById('form_results');
+            const form_controls = document.getElementById('form_controls');
+
+            // error dialog stuff
+            const error_modal = document.getElementById('error_modal');
+            const error_modal_message = document.getElementById('error_modal_message');
+            const error_modal_close = document.getElementById('error_modal_close');
+            function showError(message) {
+                error_modal_message.textContent = message;
+                error_modal.showModal();
+            }
+            error_modal_close.addEventListener('click', () => {
+                if (error_modal.classList.contains('closing')) return;
+                error_modal.classList.add('closing');
+                error_modal.addEventListener('animationend', () => {
+                    error_modal.close();
+                    error_modal.classList.remove('closing');
+                }, { once: true });
+            });
+
+            form_submit.addEventListener('click', async function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const file = form_file.files[0];
+                if (!file) {
+                    showError('Please select an IMEI file.');
+                    console.error('No file?', file);
+                    return;
+                }
+
+                if (!form_initials.value.trim()) {
+                    showError('Please enter your initials.');
+                    console.error('No initials?', form_initials.value.trim());
+                    return;
+                }
+
+                const text = await file.text();
+                if (!text.trim()) {
+                    showError('The selected file is empty.');
+                    console.error('No file contents?', text);
+                    return;
+                }
+
+                const data = text.split(/\r?\n/).filter(row => row.trim() !== '').map(row => row.split(','));
+                if (data.length < 2) {
+                    showError('The selected file does not contain any data rows.');
+                    console.error('No data?', data);
+                    return;
+                }
+
+                const [headers, ...rows] = data;
+                const result = rows.map(row => Object.fromEntries(headers.map((header, index) => [header.trim(), row[index]?.trim() ?? ''])));
+                console.log('Parsed CSV, array of objects:', result);
+
+                labelElements = [];
+                result.forEach(line => { labelElements.push(generateLabelElem(line)); });
+                if (!labelElements.length) {
+                    showError('Unable to generate labels with provided file.');
+                    console.error('No label elements?', labelElements);
+                    return
+                }
+
+                currentPage = 0;
+                totalPages = Math.ceil(labelElements.length / pageSize);
+                renderPage(0);
+                
+            });
+
+            function generateLabelElem(line) {
+                const key = ['sku', 'imei', 'gtin'].find(key => line[key]); // in this order because system still doesnt append gtin properly
+                if (!key) {
+                    showError('There was an issue with a line, missing required data. See console for more information.');
+                    console.error('Missing one of these required data values: [sku, imei, gtin]. Line with issue:', line);
+                    return;
+                };
+                const value = line[key].trim();
+
+                const labelContainer = document.createElement('div');
+                labelContainer.classList.add('label');
+
+                const label_topRow = document.createElement('div');
+                label_topRow.setAttribute('style', 'display:flex;flex-wrap:wrap;align-items:center;gap:0 0.05in;');
+                const label_key = document.createElement('span');
+                label_key.setAttribute('style', 'flex:1 1 auto;min-width:0;white-space:nowrap;');
+                if (key === 'sku') { label_key.style.fontSize = '11pt'; }
+                label_key.textContent = value;
+                label_topRow.appendChild(label_key);
+                if (line.location) {
+                    const label_location = document.createElement('span');
+                    label_location.setAttribute('style', 'flex:0 0 auto;min-width:0;white-space:nowrap;margin-left:auto;');
+                    label_location.textContent = line.location.trim();
+                    label_topRow.appendChild(label_location);
+                }
+                labelContainer.appendChild(label_topRow);
+
+                const label_middleRow = document.createElement('div');
+                label_middleRow.setAttribute('style', 'flex:1;min-height:0;display:flex;align-items:stretch;overflow:hidden;');
+                const label_barcode = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                label_barcode.setAttribute('style', 'display:block;width:100%;height:100%;');
+                JsBarcode(label_barcode, value, {format: 'CODE128', displayValue: false, margin: 0, width: 1.5, height: 40});
+                label_barcode.removeAttribute('width');
+                label_barcode.removeAttribute('height');
+                label_middleRow.appendChild(label_barcode);
+                labelContainer.appendChild(label_middleRow);
+
+
+                const label_bottomRow = document.createElement('div');
+                label_bottomRow.setAttribute('style', 'display:flex;align-items:center;gap:0.05in;flex:0 0 auto;');
+                const label_po = document.createElement('span');
+                label_po.setAttribute('style', 'flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;');
+                label_po.textContent = line.po_number?.trim().split('-')[1] ?? '';
+                label_bottomRow.appendChild(label_po);
+                const label_initials = document.createElement('span');
+                label_initials.setAttribute('style', 'flex:0 0 auto;');
+                label_initials.textContent = form_initials.value.trim();
+                label_bottomRow.appendChild(label_initials);
+                labelContainer.appendChild(label_bottomRow);
+
+                return labelContainer;
+            }
+
+            function renderPage(page) {
+                currentPage = page;
+
+                form_results.innerHTML = '';
+                form_controls.innerHTML = '';
+
+                const start = currentPage * pageSize;
+                const end = Math.min(start + pageSize, labelElements.length);
+
+                labelElements.slice(start, end).forEach(label => { form_results.appendChild(label); });
+
+                const footerRow = document.createElement('div');
+                footerRow.classList.add('row', 'gapM', 'center');
+
+                const previousButton = document.createElement('button');
+                previousButton.type = 'button';
+                previousButton.textContent = 'Previous';
+                previousButton.disabled = currentPage === 0;
+                previousButton.addEventListener('click', () => { renderPage(currentPage - 1); });
+
+                const pageText = document.createElement('span');
+                pageText.classList.add('spacer');
+                pageText.setAttribute('style', 'text-align:center;');
+                pageText.textContent = `Page ${currentPage + 1} of ${totalPages} (${start + 1}-${end} of ${labelElements.length} labels)`;
+
+                const nextButton = document.createElement('button');
+                nextButton.type = 'button';
+                nextButton.textContent = 'Next';
+                nextButton.disabled = currentPage >= totalPages - 1;
+                nextButton.addEventListener('click', () => { renderPage(currentPage + 1); });
+
+                const printButton = document.createElement('button');
+                printButton.type = 'button';
+                printButton.textContent = 'Print';
+                printButton.addEventListener('click', () => { window.print(); });
+
+                footerRow.appendChild(previousButton);
+                footerRow.appendChild(pageText);
+                footerRow.appendChild(nextButton);
+                footerRow.appendChild(printButton);
+
+                form_controls.appendChild(footerRow);
+            }
+
+        })();</script>
     </body>
 </html>
