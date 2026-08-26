@@ -1268,16 +1268,45 @@ async function betterProductModalInit() {
     const processedContent = new Set();
     const inProgressContent = new Set();
 
-    const ajaxModalButtons = document.querySelectorAll('.ajax-modal');
-    if (!ajaxModalButtons.length) return;
-
     const modal = document.getElementById('rc_ajax_modal');
-    if (!modal) return;
+    const appMain = document.getElementById('kt_app_main');
 
-    ajaxModalButtons.forEach(button => {
-        const url = button.getAttribute('data-url') ?? '';
-        if (!url.includes('ajax/modals/productitems/')) return;
-        button.addEventListener('click', () => { waitForProductModal(modal); });
+    if (!modal || !appMain) return;
+
+    function initModalButtons(container = document) {
+        const buttons = container.querySelectorAll(
+            '.ajax-modal[data-url*="ajax/modals/productitems/"]:not([data-patches-product-modal])'
+        );
+
+        buttons.forEach(button => {
+            button.dataset.patchesProductModal = '';
+
+            button.addEventListener('click', () => {
+                waitForProductModal(modal);
+            });
+        });
+    }
+
+    initModalButtons(appMain);
+
+
+    const appObserver = new MutationObserver(mutations => {
+        for (const mutation of mutations) {
+            for (const node of mutation.addedNodes) {
+                if (!(node instanceof Element)) continue;
+                if (node.matches('.ajax-modal[data-url*="ajax/modals/productitems/"]') && !node.hasAttribute('data-patches-product-modal')) {
+                    node.dataset.patchesProductModal = '';
+                    node.addEventListener('click', () => { waitForProductModal(modal); });
+                }
+                
+                initModalButtons(node);
+            }
+        }
+    });
+
+    appObserver.observe(appMain, {
+        childList: true,
+        subtree: true
     });
 
     modal.addEventListener('hidden.bs.modal', () => {
