@@ -1550,57 +1550,6 @@ async function betterProductModalInit() {
     }
 }
 
-function hijackAjaxModal() {
-    let modal = document.getElementById('rc_ajax_modal');
-    let lastEvent = null;
-    const processedContent = new Set();
-    const inProgressContent = new Set();
-
-    ['click', 'input', 'keyup', 'change', 'mousedown', 'mouseup'].forEach((eventType) => {
-        document.addEventListener(eventType, (event) => {
-            lastEvent = event;
-        }, true);
-    });
-
-    modal.addEventListener('hidden.bs.modal', () => {
-        processedContent.clear();
-        inProgressContent.clear();
-    });
-
-    const observer = new MutationObserver(async (mutationsList) => {
-        const mutation = mutationsList[0];
-        if (mutation) {
-            if (lastEvent) {
-                let { target } = lastEvent;
-
-                if (!(target instanceof Element)) return;
-
-                if (target && target.matches('i.fas')) { target = target.parentElement; }
-
-                if (target && (target.id === "rc_ajax_modal" && target.querySelector('.fw-bold.fs-6.text-gray-400')?.textContent.trim() === 'GTIN' && target.querySelector('table').classList.contains('table-row-bordered')) 
-                        || (target.tagName === 'A' && target.hasAttribute('data-url') && target.getAttribute('data-url').includes('ajax/modals/productitems/') && target.classList.contains('ajax-modal'))) {
-                    modalProduct();
-                }
-            }
-        }
-    });
-
-
-    const config = {
-        childList: true,
-        attributes: true,
-        subtree: true,
-    };
-
-    observer.observe(modal, config);
-
-    console.debug('Patch: MutationObserver is now monitoring the modal content.');
-
-    async function modalProduct() {
-        
-    }
-}
-
 function adjustToolbar() {
     const toolbar = document.getElementById('kt_app_toolbar');
     const text = toolbar.querySelector('h1.page-heading').textContent;
@@ -2238,7 +2187,8 @@ async function patchInit() {
         console.error('PATCHES - Edge config failed:', err);
     });
 
-    setTimeout(betterProductModalInit, 500);
+    betterProductModalInit();
+
     console.log('PATCHES - Loading Complete');
 }
 window.onload = patchInit;
