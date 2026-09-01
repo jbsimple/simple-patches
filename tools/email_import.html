@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <title>CDN Upload - Simple Patches</title>
+        <title>Email Importing Tool - Simple Patches</title>
         <style>
             :root {
                 --accent: rgb(40, 120, 200);
@@ -82,38 +82,29 @@
                 from { opacity: 1; }
                 to { opacity: 0; }
             }
-
-            /* page specific */
-            .dropzone { width: 100%; padding: 2rem; border: 2px dashed var(--border); border-radius: 0.75rem; background: white; text-align: center; cursor: pointer; transition: border-color 0.15s ease, background-color 0.15s ease; }
-            .dropzone:hover, .dropzone.dragover { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 5%, white); }
-            .status { font-size: 0.9rem; opacity: 0.7; }
-            .queue { width: 100%; display: flex; flex-direction: column; gap: 0.5rem; }
-            .file-row { width: 100%; padding: 0.75rem; display: flex; gap: 1rem; align-items: center; border: 1px solid var(--border); border-radius: 0.5rem; background: white; }
-            .file-thumb { width: 48px; height: 48px; flex: 0 0 48px; object-fit: cover; border-radius: 0.5rem; }
-            .file-info { flex: 1 1 0; min-width: 0; overflow-wrap: anywhere; }
-            .file-info a { color: var(--accent); }
-            .file-actions { flex: 0 0 auto; }
-            .file-actions button { padding: 0.3rem 0.6rem; font-size: 0.9rem; }
         </style>
     </head>
     <body>
         <header class="box column gapM" id="header">
-            <h1 class="line">Simple Patches Asset Uploader</h1>
-            <p>Upload files to get a CDN link to paste in code, or anywhere I guess.</p>
-            <div class="column gapT spacer">
-                <label for="password">Password:</label>
-                <input type="password" id="password">
-            </div>
-            <div class="column gapT spacer">
-                <div class="dropzone" id="dropzone">
-                    <p>Click or drag and drop a file here</p>
-                    <input type="file" id="fileInput" style="display: none;" />
-                </div>
-                <div class="status" id="status">Waiting for input...</div>
+            <h1 class="line">Email Import Generator</h1>
+            <p>Convert a comma separated list of emails (and names) into an import sheet for Mailchimp.</p>
+            <div class="row column gapL">
+                <input class="spacer" type="file" id="fileInput" />
+                <a class="button" id="download" onclick="window.downloadTableAsCSV()">Download CSV</a>
+                <a class="button active" href="">Reset</a>
             </div>
         </header>
         <main class="box wrap center gapM" id="main">
-            <div class="queue" id="queue"></div>
+            <table id="emailTable" border="0">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
         </main>
         <footer class="box column gapM" id="footer"></footer>
         <dialog id="error_modal">
@@ -151,111 +142,83 @@
             script_version.onload = function() { console.debug('Patch Loaded: buildInfo.js'); };
             document.body.appendChild(script_version);
 
-            // cdn uploader.
-            // to be honest, vercel already has this, but i like mine more
-            const dropzone = document.getElementById('dropzone');
-            const fileInput = document.getElementById('fileInput');
-            const passwordInput = document.getElementById('password');
-            const status = document.getElementById('status');
-            const queue = document.getElementById('queue');
+            function extractEmailData(text) {
+                const regex = /(?:([\w\s]+)?\s([\w\s]+)?)?\s*<([^>]+)>/g;
+                let match;
+                const emailData = [];
 
-            function createFileRow(url, filename, type) {
-                const row = document.createElement('div');
-                row.className = 'file-row';
-                let thumb;
-                if (type.startsWith('image/')) {
-                    thumb = document.createElement('img');
-                    thumb.src = url;
-                    thumb.className = 'file-thumb';
-                } else {
-                    thumb = document.createElement('div');
-                    thumb.textContent = '📄';
-                    thumb.className = 'file-thumb';
-                    thumb.style.display = 'flex';
-                    thumb.style.alignItems = 'center';
-                    thumb.style.justifyContent = 'center';
-                    thumb.style.fontSize = '1.5rem';
-                    thumb.style.background = 'var(--background)';
-                }
-                const info = document.createElement('div');
-                info.className = 'file-info';
-                const link = document.createElement('a');
-                link.href = url;
-                link.textContent = filename;
-                link.target = '_blank';
-                info.appendChild(link);
-                const actions = document.createElement('div');
-                actions.className = 'file-actions';
-                const copyBtn = document.createElement('button');
-                copyBtn.textContent = 'Copy URL';
-                copyBtn.onclick = () => {
-                    navigator.clipboard.writeText(url);
-                    copyBtn.textContent = 'Copied!';
-                    setTimeout(() => {
-                        copyBtn.textContent = 'Copy URL';
-                    }, 1000);
-                };
-                actions.appendChild(copyBtn);
-                row.appendChild(thumb);
-                row.appendChild(info);
-                row.appendChild(actions);
-                queue.prepend(row);
-            }
-            
-            async function upload(file) {
-                const password = passwordInput.value.trim();
-                if (!password) {
-                    status.textContent = 'Waiting for input...';
-                    showError('Please enter a password.');
-                    return;
-                }
-                status.textContent = `Uploading ${file.name}...`;
-                try {
-                    const res = await fetch(`/api/upload?filename=${encodeURIComponent(file.name)}`, {
-                        method: 'POST',
-                        headers: {
-                            'x-upload-password': password
-                        },
-                        body: file
+                while ((match = regex.exec(text)) !== null) {
+                    const firstName = match[1] ? match[1].trim() : null;
+                    const lastName = match[2] ? match[2].trim() : null;
+                    const email = match[3];
+
+                    emailData.push({
+                        firstName: firstName,
+                        lastName: lastName,
+                        email: email
                     });
-                    const data = await res.json();
-                    if (data.error) {
-                        status.textContent = 'Upload failed.';
-                        console.error(data);
-                        showError(data.error);
-                        return;
-                    }
-                    createFileRow(data.url, file.name, file.type);
-                    status.textContent = `Uploaded: ${file.name}`;
-                } catch (err) {
-                    console.error(err);
-                    status.textContent = 'Upload failed.';
-                    showError('Upload failed.');
                 }
+
+                return emailData;
             }
 
-            dropzone.addEventListener('click', () => { fileInput.click(); });
-
-            fileInput.addEventListener('change', e => {
-                for (const file of e.target.files) {
-                    upload(file);
+            document.getElementById('fileInput').addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (!file) {
+                    showError('Unable to get file.');
+                    return null;
                 }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const content = e.target.result;
+                    const emailDataArray = extractEmailData(content);
+                    const tbody = document.querySelector('#emailTable tbody');
+                    tbody.innerHTML = '';
+                    for (let data of emailDataArray) {
+                        const tr = document.createElement('tr');
+                        const tdEmail = document.createElement('td');
+                        tdEmail.textContent = data.email;
+                        tr.appendChild(tdEmail);
+
+                        const tdFirstName = document.createElement('td');
+                        tdFirstName.textContent = data.firstName || '';
+                        tr.appendChild(tdFirstName);
+
+                        const tdLastName = document.createElement('td');
+                        tdLastName.textContent = data.lastName || '';
+                        tr.appendChild(tdLastName);
+
+                        tbody.appendChild(tr);
+                    }
+                };
+                document.getElementById('download').classList.add('active');
             });
 
-            dropzone.addEventListener('dragover', e => {
-                e.preventDefault();
-                dropzone.classList.add('dragover');
-            });
+            window.downloadTableAsCSV = function() {
+                const table = document.getElementById('emailTable');
+                let csv = [];
 
-            dropzone.addEventListener('dragleave', () => { dropzone.classList.remove('dragover'); });
+                for (let row of table.rows) {
+                    let cells = row.cells;
+                    let rowData = [];
 
-            dropzone.addEventListener('drop', e => {
-                e.preventDefault();
-                dropzone.classList.remove('dragover');
-                for (const file of e.dataTransfer.files) {
-                    upload(file);
+                    for (let cell of cells) { rowData.push(cell.textContent.replace(/"/g, '""')); }
+
+                    csv.push(rowData.join(','));
                 }
-            });
+
+                let csvData = new Blob([csv.join('\n')], { type: 'text/csv' });
+                let csvURL = window.URL.createObjectURL(csvData);
+
+                let downloadLink = document.createElement('a');
+                downloadLink.href = csvURL;
+                downloadLink.download = '' + Date.now() + '_emailBulk.csv';
+
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            }
 
         })();</script>
     </body>

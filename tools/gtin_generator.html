@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <title>Email Importing Tool - Simple Patches</title>
+        <title>GTIN Generator - Simple Patches</title>
         <style>
             :root {
                 --accent: rgb(40, 120, 200);
@@ -34,7 +34,6 @@
             textarea { width: 100%; min-height: 260px; padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; background: white; color: inherit; font-family: inherit; font-size: 1rem; line-height: 1.5; outline: none; resize: vertical; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
             textarea:hover { border-color: var(--accent); }
             textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 20%, transparent); }
-            textarea:disabled { opacity: 0.5; cursor: not-allowed; }
 
             table { width: 100%; border-collapse: collapse; background: white; border: 1px solid var(--border); border-radius: 0.5rem; overflow: hidden; }
             th, td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); text-align: left; vertical-align: middle; }
@@ -42,6 +41,7 @@
             td { overflow-wrap: anywhere; }
             tbody tr:last-child td { border-bottom: none; }
             tbody tr:hover { background: color-mix(in srgb, var(--accent) 5%, transparent); }
+            textarea:disabled { opacity: 0.5; cursor: not-allowed; }
 
             .column,.row,.wrap { gap: var(--gap); }
             .column { display: flex; flex-direction: column; }
@@ -86,27 +86,16 @@
     </head>
     <body>
         <header class="box column gapM" id="header">
-            <div class="box column gapT center">
-                <h1>Email Import Generator</h1>
-                <p>Convert a comma separated list of emails (and names) into an import sheet for Mailchimp.</p>
-            </div>
-            <div class="row column gapL">
-                <input class="spacer" type="file" id="fileInput" />
-                <a class="button" id="download" onclick="window.downloadTableAsCSV()">Download CSV</a>
-                <a class="button active" href="">Reset</a>
+            <h1 class="line">GTIN Generator</h1>
+            <p>Generate a bunch of valid GTINs for products. These are GTIN-12 and pass the GTIN checksum rule.</p>
+            <div class="box row gapL">
+                <input class="spacer" id="gtinCount" type="number" value="100" min="1" />
+                <button class="generate-btn" onclick="window.generateValidGTINList();">Generate</button>
+                <button class="copy-btn" onclick="window.copyGTINList();">Copy</button>
             </div>
         </header>
         <main class="box wrap center gapM" id="main">
-            <table id="emailTable" border="0">
-                <thead>
-                    <tr>
-                        <th>Email</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <textarea id="list" placeholder="Generated GTINs will appear here..."></textarea>
         </main>
         <footer class="box column gapM" id="footer"></footer>
         <dialog id="error_modal">
@@ -144,82 +133,40 @@
             script_version.onload = function() { console.debug('Patch Loaded: buildInfo.js'); };
             document.body.appendChild(script_version);
 
-            function extractEmailData(text) {
-                const regex = /(?:([\w\s]+)?\s([\w\s]+)?)?\s*<([^>]+)>/g;
-                let match;
-                const emailData = [];
-
-                while ((match = regex.exec(text)) !== null) {
-                    const firstName = match[1] ? match[1].trim() : null;
-                    const lastName = match[2] ? match[2].trim() : null;
-                    const email = match[3];
-
-                    emailData.push({
-                        firstName: firstName,
-                        lastName: lastName,
-                        email: email
-                    });
-                }
-
-                return emailData;
+            // gtin javascript
+            window.generateValidGTIN = function() {
+                let digits = [];
+                for (let i = 0; i < 11; i++) { digits.push(Math.floor(Math.random() * 10)); }
+                let sum = 0;
+                for (let i = 0; i < 11; i++) { sum += digits[i] * (i % 2 === 0 ? 3 : 1); }
+                let checkDigit = (10 - (sum % 10)) % 10;
+                digits.push(checkDigit);
+                return digits.join('');
             }
 
-            document.getElementById('fileInput').addEventListener('change', function(event) {
-                const file = event.target.files[0];
-                if (!file) {
-                    showError('Unable to get file.');
-                    return null;
+            window.generateValidGTINList = function() {
+                const count = parseInt(document.getElementById('gtinCount').value, 10);
+                const textarea = document.getElementById('list');
+                if (!count || count < 1) {
+                    textarea.value = "Enter a valid number!";
+                    return;
                 }
+                let results = [];
+                for (let i = 0; i < count; i++) { results.push(window.generateValidGTIN()); }
+                textarea.value = results.join("\n");
+            }
 
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const content = e.target.result;
-                    const emailDataArray = extractEmailData(content);
-                    const tbody = document.querySelector('#emailTable tbody');
-                    tbody.innerHTML = '';
-                    for (let data of emailDataArray) {
-                        const tr = document.createElement('tr');
-                        const tdEmail = document.createElement('td');
-                        tdEmail.textContent = data.email;
-                        tr.appendChild(tdEmail);
-
-                        const tdFirstName = document.createElement('td');
-                        tdFirstName.textContent = data.firstName || '';
-                        tr.appendChild(tdFirstName);
-
-                        const tdLastName = document.createElement('td');
-                        tdLastName.textContent = data.lastName || '';
-                        tr.appendChild(tdLastName);
-
-                        tbody.appendChild(tr);
+            window.copyGTINList = function() {
+                const textarea = document.getElementById('list');
+                textarea.focus();
+                textarea.select();
+                try {
+                    if (document.execCommand('copy')) {
+                        console.log("Copied!");
+                        return;
                     }
-                };
-                document.getElementById('download').classList.add('active');
-            });
-
-            window.downloadTableAsCSV = function() {
-                const table = document.getElementById('emailTable');
-                let csv = [];
-
-                for (let row of table.rows) {
-                    let cells = row.cells;
-                    let rowData = [];
-
-                    for (let cell of cells) { rowData.push(cell.textContent.replace(/"/g, '""')); }
-
-                    csv.push(rowData.join(','));
-                }
-
-                let csvData = new Blob([csv.join('\n')], { type: 'text/csv' });
-                let csvURL = window.URL.createObjectURL(csvData);
-
-                let downloadLink = document.createElement('a');
-                downloadLink.href = csvURL;
-                downloadLink.download = '' + Date.now() + '_emailBulk.csv';
-
-                document.body.appendChild(downloadLink);
-                downloadLink.click();
-                document.body.removeChild(downloadLink);
+                } catch (e) {}
+                navigator.clipboard.writeText(textarea.value).then(() => console.log("Copied!")).catch(err => console.error("Copy failed:", err));
             }
 
         })();</script>
