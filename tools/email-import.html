@@ -1,170 +1,185 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Extractor - Simple Patches</title>
-    <style>
-        :root {
-            color-scheme: light dark;
-            --light-bg: rgb(235, 235, 235);
-            --light-color: rgb(48, 48, 50);
-            --dark-bg: rgb(48, 48, 50);
-            --dark-color: rgb(235, 235, 235);
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
 
-            --green: #009879;
-        }
+        <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.12.1/dist/JsBarcode.all.min.js"></script>
 
-        html {
-            background-color: light-dark(var(--light-bg), var(--dark-bg));
-            color: light-dark(var(--light-color), var(--dark-color));
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-            color-scheme: light dark;
-        }
-        body {
-            padding: 0;
-            margin: 0;
-            width: 85%;
-            max-width: 1200px;
-            min-height: 100vh;
-            margin-left: auto;
-            margin-right: auto;
-            display: flex;
-            flex-direction: column;
-        }
-
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-top: 1.5rem;
-            border-radius: 0.5rem;
-            overflow: hidden;
-            box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.15);
-			border: none !important;
-            margin-bottom: 3rem;
-        }
-
-        table thead tr {
-            background-color: var(--green);
-            color: #ffffff;
-            text-align: left;
-        }
-
-        table th, table td { padding: 1rem 1.25rem; }
-        table tbody tr { border-bottom: 1px solid lightgray; }
-        table tbody tr:nth-of-type(even) { background-color: color-mix(in srgb, black 5%, transparent 95%); }
-        table tbody tr:last-of-type { border-bottom: 2px solid var(--green); }
-
-        .header {
-            padding: 10px;
-            margin-top: 3rem;
-            border: 1px solid gray;
-            border-radius: 0.75rem;
-            font-size: 1rem;
-            color: #555;
-
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .footer {
-            display: flex;
-            flex-direction: row;
-            width: 100%;
-            padding: 1rem 0;
-            border-top: 1px solid gray;
-        }
-
-        input {
-            margin: 12px;
-            color: light-dark(var(--light-color), var(--dark-color));
-        }
-        
-        .button {
-            margin: 12px;
-            padding: 0.5rem 0.75rem;
-            border-radius: 0.5rem;
-            color: white;
-            border: 0;
-            transition: all 0.1s ease;
-            text-decoration: none !important;
-            cursor: not-allowed;
-            background-color: gray;
-        }
-
-        .button.active {
-            cursor: pointer;
-            background-color: var(--green);
-        }
-
-        .button.active:hover {
-            background-color: color-mix(in srgb, var(--green) 85%, white 15%);
-        }
-
-    </style>
-</head>
-<body>
-    <div class="header">
-        <input type="file" id="fileInput" />
-        <a class="button" id="download" onclick="downloadTableAsCSV()">Download CSV</a>
-        <a class="button active" href="">Reset</a>
-    </div>
-    <table id="emailTable" border="0">
-        <thead>
-            <tr>
-                <th>Email</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-    <span style="flex: 1;"></span>
-    <div class="footer">
-        <span>Simple Patches | Written in 2023</span>
-        <span style="flex: 1;"></span>
-    </div>
-
-    <script>
-        function extractEmailData(text) {
-            const regex = /(?:([\w\s]+)?\s([\w\s]+)?)?\s*<([^>]+)>/g;
-            let match;
-            const emailData = [];
-
-            while ((match = regex.exec(text)) !== null) {
-                const firstName = match[1] ? match[1].trim() : null;
-                const lastName = match[2] ? match[2].trim() : null;
-                const email = match[3];
-
-                emailData.push({
-                    firstName: firstName,
-                    lastName: lastName,
-                    email: email
-                });
+        <title>Email Importing Tool - Simple Patches</title>
+        <style>
+            :root {
+                --accent: rgb(40, 120, 200);
+                --background: color-mix(in srgb, var(--accent) 15%, transparent 85%);
+                --border: color-mix(in srgb, var(--accent) 25%, transparent 75%);
             }
 
-            return emailData;
-        }
+            *,*::before,*::after { box-sizing: border-box; }
+            html { margin: 0; padding: 0; min-width: 100%; min-height: 100%; font-size: 14px; }
+            body { margin: 0; padding: 0; padding-top: 1.5rem; padding-bottom: 1rem; min-width: 100%; min-height: 100vh; display: flex; flex-direction: column; gap: 1.5rem; align-items: center; font-family: "Nunito", sans-serif; }
+            header,main,footer { width: 90%; max-width: 1200px; }
 
-        document.getElementById('fileInput').addEventListener('change', function(event) {
-            const file = event.target.files[0];
+            h1,h2,h3,h4,h5,p { padding: 0; margin: 0; }
 
-            if (file) {
+            button { appearance: none; padding: 0.5rem 1rem; border: 1px solid var(--accent); border-radius: 0.5rem; background: var(--accent); color: white; font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease; }
+            button:hover { background-color: color-mix(in srgb, var(--accent) 85%, black 15%); box-shadow: 0 2px 6px color-mix(in srgb, var(--accent) 30%, transparent); }
+            button:active { transform: translateY(1px); box-shadow: none; }
+            button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+            button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+            input { padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; background: white; color: inherit; font-family: inherit; font-size: 1rem; outline: none; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+            input:hover { border-color: var(--accent); }
+            input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 20%, transparent); }
+            input:disabled { opacity: 0.5; cursor: not-allowed; }
+            input::file-selector-button { margin: -0.5rem 0.75rem -0.5rem -0.75rem; padding: 0.5rem 0.75rem; border: none; border-right: 1px solid var(--border); background: var(--background); color: inherit; font-family: inherit; font-weight: 700; cursor: pointer; }
+            input::file-selector-button:hover { background: color-mix(in srgb, var(--accent) 25%, transparent); }
+            textarea { width: 100%; min-height: 260px; padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; background: white; color: inherit; font-family: inherit; font-size: 1rem; line-height: 1.5; outline: none; resize: vertical; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+            textarea:hover { border-color: var(--accent); }
+            textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 20%, transparent); }
+            textarea:disabled { opacity: 0.5; cursor: not-allowed; }
+
+            table { width: 100%; border-collapse: collapse; background: white; border: 1px solid var(--border); border-radius: 0.5rem; overflow: hidden; }
+            th, td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); text-align: left; vertical-align: middle; }
+            th { background: var(--background); font-weight: 700; }
+            td { overflow-wrap: anywhere; }
+            tbody tr:last-child td { border-bottom: none; }
+            tbody tr:hover { background: color-mix(in srgb, var(--accent) 5%, transparent); }
+
+            .column,.row,.wrap { gap: var(--gap); }
+            .column { display: flex; flex-direction: column; }
+            .row { display: flex; flex-direction: row; }
+            .wrap { display: flex; flex-wrap: wrap; }
+            .spacer { flex: 1 1 0; min-width: 0; }
+            .box { padding: 1rem; border-radius: 0.75rem; background-color: var(--background); }
+            .border { border: 1px solid var(--border); }
+            .gapXL { --gap: 1.5rem; }
+            .gapL { --gap: 1rem; }
+            .gapM { --gap: 0.5rem; }
+            .gapS { --gap: 0.25rem; }
+            .gapT { --gap: 0.1rem; }
+            .row > .line { margin-right: var(--gap); padding-right: var(--gap); border: none; border-right: 1px solid var(--border); height: 100%; }
+            .column > .line { margin-bottom: var(--gap); padding-bottom: var(--gap); border: none; border-bottom: 1px solid var(--border); width: 100%; }
+            .center { align-items: center; justify-content: center; }
+            .hidden { display: none; }
+
+            #error_modal { border: none; border-radius: 0.75rem; padding: 1.5rem; min-width: 300px; max-width: 90%; box-shadow: 0 5px 30px rgba(0, 0, 0, 0.25); }
+            #error_modal::backdrop { background: rgba(0, 0, 0, 0.5); }
+            #error_modal[open] { animation: dialogOpen 0.1s ease-out forwards; }
+            #error_modal.closing { animation: dialogClose 0.07s ease-in forwards; }
+            #error_modal::backdrop { background: rgba(0, 0, 0, 0.5); animation: backdropOpen 0.2s ease-out forwards; }
+            #error_modal.closing::backdrop { animation: backdropClose 0.07s ease-in forwards; }
+            @keyframes dialogOpen {
+                from { opacity: 0; transform: scale(0.85); }
+                to { opacity: 1; transform: scale(1); }
+            }
+            @keyframes dialogClose {
+                from { opacity: 1; transform: scale(1); }
+                to { opacity: 0; transform: scale(0.85); }
+            }
+            @keyframes backdropOpen {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            @keyframes backdropClose {
+                from { opacity: 1; }
+                to { opacity: 0; }
+            }
+
+            /* page specific */
+        </style>
+    </head>
+    <body>
+        <header class="box column gapM" id="header">
+            <div class="box column gapT center">
+                <h1>Email Import Generator</h1>
+                <p>Convert a comma separated list of emails (and names) into an import sheet for Mailchimp.</p>
+            </div>
+            <div class="row column gapT">
+                <input class="spacer" type="file" id="fileInput" />
+                <a class="button" id="download" onclick="window.downloadTableAsCSV()">Download CSV</a>
+                <a class="button active" href="">Reset</a>
+            </div>
+        </header>
+        <main class="box wrap center gapM" id="main">
+            <table id="emailTable" border="0">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </main>
+        <footer class="box column gapM" id="footer"></footer>
+        <dialog id="error_modal">
+            <div class="column gapL">
+                <h2>Error</h2>
+                <h4 id="error_modal_message"></h4>
+                <div class="row">
+                    <span class="spacer"></span>
+                    <button type="button" id="error_modal_close">OK</button>
+                    <span class="spacer"></span>
+                </div>
+            </div>
+        </dialog>
+        <script type="text/javascript">(async function() {
+            // error dialog stuff
+            const error_modal = document.getElementById('error_modal');
+            const error_modal_message = document.getElementById('error_modal_message');
+            const error_modal_close = document.getElementById('error_modal_close');
+            function showError(message) {
+                error_modal_message.textContent = message;
+                error_modal.showModal();
+            }
+            error_modal_close.addEventListener('click', () => {
+                if (error_modal.classList.contains('closing')) return;
+                error_modal.classList.add('closing');
+                error_modal.addEventListener('animationend', () => {
+                    error_modal.close();
+                    error_modal.classList.remove('closing');
+                }, { once: true });
+            });
+
+            function extractEmailData(text) {
+                const regex = /(?:([\w\s]+)?\s([\w\s]+)?)?\s*<([^>]+)>/g;
+                let match;
+                const emailData = [];
+
+                while ((match = regex.exec(text)) !== null) {
+                    const firstName = match[1] ? match[1].trim() : null;
+                    const lastName = match[2] ? match[2].trim() : null;
+                    const email = match[3];
+
+                    emailData.push({
+                        firstName: firstName,
+                        lastName: lastName,
+                        email: email
+                    });
+                }
+
+                return emailData;
+            }
+
+            document.getElementById('fileInput').addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (!file) {
+                    showError('Unable to get file.');
+                    return null;
+                }
+
                 const reader = new FileReader();
-
                 reader.onload = function(e) {
                     const content = e.target.result;
                     const emailDataArray = extractEmailData(content);
-                    
                     const tbody = document.querySelector('#emailTable tbody');
                     tbody.innerHTML = '';
-
                     for (let data of emailDataArray) {
                         const tr = document.createElement('tr');
-
                         const tdEmail = document.createElement('td');
                         tdEmail.textContent = data.email;
                         tr.appendChild(tdEmail);
@@ -180,36 +195,34 @@
                         tbody.appendChild(tr);
                     }
                 };
+                document.getElementById('download').classList.add('active');
+            });
 
-                reader.readAsText(file);
+            window.downloadTableAsCSV = function() {
+                const table = document.getElementById('emailTable');
+                let csv = [];
+
+                for (let row of table.rows) {
+                    let cells = row.cells;
+                    let rowData = [];
+
+                    for (let cell of cells) { rowData.push(cell.textContent.replace(/"/g, '""')); }
+
+                    csv.push(rowData.join(','));
+                }
+
+                let csvData = new Blob([csv.join('\n')], { type: 'text/csv' });
+                let csvURL = window.URL.createObjectURL(csvData);
+
+                let downloadLink = document.createElement('a');
+                downloadLink.href = csvURL;
+                downloadLink.download = '' + Date.now() + '_emailBulk.csv';
+
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
             }
-            document.getElementById('download').classList.add('active');
-        });
 
-        function downloadTableAsCSV() {
-            const table = document.getElementById('emailTable');
-            let csv = [];
-
-            for (let row of table.rows) {
-                let cells = row.cells;
-                let rowData = [];
-
-                for (let cell of cells) { rowData.push(cell.textContent.replace(/"/g, '""')); }
-
-                csv.push(rowData.join(','));
-            }
-
-            let csvData = new Blob([csv.join('\n')], { type: 'text/csv' });
-            let csvURL = window.URL.createObjectURL(csvData);
-
-            let downloadLink = document.createElement('a');
-            downloadLink.href = csvURL;
-            downloadLink.download = '' + Date.now() + '_emailBulk.csv';
-
-            document.body.appendChild(downloadLink);
-            downloadLink.click();
-            document.body.removeChild(downloadLink);
-        }
-    </script>
-</body>
+        })();</script>
+    </body>
 </html>

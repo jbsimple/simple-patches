@@ -9,7 +9,7 @@
 
         <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.12.1/dist/JsBarcode.all.min.js"></script>
 
-        <title>IMEI Import to Labels</title>
+        <title>IMEI Import to Labels - Simple Patches</title>
         <style>
             :root {
                 --accent: rgb(40, 120, 200);
@@ -36,6 +36,17 @@
             input:disabled { opacity: 0.5; cursor: not-allowed; }
             input::file-selector-button { margin: -0.5rem 0.75rem -0.5rem -0.75rem; padding: 0.5rem 0.75rem; border: none; border-right: 1px solid var(--border); background: var(--background); color: inherit; font-family: inherit; font-weight: 700; cursor: pointer; }
             input::file-selector-button:hover { background: color-mix(in srgb, var(--accent) 25%, transparent); }
+            textarea { width: 100%; min-height: 260px; padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; background: white; color: inherit; font-family: inherit; font-size: 1rem; line-height: 1.5; outline: none; resize: vertical; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+            textarea:hover { border-color: var(--accent); }
+            textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 20%, transparent); }
+            textarea:disabled { opacity: 0.5; cursor: not-allowed; }
+
+            table { width: 100%; border-collapse: collapse; background: white; border: 1px solid var(--border); border-radius: 0.5rem; overflow: hidden; }
+            th, td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); text-align: left; vertical-align: middle; }
+            th { background: var(--background); font-weight: 700; }
+            td { overflow-wrap: anywhere; }
+            tbody tr:last-child td { border-bottom: none; }
+            tbody tr:hover { background: color-mix(in srgb, var(--accent) 5%, transparent); }
 
             .column,.row,.wrap { gap: var(--gap); }
             .column { display: flex; flex-direction: column; }
@@ -52,6 +63,7 @@
             .row > .line { margin-right: var(--gap); padding-right: var(--gap); border: none; border-right: 1px solid var(--border); height: 100%; }
             .column > .line { margin-bottom: var(--gap); padding-bottom: var(--gap); border: none; border-bottom: 1px solid var(--border); width: 100%; }
             .center { align-items: center; justify-content: center; }
+            .hidden { display: none; }
 
             #error_modal { border: none; border-radius: 0.75rem; padding: 1.5rem; min-width: 300px; max-width: 90%; box-shadow: 0 5px 30px rgba(0, 0, 0, 0.25); }
             #error_modal::backdrop { background: rgba(0, 0, 0, 0.5); }

@@ -1,326 +1,336 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>CSV Search</title>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
+        <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.12.1/dist/JsBarcode.all.min.js"></script>
 
-        input[type="file"],
-        input[type="text"],
-        button {
-            margin-bottom: 10px;
-            font-size: 15px;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 8px;
-        }
-
-        button {
-            padding: 6px 12px;
-            cursor: pointer;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            border: none;
-            padding: 6px 8px;
-            text-align: left;
-            vertical-align: top;
-        }
-
-        th {
-            background: #eee;
-            font-weight: bold;
-        }
-
-        .error {
-            color: #b00020;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-
-        .hidden {
-            display: none;
-        }
-    </style>
-</head>
-<body>
-
-<h2>CSV Search</h2>
-
-<input type="file" id="fileInput" accept=".csv">
-
-<input
-    id="search"
-    type="text"
-    placeholder="Search keywords… (use --term to exclude)"
-    disabled
->
-
-<button id="download" disabled>
-    Download current results as CSV
-</button>
-
-<p id="error" class="error hidden"></p>
-
-<table id="table" class="hidden">
-    <thead></thead>
-    <tbody></tbody>
-</table>
-
-<script>
-(function () {
-    var BASE_URL = "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/";
-    var sourceFilename = "results.csv";
-
-    var headers = [];
-    var rows = [];
-    var currentRows = [];
-
-    var fileInput = document.getElementById("fileInput");
-    var searchInput = document.getElementById("search");
-    var downloadBtn = document.getElementById("download");
-    var table = document.getElementById("table");
-    var thead = table.querySelector("thead");
-    var tbody = table.querySelector("tbody");
-    var errorEl = document.getElementById("error");
-
-    function showError(msg) {
-        errorEl.textContent = msg;
-        errorEl.className = "error";
-        searchInput.disabled = true;
-        downloadBtn.disabled = true;
-    }
-
-    function clearError() {
-        errorEl.textContent = "";
-        errorEl.className = "error hidden";
-    }
-
-    function getParam(name) {
-        var params = window.location.search.substring(1).split("&");
-        for (var i = 0; i < params.length; i++) {
-            var pair = params[i].split("=");
-            if (decodeURIComponent(pair[0]) === name) {
-                return decodeURIComponent(pair[1] || "");
+        <title>CSV Search Tool - Simple Patches</title>
+        <style>
+            :root {
+                --accent: rgb(40, 120, 200);
+                --background: color-mix(in srgb, var(--accent) 15%, transparent 85%);
+                --border: color-mix(in srgb, var(--accent) 25%, transparent 75%);
             }
-        }
-        return null;
-    }
 
-    function sanitizeText(text) {
-        return text
-            .replace(/^\uFEFF/, "")
-            .replace(/\u0000/g, "")
-            .replace(/[\u0001-\u0008]/g, "")
-            .replace(/[\u000B-\u001F]/g, "")
-            .replace(/\u007F/g, "")
-            .replace(/\uFFFD/g, "");
-    }
+            *,*::before,*::after { box-sizing: border-box; }
+            html { margin: 0; padding: 0; min-width: 100%; min-height: 100%; font-size: 14px; }
+            body { margin: 0; padding: 0; padding-top: 1.5rem; padding-bottom: 1rem; min-width: 100%; min-height: 100vh; display: flex; flex-direction: column; gap: 1.5rem; align-items: center; font-family: "Nunito", sans-serif; }
+            header,main,footer { width: 90%; max-width: 1200px; }
 
-    function parseCSV(text) {
-        text = sanitizeText(text);
+            h1,h2,h3,h4,h5,p { padding: 0; margin: 0; }
 
-        var data = [];
-        var row = [];
-        var cell = "";
-        var inQuotes = false;
+            button { appearance: none; padding: 0.5rem 1rem; border: 1px solid var(--accent); border-radius: 0.5rem; background: var(--accent); color: white; font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease; }
+            button:hover { background-color: color-mix(in srgb, var(--accent) 85%, black 15%); box-shadow: 0 2px 6px color-mix(in srgb, var(--accent) 30%, transparent); }
+            button:active { transform: translateY(1px); box-shadow: none; }
+            button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+            button:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        for (var i = 0; i < text.length; i++) {
-            var c = text[i];
-            var next = text[i + 1];
+            input { padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; background: white; color: inherit; font-family: inherit; font-size: 1rem; outline: none; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+            input:hover { border-color: var(--accent); }
+            input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 20%, transparent); }
+            input:disabled { opacity: 0.5; cursor: not-allowed; }
+            input::file-selector-button { margin: -0.5rem 0.75rem -0.5rem -0.75rem; padding: 0.5rem 0.75rem; border: none; border-right: 1px solid var(--border); background: var(--background); color: inherit; font-family: inherit; font-weight: 700; cursor: pointer; }
+            input::file-selector-button:hover { background: color-mix(in srgb, var(--accent) 25%, transparent); }
+            textarea { width: 100%; min-height: 260px; padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; background: white; color: inherit; font-family: inherit; font-size: 1rem; line-height: 1.5; outline: none; resize: vertical; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+            textarea:hover { border-color: var(--accent); }
+            textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 20%, transparent); }
+            textarea:disabled { opacity: 0.5; cursor: not-allowed; }
 
-            if (c === '"') {
-                if (inQuotes && next === '"') {
-                    cell += '"';
-                    i++;
-                } else {
-                    inQuotes = !inQuotes;
+            table { width: 100%; border-collapse: collapse; background: white; border: 1px solid var(--border); border-radius: 0.5rem; overflow: hidden; }
+            th, td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); text-align: left; vertical-align: middle; }
+            th { background: var(--background); font-weight: 700; }
+            td { overflow-wrap: anywhere; }
+            tbody tr:last-child td { border-bottom: none; }
+            tbody tr:hover { background: color-mix(in srgb, var(--accent) 5%, transparent); }
+
+            .column,.row,.wrap { gap: var(--gap); }
+            .column { display: flex; flex-direction: column; }
+            .row { display: flex; flex-direction: row; }
+            .wrap { display: flex; flex-wrap: wrap; }
+            .spacer { flex: 1 1 0; min-width: 0; }
+            .box { padding: 1rem; border-radius: 0.75rem; background-color: var(--background); }
+            .border { border: 1px solid var(--border); }
+            .gapXL { --gap: 1.5rem; }
+            .gapL { --gap: 1rem; }
+            .gapM { --gap: 0.5rem; }
+            .gapS { --gap: 0.25rem; }
+            .gapT { --gap: 0.1rem; }
+            .row > .line { margin-right: var(--gap); padding-right: var(--gap); border: none; border-right: 1px solid var(--border); height: 100%; }
+            .column > .line { margin-bottom: var(--gap); padding-bottom: var(--gap); border: none; border-bottom: 1px solid var(--border); width: 100%; }
+            .center { align-items: center; justify-content: center; }
+            .hidden { display: none; }
+
+            #error_modal { border: none; border-radius: 0.75rem; padding: 1.5rem; min-width: 300px; max-width: 90%; box-shadow: 0 5px 30px rgba(0, 0, 0, 0.25); }
+            #error_modal::backdrop { background: rgba(0, 0, 0, 0.5); }
+            #error_modal[open] { animation: dialogOpen 0.1s ease-out forwards; }
+            #error_modal.closing { animation: dialogClose 0.07s ease-in forwards; }
+            #error_modal::backdrop { background: rgba(0, 0, 0, 0.5); animation: backdropOpen 0.2s ease-out forwards; }
+            #error_modal.closing::backdrop { animation: backdropClose 0.07s ease-in forwards; }
+            @keyframes dialogOpen {
+                from { opacity: 0; transform: scale(0.85); }
+                to { opacity: 1; transform: scale(1); }
+            }
+            @keyframes dialogClose {
+                from { opacity: 1; transform: scale(1); }
+                to { opacity: 0; transform: scale(0.85); }
+            }
+            @keyframes backdropOpen {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            @keyframes backdropClose {
+                from { opacity: 1; }
+                to { opacity: 0; }
+            }
+
+            /* page specific */
+            #search { width: 100%; }
+        </style>
+    </head>
+    <body>
+        <header class="box column gapM" id="header">
+            <div class="box column gapT center">
+                <h1>CSV Search</h1>
+                <p>Search a CSV file using keywords. Prefix a term with -- to exclude matching rows.</p>
+            </div>
+            <div class="row gapM">
+                <input class="spacer" type="file" id="fileInput" accept=".csv">
+                <button id="download" disabled>Download CSV</button>
+            </div>
+            <input id="search" type="text" placeholder="Search keywords… (use --term to exclude)" disabled>
+        </header>
+        <main class="box wrap center gapM" id="main">
+            <table id="table" class="hidden"><thead></thead><tbody></tbody></table>
+        </main>
+        <footer class="box column gapM" id="footer"></footer>
+        <dialog id="error_modal">
+            <div class="column gapL">
+                <h2>Error</h2>
+                <h4 id="error_modal_message"></h4>
+                <div class="row">
+                    <span class="spacer"></span>
+                    <button type="button" id="error_modal_close">OK</button>
+                    <span class="spacer"></span>
+                </div>
+            </div>
+        </dialog>
+        <script type="text/javascript">(async function() {
+            // error dialog stuff
+            const error_modal = document.getElementById('error_modal');
+            const error_modal_message = document.getElementById('error_modal_message');
+            const error_modal_close = document.getElementById('error_modal_close');
+            function showError(message) {
+                error_modal_message.textContent = message;
+                error_modal.showModal();
+            }
+            error_modal_close.addEventListener('click', () => {
+                if (error_modal.classList.contains('closing')) return;
+                error_modal.classList.add('closing');
+                error_modal.addEventListener('animationend', () => {
+                    error_modal.close();
+                    error_modal.classList.remove('closing');
+                }, { once: true });
+            });
+
+            /* tool starts here wow */
+            const BASE_URL = "https://pbvppkf0kuzw4c6s.public.blob.vercel-storage.com/";
+            let sourceFilename = "results.csv";
+            let headers = [];
+            let rows = [];
+            let currentRows = [];
+
+            const fileInput = document.getElementById("fileInput");
+            const searchInput = document.getElementById("search");
+            const downloadBtn = document.getElementById("download");
+            const table = document.getElementById("table");
+            const thead = table.querySelector("thead");
+            const tbody = table.querySelector("tbody");
+
+            function getParam(name) {
+                const params = window.location.search.substring(1).split("&");
+                for (let i = 0; i < params.length; i++) {
+                    const pair = params[i].split("=");
+                    if (decodeURIComponent(pair[0]) === name) {
+                        return decodeURIComponent(pair[1] || "");
+                    }
                 }
-            } else if (c === ',' && !inQuotes) {
-                row.push(cell.trim());
-                cell = "";
-            } else if ((c === '\n' || c === '\r') && !inQuotes) {
+                return null;
+            }
+
+            function sanitizeText(text) {
+                return text.replace(/^\uFEFF/, "").replace(/\u0000/g, "").replace(/[\u0001-\u0008]/g, "").replace(/[\u000B-\u001F]/g, "").replace(/\u007F/g, "").replace(/\uFFFD/g, "");
+            }
+
+            function parseCSV(text) {
+                text = sanitizeText(text);
+                const data = [];
+                let row = [];
+                let cell = "";
+                let inQuotes = false;
+                for (let i = 0; i < text.length; i++) {
+                    const c = text[i];
+                    const next = text[i + 1];
+                    if (c === '"') {
+                        if (inQuotes && next === '"') {
+                            cell += '"';
+                            i++;
+                        } else {
+                            inQuotes = !inQuotes;
+                        }
+                    } else if (c === ',' && !inQuotes) {
+                        row.push(cell.trim());
+                        cell = "";
+                    } else if ((c === '\n' || c === '\r') && !inQuotes) {
+                        if (cell.length || row.length) {
+                            row.push(cell.trim());
+                            data.push(row);
+                        }
+                        row = [];
+                        cell = "";
+                        if (c === '\r' && next === '\n') i++;
+                    } else {
+                        cell += c;
+                    }
+                }
                 if (cell.length || row.length) {
                     row.push(cell.trim());
                     data.push(row);
                 }
-                row = [];
-                cell = "";
-                if (c === '\r' && next === '\n') i++;
-            } else {
-                cell += c;
+                headers = data.shift() || [];
+                return data;
             }
-        }
 
-        if (cell.length || row.length) {
-            row.push(cell.trim());
-            data.push(row);
-        }
-
-        headers = data.shift() || [];
-        return data;
-    }
-
-    function renderTable(data) {
-        thead.innerHTML = "";
-        tbody.innerHTML = "";
-        currentRows = data;
-
-        downloadBtn.disabled = data.length === 0;
-
-        var htr = document.createElement("tr");
-        headers.forEach(function (h) {
-            var th = document.createElement("th");
-            th.textContent = h;
-            htr.appendChild(th);
-        });
-        thead.appendChild(htr);
-
-        data.forEach(function (row) {
-            var tr = document.createElement("tr");
-            row.forEach(function (cell) {
-                var td = document.createElement("td");
-                td.textContent = cell;
-                tr.appendChild(td);
-            });
-            tbody.appendChild(tr);
-        });
-
-        table.className = "";
-    }
-
-    function filterRows(query) {
-        if (!query) {
-            renderTable(rows);
-            return;
-        }
-
-        var tokens = query.toLowerCase().split(/\s+/);
-        var include = [];
-        var exclude = [];
-
-        tokens.forEach(function (t) {
-            if (t.indexOf("--") === 0 && t.length > 2) {
-                exclude.push(t.substring(2));
-            } else {
-                include.push(t);
+            function renderTable(data) {
+                thead.innerHTML = "";
+                tbody.innerHTML = "";
+                currentRows = data;
+                downloadBtn.disabled = data.length === 0;
+                const htr = document.createElement("tr");
+                headers.forEach(function(h) {
+                    const th = document.createElement("th");
+                    th.textContent = h;
+                    htr.appendChild(th);
+                });
+                thead.appendChild(htr);
+                data.forEach(function(row) {
+                    const tr = document.createElement("tr");
+                    row.forEach(function(cell) {
+                        const td = document.createElement("td");
+                        td.textContent = cell;
+                        tr.appendChild(td);
+                    });
+                    tbody.appendChild(tr);
+                });
+                table.classList.remove("hidden");
             }
-        });
 
-        var filtered = rows.filter(function (row) {
-            var text = row.join(" ").toLowerCase();
+            function filterRows(query) {
+                if (!query) {
+                    renderTable(rows);
+                    return;
+                }
+                const tokens = query.toLowerCase().split(/\s+/);
+                const include = [];
+                const exclude = [];
+                tokens.forEach(function(t) {
+                    if (t.indexOf("--") === 0 && t.length > 2) {
+                        exclude.push(t.substring(2));
+                    } else {
+                        include.push(t);
+                    }
+                });
+                const filtered = rows.filter(function(row) {
+                    const text = row.join(" ").toLowerCase();
+                    for (let i = 0; i < include.length; i++) {
+                        if (text.indexOf(include[i]) === -1) return false;
+                    }
+                    for (let i = 0; i < exclude.length; i++) {
+                        if (text.indexOf(exclude[i]) !== -1) return false;
+                    }
+                    return true;
+                });
+                renderTable(filtered);
+            }
 
-            for (var i = 0; i < include.length; i++) { if (text.indexOf(include[i]) === -1) return false; }
-            for (var j = 0; j < exclude.length; j++) { if (text.indexOf(exclude[j]) !== -1) return false; }
+            function escapeCSV(value) {
+                if (value == null) return "";
+                value = sanitizeText(String(value));
+                if (/[",\n\r]/.test(value)) {
+                    return '"' + value.replace(/"/g, '""') + '"';
+                }
+                return value;
+            }
 
-            return true;
-        });
+            function buildCSV(headers, rows) {
+                const out = [];
+                out.push(headers.map(escapeCSV).join(","));
+                rows.forEach(function(row) {
+                    out.push(row.map(escapeCSV).join(","));
+                });
+                return out.join("\r\n");
+            }
 
-        renderTable(filtered);
-    }
+            const file = getParam("file");
+            if (file) {
+                fileInput.classList.add("hidden");
+                sourceFilename = file;
+                fetch(BASE_URL + file).then(function(res) {
+                    if (!res.ok) throw new Error();
+                    return res.text();
+                }).then(function(text) {
+                    rows = parseCSV(text);
+                    renderTable(rows);
+                    searchInput.disabled = false;
+                }).catch(function() {
+                    showError("Could not load CSV file: " + file);
+                });
+            }
 
-    function escapeCSV(value) {
-        if (value == null) return "";
-        value = sanitizeText(String(value));
-
-        if (/[",\n\r]/.test(value)) {
-            return '"' + value.replace(/"/g, '""') + '"';
-        }
-        return value;
-    }
-
-    function buildCSV(headers, rows) {
-        var out = [];
-        out.push(headers.map(escapeCSV).join(","));
-        rows.forEach(function (row) {
-            out.push(row.map(escapeCSV).join(","));
-        });
-        return out.join("\r\n");
-    }
-
-    var file = getParam("file");
-
-    if (file) {
-        fileInput.className = "hidden";
-        sourceFilename = file;
-
-        fetch(BASE_URL + file)
-            .then(function (res) {
-                if (!res.ok) throw new Error();
-                return res.text();
-            })
-            .then(function (text) {
-                clearError();
-                rows = parseCSV(text);
-                renderTable(rows);
-                searchInput.disabled = false;
-            })
-            .catch(function () {
-                showError("Could not load CSV file: " + file);
+            fileInput.addEventListener("change", function() {
+                const file = this.files[0];
+                if (!file) return;
+                if (!file.name.toLowerCase().endsWith(".csv")) {
+                    showError("Please upload a .csv file.");
+                    return;
+                }
+                sourceFilename = file.name;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    rows = parseCSV(e.target.result);
+                    renderTable(rows);
+                    searchInput.disabled = false;
+                    searchInput.value = "";
+                };
+                reader.onerror = function() {
+                    showError("Error reading file.");
+                };
+                reader.readAsText(file);
             });
-    }
 
-    fileInput.addEventListener("change", function () {
-        var file = this.files[0];
-        if (!file) return;
+            searchInput.addEventListener("input", function() { filterRows(this.value); });
 
-        if (!file.name.toLowerCase().endsWith(".csv")) {
-            showError("Please upload a .csv file.");
-            return;
-        }
+            downloadBtn.addEventListener("click", function() {
+                if (!currentRows.length) return;
+                const csv = buildCSV(headers, currentRows);
+                const blob = new Blob([csv], {
+                    type: "text/csv;charset=utf-8;"
+                });
+                const url = URL.createObjectURL(blob);
+                const base = sourceFilename.replace(/\.csv$/i, "");
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = base + "_filtered.csv";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
 
-        sourceFilename = file.name;
-
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            clearError();
-            rows = parseCSV(e.target.result);
-            renderTable(rows);
-            searchInput.disabled = false;
-            searchInput.value = "";
-        };
-        reader.onerror = function () {
-            showError("Error reading file.");
-        };
-        reader.readAsText(file);
-    });
-
-    searchInput.addEventListener("input", function () {
-        filterRows(this.value);
-    });
-
-    downloadBtn.addEventListener("click", function () {
-        if (!currentRows.length) return;
-
-        var csv = buildCSV(headers, currentRows);
-        var blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-        var url = URL.createObjectURL(blob);
-
-        var base = sourceFilename.replace(/\.csv$/i, "");
-
-        var a = document.createElement("a");
-        a.href = url;
-        a.download = base + "_filtered.csv";
-        document.body.appendChild(a);
-        a.click();
-
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    });
-})();
-</script>
-
-</body>
+        })();</script>
+    </body>
 </html>
