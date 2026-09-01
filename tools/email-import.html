@@ -24,7 +24,7 @@
 
             h1,h2,h3,h4,h5,p { padding: 0; margin: 0; }
 
-            button, .button { appearance: none; padding: 0.5rem 1rem; border: 1px solid var(--accent); border-radius: 0.5rem; background: var(--accent); color: white; font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease; }
+            button, .button { text-decoration: none !important; appearance: none; padding: 0.5rem 1rem; border: 1px solid var(--accent); border-radius: 0.5rem; background: var(--accent); color: white; font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease; }
             button:hover, .button:hover { background-color: color-mix(in srgb, var(--accent) 85%, black 15%); box-shadow: 0 2px 6px color-mix(in srgb, var(--accent) 30%, transparent); }
             button:active, .button:active { transform: translateY(1px); box-shadow: none; }
             button:focus-visible, .button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -97,7 +97,7 @@
                 <h1>Email Import Generator</h1>
                 <p>Convert a comma separated list of emails (and names) into an import sheet for Mailchimp.</p>
             </div>
-            <div class="row column gapT">
+            <div class="row column gapL">
                 <input class="spacer" type="file" id="fileInput" />
                 <a class="button" id="download" onclick="window.downloadTableAsCSV()">Download CSV</a>
                 <a class="button active" href="">Reset</a>
