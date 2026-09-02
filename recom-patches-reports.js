@@ -459,7 +459,7 @@ function report_initHTML(det) {
     const content = document.createElement('div');
     content.setAttribute('style', 'display:flex;flex-direction:row;align-items:center;gap:1rem;width:100%;padding:1rem 2rem;border-bottom: var(--bs-border-width) solid var(--bs-card-border-color);');
 
-    let code = `<span class="bullet bullet-vertical h-40px bg-primary" style="margin-right:1rem;"></span>`;
+    let code = `<span class="bullet bullet-vertical h-40px bg-${det.color ?? 'info'}" style="margin-right:1rem;"></span>`;
 
     const segment = (code, width = null, spacer = false) => {
         return `<div style="${width !== null ? `flex:0 0 ${width};` : ''}${spacer ? 'flex:1 1 auto;' : ''}min-width:0;">${code}</div>`;
@@ -496,7 +496,7 @@ function report_initHTML(det) {
         code += segment(`<span class="text-muted fw-semibold">${det.desc}</span>`, null, true);
     }
 
-    const submit_button = `<button class="btn btn-large btn-${det.color ?? 'info'}" data-id="${det.id}" data-name="${det.name}" onclick="${det.func}">
+    const submit_button = `<button class="btn btn-large btn-primary" data-id="${det.id}" data-name="${det.name}" onclick="${det.func}">
         Create
         <span class="svg-icon svg-icon-4 ms-1 me-0">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
