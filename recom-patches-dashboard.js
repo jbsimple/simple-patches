@@ -52,26 +52,26 @@ function replaceEngagewidget() {
         engagewidget.classList = '';
         engagewidget.classList.add('card' ,'overflow-hidden' ,'card-flush' ,'h-md-50' ,'mb-5' ,'mb-xl-10');
         engagewidget.removeAttribute('data-bs-theme');
-        if (engagewidget) {
-            const previous = engagewidget.previousElementSibling;
-            if (previous) { previous.classList.add('mb-5'); }
-            const selectedImage = randomImages[Math.floor(Math.random() * randomImages.length)];
-            engagewidget.innerHTML = `<div class="card-body d-flex flex-column">
-                <div class="m-0">
-                    <h1 class="fw-bolder text-gray-800 text-center lh-lg">You have the Patches!</h1>
-                    <h4 class="fw-semibold text-gray-700">See all the changes made!</h4>
-                    <img src="${selectedImage.url}" 
-                        title="${selectedImage.title}"
-                        patches="noEnlarge"
-                        class="flex-grow-1 card-rounded-bottom h-100px mh-200px my-5" 
-                        style="object-fit: contain; object-position: center; width: 100%; height: 100%;">
-                </div>
-                <div class="text-center">
-                    <a title="Opens External Page" class="btn btn-light btn-sm" target="_blank" href="https://simple-patches.vercel.app/">Read More</a>
-                </div>
-            </div>`;
-            engagewidget.classList.remove('bg-primary');
-        }
+
+        const previous = engagewidget.previousElementSibling;
+        if (previous) { previous.classList.add('mb-5'); }
+
+        const selectedImage = randomImages[Math.floor(Math.random() * randomImages.length)];
+         engagewidget.innerHTML = `<div class="card-body d-flex flex-column">
+            <div class="m-0">
+                <h1 class="fw-bolder text-gray-800 text-center lh-lg">You have the Patches!</h1>
+                <h4 class="fw-semibold text-gray-700 text-center">See all the changes made!</h4>
+                <img src="${selectedImage.url}" 
+                    title="${selectedImage.title}"
+                    patches="noEnlarge"
+                    class="flex-grow-1 card-rounded-bottom h-100px mh-200px my-5" 
+                    style="object-fit: contain; object-position: center; width: 100%; height: 100%;">
+            </div>
+            <div class="text-center">
+                <a title="Opens External Page" class="btn btn-light btn-sm" target="_blank" href="https://simple-patches.vercel.app/">Read More</a>
+            </div>
+        </div>`;
+        engagewidget.classList.remove('bg-primary');
     }
 }
 
