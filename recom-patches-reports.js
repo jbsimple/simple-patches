@@ -297,7 +297,7 @@ function report_initHTML(det) {
     if (!det || !det.id || !det.func) return null;
 
     const content = document.createElement('div');
-    content.setAttribute('style', 'display:flex;flex-direction:row;align-items:center;gap:0.5rem;width:100%;padding:1rem;border-bottom: var(--bs-border-width) solid var(--bs-card-border-color);');
+    content.setAttribute('style', 'display:flex;flex-direction:row;align-items:center;gap:0.5rem;width:100%;padding:1rem 2rem;border-bottom: var(--bs-border-width) solid var(--bs-card-border-color);');
 
     let code = `<!-- BEGIN PRESET ROW -->`;
 
@@ -306,7 +306,7 @@ function report_initHTML(det) {
     };
 
     if (det.title) {
-        code += segment(`<h4 class="fw-bolder d-flex align-items-center text-dark">${det.title}:</h4>`, '300px');
+        code += segment(`<h4 class="fw-bolder d-flex align-items-center text-dark">${det.title}:</h4>`);
     }
 
     if (det.input) {
@@ -329,7 +329,7 @@ function report_initHTML(det) {
         }
 
         const userInput = `<input id="${det.id}-input" type="${type}" ${extra} autocomplete="off" class="form-control rounded-1" style="color:var(--bs-text-gray-800);width:100%;" value="${value}">`;
-        code += segment(userInput, '200px');
+        code += segment(userInput);
     }
 
     if (det.desc) {
@@ -345,7 +345,7 @@ function report_initHTML(det) {
             </svg>
         </span>
     </button>`;
-    code += segment(submit_button, '150px');
+    code += segment(submit_button);
     code += `<!-- END PRESET ROW -->`;
 
     content.innerHTML = code;
