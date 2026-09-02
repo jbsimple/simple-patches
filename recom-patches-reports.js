@@ -232,7 +232,7 @@ function initPreset() {
     } else {
         card_body.appendChild(report_initHTML(reportingTemplates['listing_productivity']));
         //card_body.appendChild(report_initHTML(reportingTemplates['marketing_productivity']));
-        //card_body.appendChild(report_initHTML(reportingTemplates['productivity_meetingNotes']));
+        card_body.appendChild(report_initHTML(reportingTemplates['productivity_meetingNotes']));
 
         card_body.appendChild(report_initHTML(reportingTemplates['product_stockandvalue']));
         card_body.appendChild(report_initHTML(reportingTemplates['product_highQty']));
@@ -415,7 +415,9 @@ const reportingTemplates = {
         color: "primary",
         name: "patches-reports-meetingNotes",
         func: "report_meetingNotes();",
-        desc: "Get all meeting notes in one report with timestamps.<br>For just user 38.",
+        input: "user",
+        val: "38",
+        desc: "Get all meeting notes in one report with timestamps.<br>Task needs to be 'Meeting' for results.",
         title: "Meeting Notes Collection"
     },
     "pendinginventory_all": {
@@ -486,7 +488,9 @@ function report_initHTML(det) {
         code += segment(`<h4 class="fw-bolder text-dark">${det.title}:</h4>`, '250px');
     }
 
-    if (det.input) {
+    if (det.input && det.input === 'user') {
+        code += segment(`<select class="form-select form-select-sm form-select-solid m-input" data-ajax-url="/ajax/datalist/UsersProfiles/1" data-control="select2" data-allow-clear="true" data-placeholder="User"><option></option></select>`, '200px');
+    } else if (det.input) {
         let type = 'text';
         let value = det.val || '';
         let extra = '';
