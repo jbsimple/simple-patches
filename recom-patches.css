@@ -547,9 +547,9 @@ table.dataTable.table-striped>tbody>tr.odd.danger {
 #kt_scrolltop { display: none !important; }
 
 .colorCard { background-color: var(--bs-card-bg) !important; }
-.colorCard.red { --colorCard-light: #F7D9E3; --colorCard-dark: #392228; }
-.colorCard.blue { --colorCard-light: #CBD4F4; --colorCard-dark: #272b3a; }
-.colorCard.green { --colorCard-light: #cbf4e3; --colorCard-dark: #253a32; }
+.colorCard.red { --colorCard-light: #F7D9E3; --colorCard-dark: #2b1b1f; }
+.colorCard.blue { --colorCard-light: #CBD4F4; --colorCard-dark: #1b1e2b; }
+.colorCard.green { --colorCard-light: #cbf4e3; --colorCard-dark: #1a2823; }
 .colorCard.light { --bs-card-bg: var(--colorCard-light); color: var(--colorCard-dark); }
 .colorCard.light:hover { --bs-card-bg: color-mix(in srgb, var(--colorCard-light) 90%, white 10%); }
 .colorCard.dark { --bs-card-bg: var(--colorCard-dark); color: var(--colorCard-light); }
