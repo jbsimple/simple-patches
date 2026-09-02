@@ -191,7 +191,7 @@ function initPreset() {
     card.id = 'patches-reportPresets';
     
     const card_body = document.createElement('div');
-    card_body.setAttribute('style', 'display: flex; flex-direction: column; padding: 2rem; gap: 1.5rem;');
+    card_body.setAttribute('style', 'display: flex; flex-direction: column; padding: 0 !important; gap: 1.5rem;');
     card_body.classList = "card-body";
     
     const content = document.createElement('div');
@@ -297,7 +297,7 @@ function report_initHTML(det) {
     if (!det || !det.id || !det.func) return null;
 
     const content = document.createElement('div');
-    content.setAttribute('style', 'display:flex;flex-direction:row;align-items:center;gap:0.5rem;width:100%;');
+    content.setAttribute('style', 'display:flex;flex-direction:row;align-items:center;gap:0.5rem;width:100%;padding:2rem;border-bottom: var(--bs-border-width) solid var(--bs-card-border-color);');
 
     let code = `<!-- BEGIN PRESET ROW -->`;
 
@@ -329,7 +329,7 @@ function report_initHTML(det) {
         }
 
         const userInput = `<input id="${det.id}-input" type="${type}" ${extra} autocomplete="off" class="form-control rounded-1" style="color:var(--bs-text-gray-800);width:100%;" value="${value}">`;
-        code += segment(userInput, '150px');
+        code += segment(userInput, '200px');
     }
 
     if (det.desc) {
