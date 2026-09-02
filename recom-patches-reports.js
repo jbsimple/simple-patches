@@ -468,7 +468,7 @@ function report_initHTML(det) {
             bullet_title = 'This report might take a bit of time to generate.';
             break;
         case 'danger':
-            bullet_color = 'warning';
+            bullet_color = 'danger';
             bullet_title = 'This report is a large report that will take a while to generate.';
             break;
     }
