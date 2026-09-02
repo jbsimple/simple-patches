@@ -350,7 +350,7 @@ function report_initHTML(det) {
     }
 
     content.innerHTML = code;
-    return code;
+    return content;
 }
 
 function report_preset(name) {
