@@ -456,10 +456,27 @@ const reportingTemplates = {
 function report_initHTML(det) {
     if (!det || !det.id || !det.func) return null;
 
+    let bullet_color = 'info';
+    let bullet_title = '';
+    switch (det.color) {
+        case 'primary':
+            bullet_color = 'primary';
+            bullet_title = 'This report should generate quickly.';
+            break;
+        case 'warning':
+            bullet_color = 'warning';
+            bullet_title = 'This report might take a bit of time to generate.';
+            break;
+        case 'danger':
+            bullet_color = 'warning';
+            bullet_title = 'This report is a large report that will take a while to generate.';
+            break;
+    }
+
     const content = document.createElement('div');
     content.setAttribute('style', 'display:flex;flex-direction:row;align-items:center;gap:1rem;width:100%;padding:1rem 2rem;border-bottom: var(--bs-border-width) solid var(--bs-card-border-color);');
 
-    let code = `<span class="bullet bullet-vertical h-40px bg-${det.color ?? 'info'}" style="margin-right:1rem;"></span>`;
+    let code = `<span title="${bullet_title}" class="bullet bullet-vertical h-40px bg-${bullet_color}" style="margin-right:1rem;"></span>`;
 
     const segment = (code, width = null, spacer = false) => {
         return `<div style="${width !== null ? `flex:0 0 ${width};` : ''}${spacer ? 'flex:1 1 auto;' : ''}min-width:0;">${code}</div>`;
