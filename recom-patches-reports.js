@@ -294,47 +294,48 @@ function goToLastStep() {
 }
 
 function report_initHTML(det) {
-    if (!det ||! det.id || !det.func) return null;
+    if (!det || !det.id || !det.func) return null;
 
     const content = document.createElement('div');
-    content.setAttribute('style', 'display: flex; flex-direction: row; gap: 1rem;');
-    
+    content.setAttribute('style', 'display:flex;flex-direction:row;align-items:center;gap:1rem;width:100%;');
+
     let code = `<!-- BEGIN PRESET ROW -->`;
+
     const segment = (code, width = null, spacer = false) => {
-        return `<div style="display:flex;flex-direction:row;${width !== null ? `min-width:${width};` : ''}${spacer ? `flex:1;` : 'flex:0;'}">
-            <span style="flex:1;"></span>
-            ${code}
-            <span style="flex:1;"></span>
-        </div>`;
+        return `<div style="${width !== null ? `flex:0 0 ${width};` : ''}${spacer ? 'flex:1 1 auto;' : ''}min-width:0;">${code}</div>`;
     };
 
-    if (det.title) { code += segment(`<h4 class="fw-bolder d-flex align-items-center text-dark">${det.title}:</h4>`, '200px;'); }
+    if (det.title) {
+        code += segment(`<h4 class="fw-bolder d-flex align-items-center text-dark">${det.title}:</h4>`, '200px');
+    }
 
     if (det.input) {
-        let userInput = '';
-        if (det.input) {
-            let type = 'text';
-            let value = det.val || '';
-            let extra = '';
-            if (det.input === 'date') {
-                type = 'date';
-                if (det.val === 'today') {
-                    const today = new Date();
-                    const yyyy = today.getFullYear();
-                    const mm = String(today.getMonth() + 1).padStart(2, '0');
-                    const dd = String(today.getDate()).padStart(2, '0');
-                    value = `${yyyy}-${mm}-${dd}`;
-                }
-            } else if (det.input === 'int') {
-                type = 'number';
-                extra = 'min="1"';
+        let type = 'text';
+        let value = det.val || '';
+        let extra = '';
+
+        if (det.input === 'date') {
+            type = 'date';
+
+            if (det.val === 'today') {
+                const today = new Date();
+                const yyyy = today.getFullYear();
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const dd = String(today.getDate()).padStart(2, '0');
+                value = `${yyyy}-${mm}-${dd}`;
             }
-            userInput = `<input id="${det.id}-input" type="${type}" ${extra} autocomplete="off" class="form-control rounded-1" style="color: var(--bs-text-gray-800); width: unset;" value="${value}">`;
+        } else if (det.input === 'int') {
+            type = 'number';
+            extra = 'min="1"';
         }
+
+        const userInput = `<input id="${det.id}-input" type="${type}" ${extra} autocomplete="off" class="form-control rounded-1" style="color:var(--bs-text-gray-800);width:100%;" value="${value}">`;
         code += segment(userInput, '300px');
     }
 
-    if (det.desc) { code += segment(`<span>${det.desc}</span>`, null, true); }
+    if (det.desc) {
+        code += segment(`<span>${det.desc}</span>`, null, true);
+    }
 
     const submit_button = `<button class="btn btn-large btn-primary" data-id="${det.id}" data-name="${det.name}" onclick="${det.func}">
         Create
