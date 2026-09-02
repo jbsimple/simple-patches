@@ -232,9 +232,9 @@ function initPreset() {
     } else {
         card_body.appendChild(report_preset('listing_productivity'));
         //card_body.appendChild(report_preset('marketing_productivity'));
-        card_body.appendChild(report_preset('productivity_meetingNotes'));
+        //card_body.appendChild(report_preset('productivity_meetingNotes'));
         card_body.appendChild(report_preset('product_stockandvalue'));
-        card_body.appendChild(report_preset('product_highQty'));
+        //card_body.appendChild(report_preset('product_highQty'));
         card_body.appendChild(report_preset('items_createdRecent'));
    
         card_body.appendChild(report_preset('errorlogsalltime'));
@@ -242,13 +242,13 @@ function initPreset() {
 
         card_body.appendChild(report_preset('picture_missingFull'));
         card_body.appendChild(report_preset('picture_missingSpecial'));
-        card_body.appendChild(report_preset('findImgUrlsFromKeyword'));
+        //card_body.appendChild(report_preset('findImgUrlsFromKeyword'));
         card_body.appendChild(report_preset('productivity_eventSIDLookup'));
         card_body.appendChild(report_preset('productivity_eventSKULookup'));
         card_body.appendChild(report_preset('productivity_eventIDLookup'));
         //card_body.appendChild(report_preset('attributes_color'));
         card_body.appendChild(report_preset('picture_imagecount'));
-        card_body.appendChild(report_preset('picture_resolution'));
+        //card_body.appendChild(report_preset('picture_resolution'));
         card_body.appendChild(report_preset('pendinginventory_all'));
     }
 
