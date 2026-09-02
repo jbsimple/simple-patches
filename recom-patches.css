@@ -546,7 +546,7 @@ table.dataTable.table-striped>tbody>tr.odd.danger {
 
 #kt_scrolltop { display: none !important; }
 
-.colorCard { background-color: var(--bs-card-bg) !important; }
+.colorCard { background-color: var(--bs-card-bg) !important; transition: background-color 0.1s ease-in-out; }
 .colorCard.red { --colorCard-light: #F7D9E3; --colorCard-dark: #2b1b1f; }
 .colorCard.blue { --colorCard-light: #CBD4F4; --colorCard-dark: #1b1e2b; }
 .colorCard.green { --colorCard-light: #cbf4e3; --colorCard-dark: #1a2823; }
