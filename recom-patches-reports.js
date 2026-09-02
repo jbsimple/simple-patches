@@ -231,8 +231,8 @@ function initPreset() {
         }
     } else {
         card_body.appendChild(report_initHTML(reportingTemplates['listing_productivity']));
-        card_body.appendChild(report_initHTML(reportingTemplates['marketing_productivity']));
-        card_body.appendChild(report_initHTML(reportingTemplates['productivity_meetingNotes']));
+        //card_body.appendChild(report_initHTML(reportingTemplates['marketing_productivity']));
+        //card_body.appendChild(report_initHTML(reportingTemplates['productivity_meetingNotes']));
 
         card_body.appendChild(report_initHTML(reportingTemplates['product_stockandvalue']));
         card_body.appendChild(report_initHTML(reportingTemplates['product_highQty']));
@@ -244,11 +244,11 @@ function initPreset() {
 
         card_body.appendChild(report_initHTML(reportingTemplates['picture_missingFull']));
         card_body.appendChild(report_initHTML(reportingTemplates['picture_missingSpecial']));
-        card_body.appendChild(report_initHTML(reportingTemplates['findImgUrlsFromKeyword']));
+        //card_body.appendChild(report_initHTML(reportingTemplates['findImgUrlsFromKeyword']));
         card_body.appendChild(report_initHTML(reportingTemplates['picture_imagecount']));
-        card_body.appendChild(report_initHTML(reportingTemplates['picture_resolution']));
+        //card_body.appendChild(report_initHTML(reportingTemplates['picture_resolution']));
 
-        card_body.appendChild(report_initHTML(reportingTemplates['attributes_color']));
+        //card_body.appendChild(report_initHTML(reportingTemplates['attributes_color']));
 
         card_body.appendChild(report_initHTML(reportingTemplates['errorlogsalltime']));
         card_body.appendChild(report_initHTML(reportingTemplates['marketplaceStatusExtended']));
