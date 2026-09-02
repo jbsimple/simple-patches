@@ -31,4 +31,6 @@
 .colorCard.blue { --colorCard-light: #CBD4F4; --colorCard-dark: #272b3a; }
 .colorCard.green { --colorCard-light: #cbf4e3; --colorCard-dark: #253a32; }
 .colorCard.light { --bs-card-bg: var(--colorCard-light); color: var(--colorCard-dark); }
+.colorCard.light:hover { --bs-card-bg: color-mix(in srgb, var(--colorCard-light) 75%, white 25%); }
 .colorCard.dark { --bs-card-bg: var(--colorCard-dark); color: var(--colorCard-light); }
+.colorCard.dark:hover { --bs-card-bg: color-mix(in srgb, var(--colorCard-dark) 75%, white 25%); }
