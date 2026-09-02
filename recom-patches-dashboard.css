@@ -26,8 +26,9 @@
     }
 }
 
-.colorCard.red { --colorCard-light: #F7D9E3; --colorCard-dark: #301921; background-color: var(--bs-card-bg) !important; }
-.colorCard.blue { --colorCard-light: #CBF0F4; --colorCard-dark: #122426; background-color: var(--bs-card-bg) !important; }
-.colorCard.green { --colorCard-light: #CBF4D5; --colorCard-dark: #132017; background-color: var(--bs-card-bg) !important; }
+.colorCard { background-color: var(--bs-card-bg) !important; }
+.colorCard.red { --colorCard-light: #F7D9E3; --colorCard-dark: #301921; }
+.colorCard.blue { --colorCard-light: #CBF0F4; --colorCard-dark: #14282A; }
+.colorCard.green { --colorCard-light: #CBF4D5; --colorCard-dark: #142A19; }
 .colorCard.light { --bs-card-bg: var(--colorCard-light); color: var(--colorCard-dark); }
 .colorCard.dark { --bs-card-bg: var(--colorCard-dark); color: var(--colorCard-light); }
