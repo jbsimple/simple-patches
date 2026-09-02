@@ -306,7 +306,7 @@ function report_initHTML(det) {
     };
 
     if (det.title) {
-        code += segment(`<h4 class="fw-bolder d-flex align-items-center text-dark">${det.title}:</h4>`, '250px');
+        code += segment(`<h4 class="fw-bolder text-dark">${det.title}:</h4>`, '250px');
     }
 
     if (det.input) {
