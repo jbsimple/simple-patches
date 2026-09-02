@@ -188,10 +188,10 @@ function initPreset() {
     const card = document.createElement('div');
     card.classList = "card";
     card.style.display = "flex";  // normally flex
-    card.id = 'patches-presents';
+    card.id = 'patches-reportPresets';
     
     const card_body = document.createElement('div');
-    card_body.setAttribute('style', 'display: flex; flex-direction: column; padding: 2rem; gap: 2rem;');
+    card_body.setAttribute('style', 'display: flex; flex-direction: column; padding: 2rem; gap: 1.5rem;');
     card_body.classList = "card-body";
     
     const content = document.createElement('div');
@@ -294,97 +294,63 @@ function goToLastStep() {
 }
 
 function report_initHTML(det) {
-    if (det && det.id && det.func) {
-        const content = document.createElement('div');
-        content.setAttribute('style', 'display: flex; flex-direction: row; gap: 1rem;');
+    if (!det || det.id || det.func) return null;
+
+    const content = document.createElement('div');
+    content.setAttribute('style', 'display: flex; flex-direction: row; gap: 1rem;');
     
-        const submit_button = document.createElement('button');
-        submit_button.classList.add('btn');
-        submit_button.classList.add('btn-large');
-        submit_button.classList.add('btn-primary');
-        submit_button.setAttribute('data-id', `${det.id}`);
-        submit_button.setAttribute('data-name', `${det.name}`);
-        submit_button.setAttribute('onclick', `${det.func}`);
-        submit_button.innerHTML = `Create
-            <span class="svg-icon svg-icon-4 ms-1 me-0">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <rect opacity="0.5" x="18" y="13" width="13" height="2" rx="1" transform="rotate(-180 18 13)" fill="currentColor"></rect>
-            <path d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z" fill="currentColor"></path>
-            </svg>
-            </span>`;
+    let code = `<!-- BEGIN PRESET ROW -->`;
+    const segment = (code, width = null, spacer = false) => {
+        return `<div style="display:flex;flex-direction:row;${width !== null ? `width:${width}` : ''}">
+            <span style="flex:1;"></span>
+            ${code}
+            <span style="flex:1;"></span>
+        </div>`;
+    };
 
-        const userInput = document.createElement('input');
-        if (det.input && det.input === 'date') {
-            userInput.setAttribute('id', `${det.id}-input`);
-            userInput.setAttribute('type', 'date');
-            userInput.setAttribute('autocomplete', 'off');
-            userInput.setAttribute('style', 'color: var(--bs-text-gray-800); width: unset;');
-            userInput.classList.add('form-control', 'rounded-1');
-            userInput.style.width = 'unset';
+    if (det.title) { code += segment(`<h4 class="fw-bolder d-flex align-items-center text-dark">Listing Productivity:</h4>`, '200px;'); }
 
-            if (det.val && det.val === "today") {
-                const today = new Date();
-                const yyyy = today.getFullYear();
-                const mm = String(today.getMonth() + 1).padStart(2, '0');
-                const dd = String(today.getDate()).padStart(2, '0');
-                userInput.value = `${yyyy}-${mm}-${dd}`;
-            }
-        } else if (det.input && det.input === 'int') {
-            userInput.setAttribute('id', `${det.id}-input`);
-            userInput.setAttribute('type', 'number');
-            userInput.setAttribute('min', '1');
-            userInput.setAttribute('autocomplete', 'off');
-            userInput.setAttribute('style', 'color: var(--bs-text-gray-800); width: unset;');
-            userInput.classList.add('form-control', 'rounded-1');
-            userInput.style.width = 'unset';
-
-            if (det.val) {
-                userInput.value = det.val;
-            }
-        } else if (det.input && det.input === 'string') {
-            userInput.setAttribute('id', `${det.id}-input`);
-            userInput.setAttribute('type', 'text');
-            userInput.setAttribute('autocomplete', 'off');
-            userInput.setAttribute('style', 'color: var(--bs-text-gray-800); width: unset;');
-            userInput.classList.add('form-control', 'rounded-1');
-            userInput.style.width = 'unset';
-
-            if (det.val) {
-                userInput.value = det.val;
-            }
-        }
-
-        const userInputSubtext = document.createElement('div');
-        if (det.desc) {
-            userInputSubtext.setAttribute('style', 'flex: 1; display: flex; align-items: center;');
-            userInputSubtext.innerHTML = det.desc;
-        }
-
-        const userInputTitle = document.createElement('h4');
-        if (det.title) {
-            userInputTitle.classList.add('fw-bolder');
-            userInputTitle.classList.add('d-flex');
-            userInputTitle.classList.add('align-items-center');
-            userInputTitle.classList.add('text-dark');
-            userInputTitle.setAttribute('style', 'width: 200px;');
-            userInputTitle.textContent = `${det.title}:`;
-        }
-
-        if (det.title) {
-            content.appendChild(userInputTitle);
-        }
+    if (det.input) {
+        let userInput = '';
         if (det.input) {
-            content.appendChild(userInput);
+            let type = 'text';
+            let value = det.val || '';
+            let extra = '';
+            if (det.input === 'date') {
+                type = 'date';
+                if (det.val === 'today') {
+                    const today = new Date();
+                    const yyyy = today.getFullYear();
+                    const mm = String(today.getMonth() + 1).padStart(2, '0');
+                    const dd = String(today.getDate()).padStart(2, '0');
+                    value = `${yyyy}-${mm}-${dd}`;
+                }
+            } else if (det.input === 'int') {
+                type = 'number';
+                extra = 'min="1"';
+            }
+            userInput = `<input id="${det.id}-input" type="${type}" ${extra} autocomplete="off" class="form-control rounded-1" style="color: var(--bs-text-gray-800); width: unset;" value="${value}">`;
         }
-        if (det.desc) {
-            content.appendChild(userInputSubtext);
-        }
-        if (typeof submit_button !== 'undefined') {
-            content.appendChild(submit_button);
-        }    
-        return content;    
+        code += segment(userInput);
     }
-    return null;
+
+    if (det.desc) { code += segment(`<span>${det.desc}</span>`, null, true); }
+
+    if (typeof submit_button !== 'undefined') {
+        const submit_button = `<button class="btn btn-large btn-primary" data-id="${det.id}" data-name="${det.name}" onclick="${det.func}">
+            Create
+            <span class="svg-icon svg-icon-4 ms-1 me-0">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect opacity="0.5" x="18" y="13" width="13" height="2" rx="1" transform="rotate(-180 18 13)" fill="currentColor"></rect>
+                    <path d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z" fill="currentColor"></path>
+                </svg>
+            </span>
+        </button>`;
+        code += segment(submit_button);
+    }
+
+    content.innerHTML = code;
+    return code;
 }
 
 function report_preset(name) {
