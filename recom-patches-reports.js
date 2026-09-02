@@ -238,15 +238,15 @@ function initPreset() {
         card_body.appendChild(report_initHTML(reportingTemplates['product_highQty']));
         card_body.appendChild(report_initHTML(reportingTemplates['items_createdRecent']));
 
+        card_body.appendChild(report_initHTML(reportingTemplates['productivity_eventSIDLookup']));
+        card_body.appendChild(report_initHTML(reportingTemplates['productivity_eventSKULookup']));
+        card_body.appendChild(report_initHTML(reportingTemplates['productivity_eventIDLookup']));
+
         card_body.appendChild(report_initHTML(reportingTemplates['picture_missingFull']));
         card_body.appendChild(report_initHTML(reportingTemplates['picture_missingSpecial']));
         card_body.appendChild(report_initHTML(reportingTemplates['findImgUrlsFromKeyword']));
         card_body.appendChild(report_initHTML(reportingTemplates['picture_imagecount']));
         card_body.appendChild(report_initHTML(reportingTemplates['picture_resolution']));
-
-        card_body.appendChild(report_initHTML(reportingTemplates['productivity_eventSIDLookup']));
-        card_body.appendChild(report_initHTML(reportingTemplates['productivity_eventSKULookup']));
-        card_body.appendChild(report_initHTML(reportingTemplates['productivity_eventIDLookup']));
 
         card_body.appendChild(report_initHTML(reportingTemplates['attributes_color']));
 
