@@ -26,11 +26,8 @@
     }
 }
 
-.colorCard.light.red { --bs-card-bg: #F7D9E3; background-color: var(--bs-card-bg) !important; }
-.colorCard.dark.red { --bs-card-bg: #542B39; background-color: var(--bs-card-bg) !important; }
-
-.colorCard.light.blue { --bs-card-bg: #CBF0F4; background-color: var(--bs-card-bg) !important; }
-.colorCard.dark.blue { --bs-card-bg: #234B50; background-color: var(--bs-card-bg) !important; }
-
-.colorCard.light.green { --bs-card-bg: #CBF4D5; background-color: var(--bs-card-bg) !important; }
-.colorCard.dark.green { --bs-card-bg: #254D30; background-color: var(--bs-card-bg) !important; }
+.colorCard.red { --colorCard-light: #F7D9E3; --colorCard-dark: #301921; background-color: var(--bs-card-bg) !important; }
+.colorCard.blue { --colorCard-light: #CBF0F4; --colorCard-dark: #122426; background-color: var(--bs-card-bg) !important; }
+.colorCard.green { --colorCard-light: #CBF4D5; --colorCard-dark: #132017; background-color: var(--bs-card-bg) !important; }
+.colorCard.light { --bs-card-bg: var(--colorCard-light); color: var(--colorCard-dark); }
+.colorCard.dark { --bs-card-bg: var(--colorCard-dark); color: var(--colorCard-light); }
