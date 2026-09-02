@@ -301,7 +301,7 @@ function report_initHTML(det) {
     
     let code = `<!-- BEGIN PRESET ROW -->`;
     const segment = (code, width = null, spacer = false) => {
-        return `<div style="display:flex;flex-direction:row;${width !== null ? `width:${width};` : ''}${spacer ? `flex:1;` : 'flex:0;'}">
+        return `<div style="display:flex;flex-direction:row;${width !== null ? `min-width:${width};` : ''}${spacer ? `flex:1;` : 'flex:0;'}">
             <span style="flex:1;"></span>
             ${code}
             <span style="flex:1;"></span>
@@ -331,7 +331,7 @@ function report_initHTML(det) {
             }
             userInput = `<input id="${det.id}-input" type="${type}" ${extra} autocomplete="off" class="form-control rounded-1" style="color: var(--bs-text-gray-800); width: unset;" value="${value}">`;
         }
-        code += segment(userInput);
+        code += segment(userInput, '300px');
     }
 
     if (det.desc) { code += segment(`<span>${det.desc}</span>`, null, true); }
@@ -345,7 +345,7 @@ function report_initHTML(det) {
             </svg>
         </span>
     </button>`;
-    code += segment(submit_button);
+    code += segment(submit_button, '150px');
 
     content.innerHTML = code;
     return content;
