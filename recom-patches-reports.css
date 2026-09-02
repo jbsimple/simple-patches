@@ -1,4 +1,4 @@
-#patches-reportPresets .card-body > *:last-child { border-bottom: none; }
+#patches-reportPresets .card-body > *:last-child { border-bottom: none !important; }
 @media (max-width: 1599px) {
     .flex-lg-row { flex-direction: column-reverse !important; gap: 2.5rem !important; }
     .flex-lg-row .d-flex.flex-column { width: 100% !important; margin: 0 auto !important; }
