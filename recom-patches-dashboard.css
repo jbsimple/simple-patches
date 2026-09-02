@@ -26,11 +26,11 @@
     }
 }
 
-#patches-dashboard-quicklinks .item.green { --bs-card-bg: rgb(100, 170, 170, 0.25); }
-#patches-dashboard-quicklinks .item.green:hover { --bs-card-bg: rgba(125, 200, 200, 0.25); }
+.colorCard.light.red { --bs-card-bg: #F7D9E3; background-color: var(--bs-card-bg) !important; }
+.colorCard.dark.red { --bs-card-bg: #542B39; background-color: var(--bs-card-bg) !important; }
 
-#patches-dashboard-quicklinks .item.blue { --bs-card-bg: rgb(100, 100, 170, 0.25); }
-#patches-dashboard-quicklinks .item.blue:hover { --bs-card-bg: rgb(120, 140, 200, 0.25); }
+.colorCard.light.blue { --bs-card-bg: #CBF0F4; background-color: var(--bs-card-bg) !important; }
+.colorCard.dark.blue { --bs-card-bg: #234B50; background-color: var(--bs-card-bg) !important; }
 
-#patches-dashboard-quicklinks .item.red { --bs-card-bg: rgba(200, 70, 90, 0.25); }
-#patches-dashboard-quicklinks .item.red:hover { --bs-card-bg: rgb(220, 90, 95, 0.25); }
+.colorCard.light.green { --bs-card-bg: #CBF4D5; background-color: var(--bs-card-bg) !important; }
+.colorCard.dark.green { --bs-card-bg: #254D30; background-color: var(--bs-card-bg) !important; }

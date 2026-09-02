@@ -1,6 +1,14 @@
 let quicklinks = [];
 let randomImages = [];
 
+function getTheme() {
+    var theme = 'light';
+    if (document.documentElement.getAttribute('data-bs-theme')) {
+        theme = document.documentElement.getAttribute('data-bs-theme');
+    }
+    return theme;
+}
+
 function initQuickLinks() {
 
     const content_container = document.getElementById('kt_app_content_container');
@@ -21,7 +29,7 @@ function initQuickLinks() {
         }
 
         const quickLink = document.createElement('a');
-        quickLink.setAttribute('class', `card card-flush h-md-50 mb-xl-10 blockui item ${link.class}`);
+        quickLink.setAttribute('class', `card card-flush h-md-50 mb-xl-10 blockui item colorCard ${getTheme()} ${link.class}`);
         quickLink.setAttribute('href', link.href);
         quickLink.innerHTML = `<div class="card-header pt-5">
             <h3 class="card-title text-gray-800">${link.label}</h3>
@@ -69,23 +77,18 @@ function replaceEngagewidget() {
 }
 
 function fixStatCards() {
-    function getTheme() {
-        var theme = 'light';
-        if (document.documentElement.getAttribute('data-bs-theme')) {
-            theme = document.documentElement.getAttribute('data-bs-theme');
-        }
-        return theme;
+    const statcardfix = document.querySelectorAll('.card.card-xl-stretch.mb-xl-8');
+    if (!statcardfix || statcardfix.length !== 3) return;
+
+    const statcardParent = statcardfix[0].parentElement?.parentElement;
+    if (statcardParent) {
+        statcardParent.setAttribute('style', `margin-bottom: calc(-1 * var(--bs-gutter-y));`);
     }
 
-    const statcardfix = document.querySelectorAll('.card.card-xl-stretch.mb-xl-8');
-    if (statcardfix && statcardfix.length === 3 && getTheme() === 'dark') {
-        const statcardParent = statcardfix[0].parentElement?.parentElement;
-        if (statcardParent) {
-            statcardParent.setAttribute('style', `margin-bottom: calc(-1 * var(--bs-gutter-y));`);
-        }
-        statcardfix[0].setAttribute('style', `--bs-card-bg: rgb(65,40,50); color: white !important;`);
-        statcardfix[1].setAttribute('style', `--bs-card-bg: rgb(15,50,50); color: white !important;`);
-        statcardfix[2].setAttribute('style', `--bs-card-bg: rgb(50,60,85); color: white !important;`);
+    const classes = ['red', 'blue', 'green'];
+    for (let i = 0; i < statcardfix.length; i++) {
+        statcardfix[i].removeAttribute('style');
+        statcardfix[i].classList.add('colorCard', getTheme(), classes[i]);
     }
 }
 
