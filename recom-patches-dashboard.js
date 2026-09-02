@@ -10,7 +10,6 @@ function getTheme() {
 }
 
 function initQuickLinks() {
-
     const content_container = document.getElementById('kt_app_content_container');
 
     // add separator
@@ -97,9 +96,22 @@ setTimeout(async function () {
     try {
         await loadEdgeConfig('dashboard');
         console.debug('PATCHES - Dashboard Edge Config Loaded.');
-
         initQuickLinks();
         replaceEngagewidget();
+
+        // theme change observer
+        const themeObserver = new MutationObserver(() => {
+            const theme = getTheme();
+            document.querySelectorAll('.colorCard').forEach(card => {
+                card.classList.remove('light', 'dark');
+                card.classList.add(theme);
+            });
+        });
+        themeObserver.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['data-bs-theme']
+        });
+
     } catch (err) {
         console.error('PATCHES - Dashboard Edge config failed:', err);
     };
