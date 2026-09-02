@@ -306,7 +306,7 @@ function report_initHTML(det) {
     };
 
     if (det.title) {
-        code += segment(`<h4 class="fw-bolder d-flex align-items-center text-dark">${det.title}:</h4>`, '250px');
+        code += segment(`<h4 class="fw-bolder d-flex align-items-center text-dark">${det.title}:</h4>`, '300px');
     }
 
     if (det.input) {
@@ -329,7 +329,7 @@ function report_initHTML(det) {
         }
 
         const userInput = `<input id="${det.id}-input" type="${type}" ${extra} autocomplete="off" class="form-control rounded-1" style="color:var(--bs-text-gray-800);width:100%;" value="${value}">`;
-        code += segment(userInput, '250px');
+        code += segment(userInput, '150px');
     }
 
     if (det.desc) {
@@ -346,6 +346,7 @@ function report_initHTML(det) {
         </span>
     </button>`;
     code += segment(submit_button, '150px');
+    code += `<!-- END PRESET ROW -->`;
 
     content.innerHTML = code;
     return content;
