@@ -299,7 +299,7 @@ function report_initHTML(det) {
     const content = document.createElement('div');
     content.setAttribute('style', 'display:flex;flex-direction:row;align-items:center;gap:1rem;width:100%;padding:1rem 2rem;border-bottom: var(--bs-border-width) solid var(--bs-card-border-color);');
 
-    let code = `<!-- BEGIN PRESET ROW -->`;
+    let code = `<span class="bullet bullet-vertical h-40px bg-success"></span>`;
 
     const segment = (code, width = null, spacer = false) => {
         return `<div style="${width !== null ? `flex:0 0 ${width};` : ''}${spacer ? 'flex:1 1 auto;' : ''}min-width:0;">${code}</div>`;
@@ -346,7 +346,6 @@ function report_initHTML(det) {
         </span>
     </button>`;
     code += segment(submit_button);
-    code += `<!-- END PRESET ROW -->`;
 
     content.innerHTML = code;
     return content;
