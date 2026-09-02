@@ -255,6 +255,8 @@ function initPreset() {
         card_body.appendChild(report_initHTML(reportingTemplates['pendinginventory_all']));
     }
 
+    KTApp.init();
+
     const nextStepButton = document.getElementById('rc_reports_new_wizard').querySelectorAll('button[data-kt-stepper-action="next"]');
     const patchesPresentsDiv = document.getElementById('patches-presents');
 
