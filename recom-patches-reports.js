@@ -297,7 +297,7 @@ function report_initHTML(det) {
     if (!det || !det.id || !det.func) return null;
 
     const content = document.createElement('div');
-    content.setAttribute('style', 'display:flex;flex-direction:row;align-items:center;gap:0.5rem;width:100%;padding:1rem 2rem;border-bottom: var(--bs-border-width) solid var(--bs-card-border-color);');
+    content.setAttribute('style', 'display:flex;flex-direction:row;align-items:center;gap:1rem;width:100%;padding:1rem 2rem;border-bottom: var(--bs-border-width) solid var(--bs-card-border-color);');
 
     let code = `<!-- BEGIN PRESET ROW -->`;
 
