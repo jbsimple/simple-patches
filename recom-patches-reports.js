@@ -301,7 +301,7 @@ function report_initHTML(det) {
     
     let code = `<!-- BEGIN PRESET ROW -->`;
     const segment = (code, width = null, spacer = false) => {
-        return `<div style="display:flex;flex-direction:row;${width !== null ? `width:${width}` : ''}">
+        return `<div style="display:flex;flex-direction:row;${width !== null ? `width:${width};` : ''}${spacer ? `flex:1;` : 'flex:0;'}">
             <span style="flex:1;"></span>
             ${code}
             <span style="flex:1;"></span>
