@@ -191,7 +191,7 @@ function initPreset() {
     card.id = 'patches-reportPresets';
     
     const card_body = document.createElement('div');
-    card_body.setAttribute('style', 'display: flex; flex-direction: column; padding: 0 !important; gap: 1.5rem;');
+    card_body.setAttribute('style', 'display: flex; flex-direction: column; padding: 0 !important;');
     card_body.classList = "card-body";
     
     const content = document.createElement('div');
