@@ -1,6 +1,4 @@
 #patches-reportPresets .card-body > * {
-    padding-bottom: 0.5rem;
-    margin-bottom: 0.5rem;
     border-bottom: var(--bs-border-width) solid var(--bs-card-border-color);
 }
 
