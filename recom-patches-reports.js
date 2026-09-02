@@ -230,33 +230,29 @@ function initPreset() {
             console.error(`PATCHES - Invalid Template ${template}`);
         }
     } else {
-        card_body.appendChild(report_initHTML(reportingTemplates['listing_productivity']))
+        card_body.appendChild(report_initHTML(reportingTemplates['listing_productivity']));
+        card_body.appendChild(report_initHTML(reportingTemplates['marketing_productivity']));
+        card_body.appendChild(report_initHTML(reportingTemplates['productivity_meetingNotes']));
 
-        /*
+        card_body.appendChild(report_initHTML(reportingTemplates['product_stockandvalue']));
+        card_body.appendChild(report_initHTML(reportingTemplates['product_highQty']));
+        card_body.appendChild(report_initHTML(reportingTemplates['items_createdRecent']));
 
+        card_body.appendChild(report_initHTML(reportingTemplates['picture_missingFull']));
+        card_body.appendChild(report_initHTML(reportingTemplates['picture_missingSpecial']));
+        card_body.appendChild(report_initHTML(reportingTemplates['findImgUrlsFromKeyword']));
+        card_body.appendChild(report_initHTML(reportingTemplates['picture_imagecount']));
+        card_body.appendChild(report_initHTML(reportingTemplates['picture_resolution']));
 
-        card_body.appendChild(report_preset('listing_productivity'));
-        //card_body.appendChild(report_preset('marketing_productivity'));
-        //card_body.appendChild(report_preset('productivity_meetingNotes'));
-        card_body.appendChild(report_preset('product_stockandvalue'));
-        //card_body.appendChild(report_preset('product_highQty'));
-        card_body.appendChild(report_preset('items_createdRecent'));
-   
-        card_body.appendChild(report_preset('errorlogsalltime'));
-        card_body.appendChild(report_preset('marketplaceStatusExtended'));
+        card_body.appendChild(report_initHTML(reportingTemplates['productivity_eventSIDLookup']));
+        card_body.appendChild(report_initHTML(reportingTemplates['productivity_eventSKULookup']));
+        card_body.appendChild(report_initHTML(reportingTemplates['productivity_eventIDLookup']));
 
-        card_body.appendChild(report_preset('picture_missingFull'));
-        card_body.appendChild(report_preset('picture_missingSpecial'));
-        //card_body.appendChild(report_preset('findImgUrlsFromKeyword'));
-        card_body.appendChild(report_preset('productivity_eventSIDLookup'));
-        card_body.appendChild(report_preset('productivity_eventSKULookup'));
-        card_body.appendChild(report_preset('productivity_eventIDLookup'));
-        //card_body.appendChild(report_preset('attributes_color'));
-        card_body.appendChild(report_preset('picture_imagecount'));
-        //card_body.appendChild(report_preset('picture_resolution'));
-        card_body.appendChild(report_preset('pendinginventory_all'));
+        card_body.appendChild(report_initHTML(reportingTemplates['attributes_color']));
 
-        */
+        card_body.appendChild(report_initHTML(reportingTemplates['errorlogsalltime']));
+        card_body.appendChild(report_initHTML(reportingTemplates['marketplaceStatusExtended']));
+        card_body.appendChild(report_initHTML(reportingTemplates['pendinginventory_all']));
     }
 
     const nextStepButton = document.getElementById('rc_reports_new_wizard').querySelectorAll('button[data-kt-stepper-action="next"]');
@@ -298,64 +294,6 @@ function goToLastStep() {
     
     const button = wizard.querySelector('a[href="reports"]');
     button.classList.remove('d-none');
-}
-
-function report_initHTML(det) {
-    if (!det || !det.id || !det.func) return null;
-
-    const content = document.createElement('div');
-    content.setAttribute('style', 'display:flex;flex-direction:row;align-items:center;gap:1rem;width:100%;padding:1rem 2rem;border-bottom: var(--bs-border-width) solid var(--bs-card-border-color);');
-
-    let code = `<span class="bullet bullet-vertical h-40px bg-primary" style="margin-right:1rem;"></span>`;
-
-    const segment = (code, width = null, spacer = false) => {
-        return `<div style="${width !== null ? `flex:0 0 ${width};` : ''}${spacer ? 'flex:1 1 auto;' : ''}min-width:0;">${code}</div>`;
-    };
-
-    if (det.title) {
-        code += segment(`<h4 class="fw-bolder text-dark">${det.title}:</h4>`, '250px');
-    }
-
-    if (det.input) {
-        let type = 'text';
-        let value = det.val || '';
-        let extra = '';
-
-        if (det.input === 'date') {
-            type = 'date';
-            if (det.val === 'today') {
-                const today = new Date();
-                const yyyy = today.getFullYear();
-                const mm = String(today.getMonth() + 1).padStart(2, '0');
-                const dd = String(today.getDate()).padStart(2, '0');
-                value = `${yyyy}-${mm}-${dd}`;
-            }
-        } else if (det.input === 'int') {
-            type = 'number';
-            extra = 'min="1"';
-        }
-
-        const userInput = `<input id="${det.id}-input" type="${type}" ${extra} autocomplete="off" class="form-control rounded-1" style="color:var(--bs-text-gray-800);width:100%;" value="${value}">`;
-        code += segment(userInput, '200px');
-    }
-
-    if (det.desc) {
-        code += segment(`<span class="text-muted fw-semibold">${det.desc}</span>`, null, true);
-    }
-
-    const submit_button = `<button class="btn btn-large btn-primary" data-id="${det.id}" data-name="${det.name}" onclick="${det.func}">
-        Create
-        <span class="svg-icon svg-icon-4 ms-1 me-0">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <rect opacity="0.5" x="18" y="13" width="13" height="2" rx="1" transform="rotate(-180 18 13)" fill="currentColor"></rect>
-                <path d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z" fill="currentColor"></path>
-            </svg>
-        </span>
-    </button>`;
-    code += segment(submit_button);
-
-    content.innerHTML = code;
-    return content;
 }
 
 const reportingTemplates = {
@@ -515,14 +453,62 @@ const reportingTemplates = {
     }
 };
 
-function report_preset(name) {
-    let elem = reportingTemplates[name];
-    if (!elem) {
-        elem = document.createElement('span');
-        elem.textContent = `Issue with Template: ${name}`;
-        elem.setAttribute('style', 'color:var(--bs-danger);font-weight:500;');
+function report_initHTML(det) {
+    if (!det || !det.id || !det.func) return null;
+
+    const content = document.createElement('div');
+    content.setAttribute('style', 'display:flex;flex-direction:row;align-items:center;gap:1rem;width:100%;padding:1rem 2rem;border-bottom: var(--bs-border-width) solid var(--bs-card-border-color);');
+
+    let code = `<span class="bullet bullet-vertical h-40px bg-primary" style="margin-right:1rem;"></span>`;
+
+    const segment = (code, width = null, spacer = false) => {
+        return `<div style="${width !== null ? `flex:0 0 ${width};` : ''}${spacer ? 'flex:1 1 auto;' : ''}min-width:0;">${code}</div>`;
+    };
+
+    if (det.title) {
+        code += segment(`<h4 class="fw-bolder text-dark">${det.title}:</h4>`, '250px');
     }
-    return elem;
+
+    if (det.input) {
+        let type = 'text';
+        let value = det.val || '';
+        let extra = '';
+
+        if (det.input === 'date') {
+            type = 'date';
+            if (det.val === 'today') {
+                const today = new Date();
+                const yyyy = today.getFullYear();
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const dd = String(today.getDate()).padStart(2, '0');
+                value = `${yyyy}-${mm}-${dd}`;
+            }
+        } else if (det.input === 'int') {
+            type = 'number';
+            extra = 'min="1"';
+        }
+
+        const userInput = `<input id="${det.id}-input" type="${type}" ${extra} autocomplete="off" class="form-control rounded-1" style="color:var(--bs-text-gray-800);width:100%;" value="${value}">`;
+        code += segment(userInput, '200px');
+    }
+
+    if (det.desc) {
+        code += segment(`<span class="text-muted fw-semibold">${det.desc}</span>`, null, true);
+    }
+
+    const submit_button = `<button class="btn btn-large btn-${det.color ?? 'info'}" data-id="${det.id}" data-name="${det.name}" onclick="${det.func}">
+        Create
+        <span class="svg-icon svg-icon-4 ms-1 me-0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <rect opacity="0.5" x="18" y="13" width="13" height="2" rx="1" transform="rotate(-180 18 13)" fill="currentColor"></rect>
+                <path d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z" fill="currentColor"></path>
+            </svg>
+        </span>
+    </button>`;
+    code += segment(submit_button);
+
+    content.innerHTML = code;
+    return content;
 }
 
 function formatDate(date) {
