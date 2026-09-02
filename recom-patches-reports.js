@@ -306,7 +306,7 @@ function report_initHTML(det) {
     };
 
     if (det.title) {
-        code += segment(`<h4 class="fw-bolder d-flex align-items-center text-dark">${det.title}:</h4>`, '200px');
+        code += segment(`<h4 class="fw-bolder d-flex align-items-center text-dark">${det.title}:</h4>`, '250px');
     }
 
     if (det.input) {
@@ -316,7 +316,6 @@ function report_initHTML(det) {
 
         if (det.input === 'date') {
             type = 'date';
-
             if (det.val === 'today') {
                 const today = new Date();
                 const yyyy = today.getFullYear();
@@ -330,7 +329,7 @@ function report_initHTML(det) {
         }
 
         const userInput = `<input id="${det.id}-input" type="${type}" ${extra} autocomplete="off" class="form-control rounded-1" style="color:var(--bs-text-gray-800);width:100%;" value="${value}">`;
-        code += segment(userInput, '300px');
+        code += segment(userInput, '250px');
     }
 
     if (det.desc) {
