@@ -294,7 +294,7 @@ function goToLastStep() {
 }
 
 function report_initHTML(det) {
-    if (!det || det.id || det.func) return null;
+    if (!det ||! det.id || !det.func) return null;
 
     const content = document.createElement('div');
     content.setAttribute('style', 'display: flex; flex-direction: row; gap: 1rem;');
