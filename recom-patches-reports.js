@@ -492,6 +492,8 @@ function report_initHTML(det) {
 
     if (det.input && det.input === 'user') {
         code += segment(`<select class="form-select form-select-sm form-select-solid m-input" data-ajax-url="/ajax/datalist/UsersProfiles/1" data-control="select2" data-allow-clear="true" data-placeholder="User"><option></option></select>`, '200px');
+    } else if (det.input && det.input === 'po') {
+        code += segment(`<select class="form-select form-select-sm form-select-solid m-input" data-ajax-url="/ajax/datalist/PurchaseOrders" data-control="select2" data-allow-clear="true" data-placeholder="PO #"><option></option></select>`, '200px');
     } else if (det.input) {
         let type = 'text';
         let value = det.val || '';
