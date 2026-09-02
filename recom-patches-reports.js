@@ -333,7 +333,7 @@ function report_initHTML(det) {
     }
 
     if (det.desc) {
-        code += segment(`<span>${det.desc}</span>`, null, true);
+        code += segment(`<span class="text-muted fw-semibold">${det.desc}</span>`, null, true);
     }
 
     const submit_button = `<button class="btn btn-large btn-primary" data-id="${det.id}" data-name="${det.name}" onclick="${det.func}">
