@@ -308,7 +308,7 @@ function report_initHTML(det) {
         </div>`;
     };
 
-    if (det.title) { code += segment(`<h4 class="fw-bolder d-flex align-items-center text-dark">Listing Productivity:</h4>`, '200px;'); }
+    if (det.title) { code += segment(`<h4 class="fw-bolder d-flex align-items-center text-dark">${det.title}:</h4>`, '200px;'); }
 
     if (det.input) {
         let userInput = '';
