@@ -32,7 +32,7 @@ module.exports = async (req, res) => {
             const response = await fetch(`https://api.vercel.com/v1/edge-config/${edgeConfigId}/items`, {
                 method: 'PATCH',
                 headers: {
-                    'Authorization': `Bearer ${process.env.VERCEL_API_TOKEN}`,
+                    'Authorization': `Bearer ${process.env.EDGE_CONFIG_WRITE}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({items: [{operation: 'upsert', key, value: req.body}]})
