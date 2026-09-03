@@ -39,7 +39,7 @@ module.exports = async (req, res) => {
                 },
                 body: JSON.stringify({
                     items: [{
-                        operation: 'upsert',
+                        operation: 'update',
                         key: key,
                         value: req.body
                     }]
