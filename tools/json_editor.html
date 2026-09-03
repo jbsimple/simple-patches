@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.css">
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/mode/javascript/javascript.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/addon/edit/matchbrackets.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/addon/edit/closebrackets.min.js"></script>
+
+        <title>Edit JSON Config - Simple Patches</title>
+        <style>
+            :root {
+                --accent: rgb(40, 120, 200);
+                --background: color-mix(in srgb, var(--accent) 15%, transparent 85%);
+                --border: color-mix(in srgb, var(--accent) 25%, transparent 75%);
+
+                --green: #50cd89;
+                --blue: #3E97FF;
+                --purple: #7239ea;
+                --yellow: #ffc700;
+                --red: #f1416c;
+            }
+
+            *,*::before,*::after { box-sizing: border-box; }
+            html { margin: 0; padding: 0; min-width: 100%; min-height: 100%; font-size: 14px; }
+            body { margin: 0; padding: 0; padding-top: 1.5rem; padding-bottom: 1rem; min-width: 100%; min-height: 100vh; display: flex; flex-direction: column; gap: 1.5rem; align-items: center; font-family: system-ui, sans-serif; }
+            header,main,footer { width: 90%; max-width: 1200px; }
+
+            h1,h2,h3,h4,h5,p { padding: 0; margin: 0; }
+
+            button, .button { text-decoration: none !important; appearance: none; padding: 0.5rem 1rem; border: 1px solid var(--accent); border-radius: 0.5rem; background: var(--accent); color: white; font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease; }
+            button:hover, .button:hover { background-color: color-mix(in srgb, var(--accent) 85%, black 15%); box-shadow: 0 2px 6px color-mix(in srgb, var(--accent) 30%, transparent); }
+            button:active, .button:active { transform: translateY(1px); box-shadow: none; }
+            button:focus-visible, .button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+            button:disabled, .button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+            input { padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; background: white; color: inherit; font-family: inherit; font-size: 1rem; outline: none; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+            input:hover { border-color: var(--accent); }
+            input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 20%, transparent); }
+            input:disabled { opacity: 0.5; cursor: not-allowed; }
+            input::file-selector-button { margin: -0.5rem 0.75rem -0.5rem -0.75rem; padding: 0.5rem 0.75rem; border: none; border-right: 1px solid var(--border); background: var(--background); color: inherit; font-family: inherit; font-weight: 700; cursor: pointer; }
+            input::file-selector-button:hover { background: color-mix(in srgb, var(--accent) 25%, transparent); }
+            textarea { width: 100%; min-height: 260px; padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; background: white; color: inherit; font-family: inherit; font-size: 1rem; line-height: 1.5; outline: none; resize: vertical; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+            textarea:hover { border-color: var(--accent); }
+            textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 20%, transparent); }
+
+            table { width: 100%; border-collapse: collapse; background: white; border: 1px solid var(--border); border-radius: 0.5rem; overflow: hidden; }
+            th, td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); text-align: left; vertical-align: middle; }
+            th { background: var(--background); font-weight: 700; }
+            td { overflow-wrap: anywhere; }
+            tbody tr:last-child td { border-bottom: none; }
+            tbody tr:hover { background: color-mix(in srgb, var(--accent) 5%, transparent); }
+            textarea:disabled { opacity: 0.5; cursor: not-allowed; }
+
+            .column,.row,.wrap { gap: var(--gap); }
+            .column { display: flex; flex-direction: column; }
+            .row { display: flex; flex-direction: row; }
+            .wrap { display: flex; flex-wrap: wrap; }
+            .spacer { flex: 1 1 0; min-width: 0; }
+            .box { padding: 1rem; border-radius: 0.75rem; background-color: var(--background); }
+            .border { border: 1px solid var(--border); }
+            .gapXL { --gap: 1.5rem; }
+            .gapL { --gap: 1rem; }
+            .gapM { --gap: 0.5rem; }
+            .gapS { --gap: 0.25rem; }
+            .gapT { --gap: 0.1rem; }
+            .row > .line { margin-right: var(--gap); padding-right: var(--gap); border: none; border-right: 1px solid var(--border); height: 100%; }
+            .column > .line { margin-bottom: var(--gap); padding-bottom: var(--gap); border: none; border-bottom: 1px solid var(--border); width: 100%; }
+            .center { align-items: center; justify-content: center; }
+            .hidden { display: none; }
+
+            #error_modal { border: none; border-radius: 0.75rem; padding: 1.5rem; min-width: 300px; max-width: 90%; box-shadow: 0 5px 30px rgba(0, 0, 0, 0.25); }
+            #error_modal::backdrop { background: rgba(0, 0, 0, 0.5); }
+            #error_modal[open] { animation: dialogOpen 0.1s ease-out forwards; }
+            #error_modal.closing { animation: dialogClose 0.07s ease-in forwards; }
+            #error_modal::backdrop { background: rgba(0, 0, 0, 0.5); animation: backdropOpen 0.2s ease-out forwards; }
+            #error_modal.closing::backdrop { animation: backdropClose 0.07s ease-in forwards; }
+            @keyframes dialogOpen {
+                from { opacity: 0; transform: scale(0.85); }
+                to { opacity: 1; transform: scale(1); }
+            }
+            @keyframes dialogClose {
+                from { opacity: 1; transform: scale(1); }
+                to { opacity: 0; transform: scale(0.85); }
+            }
+            @keyframes backdropOpen {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            @keyframes backdropClose {
+                from { opacity: 1; }
+                to { opacity: 0; }
+            }
+
+            /* editor specific rules */
+            #main { align-items: stretch; }
+            .CodeMirror { height: 70vh !important; width: 100% !important; }
+        </style>
+    </head>
+    <body>
+        <header class="box column gapM" id="header">
+            <h1 class="line">Edit JSON Config</h1>
+            <p>View and edit Simple Patches JSON configuration.</p>
+            <div class="row gapL center">
+                <div class="row gapM center spacer">
+                    <strong>Config:</strong>
+                    <select class="spacer" id="json_key">
+                        <option value="config">config</option>
+                        <option value="dashboard">dashboard</option>
+                    </select>
+                    <button type="button" id="json_reload">Reload</button>
+                </div>
+                <div class="row gapM center spacer">
+                    <input class="spacer" type="password" id="json_password" placeholder="Password" autocomplete="current-password">
+                    <button style="--accent: var(--green);" type="button" id="json_save">Save</button>
+                </div>
+            </div>
+        </header>
+        <main class="box wrap center gapM" id="main">
+            <textarea id="json_editor" spellcheck="false" disabled></textarea>
+        </main>
+        <footer class="box column gapM hidden" id="footer"></footer>
+        <dialog id="error_modal">
+            <div class="column gapL">
+                <h2>Error</h2>
+                <h4 id="error_modal_message"></h4>
+                <div class="row">
+                    <span class="spacer"></span>
+                    <button type="button" id="error_modal_close">OK</button>
+                    <span class="spacer"></span>
+                </div>
+            </div>
+        </dialog>
+        <script type="text/javascript">(async function() {
+            // error dialog stuff
+            const error_modal = document.getElementById('error_modal');
+            const error_modal_message = document.getElementById('error_modal_message');
+            const error_modal_close = document.getElementById('error_modal_close');
+            function showError(message) {
+                error_modal_message.textContent = message;
+                error_modal.showModal();
+            }
+            error_modal_close.addEventListener('click', () => {
+                if (error_modal.classList.contains('closing')) return;
+                error_modal.classList.add('closing');
+                error_modal.addEventListener('animationend', () => {
+                    error_modal.close();
+                    error_modal.classList.remove('closing');
+                }, { once: true });
+            });
+
+            // build info
+            const script_version = document.createElement('script');
+            script_version.src = "https://simple-patches.vercel.app/buildInfo.js?v=" + Date.now();
+            script_version.onload = function() { console.debug('Patch Loaded: buildInfo.js'); };
+            document.body.appendChild(script_version);
+
+            // json editor code
+            const api = 'https://simple-patches.vercel.app/api/json';
+
+            const json_key = document.getElementById('json_key');
+            const json_password = document.getElementById('json_password');
+            const json_reload = document.getElementById('json_reload');
+            const json_save = document.getElementById('json_save');
+
+            const json_editor = CodeMirror.fromTextArea(
+                document.getElementById('json_editor'), {
+                    mode: {name: 'javascript', json: true},
+                    lineNumbers: true,
+                    matchBrackets: true,
+                    autoCloseBrackets: true,
+                    indentUnit: 4,
+                    tabSize: 4,
+                    indentWithTabs: false,
+                    lineWrapping: true
+                }
+            );
+
+            function setLoading(loading) {
+                json_editor.setOption('readOnly', loading);
+                json_key.disabled = loading;
+                json_reload.disabled = loading;
+                json_save.disabled = loading;
+            }
+
+            async function loadJSON() {
+                const key = json_key.value;
+
+                setLoading(true);
+                json_editor.setValue('Loading...');
+
+                try {
+                    const response = await fetch(`${api}?${encodeURIComponent(key)}`);
+                    const data = await response.json();
+                    if (!response.ok) { throw new Error(data.error || `Failed to load ${key}.`); }
+
+                    json_editor.setValue(JSON.stringify(data.value, null, 4));
+                    json_editor.setCursor({line: 0, ch: 0});
+                    json_editor.scrollTo(0, 0);
+                } catch (err) {
+                    console.error(err);
+                    json_editor.setValue('');
+                    showError(err.message);
+                } finally {
+                    setLoading(false);
+                    json_editor.refresh();
+                }
+            }
+
+            async function saveJSON() {
+                const key = json_key.value;
+                const password = json_password.value;
+
+                if (!password) {
+                    showError('Password is required.');
+                    return;
+                }
+
+                let value;
+                try {
+                    value = JSON.parse(json_editor.getValue());
+                } catch (err) {
+                    showError(`Invalid JSON: ${err.message}`);
+                    return;
+                }
+
+                setLoading(true);
+
+                try {
+                    const response = await fetch(`${api}?${encodeURIComponent(key)}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'x-upload-password': password
+                        },
+                        body: JSON.stringify(value)
+                    });
+                    const data = await response.json();
+                    if (!response.ok) { throw new Error(data.error || `Failed to update ${key}.`); }
+                    json_editor.setValue(JSON.stringify(value, null, 4));
+                } catch (err) {
+                    console.error(err);
+                    showError(err.message);
+                } finally {
+                    setLoading(false);
+                    json_editor.refresh();
+                    json_editor.focus();
+                }
+            }
+
+            json_key.addEventListener('change', loadJSON);
+            json_reload.addEventListener('click', loadJSON);
+            json_save.addEventListener('click', saveJSON);
+
+            await loadJSON();
+
+        })();</script>
+    </body>
+</html>
