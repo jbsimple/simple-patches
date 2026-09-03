@@ -14,7 +14,7 @@ function initAddTools() {
             "Edit the patches JSON config.",
             "Password Required"
         ],
-        "https://simple-patches.vercel.app/tools/csv_search.html"
+        "https://simple-patches.vercel.app/tools/json_editor.html"
     );
 
     addButtonCard(
