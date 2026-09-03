@@ -29,6 +29,12 @@ module.exports = async (req, res) => {
         if (!password || password !== correct) { return res.status(401).json({error: 'Unauthorized'}); }
         try {
             const edgeConfigId = process.env.EDGE_CONFIG.match(/ecfg_[^?]+/)?.[0];
+            console.debug('Edge Update Request:', {
+                'id': edgeConfigId,
+                'key': key,
+                'data': req.body,
+                'data_type': typeof req.body
+            });
             const response = await fetch(`https://api.vercel.com/v1/edge-config/${edgeConfigId}/items`, {
                 method: 'PATCH',
                 headers: {
