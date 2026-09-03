@@ -9,6 +9,15 @@ function initAddTools() {
     );
 
     addButtonCard(
+        'JSON Config Editor',
+        [
+            "Edit the patches JSON config.",
+            "Password Required"
+        ],
+        "https://simple-patches.vercel.app/tools/csv_search.html"
+    );
+
+    addButtonCard(
         'Swappa Inventory Count Checker',
         [
             "Check for any discrepancies between the quantity on Swappa and the quantity on system.",
