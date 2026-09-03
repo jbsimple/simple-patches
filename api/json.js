@@ -28,7 +28,7 @@ module.exports = async (req, res) => {
 
         if (!password || password !== correct) { return res.status(401).json({error: 'Unauthorized'}); }
         try {
-            const response = await fetch(`https://api.vercel.com/v1/edge-config/${process.env.EDGE_CONFIG_ID}/items`, {
+            const response = await fetch(`https://api.vercel.com/v1/edge-config/${process.env.EDGE_CONFIG}/items`, {
                 method: 'PATCH',
                 headers: {
                     'Authorization': `Bearer ${process.env.VERCEL_API_TOKEN}`,
@@ -47,6 +47,6 @@ module.exports = async (req, res) => {
             return res.status(500).json({error: 'Failed to update Edge Config'});
         }
     }
-    
+
     return res.status(405).json({error: 'Method not allowed'});
 };
