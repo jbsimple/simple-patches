@@ -28,7 +28,7 @@ module.exports = async (req, res) => {
 
         if (!password || password !== correct) { return res.status(401).json({error: 'Unauthorized'}); }
         try {
-            const response = await fetch(`https://api.vercel.com/v1/edge-config/${process.env.EDGE_CONFIG}/items`, {
+            const response = await fetch(`${process.env.EDGE_CONFIG}`, {
                 method: 'PATCH',
                 headers: {
                     'Authorization': `Bearer ${process.env.VERCEL_API_TOKEN}`,
