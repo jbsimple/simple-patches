@@ -35,7 +35,7 @@ module.exports = async (req, res) => {
                     'Authorization': `Bearer ${process.env.EDGE_CONFIG_WRITE}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({items: [{operation: 'upsert', key, value: req.body}]})
+                body: JSON.stringify({items: [{operation: 'update', key, value: req.body}]})
             });
             const result = await response.json();
             if (!response.ok) {
