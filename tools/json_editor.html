@@ -98,32 +98,31 @@
 
             /* editor specific rules */
             #main { align-items: stretch; }
-            .CodeMirror { height: 70vh !important; width: 100% !important; }
+            .CodeMirror { height: 60vh !important; width: 100% !important; }
         </style>
     </head>
     <body>
         <header class="box column gapM" id="header">
             <h1 class="line">Edit JSON Config</h1>
             <p>View and edit Simple Patches JSON configuration.</p>
-            <div class="row gapL center">
-                <div class="row gapM center spacer">
-                    <strong>Config:</strong>
-                    <select class="spacer" id="json_key">
-                        <option value="config">config</option>
-                        <option value="dashboard">dashboard</option>
-                    </select>
-                    <button type="button" id="json_reload">Reload</button>
-                </div>
-                <div class="row gapM center spacer">
-                    <input class="spacer" type="password" id="json_password" placeholder="Password" autocomplete="current-password">
-                    <button style="--accent: var(--green);" type="button" id="json_save">Save</button>
-                </div>
-            </div>
         </header>
+        <footer class="box row gapM" id="footer">
+            <div class="row gapM center spacer">
+                <strong>Config:</strong>
+                <select class="spacer" id="json_key">
+                    <option value="config">config</option>
+                    <option value="dashboard">dashboard</option>
+                </select>
+                <button type="button" id="json_reload">Reload</button>
+            </div>
+            <div class="row gapM center spacer">
+                <input class="spacer" type="password" id="json_password" placeholder="Password" autocomplete="current-password">
+                <button style="--accent: var(--green);" type="button" id="json_save">Save</button>
+            </div>
+        </footer>
         <main class="box wrap center gapM" id="main">
             <textarea id="json_editor" spellcheck="false" disabled></textarea>
         </main>
-        <footer class="box column gapM hidden" id="footer"></footer>
         <dialog id="error_modal">
             <div class="column gapL">
                 <h2>Error</h2>
