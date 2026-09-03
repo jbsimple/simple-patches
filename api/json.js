@@ -41,7 +41,13 @@ module.exports = async (req, res) => {
             if (!response.ok) {
                 const error = {
                     error: 'Failed to update Edge Config',
-                    request: {edgeConfigId, key, operation: 'update', valueType: typeof req.body},
+                    request: {
+                        edgeConfigId,
+                        key,
+                        operation: 'update',
+                        value: req.body,
+                        valueType: typeof req.body,
+                    },
                     details: result
                 }
 
