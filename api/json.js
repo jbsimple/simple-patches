@@ -29,12 +29,6 @@ module.exports = async (req, res) => {
         if (!password || password !== correct) { return res.status(401).json({error: 'Unauthorized'}); }
         try {
             const edgeConfigId = process.env.EDGE_CONFIG.match(/ecfg_[^?]+/)?.[0];
-            console.warn('Edge Update Request:', {
-                'id': edgeConfigId,
-                'key': key,
-                'data': req.body,
-                'data_type': typeof req.body
-            });
             const response = await fetch(`https://api.vercel.com/v1/edge-config/${edgeConfigId}/items`, {
                 method: 'PATCH',
                 headers: {
@@ -45,8 +39,14 @@ module.exports = async (req, res) => {
             });
             const result = await response.json();
             if (!response.ok) {
-                console.error('Edge Config update error:', result);
-                return res.status(response.status).json({error: 'Failed to update Edge Config', details: result});
+                const error = {
+                    error: 'Failed to update Edge Config',
+                    request: {edgeConfigId, key, operation: 'update', valueType: typeof req.body},
+                    details: result
+                }
+
+                console.error('Edge Config update error:', error);
+                return res.status(response.status).json(error);
             }
             return res.status(200).json({success: true, key, value: req.body});
         } catch (err) {
