@@ -45,3 +45,18 @@
     width: 90% !important;
     min-width: 650px !important;
 }
+
+@media (min-width: 1400px) {
+		#rc_create_listing_wizard > .card:first-child {
+		    max-width: 300px !important;
+		}
+}
+
+#rc_create_listing_wizard > .card:first-child {
+    margin-right: 2.25rem !important;
+    margin-bottom: 2.25rem !important;
+}
+
+#rc_create_listing_wizard > .card > .card-body {
+		padding: 2rem !important;
+}
