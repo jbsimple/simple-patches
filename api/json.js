@@ -50,7 +50,8 @@ module.exports = async (req, res) => {
                 const error = {
                     error: 'Failed to update Edge Config',
                     request: {
-                        edgeConfigId,
+                        'config_id': edgeConfigId,
+                        'team_id': process.env.VERCEL_TEAM_ID,
                         key,
                         operation: 'update',
                         value: req.body,
