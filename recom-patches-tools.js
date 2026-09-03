@@ -1,39 +1,11 @@
 function initAddTools() {
     addButtonCard(
-        'Parse Email List',
-        [
-            "For Mailchimp, takes a list of emails and then converts it into a csv for importing.",
-            "Simple Patches Tool"
-        ],
-        "https://simple-patches.vercel.app/tools/email-import.html"
-    );
-
-    addButtonCard(
         'CDN Uploader',
         [
             "For uploading things to the Simple Patches CDN.",
             "Password Required"
         ],
         "https://simple-patches.vercel.app/tools/cdn_upload.html"
-    );
-
-
-    addButtonCard(
-        'Valid GTIN Generator',
-        [
-            "Generate random GTINS that are actually valid, or at least pass GTIN checks for validity.",
-            "Simple Patches"
-        ],
-        "https://simple-patches.vercel.app/tools/gtin%20generator.html"
-    );
-
-    addButtonCard(
-        'CSV Search',
-        [
-            "Build a simple search tool from an uploaded CSV file.",
-            "Simple Patches"
-        ],
-        "https://simple-patches.vercel.app/tools/csv_search.html"
     );
 
     addButtonCard(
@@ -52,6 +24,34 @@ function initAddTools() {
             "Simple Patches"
         ],
         "https://simple-patches.vercel.app/tools/imei_to_labels.html"
+    );
+
+    addButtonCard(
+        'Valid GTIN Generator',
+        [
+            "Generate random GTINS that are actually valid, or at least pass GTIN checks for validity.",
+            "Simple Patches"
+        ],
+        "https://simple-patches.vercel.app/tools/gtin%20generator.html"
+    );
+
+
+    addButtonCard(
+        'Parse Email List',
+        [
+            "For Mailchimp, takes a list of emails and then converts it into a csv for importing.",
+            "Simple Patches Tool"
+        ],
+        "https://simple-patches.vercel.app/tools/email-import.html"
+    );
+
+    addButtonCard(
+        'CSV Search',
+        [
+            "Build a simple search tool from an uploaded CSV file.",
+            "Simple Patches"
+        ],
+        "https://simple-patches.vercel.app/tools/csv_search.html"
     );
 }
 
