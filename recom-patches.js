@@ -391,7 +391,9 @@ function loadPatchSettings() {
                 bgImgQuickToggle.setAttribute('style', 'background-color: var(--bs-info); box-shadow: var(--bs-scrolltop-box-shadow); border-radius: .475rem; position: fixed; right: 20px; bottom: 20px; z-index: 99999; border: none; padding: 1rem; opacity: 0.25');
                 bgImgQuickToggle.title = 'Toggle background image for screenshots.';
                 bgImgQuickToggle.innerHTML = '<i class="fas fa-image" style="color: white; font-size: 1.75rem;"></i>';
-                bgImgQuickToggle.addEventListener('click', function() { bgImg.style.display = (bgImg.style.display === 'none') ? 'block' : 'none'; });
+                bgImgQuickToggle.addEventListener('click', function() {
+                    bgImg.style.opacity = (bgImg.style.opacity === '0') ? bgImgOpa : '0';
+                });
                 document.body.appendChild(bgImgQuickToggle);
 
                 function updatePadding() {
