@@ -333,7 +333,7 @@ function loadPatchSettings() {
                 const styleTag = document.createElement("style");
                 styleTag.id = 'dynamic-bgimg-style';
                 styleTag.textContent = `
-                    #kt_app_main > .dynamic-bgimg { position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; object-fit: cover; z-index: -1; opacity: 0; transition: opacity 0.5s ease, padding 0.3s ease; pointer-events: none; user-select: none; }
+                    #kt_app_main > .dynamic-bgimg { position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; object-fit: cover; z-index: -1; opacity: 0; transition: opacity 0.2s ease, padding 0.2s ease; pointer-events: none; user-select: none; }
                     @media (max-width: 1199.98px) { #kt_app_main > .dynamic-bgimg { padding-left: 0px !important; } }
                     .card { background-color: color-mix(in srgb, var(--bs-card-bg) 85%, transparent 15%) !important; }
                     .dropdown.show>.form-control.form-control-solid, .form-control.form-control-solid.active, .form-control.form-control-solid.focus, .form-control.form-control-solid:active, .form-control.form-control-solid:focus { background-color: color-mix(in srgb,var(--bs-gray-200) 50%, transparent 50%) !important; }
