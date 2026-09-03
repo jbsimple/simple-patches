@@ -52,7 +52,6 @@ module.exports = async (req, res) => {
                     error: 'Failed to update Edge Config',
                     request: {
                         'config_id': edgeConfigId,
-                        'config_token': edgeConfigToken,
                         'update_key': key,
                         'update_opr': 'update',
                         'value': req.body,
