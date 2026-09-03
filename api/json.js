@@ -30,7 +30,7 @@ module.exports = async (req, res) => {
         try {
             const edgeConfigId = process.env.EDGE_CONFIG.match(/ecfg_[^?]+/)?.[0];
             
-            const response = await fetch(`https://api.vercel.com/v1/edge-config/${edgeConfigId}/items?teamId=${process.env.VERCEL_TEAM_ID}`, {
+            const response = await fetch(`https://api.vercel.com/v1/edge-config/${edgeConfigId}/items`, {
                 method: 'PATCH',
                 headers: {
                     'Authorization': `Bearer ${process.env.EDGE_CONFIG_WRITE}`,
@@ -51,7 +51,6 @@ module.exports = async (req, res) => {
                     error: 'Failed to update Edge Config',
                     request: {
                         'config_id': edgeConfigId,
-                        'team_id': process.env.VERCEL_TEAM_ID,
                         'update_key': key,
                         'update_opr': 'update',
                         'value': req.body,
