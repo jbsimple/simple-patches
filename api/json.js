@@ -39,7 +39,7 @@ module.exports = async (req, res) => {
                 },
                 body: JSON.stringify({
                     items: [{
-                        operation: 'update',
+                        operation: 'upsert',
                         key: key,
                         value: req.body
                     }]
@@ -53,7 +53,7 @@ module.exports = async (req, res) => {
                     request: {
                         'config_id': edgeConfigId,
                         'update_key': key,
-                        'update_opr': 'update',
+                        'update_opr': 'upsert',
                         'value': req.body,
                         'value_type': typeof req.body,
                     },
