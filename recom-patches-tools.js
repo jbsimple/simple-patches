@@ -14,7 +14,7 @@ function initAddTools() {
             "For uploading things to the Simple Patches CDN.",
             "Password Required"
         ],
-        "https://simple-patches.vercel.app/api"
+        "https://simple-patches.vercel.app/tools/cdn_upload.html"
     );
 
 
