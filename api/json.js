@@ -52,10 +52,10 @@ module.exports = async (req, res) => {
                     request: {
                         'config_id': edgeConfigId,
                         'team_id': process.env.VERCEL_TEAM_ID,
-                        key,
-                        operation: 'update',
-                        value: req.body,
-                        valueType: typeof req.body,
+                        'update_key': key,
+                        'update_opr': 'update',
+                        'value': req.body,
+                        'value_type': typeof req.body,
                     },
                     details: result
                 }
