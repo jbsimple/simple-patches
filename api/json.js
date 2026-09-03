@@ -29,14 +29,22 @@ module.exports = async (req, res) => {
         if (!password || password !== correct) { return res.status(401).json({error: 'Unauthorized'}); }
         try {
             const edgeConfigId = process.env.EDGE_CONFIG.match(/ecfg_[^?]+/)?.[0];
-            const response = await fetch(`https://api.vercel.com/v1/edge-config/${edgeConfigId}/items`, {
+            
+            const response = await fetch(`https://api.vercel.com/v1/edge-config/${edgeConfigId}/items?teamId=${process.env.VERCEL_TEAM_ID}`, {
                 method: 'PATCH',
                 headers: {
                     'Authorization': `Bearer ${process.env.EDGE_CONFIG_WRITE}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({items: [{operation: 'update', key, value: req.body}]})
+                body: JSON.stringify({
+                    items: [{
+                        operation: 'upsert',
+                        key: key,
+                        value: req.body
+                    }]
+                })
             });
+
             const result = await response.json();
             if (!response.ok) {
                 const error = {
