@@ -47,6 +47,10 @@
             textarea { width: 100%; min-height: 260px; padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; background: white; color: inherit; font-family: inherit; font-size: 1rem; line-height: 1.5; outline: none; resize: vertical; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
             textarea:hover { border-color: var(--accent); }
             textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 20%, transparent); }
+            select { padding: 0.5rem 2rem 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; background: white; color: inherit; font-family: inherit; font-size: 1rem; outline: none; cursor: pointer; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+            select:hover { border-color: var(--accent); }
+            select:focus { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 20%, transparent); }
+            select:disabled { opacity: 0.5; cursor: not-allowed; }
 
             table { width: 100%; border-collapse: collapse; background: white; border: 1px solid var(--border); border-radius: 0.5rem; overflow: hidden; }
             th, td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); text-align: left; vertical-align: middle; }
@@ -96,7 +100,7 @@
                 to { opacity: 0; }
             }
 
-            /* editor specific rules */
+            /* page rules */
             #main { align-items: stretch; }
             .CodeMirror { height: 60vh !important; width: 100% !important; }
         </style>
@@ -155,7 +159,7 @@
             // build info
             const script_version = document.createElement('script');
             script_version.src = "https://simple-patches.vercel.app/buildInfo.js?v=" + Date.now();
-            script_version.onload = function() { console.debug('Patch Loaded: buildInfo.js'); };
+            script_version.onload = function() { console.debug('Build Info:', window.BUILD_INFO); };
             document.body.appendChild(script_version);
 
             // json editor code

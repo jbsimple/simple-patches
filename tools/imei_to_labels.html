@@ -12,6 +12,12 @@
                 --accent: rgb(40, 120, 200);
                 --background: color-mix(in srgb, var(--accent) 15%, transparent 85%);
                 --border: color-mix(in srgb, var(--accent) 25%, transparent 75%);
+
+                --green: #50cd89;
+                --blue: #3E97FF;
+                --purple: #7239ea;
+                --yellow: #ffc700;
+                --red: #f1416c;
             }
 
             *,*::before,*::after { box-sizing: border-box; }
@@ -36,7 +42,10 @@
             textarea { width: 100%; min-height: 260px; padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; background: white; color: inherit; font-family: inherit; font-size: 1rem; line-height: 1.5; outline: none; resize: vertical; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
             textarea:hover { border-color: var(--accent); }
             textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 20%, transparent); }
-            textarea:disabled { opacity: 0.5; cursor: not-allowed; }
+            select { padding: 0.5rem 2rem 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; background: white; color: inherit; font-family: inherit; font-size: 1rem; outline: none; cursor: pointer; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+            select:hover { border-color: var(--accent); }
+            select:focus { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 20%, transparent); }
+            select:disabled { opacity: 0.5; cursor: not-allowed; }
 
             table { width: 100%; border-collapse: collapse; background: white; border: 1px solid var(--border); border-radius: 0.5rem; overflow: hidden; }
             th, td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); text-align: left; vertical-align: middle; }
@@ -44,6 +53,7 @@
             td { overflow-wrap: anywhere; }
             tbody tr:last-child td { border-bottom: none; }
             tbody tr:hover { background: color-mix(in srgb, var(--accent) 5%, transparent); }
+            textarea:disabled { opacity: 0.5; cursor: not-allowed; }
 
             .column,.row,.wrap { gap: var(--gap); }
             .column { display: flex; flex-direction: column; }
@@ -85,10 +95,9 @@
                 to { opacity: 0; }
             }
 
+            /* page rules */
             #form, #form input { min-width: 0; }
             .label { width: 2in; height: 1in; padding: 0.06in; background: white; color: black; display: flex; flex-direction: column; gap: 0.03in; font-family: Arial, Helvetica, sans-serif; font-size: 8pt; font-weight: 700; overflow: hidden; flex: 0 0 auto; }
-
-            /* print stuff */
             @page { size: 2in 1in; margin: 0; }
             @media print {
                 html,body { margin: 0; padding: 0; width: 2in; height: auto; }
