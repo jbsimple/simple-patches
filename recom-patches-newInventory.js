@@ -125,10 +125,10 @@ function initSearchFormPatch() {
     searchFormRow.setAttribute('style', 'gap: calc(var(--bs-gutter-x)* .5);');
 
     const categoryInputCont = searchFormRow.querySelector('.col-md-2');
-    if (categoryInputCont) { categoryInputCont.setAttribute('style', 'width: unset; flex-shrink: 0; min-width: 250px;'); }
+    if (categoryInputCont) { categoryInputCont.setAttribute('style', 'width: unset; flex-shrink: 0; flex: 1;'); }
 
     const sarchInputCont = searchFormRow.querySelector('.col-md-10');
-    if (sarchInputCont) { sarchInputCont.setAttribute('style', 'width: unset; padding: 0 !important; flex: 1; flex-shrink: 0'); }
+    if (sarchInputCont) { sarchInputCont.setAttribute('style', 'width: unset; padding: 0 !important; flex: 3; flex-shrink: 0'); }
 
     const createWrapper = (width = null) => {
         const wrapper = document.createElement('div');
@@ -151,6 +151,7 @@ function initSearchFormPatch() {
     `;
     autoSelect.querySelector('[data-formpiece').setAttribute('title', 'The search field is automatically selected for quick scanner.');
     autoSelect.querySelector('[data-subtext]');
+    searchForm.appendChild(autoSelect);
     const autoSelectObserver = new MutationObserver(() => {
         const toggle = document.getElementById('patch-autoSelect');
         if (searchInput.value.trim() !== '' && toggle && toggle?.checked) {
