@@ -122,7 +122,7 @@ function initSearchFormPatch() {
 
     const searchFormRow = searchForm.firstElementChild;
     if (!searchFormRow) return;
-    searchFormRow.setAttribute('style', 'gap: calc(var(--bs-gutter-x)* .5); flex-wrap: unset !important; flex-direction: row !important;');
+    searchFormRow.setAttribute('style', 'gap: calc(var(--bs-gutter-x)* .5);');
 
     const categoryInputCont = searchFormRow.querySelector('.col-md-2');
     if (categoryInputCont) { categoryInputCont.setAttribute('style', 'width: unset; flex-shrink: 0; flex: 2;'); }
@@ -150,8 +150,8 @@ function initSearchFormPatch() {
         <label class="form-check-label" for="patch-autoSelect">Auto Select</label>
     `;
     autoSelect.querySelector('[data-formpiece').setAttribute('title', 'The search field is automatically selected for quick scanner.');
-    autoSelect.querySelector('[data-subtext]');
-    searchForm.appendChild(autoSelect);
+    autoSelect.querySelector('[data-subtext]').textContent = 'For Scangun';
+    searchFormRow.appendChild(autoSelect);
     const autoSelectObserver = new MutationObserver(() => {
         const toggle = document.getElementById('patch-autoSelect');
         if (searchInput.value.trim() !== '' && toggle && toggle?.checked) {
