@@ -150,7 +150,6 @@ function initSearchFormPatch() {
         <label class="form-check-label" for="patch-autoSelect">Auto Select</label>
     `;
     autoSelect.querySelector('[data-formpiece').setAttribute('title', 'The search field is automatically selected for quick scanner.');
-    autoSelect.querySelector('[data-formpiece').setAttribute('style', 'padding-left: 0 !important;');
     autoSelect.querySelector('[data-subtext]').textContent = 'For Scangun';
     searchFormRow.appendChild(autoSelect);
     const autoSelectObserver = new MutationObserver(() => {
@@ -167,6 +166,7 @@ function initSearchFormPatch() {
     resetSearch.querySelector('[data-formpiece]').innerHTML = `
         <button type="button" class="btn btn-light" id="patch-resetSearch">Reset</button>
     `;
+    resetSearch.querySelector('[data-formpiece]').setAttribute('style', 'padding-left: none !important;');
     resetSearch.querySelector('[data-subtext]').textContent = 'Clear Search';
     searchFormRow.appendChild(resetSearch);
     resetSearch.querySelector('#patch-resetSearch').addEventListener('click', () => {
