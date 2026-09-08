@@ -135,7 +135,7 @@ function initSearchFormPatch() {
         wrapper.classList.add('col-md-2');
         wrapper.style.cssText = `width: unset; padding: 0 !important; flex: ${flex}; flex-shrink: 0;`;
         wrapper.innerHTML = `
-            <div class="h-60px" style="display: flex; flex-direction: row; gap 0.25rem; align-items: center; justify-content: center;">
+            <div class="h-60px input-group-text" style="display: flex; flex-direction: row; gap 0.25rem; align-items: center; justify-content: center;">
                 <div data-formpiece class="form-check"></div>
             </div>
             <div data-subtext class="text-muted fs-7 mt-3 mx-2"></div>
@@ -163,21 +163,17 @@ function initSearchFormPatch() {
     autoSelectObserver.observe(searchResults, { childList: true, subtree: true });
 
     // reset search
-    const reset = createWrapper();
-    reset.querySelector('[data-formpiece]').innerHTML = `
-        <input class="form-check-input" type="checkbox" id="patch-reset">
-        <label class="form-check-label" for="patch-reset">Auto Clear</label>
+    const resetSearch = createWrapper();
+    resetSearch.querySelector('[data-formpiece]').innerHTML = `
+        <button type="button" class="btn btn-light" id="patch-resetSearch">Reset</button>
     `;
-    reset.querySelector('[data-formpiece]').setAttribute('title', 'Automatically clears the search field and search results.');
-    reset.querySelector('[data-subtext]').textContent = 'Clear Search';
-    searchFormRow.appendChild(reset);
-    const resetObserver = new MutationObserver(() => {
-    const toggle = document.getElementById('patch-reset');
-    if (toggle?.checked && searchResults.children.length > 0) {
+    resetSearch.querySelector('[data-subtext]').textContent = 'Clear Search';
+    searchFormRow.appendChild(resetSearch);
+    resetSearch.querySelector('#patch-resetSearch').addEventListener('click', () => {
         searchInput.value = '';
         searchResults.innerHTML = '';
-    }
-});
+        searchInput.focus();
+    });
 
 }
 initSearchFormPatch();
