@@ -1087,7 +1087,6 @@ async function groq_desc(title = null, description = null, category = null) {
         "- Do not use exaggerated marketing language.",
         "- Do not invent specifications or compatibility.",
         "- Only mention details that are known or highly reliable.",
-        "- Do not repeat points or information in multiple bullets.",
 
         "Rules for the feature bullets:",
         "- Write 4 to 6 bullet points.",
@@ -1096,6 +1095,7 @@ async function groq_desc(title = null, description = null, category = null) {
         "- Focus on compatibility, materials, functionality, dimensions, connectivity, included items, or practical usage when known.",
         "- Do not repeat the same information excessively.",
         "- Do not make statements like 'It is a...' or 'It has a '. Instead, make it sound appealing.",
+        "- Do not repeat points or information in multiple bullets.",
 
         "Global restrictions:",
         "- Do not mention warranties or manufacturer coverage.",
