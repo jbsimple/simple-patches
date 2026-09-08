@@ -125,15 +125,15 @@ function initSearchFormPatch() {
     searchFormRow.setAttribute('style', 'gap: calc(var(--bs-gutter-x)* .5);');
 
     const categoryInputCont = searchFormRow.querySelector('.col-md-2');
-    if (categoryInputCont) { categoryInputCont.setAttribute('style', 'width: unset; flex-shrink: 0; flex: 1;'); }
+    if (categoryInputCont) { categoryInputCont.setAttribute('style', 'width: unset; flex-shrink: 0; flex: 2;'); }
 
     const sarchInputCont = searchFormRow.querySelector('.col-md-10');
-    if (sarchInputCont) { sarchInputCont.setAttribute('style', 'width: unset; padding: 0 !important; flex: 3; flex-shrink: 0'); }
+    if (sarchInputCont) { sarchInputCont.setAttribute('style', 'width: unset; padding: 0 !important; flex: 5; flex-shrink: 0;'); }
 
-    const createWrapper = (width = null) => {
+    const createWrapper = (flex = 1) => {
         const wrapper = document.createElement('div');
         wrapper.classList.add('col-md-2');
-        wrapper.style.cssText = `padding-left: 0; padding-right: 0; width: ${width};`;
+        wrapper.style.cssText = `width: unset; padding: 0 !important; flex: ${flex}; flex-shrink: 0;`;
         wrapper.innerHTML = `
             <div class="h-60px input-group-text" style="display: flex; flex-direction: row; gap 0.25rem; align-items: center; justify-content: center;">
                 <div data-formpiece class="form-check"></div>
