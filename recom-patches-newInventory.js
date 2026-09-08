@@ -128,7 +128,7 @@ function initSearchFormPatch() {
     if (categoryInputCont) { categoryInputCont.setAttribute('style', 'width: unset; flex-shrink: 0; flex: 2;'); }
 
     const sarchInputCont = searchFormRow.querySelector('.col-md-10');
-    if (sarchInputCont) { sarchInputCont.setAttribute('style', 'width: unset; padding: 0 !important; flex: 5; flex-shrink: 0;'); }
+    if (sarchInputCont) { sarchInputCont.setAttribute('style', 'width: unset; padding: 0 !important; flex: 6; flex-shrink: 0;'); }
 
     const createWrapper = (flex = 1) => {
         const wrapper = document.createElement('div');
@@ -160,6 +160,17 @@ function initSearchFormPatch() {
         }
     });
     autoSelectObserver.observe(searchResults, { childList: true, subtree: true });
+
+    // reset search
+    const resetSearch = createWrapper();
+    resetSearch.querySelector('[data-formpiece]').innerHTML = `<button type="button" class="btn btn-light" id="patch-resetSearch">Reset</button>`;
+    resetSearch.querySelector('[data-subtext]').textContent = 'Clear Search';
+    searchFormRow.appendChild(resetSearch);
+    resetSearch.querySelector('#patch-resetSearch').addEventListener('click', () => {
+        searchInput.value = '';
+        searchResults.innerHTML = '';
+        searchInput.focus();
+    });
 
 }
 initSearchFormPatch();
