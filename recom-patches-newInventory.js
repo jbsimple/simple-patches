@@ -125,7 +125,7 @@ function initSearchFormPatch() {
     searchFormRow.setAttribute('style', 'gap: calc(var(--bs-gutter-x)* .5);');
 
     const categoryInputCont = searchFormRow.querySelector('.col-md-2');
-    if (categoryInputCont) { categoryInputCont.setAttribute('style', 'width: unset; flex-shrink: 0; flex: 2;'); }
+    if (categoryInputCont) { categoryInputCont.setAttribute('style', 'width: unset; flex-shrink: 0; flex: 2; padding: 0 !important;'); }
 
     const sarchInputCont = searchFormRow.querySelector('.col-md-10');
     if (sarchInputCont) { sarchInputCont.setAttribute('style', 'width: unset; padding: 0 !important; flex: 8; flex-shrink: 0;'); }
