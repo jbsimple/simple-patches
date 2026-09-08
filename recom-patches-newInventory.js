@@ -122,7 +122,7 @@ function initSearchFormPatch() {
 
     const searchFormRow = searchForm.firstElementChild;
     if (!searchFormRow) return;
-    searchFormRow.setAttribute('style', 'gap: calc(var(--bs-gutter-x)* .5);');
+    searchFormRow.setAttribute('style', 'gap: var(--bs-gutter-x) !important;');
 
     const categoryInputCont = searchFormRow.querySelector('.col-md-2');
     if (categoryInputCont) { categoryInputCont.setAttribute('style', 'width: unset; flex-shrink: 0; flex: 2; padding: 0 !important;'); }
