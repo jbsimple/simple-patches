@@ -150,6 +150,7 @@ function initSearchFormPatch() {
         <label class="form-check-label" for="patch-autoSelect">Auto Select</label>
     `;
     autoSelect.querySelector('[data-formpiece').setAttribute('title', 'The search field is automatically selected for quick scanner.');
+    autoSelect.querySelector('[data-formpiece]').setAttribute('style', 'padding-left: 1.75rem !important;');
     autoSelect.querySelector('[data-subtext]').textContent = 'For Scangun';
     searchFormRow.appendChild(autoSelect);
     const autoSelectObserver = new MutationObserver(() => {
@@ -166,71 +167,21 @@ function initSearchFormPatch() {
     resetSearch.querySelector('[data-formpiece]').innerHTML = `
         <button type="button" class="btn btn-light" id="patch-resetSearch">Reset</button>
     `;
-    resetSearch.querySelector('[data-formpiece]').setAttribute('style', 'padding-left: none !important;');
+    resetSearch.querySelector('[data-formpiece').setAttribute('title', 'Reset the search and clear results.');
+    resetSearch.querySelector('[data-formpiece]').setAttribute('style', 'padding-left: 0 !important;');
     resetSearch.querySelector('[data-subtext]').textContent = 'Clear Search';
     searchFormRow.appendChild(resetSearch);
     resetSearch.querySelector('#patch-resetSearch').addEventListener('click', () => {
         searchInput.value = '';
         searchResults.innerHTML = '';
         searchInput.focus();
+        const url = new URL(window.location);
+        url.searchParams.delete('keyword');
+        history.pushState(null, '', url.toString());
     });
 
 }
 initSearchFormPatch();
-
-/* select field for quick searches */
-function initSearchSelect() {
-    const searchInput = document.getElementById('pSearchProduct');
-    const searchResults = document.getElementById('inventory_results');
-    if (!searchInput || !searchResults) return;
-
-    const searchFormRow = document.getElementById('searchProductForm')?.querySelector('.row.g-5');
-    if (!searchFormRow) return;
-    searchFormRow.setAttribute('style', 'gap: calc(var(--bs-gutter-x)* .5);');
-
-    const categoryInputCont = searchFormRow.querySelector('.col-md-2');
-    categoryInputCont.setAttribute('style', 'width: unset; flex-shrink: 0; min-width: 250px;');
-
-    const sarchInputCont = searchFormRow.querySelector('.col-md-10');
-    sarchInputCont.setAttribute('style', 'width: unset; padding: 0 !important; flex: 1; flex-shrink: 0');
-
-    if (!document.getElementById('patch-autoSelect')) {
-        const wrapper = document.createElement('div');
-        wrapper.classList.add('col-md-2');
-        wrapper.style.cssText = 'padding-left: 0; padding-right: 0;';
-        wrapper.innerHTML = `
-        <div class="h-60px input-group-text" style="display: flex; flex-direction: row; gap 0.25rem; align-items: center; justify-content: center; min-width: 150px;">
-            <div class="form-check" title="The search field is automatically selected for quick scanner.">
-                <input class="form-check-input" type="checkbox" id="patch-autoSelect">
-                <label class="form-check-label" for="patch-autoSelect">
-                    Auto Select
-                </label>
-            </div>
-        </div>
-        <div class="text-muted fs-7 mt-3 mx-2">For Scangun</div>
-        `;
-    }
-
-    const observer = new MutationObserver(() => {
-        const toggle = document.getElementById('patch-autoSelect');
-        if (searchInput.value.trim() !== '' && toggle && toggle?.checked) {
-            searchInput.focus();
-            searchInput.select();
-        }
-    });
-
-    observer.observe(searchResults, { childList: true, subtree: true });
-}
-// initSearchSelect();
-
-function initSearchReset() {
-    const searchInput = document.getElementById('pSearchProduct');
-    const searchResults = document.getElementById('inventory_results');
-    if (!searchInput || !searchResults) return;
-
-    const searchFormRow = document.getElementById('searchProductForm')?.querySelector('.row.g-5');
-    if (!searchFormRow) return;
-}
 
 function initGetKeyword() {
     const searchInput = document.getElementById('pSearchProduct');
