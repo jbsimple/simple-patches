@@ -130,7 +130,7 @@ function initSearchFormPatch() {
     const sarchInputCont = searchFormRow.querySelector('.col-md-10');
     if (sarchInputCont) { sarchInputCont.setAttribute('style', 'width: unset; padding: 0 !important; flex: 8; flex-shrink: 0;'); }
 
-    const createWrapper = (flex = 1) => {
+    const createWrapper = (flex = 1.5) => {
         const wrapper = document.createElement('div');
         wrapper.classList.add('col-md-2');
         wrapper.style.cssText = `width: unset; padding: 0 !important; flex: ${flex}; flex-shrink: 0;`;
