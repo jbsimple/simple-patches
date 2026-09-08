@@ -114,7 +114,51 @@ function initSearchFormPatch() {
     const searchForm = document.getElementById('searchProductForm');
     const searchInput = document.getElementById('pSearchProduct');
     const searchResults = document.getElementById('inventory_results');
-    
+    if (!searchForm || !searchInput || !searchResults) return;
+
+    // only apply if not already app
+    if (searchForm.hasAttribute('data-patch')) return;
+    searchForm.setAttribute('data-patch', 'true');
+
+    const searchFormRow = searchForm.firstElementChild;
+    if (!searchFormRow) return;
+    searchFormRow.setAttribute('style', 'gap: calc(var(--bs-gutter-x)* .5);');
+
+    const categoryInputCont = searchFormRow.querySelector('.col-md-2');
+    if (categoryInputCont) { categoryInputCont.setAttribute('style', 'width: unset; flex-shrink: 0; min-width: 250px;'); }
+
+    const sarchInputCont = searchFormRow.querySelector('.col-md-10');
+    if (sarchInputCont) { sarchInputCont.setAttribute('style', 'width: unset; padding: 0 !important; flex: 1; flex-shrink: 0'); }
+
+    const createWrapper = (width = null) => {
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('col-md-2');
+        wrapper.style.cssText = `padding-left: 0; padding-right: 0; width: ${width};`;
+        wrapper.innerHTML = `
+            <div class="h-60px input-group-text" style="display: flex; flex-direction: row; gap 0.25rem; align-items: center; justify-content: center;">
+                <div data-formpiece class="form-check"></div>
+            </div>
+            <div data-subtext class="text-muted fs-7 mt-3 mx-2"></div>
+        `;
+        return wrapper;
+    };
+
+    // auto select for scangun quick scanning
+    const autoSelect = createWrapper();
+    autoSelect.querySelector('[data-formpiece').innerHTML = `
+        <input class="form-check-input" type="checkbox" id="patch-autoSelect">
+        <label class="form-check-label" for="patch-autoSelect">Auto Select</label>
+    `;
+    autoSelect.querySelector('[data-formpiece').setAttribute('title', 'The search field is automatically selected for quick scanner.');
+    autoSelect.querySelector('[data-subtext]');
+    const autoSelectObserver = new MutationObserver(() => {
+        const toggle = document.getElementById('patch-autoSelect');
+        if (searchInput.value.trim() !== '' && toggle && toggle?.checked) {
+            searchInput.focus();
+            searchInput.select();
+        }
+    });
+    autoSelectObserver.observe(searchResults, { childList: true, subtree: true });
 
 }
 initSearchFormPatch();
@@ -128,7 +172,6 @@ function initSearchSelect() {
     const searchFormRow = document.getElementById('searchProductForm')?.querySelector('.row.g-5');
     if (!searchFormRow) return;
     searchFormRow.setAttribute('style', 'gap: calc(var(--bs-gutter-x)* .5);');
-
 
     const categoryInputCont = searchFormRow.querySelector('.col-md-2');
     categoryInputCont.setAttribute('style', 'width: unset; flex-shrink: 0; min-width: 250px;');
