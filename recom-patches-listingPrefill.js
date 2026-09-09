@@ -12,11 +12,19 @@ async function hijackPrefillWindow(updateLocation = true) {
                     const form = document.getElementById('rc_ajax_modal_form');
                     if (!form) return;
 
+                    const img = form.querySelector('.img-thumbnail');
+                    if (!img) return;
+
+                    // basic picture warnings
+                    const warning = checkForImageWarnings(img);
+                    if (warning !== null) { printWarning(warning, true); }
+
+                    // condition warnings
                     const condition = form.querySelector('select[name="item[condition_id]"]');
                     if (condition) {
                         const conditionId = parseInt(condition.value, 10);
-                        if (conditionId === 6 || conditionId === 8 || conditionId === 18) {
-                            printWarning('This condition requires custom photos.', true);
+                        if ((conditionId === 6 || conditionId === 8 || conditionId === 18) && (before === before.toUpperCase() && filename.includes('__'))) {
+                            printWarning('BLUE STICKER: Images still require red text', true);
                         } else if (conditionId === 1) {
                             printWarning('Prefilling a brand new item? Give those details a once-over, please.', false);
                         }
@@ -24,37 +32,10 @@ async function hijackPrefillWindow(updateLocation = true) {
                         console.error('PATCHES - Unable to find condition?', condition);
                     }
 
-                    const img = form.querySelector('.img-thumbnail');
-                    if (!img) return;
+                    // candidate indicator warning
+                    const productTitle = form.querySelector('h1').textContent.toUpperCase();
+                    if (await searchForCandidateImage(productTitle)) { printWarning('BLUE STICKER: This product has an image candidate!', true); }
 
-                    const imgsrc = img.getAttribute('src');
-                    const filename = imgsrc.split('/').pop();
-                    const baseName = filename.substring(0, filename.lastIndexOf('.'));
-                    console.debug('PATCHES - Prefill IMG src:', imgsrc);
-
-                    if (pictureWarnings.some(w => filename.includes(w))) {
-                        printWarning('This product was flagged for new photos.', true);
-                    }
-
-                    if (!filename.includes('__')) {
-                        printWarning('Potential bad photo, requires new photos.', true);
-                    }
-
-                    const [before, after] = baseName.split('__', 2);
-                    if (before !== before.toUpperCase()) {
-                        printWarning('Potential old photo, requires new photos.', true);
-                    }
-
-                    img.onload = function() {
-                        const w = img.naturalWidth;
-                        const h = img.naturalHeight;
-                
-                        if (w < 1199 || w > 1201 || h < 1199 || h > 1201) {
-                            printWarning(`Image is not 1200x1200 (actual: ${img.naturalWidth}x${img.naturalHeight}), requires new photos.`, true);
-                        }
-                    };
-                    
-                    if (img.complete) { img.onload(); }
                     console.debug('PATCHES - Listing - Img Checks Done');
 
                     // handle swapping of the condition notes button
@@ -106,6 +87,33 @@ async function hijackPrefillWindow(updateLocation = true) {
         attributes: false
     });
 
+    async function checkForImageWarnings(img) {
+        const imgsrc = img.getAttribute('src');
+        const filename = imgsrc.split('/').pop();
+        const baseName = filename.substring(0, filename.lastIndexOf('.'));
+
+        if (pictureWarnings.some(w => filename.includes(w))) { return 'NEW IMAGES REQUIRED: filename flagged for new.'; }
+
+        await new Promise((resolve, reject) => {
+            if (img.complete) {
+                resolve();
+            } else {
+                img.onload = resolve;
+                img.onerror = reject;
+            }
+        });
+        const w = img.naturalWidth;
+        const h = img.naturalHeight;
+        if (w < 1199 || w > 1201 || h < 1199 || h > 1201) { return `NEW IMAGES: Image is not 1200x1200 (actual: ${w}x${h}).`; }
+
+        if (!filename.includes('__')) { return 'NEW IMAGES REQUIRED, filename incorrect format.'; }
+
+        const [before, after] = baseName.split('__', 2);
+        if (before !== before.toUpperCase()) { return 'CHECK IMAGES, file from old system.'; }
+
+        return null;
+    }
+
     function printWarning(message, single) {
         const form = document.getElementById('rc_ajax_modal_form');
         if (single) {
@@ -128,6 +136,43 @@ async function hijackPrefillWindow(updateLocation = true) {
                 commentNode.parentNode.insertBefore(container.firstElementChild, commentNode.nextSibling);
             }
         }
+    }
+
+    async function searchForCandidateImage(productTitle) {
+        if (productTitle.includes('GB') || productTitle.includes('TB') || productTitle.includes('SMARTPHONE')) {
+            const groqPrompt = (type, title) => { return `Below is a title for a product. I need you to identify the ${type} of the phone if the title is FOR A SMARTPHONE. If the title is for anything other than a smartphone, print NA. Your response should only be the phone ${type} or NA. ${title}`; }
+            const groqTitleCheck = await groq(groqPrompt('model number', productTitle));
+            if (groqTitleCheck.response && groqTitleCheck.response.toUpperCase !== 'NA') {
+                const report = await fetchAPI("reports", {
+                    body: {
+                        type: "catalog_report",
+                        page: 1,
+                        per_page: 1000,
+                        filters: [
+                            {"field": "products.category_id", "operator": "gte", "value": "23"},
+                            {"field": "products.name", "operator": "contains", "value": "A2484"}
+                        ],
+                        columns: ["products.sid", "products.name", "first_image"]
+                    }
+                });
+                if (report.data.data) {
+                    const groqGetColor = await groq(groqPrompt('color', productTitle));
+                    if (groqGetColor.response && groqGetColor.response.toUpperCase() !== 'NA') {
+
+                        for (const sid of report.data.data) {
+                            if (sid['Product_Name'].toUpperCase().includes(groqGetColor.response.toUpperCase())) {
+                                // oh joy, another image check.
+                                const createImage = document.createElement('img');
+                                createImage.src = sid['Product_Image'];
+                                const createImageWarnings = await checkForImageWarnings(createImage);
+                                if (createImageWarnings === null) { return true; }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
 
