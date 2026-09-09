@@ -16,7 +16,7 @@ async function hijackPrefillWindow(updateLocation = true) {
                     if (!img) return;
 
                     // basic picture warnings
-                    const warning = checkForImageWarnings(img);
+                    const warning = await checkForImageWarnings(img);
                     if (warning !== null) { printWarning(warning, true); }
 
                     // condition warnings
