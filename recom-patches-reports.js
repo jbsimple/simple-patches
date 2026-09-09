@@ -258,7 +258,7 @@ function initPreset() {
     KTApp.init();
 
     const nextStepButton = document.getElementById('rc_reports_new_wizard').querySelectorAll('button[data-kt-stepper-action="next"]');
-    const patchesPresentsDiv = document.getElementById('patches-presents');
+    const patchesPresentsDiv = document.getElementById('patches-reportPresets');
 
     for (let i = 0; i < nextStepButton.length; i++) {
         nextStepButton[i].addEventListener('click', function() {
