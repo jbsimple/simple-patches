@@ -321,7 +321,7 @@ const reportingTemplates = {
     },
     "picture_missingSpecial": {
         id: "patches-reports-picturesMissing1",
-        color: "warning",
+        color: "primary",
         name: "patches-reports-picturesMissing1Name",
         func: "report_pictureMissingSpecial_submit();",
         desc: "Generates a list of all conditions that need specific pictures created in the last 30 days with no pictures.<br>In and out of stock included.",
