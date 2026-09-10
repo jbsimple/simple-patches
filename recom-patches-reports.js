@@ -289,7 +289,7 @@ function goToLastStep() {
         }
     }
     
-    const patchReset = document.getElementById('patches-presents');
+    const patchReset = document.getElementById('patches-reportPresets');
     if (patchReset) {
         patchReset.style.display = 'none';
     }
