@@ -212,7 +212,7 @@ function initPreset() {
     const params = new URLSearchParams(window.location.search);
     let template = params.get('template') || '';
     if (template && template !== '') {
-        let html = reportingTemplates[template];
+        let html = report_initHTML(reportingTemplates[template]);
         if (html) {
             const inputCheck = html.querySelectorAll('input');
             const submitButton = html.querySelector('.btn.btn-large.btn-primary');
