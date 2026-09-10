@@ -355,7 +355,7 @@ const reportingTemplates = {
     },
     "productivity_eventIDLookup": {
         id: "patches-reports-eventIDLookup",
-        color: "danger",
+        color: "warning",
         name: "patches-reports-eventIDLookup",
         func: "report_eventIDLookup_submit();",
         input: "int",
@@ -364,7 +364,7 @@ const reportingTemplates = {
     },
     "productivity_eventSIDLookup": {
         id: "patches-reports-eventSIDLookup",
-        color: "danger",
+        color: "warning",
         name: "patches-reports-eventSIDLookup",
         func: "report_eventSIDLookup_submit();",
         input: "string",
@@ -373,7 +373,7 @@ const reportingTemplates = {
     },
     "productivity_eventSKULookup": {
         id: "patches-reports-eventSKULookup",
-        color: "danger",
+        color: "warning",
         name: "patches-reports-eventSKULookup",
         func: "report_eventSKULookup_submit();",
         input: "string",
@@ -398,7 +398,7 @@ const reportingTemplates = {
     },
     "picture_imagecount": {
         id: "patches-reports-pictureURLs",
-        color: "danger",
+        color: "warning",
         name: "patches-reports-pictureURLs",
         func: "report_pictureURLSComplete_init();",
         desc: "Gets Image URLS Comma Separated for each Item->Product.<br>To get a list of images per sku, count the number of commas and add one.",
@@ -409,7 +409,7 @@ const reportingTemplates = {
         color: "danger",
         name: "patches-reports-pictureResolution",
         func: "report_pictureURLSComplete_init(true);",
-        desc: "Gets Image URLs and Resolutions for each Item->Product.<br>DO NOT RUN. This report takes 30 minutes to run and a ton of resources.",
+        desc: "Gets Image URLs and Resolutions for each Item->Product.<br>This report forces your browser to load every image to get the resolution. This takes an hour.",
         title: "Picture URLs + Resolutions"
     },
     "productivity_meetingNotes": {
@@ -427,7 +427,7 @@ const reportingTemplates = {
         color: "danger",
         name: "patches-reports-pending-inventory-all",
         func: "activePendingInventoryReport();",
-        desc: "Yeah, this will give you everything that has ever been in pending inventory.<br>This is the mother of all reports, so don't generate it on a whim.",
+        desc: "Yeah, this will give you everything that has ever been in pending inventory.<br>This has a lot of data, and takes a long time to generate.",
         title: "All Pending Inventory"
     },
     "findImgUrlsFromKeyword": {
