@@ -3,7 +3,6 @@ import { sql } from '../lib/db.js';
 export default async function handler(req, res) {
     res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, x-upload-password");
-    if (req.method === 'OPTIONS') { return res.status(204).end(); }
 
     const allowedOrigins = (process.env.ALLOWED_ORIGINS || "").split(",").map(o => o.trim()).filter(Boolean);
     const origin = req.headers.origin;
