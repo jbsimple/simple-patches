@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     if (origin) { res.setHeader("Access-Control-Allow-Origin", origin); }
 
     if (req.method === 'OPTIONS') { return res.status(204).end(); }
-    
+
     if (!origin || !allowedOrigins.includes(origin)) { return res.status(403).json({ success: false, error: "Origin not allowed" }); }
 
     const password = req.headers['x-upload-password'];
@@ -18,7 +18,11 @@ export default async function handler(req, res) {
 
     if (req.method === 'GET') {
         try {
-            const logs = await sql`SELECT id, name, value, timestamp AT TIME ZONE 'America/New_York' AS timestamp FROM neon_auth.logs ORDER BY id DESC`;
+            const { searchParams } = new URL(req.url, `https://${req.headers.host}`);
+            const name = searchParams.get('name');
+            if (!name) { return res.status(400).json({ success: false, error: 'A "name" query parameter is required' }); }
+            
+            const logs = await sql`SELECT value, timestamp AT TIME ZONE 'America/New_York' AS timestamp FROM neon_auth.logs WHERE name = ${name} ORDER BY id DESC`;
             return res.status(200).json({ success: true, data: logs});
         } catch (error) {
             console.error(error);
