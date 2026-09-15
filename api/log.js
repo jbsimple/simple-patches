@@ -8,12 +8,8 @@ export default async function handler(req, res) {
     const origin = req.headers.origin;
     if (origin) { res.setHeader("Access-Control-Allow-Origin", origin); }
 
-    // browser cors is the worst thing ever
-    console.error('LOG.JS: Incoming origin:', origin);
-    console.error('LOG.JS: Allowed list:', allowedOrigins);
-
     if (req.method === 'OPTIONS') { return res.status(204).end(); }
-
+    
     if (!origin || !allowedOrigins.includes(origin)) { return res.status(403).json({ success: false, error: "Origin not allowed" }); }
 
     const password = req.headers['x-upload-password'];
