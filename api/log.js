@@ -9,8 +9,8 @@ export default async function handler(req, res) {
     const origin = req.headers.origin;
 
     // browser cors is the worst thing ever
-    console.log('LOG.JS: Incoming origin:', origin);
-    console.log('LOG.JS: Allowed list:', allowedOrigins);
+    console.error('LOG.JS: Incoming origin:', origin);
+    console.error('LOG.JS: Allowed list:', allowedOrigins);
 
     if (origin && allowedOrigins.includes(origin)) { res.setHeader("Access-Control-Allow-Origin", origin); }
 
