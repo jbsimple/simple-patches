@@ -22,7 +22,7 @@ export default async function handler(req, res) {
             const name = searchParams.get('name');
             if (!name) { return res.status(400).json({ success: false, error: 'A "name" query parameter is required' }); }
             
-            const logs = await sql`SELECT value, timestamp AT TIME ZONE 'America/New_York' AS timestamp FROM neon_auth.logs WHERE name = ${name} ORDER BY id DESC`;
+            const logs = await sql`SELECT value, to_char(timestamp AT TIME ZONE 'America/New_York', 'YYYY-MM-DD HH24:MI:SS') AS timestamp FROM neon_auth.logs WHERE name = ${name} ORDER BY id DESC`;
             return res.status(200).json({ success: true, data: logs});
         } catch (error) {
             console.error(error);
@@ -33,7 +33,7 @@ export default async function handler(req, res) {
         try {
             const { name, value } = req.body;
             if (!name) { return res.status(400).json({ success: false, error: 'A logging name is required' }); }
-            const result = await sql`INSERT INTO neon_auth.logs (name, value) VALUES (${name}, ${JSON.stringify(value ?? [])}) RETURNING id, name, value, timestamp AT TIME ZONE 'America/New_York' AS timestamp`;
+            const result = await sql`INSERT INTO neon_auth.logs (name, value) VALUES (${name}, ${JSON.stringify(value ?? [])}) RETURNING id, name, value, to_char(timestamp AT TIME ZONE 'America/New_York', 'YYYY-MM-DD HH24:MI:SS') AS timestamp`;
             return res.status(201).json({ success: true, response: result[0]});
         } catch (error) {
             console.error(error);
