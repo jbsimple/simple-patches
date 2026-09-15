@@ -18,7 +18,7 @@ export default async function handler(req, res) {
 
     if (req.method === 'GET') {
         try {
-            const logs = await sql`SELECT id, name, value FROM neon_auth.logs ORDER BY id DESC`;
+            const logs = await sql`SELECT id, name, value, timestamp AT TIME ZONE 'America/New_York' AS timestamp FROM neon_auth.logs ORDER BY id DESC`;
             return res.status(200).json({ success: true, data: logs});
         } catch (error) {
             console.error(error);
@@ -29,7 +29,7 @@ export default async function handler(req, res) {
         try {
             const { name, value } = req.body;
             if (!name) { return res.status(400).json({ success: false, error: 'A logging name is required' }); }
-            const result = await sql`INSERT INTO neon_auth.logs (name, value) VALUES (${name}, ${JSON.stringify(value ?? [])}) RETURNING id, name, value`;
+            const result = await sql`INSERT INTO neon_auth.logs (name, value) VALUES (${name}, ${JSON.stringify(value ?? [])}) RETURNING id, name, value, timestamp AT TIME ZONE 'America/New_York' AS timestamp`;
             return res.status(201).json({ success: true, response: result[0]});
         } catch (error) {
             console.error(error);
