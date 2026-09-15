@@ -6,12 +6,11 @@ export default async function handler(req, res) {
 
     const allowedOrigins = (process.env.ALLOWED_ORIGINS || "").split(",").map(o => o.trim()).filter(Boolean);
     const origin = req.headers.origin;
+    if (origin) { res.setHeader("Access-Control-Allow-Origin", origin); }
 
     // browser cors is the worst thing ever
     console.error('LOG.JS: Incoming origin:', origin);
     console.error('LOG.JS: Allowed list:', allowedOrigins);
-
-    if (origin && allowedOrigins.includes(origin)) { res.setHeader("Access-Control-Allow-Origin", origin); }
 
     if (req.method === 'OPTIONS') { return res.status(204).end(); }
 
