@@ -1,11 +1,11 @@
 function initAddTools() {
     addButtonCard(
-        'CDN Uploader',
+        'CDN Manager',
         [
-            "For uploading things to the Simple Patches CDN.",
+            "For uploading, renaming and deleting things to the Simple Patches CDN.",
             "Password Required"
         ],
-        "https://simple-patches.vercel.app/tools/cdn_upload.html"
+        "https://simple-patches.vercel.app/tools/manage.html"
     );
 
     addButtonCard(
