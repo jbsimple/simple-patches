@@ -74,12 +74,12 @@
             .center { align-items: center; justify-content: center; }
             .hidden { display: none; }
 
-            #error_modal, #action_modal { border: none; border-radius: 0.75rem; padding: 1.5rem; min-width: 300px; max-width: 90%; box-shadow: 0 5px 30px rgba(0, 0, 0, 0.25); }
-            #error_modal::backdrop, #action_modal::backdrop { background: rgba(0, 0, 0, 0.5); }
-            #error_modal[open], #action_modal[open] { animation: dialogOpen 0.1s ease-out forwards; }
-            #error_modal.closing, #action_modal.closing { animation: dialogClose 0.07s ease-in forwards; }
-            #error_modal::backdrop, #action_modal::backdrop { background: rgba(0, 0, 0, 0.5); animation: backdropOpen 0.2s ease-out forwards; }
-            #error_modal.closing::backdrop, #action_modal.closing::backdrop { animation: backdropClose 0.07s ease-in forwards; }
+            #error_modal, #action_modal, #password_modal { border: none; border-radius: 0.75rem; padding: 1.5rem; min-width: 300px; max-width: 90%; box-shadow: 0 5px 30px rgba(0, 0, 0, 0.25); }
+            #error_modal::backdrop, #action_modal::backdrop, #password_modal::backdrop { background: rgba(0, 0, 0, 0.5); }
+            #error_modal[open], #action_modal[open], #password_modal[open] { animation: dialogOpen 0.1s ease-out forwards; }
+            #error_modal.closing, #action_modal.closing, #password_modal.closing { animation: dialogClose 0.07s ease-in forwards; }
+            #error_modal::backdrop, #action_modal::backdrop, #password_modal::backdrop { background: rgba(0, 0, 0, 0.5); animation: backdropOpen 0.2s ease-out forwards; }
+            #error_modal.closing::backdrop, #action_modal.closing::backdrop, #password_modal.closing::backdrop { animation: backdropClose 0.07s ease-in forwards; }
             @keyframes dialogOpen {
                 from { opacity: 0; transform: scale(0.85); }
                 to { opacity: 1; transform: scale(1); }
@@ -108,16 +108,13 @@
             .file-info a { color: var(--accent); }
             .file-actions { flex: 0 0 auto; display: flex; gap: 0.5rem; }
             .file-actions button { padding: 0.3rem 0.6rem; font-size: 0.9rem; }
+            .error-text { color: var(--red); font-size: 0.9rem; min-height: 1.2em; }
         </style>
     </head>
     <body>
         <header class="box column gapM" id="header">
             <h1 class="line">Simple Patches Asset Uploader</h1>
             <p style="margin-bottom: 1rem;">Upload files to get a CDN link to paste in code, or anywhere I guess.</p>
-            <div class="column gapT spacer">
-                <label for="password">Password:</label>
-                <input type="password" id="password">
-            </div>
             <div class="column gapT spacer">
                 <div class="dropzone" id="dropzone">
                     <p>Click or drag and drop a file here</p>
@@ -162,17 +159,28 @@
             </div>
         </dialog>
 
+        <dialog id="password_modal">
+            <div class="column gapL">
+                <h2>Enter Password</h2>
+                <p>This page requires a password to view and manage files.</p>
+                <div class="column gapT">
+                    <input type="password" id="password_modal_input" placeholder="Password">
+                    <p class="error-text" id="password_modal_error"></p>
+                </div>
+                <div class="row">
+                    <span class="spacer"></span>
+                    <button type="button" id="password_modal_confirm">Continue</button>
+                </div>
+            </div>
+        </dialog>
+
         <dialog id="action_modal">
             <div class="column gapL">
-                <h2 id="action_modal_title">Enter Password</h2>
+                <h2 id="action_modal_title">Confirm</h2>
                 <p id="action_modal_target" class="status"></p>
                 <div class="column gapT" id="action_modal_filename_group">
                     <label for="action_modal_filename">New filename:</label>
                     <input type="text" id="action_modal_filename">
-                </div>
-                <div class="column gapT">
-                    <label for="action_modal_password">Password:</label>
-                    <input type="password" id="action_modal_password">
                 </div>
                 <div class="row">
                     <span class="spacer"></span>
@@ -208,12 +216,62 @@
             script_version.onload = function() { console.debug('Build Info:', window.BUILD_INFO); };
             document.body.appendChild(script_version);
 
+            // password gate
+            let uploadPassword = null;
+
+            const password_modal = document.getElementById('password_modal');
+            const password_modal_input = document.getElementById('password_modal_input');
+            const password_modal_confirm = document.getElementById('password_modal_confirm');
+            const password_modal_error = document.getElementById('password_modal_error');
+
+            // don't let the user dismiss the password prompt without entering one
+            password_modal.addEventListener('cancel', (e) => e.preventDefault());
+
+            function promptForPassword(errorMessage) {
+                return new Promise((resolve) => {
+                    password_modal_error.textContent = errorMessage || '';
+                    password_modal_input.value = '';
+                    password_modal.showModal();
+                    password_modal_input.focus();
+
+                    function onConfirm() {
+                        const val = password_modal_input.value.trim();
+                        if (!val) return;
+                        cleanup();
+                        password_modal.close();
+                        resolve(val);
+                    }
+                    function onKeydown(e) {
+                        if (e.key === 'Enter') onConfirm();
+                    }
+                    function cleanup() {
+                        password_modal_confirm.removeEventListener('click', onConfirm);
+                        password_modal_input.removeEventListener('keydown', onKeydown);
+                    }
+
+                    password_modal_confirm.addEventListener('click', onConfirm);
+                    password_modal_input.addEventListener('keydown', onKeydown);
+                });
+            }
+
+            // wraps fetch: attaches the stored password, reprompts on 401 and retries once the user re-enters it
+            async function apiFetch(url, options = {}) {
+                for (;;) {
+                    const headers = Object.assign({}, options.headers, { 'x-upload-password': uploadPassword });
+                    const res = await fetch(url, Object.assign({}, options, { headers }));
+                    if (res.status === 401) {
+                        uploadPassword = await promptForPassword('Incorrect password. Please try again.');
+                        continue;
+                    }
+                    return res;
+                }
+            }
+
             // start of the cdn manager
 
             // uploader
             const dropzone = document.getElementById('dropzone');
             const fileInput = document.getElementById('fileInput');
-            const passwordInput = document.getElementById('password');
             const status = document.getElementById('status');
             const queue = document.getElementById('queue');
 
@@ -261,27 +319,20 @@
             }
 
             async function upload(file) {
-                const password = passwordInput.value.trim();
-                if (!password) {
-                    status.textContent = 'Waiting for input...';
-                    showError('Please enter a password.');
-                    return;
-                }
                 status.textContent = `Uploading ${file.name}...`;
                 try {
-                    const res = await fetch(`${API_URL}?action=upload`, {
+                    const res = await apiFetch(`${API_URL}?action=upload`, {
                         method: 'POST',
                         headers: {
-                            'x-upload-password': password,
                             'x-filename': file.name
                         },
                         body: file
                     });
                     const data = await res.json();
-                    if (data.error) {
+                    if (!res.ok || data.error) {
                         status.textContent = 'Upload failed.';
                         console.error(data);
-                        showError(data.error);
+                        showError(data.error || 'Upload failed.');
                         return;
                     }
                     createFileRow(data.url, file.name, file.type);
@@ -338,11 +389,11 @@
                 filemanager_status.textContent = 'Loading files...';
                 filemanager_table.classList.add('hidden');
                 try {
-                    const res = await fetch(API_URL, { method: 'GET' });
+                    const res = await apiFetch(API_URL, { method: 'GET' });
                     const data = await res.json();
-                    if (data.error) {
+                    if (!res.ok || data.error) {
                         filemanager_status.textContent = 'Failed to load files.';
-                        showError(data.error);
+                        showError(data.error || 'Failed to load files.');
                         return;
                     }
 
@@ -400,13 +451,12 @@
 
             refresh_files.addEventListener('click', loadFileList);
 
-            // special action modal
+            // action modal (rename / delete — password already known, just confirm the action)
             const action_modal = document.getElementById('action_modal');
             const action_modal_title = document.getElementById('action_modal_title');
             const action_modal_target = document.getElementById('action_modal_target');
             const action_modal_filename_group = document.getElementById('action_modal_filename_group');
             const action_modal_filename = document.getElementById('action_modal_filename');
-            const action_modal_password = document.getElementById('action_modal_password');
             const action_modal_cancel = document.getElementById('action_modal_cancel');
             const action_modal_confirm = document.getElementById('action_modal_confirm');
 
@@ -425,13 +475,12 @@
                     action_modal_confirm.className = '';
                 } else {
                     action_modal_title.textContent = 'Delete File';
-                    action_modal_target.textContent = `Deleting: ${currentName}`;
+                    action_modal_target.textContent = `Delete "${currentName}"? This cannot be undone.`;
                     action_modal_filename_group.classList.add('hidden');
                     action_modal_confirm.textContent = 'Delete';
                     action_modal_confirm.className = 'danger';
                 }
 
-                action_modal_password.value = '';
                 action_modal.showModal();
             }
 
@@ -449,24 +498,15 @@
 
             action_modal_confirm.addEventListener('click', async () => {
                 if (!pendingAction) return;
-                const password = action_modal_password.value.trim();
-                if (!password) {
-                    showError('Please enter a password.');
-                    return;
-                }
-
                 const { type, blob } = pendingAction;
                 action_modal_confirm.disabled = true;
 
                 try {
                     let res;
                     if (type === 'delete') {
-                        res = await fetch(`${API_URL}?action=delete`, {
+                        res = await apiFetch(`${API_URL}?action=delete`, {
                             method: 'POST',
-                            headers: {
-                                'x-upload-password': password,
-                                'Content-Type': 'application/json'
-                            },
+                            headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ url: blob.url })
                         });
                     } else {
@@ -476,12 +516,9 @@
                             action_modal_confirm.disabled = false;
                             return;
                         }
-                        res = await fetch(`${API_URL}?action=rename`, {
+                        res = await apiFetch(`${API_URL}?action=rename`, {
                             method: 'POST',
-                            headers: {
-                                'x-upload-password': password,
-                                'Content-Type': 'application/json'
-                            },
+                            headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ fromUrl: blob.url, newFilename })
                         });
                     }
@@ -503,6 +540,8 @@
                 }
             });
 
+            // entry point: get the password before doing anything else
+            uploadPassword = await promptForPassword();
             loadFileList();
         })();</script>
     </body>

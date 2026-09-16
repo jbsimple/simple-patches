@@ -15,14 +15,11 @@ export default async function handler(req, res) {
     res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, x-upload-password, x-filename");
 
-    const allowedOrigins = (process.env.ALLOWED_ORIGINS || "").split(",").map(o => o.trim()).filter(Boolean);
-    const origin = req.headers.origin;
-    if (origin) { res.setHeader("Access-Control-Allow-Origin", origin); }
-
     if (req.method === 'OPTIONS') { return res.status(204).end(); }
-
-    // this will be why I need to add a password prompt on page load
-    if (origin && !allowedOrigins.includes(origin)) { return res.status(403).json({ success: false, error: "Origin not allowed", origin }); }
+    
+    const password = req.headers['x-upload-password'];
+    const correct = process.env.UPLOAD_SECRET;
+    if (!password || password !== correct) { return res.status(401).json({ error: 'Unauthorized' }); }
 
     if (req.method === 'GET') {
         try {
@@ -31,7 +28,6 @@ export default async function handler(req, res) {
 
             do {
                 const result = await list({cursor, limit: 1000});
-
                 allBlobs = allBlobs.concat(result.blobs);
                 cursor = result.hasMore ? result.cursor : undefined;
             } while (cursor);
@@ -44,12 +40,7 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'POST') {
-        const password = req.headers['x-upload-password'];
-        const correct = process.env.UPLOAD_SECRET;
-        if (!password || password !== correct) { return res.status(401).json({ error: 'Unauthorized' }); }
-
         const fname_def = 'upload.bin';
-
         const { searchParams } = new URL(req.url, `http://${req.headers.host}`);
         const action = searchParams.get('action');
 
