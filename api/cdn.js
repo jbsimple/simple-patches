@@ -21,7 +21,7 @@ export default async function handler(req, res) {
 
     if (req.method === 'OPTIONS') { return res.status(204).end(); }
 
-    if (!origin || !allowedOrigins.includes(origin)) { return res.status(403).json({ success: false, error: "Origin not allowed" }); }
+    if (!origin || !allowedOrigins.includes(origin)) { return res.status(403).json({ success: false, error: "Origin not allowed", origin }); }
 
     if (req.method === 'GET') {
         try {
