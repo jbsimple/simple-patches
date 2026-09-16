@@ -221,7 +221,7 @@
                 }
                 status.textContent = `Uploading ${file.name}...`;
                 try {
-                    const res = await fetch(`/api/upload?filename=${encodeURIComponent(file.name)}`, {
+                    const res = await fetch(`/api/cdn?filename=${encodeURIComponent(file.name)}`, {
                         method: 'POST',
                         headers: {
                             'x-upload-password': password
