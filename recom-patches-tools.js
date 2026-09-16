@@ -5,7 +5,7 @@ function initAddTools() {
             "For uploading, renaming and deleting things to the Simple Patches CDN.",
             "Password Required"
         ],
-        "https://simple-patches.vercel.app/tools/manage.html"
+        "https://simple-patches.vercel.app/tools/cdn_manage.html"
     );
 
     addButtonCard(
