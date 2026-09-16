@@ -114,7 +114,11 @@
     <body>
         <header class="box column gapM" id="header">
             <h1 class="line">Simple Patches Asset Uploader</h1>
-            <p style="margin-bottom: 1rem;">Upload files to get a CDN link to paste in code, or anywhere I guess.</p>
+            <p>Upload images so they can be attached, linked to or embedded anywhere needed.</p>
+            <p>Don't upload sensitive information to this. All links are publically accessible once linked.</p>
+        </header>
+        <main class="box column gapM" id="main">
+            <h2 style="margin-bottom: 1rem;">Upload new files:</h2>
             <div class="column gapL spacer">
                 <div class="dropzone" id="dropzone">
                     <p>Click or drag and drop a file here</p>
@@ -123,8 +127,8 @@
                 <div class="status" id="status">Waiting for input...</div>
                 <div class="queue" id="queue"></div>
             </div>
-        </header>
-        <main class="box column gapM" id="filemanager">
+        </main>
+        <footer class="box column gapM" id="footer">
             <div class="row center">
                 <h2>Files</h2>
                 <span class="spacer"></span>
@@ -142,8 +146,7 @@
                 </thead>
                 <tbody id="filemanager_body"></tbody>
             </table>
-        </main>
-        <footer class="box column gapM hidden" id="footer"></footer>
+        </footer>
 
         <dialog id="error_modal">
             <div class="column gapL">
