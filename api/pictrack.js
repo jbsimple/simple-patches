@@ -1,7 +1,5 @@
 import { sql } from '../lib/db.js';
 
-function unwrapValue(value) { return Array.isArray(value) && value.length === 1 ? value[0] : value; }
-
 export default async function handler(req, res) {
     res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, x-upload-password");
@@ -68,9 +66,42 @@ export default async function handler(req, res) {
             if (!item) { return res.status(400).json({ success: false, error: 'A item is required.' }); }
             if (!count || count <= 0) { return res.status(400).json({ success: false, error: 'A count is required.' }); }
             if (!person) { return res.status(400).json({ success: false, error: 'A person is required.' }); }
-            const result = await sql`INSERT INTO neon_auth.picture_tracking (item, count, notes, person) VALUES (${item}, ${count}, ${notes ?? ''}, ${person}) RETURNING id`;
-            const response = result[0];
-            return res.status(201).json({ success: true, response});
+
+            // handle same day updates
+            // check existing
+            const existing = await sql`
+                SELECT id, count, notes
+                FROM neon_auth.picture_tracking
+                WHERE item = ${item}
+                AND person = ${person}
+                AND to_char(timestamp AT TIME ZONE 'America/New_York', 'YYYY-MM-DD')
+                    = to_char(now() AT TIME ZONE 'America/New_York', 'YYYY-MM-DD')
+                ORDER BY id DESC
+                LIMIT 1
+            `;
+
+            if (existing.length > 0) {
+                const row = existing[0];
+                const newCount = count; // replace count not add
+                const newNotes = notes ? `${row.notes ? row.notes + ' | ' : ''}${notes}` : row.notes;
+
+                const result = await sql`
+                    UPDATE neon_auth.picture_tracking
+                    SET count = ${newCount}, notes = ${newNotes}
+                    WHERE id = ${row.id}
+                    RETURNING id
+                `;
+                const response = result[0];
+                return res.status(200).json({ success: true, type: 'update', response });
+            } else {
+                const result = await sql`
+                    INSERT INTO neon_auth.picture_tracking (item, count, notes, person)
+                    VALUES (${item}, ${count}, ${notes ?? ''}, ${person})
+                    RETURNING id
+                `;
+                const response = result[0];
+                return res.status(201).json({ success: true, type: 'insert', response });
+            }
         } catch (error) {
             console.error(error);
             return res.status(500).json({ success: false, error: 'Failed to create log' });
