@@ -1246,13 +1246,10 @@ async function betterProductModalInit() {
     if (!modal || !appMain) return;
 
     function initModalButtons(container = document) {
-        const buttons = container.querySelectorAll(
-            '.ajax-modal[data-url*="ajax/modals/productitems/"]:not([data-patches-product-modal])'
-        );
+        const buttons = container.querySelectorAll('.ajax-modal[data-url*="ajax/modals/productitems/"]:not([data-patches-product-modal])');
 
         buttons.forEach(button => {
             button.dataset.patchesProductModal = '';
-
             button.addEventListener('click', () => {
                 waitForProductModal(modal);
             });
@@ -1260,7 +1257,6 @@ async function betterProductModalInit() {
     }
 
     initModalButtons(appMain);
-
 
     const appObserver = new MutationObserver(mutations => {
         for (const mutation of mutations) {
@@ -1270,7 +1266,6 @@ async function betterProductModalInit() {
                     node.dataset.patchesProductModal = '';
                     node.addEventListener('click', () => { waitForProductModal(modal); });
                 }
-                
                 initModalButtons(node);
             }
         }
@@ -1289,12 +1284,8 @@ async function betterProductModalInit() {
 
     function waitForProductModal(modal) {
         const observer = new MutationObserver(() => {
-            const descriptionDiv = modal.querySelector(
-                'div.d-flex.flex-wrap.fw-bold.mb-4.fs-5.text-gray-400'
-            );
-
+            const descriptionDiv = modal.querySelector('div.d-flex.flex-wrap.fw-bold.mb-4.fs-5.text-gray-400');
             if (!descriptionDiv) return;
-
             observer.disconnect();
             processProductModal(modal, descriptionDiv);
         });
@@ -1316,6 +1307,7 @@ async function betterProductModalInit() {
         inProgressContent.add(descriptionText);
 
         try {
+            modal.style.display = 'none';
             const sidDetails = await fetchSidDetails(descriptionText);
             processedContent.add(descriptionText);
             const itemImages = sidDetails.item_images ?? [];
@@ -1328,6 +1320,7 @@ async function betterProductModalInit() {
             console.error('PATCHES: API call failed for:', descriptionText, error);
         } finally {
             inProgressContent.delete(descriptionText);
+            modal.style.display = 'block';
         }
     }
 
