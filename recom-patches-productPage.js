@@ -1061,6 +1061,8 @@ function modifyMediaTable() {
 }
 waitForElement('#product-images-container', modifyMediaTable);
 
+// this is for picture logger
+let isPicTransfer = false;
 function initExtraUploadMethods() {
 	const dropzone_container = document.getElementById('rc_product_media');
 	if (dropzone_container) {
@@ -1184,41 +1186,40 @@ function initExtraUploadMethods() {
 				dzElement.options.params.position = lastImgIndex ? parseInt(lastImgIndex) + 1 : 1; // force it to have all the same index in instance of uploading because I am evil
 						
 				const transferImgs = transferList.querySelectorAll('img');
-				for (const img of transferImgs) {
-					const imageURL = img.src;
-					const fallback = 'https://s3.amazonaws.com/elog-cdn/no-image.png';
-				
-					if (!imageURL || imageURL === fallback) {
-						alert('Please enter a valid image URL.');
-						return;
-					}
-				
-					try {
-						const filenameFromURL = imageURL.split('/').pop()?.split('?')[0] || '';
-						const response = await fetch(`https://simple-patches.vercel.app/api/proxy-image?url=${encodeURIComponent(imageURL)}&filename=${encodeURIComponent(filenameFromURL)}`);
-						if (!response.ok) throw new Error('Failed to fetch image.');
-						
-						const blob = await response.blob();
-						const fileType = blob.type || 'image/jpeg';
-						const extension = fileType.split('/')[1] || 'jpg';
-						let filename = filenameFromURL || `${Date.now()}.${extension}`;
-						const disposition = response.headers.get('Content-Disposition');
-						if (disposition && disposition.includes('filename=')) {
-							const match = disposition.match(/filename="(.+?)"/);
-							if (match && match[1]) {
-								filename = match[1];
-							}
-						}
-
-						const file = new File([blob], filename, { type: fileType });
-				
-						dzElement.addFile(file);
-				
-					} catch (err) {
-						console.error('Image upload failed:', err);
-						alert('Image upload failed.');
-					}
-					
+                try {
+                    isPicTransfer = true;
+                    for (const img of transferImgs) {
+                        const imageURL = img.src;
+                        const fallback = 'https://s3.amazonaws.com/elog-cdn/no-image.png';
+                    
+                        if (!imageURL || imageURL === fallback) {
+                            console.error('PATCHES: Invalid Transfer URL:', imageURL);
+                            return;
+                        }
+                    
+                        const filenameFromURL = imageURL.split('/').pop()?.split('?')[0] || '';
+                        const response = await fetch(`https://simple-patches.vercel.app/api/proxy-image?url=${encodeURIComponent(imageURL)}&filename=${encodeURIComponent(filenameFromURL)}`);
+                        if (!response.ok) throw new Error('Failed to fetch image.');
+                        
+                        const blob = await response.blob();
+                        const fileType = blob.type || 'image/jpeg';
+                        const extension = fileType.split('/')[1] || 'jpg';
+                        let filename = filenameFromURL || `${Date.now()}.${extension}`;
+                        const disposition = response.headers.get('Content-Disposition');
+                        if (disposition && disposition.includes('filename=')) {
+                            const match = disposition.match(/filename="(.+?)"/);
+                            if (match && match[1]) {
+                                filename = match[1];
+                            }
+                        }
+                        const file = new File([blob], filename, { type: fileType });
+                        dzElement.addFile(file);
+                    }
+                } catch (err) {
+                    console.error('Transfer failed:', err);
+                    fireSwal('UHOH', 'Failed to transfer images.', 'error');
+                } finally {
+                    isPicTransfer = false;
                 }
 			});
 		}
@@ -1392,6 +1393,7 @@ function initExtraUploadMethods() {
 				}
 			
 				try {
+                    isPicTransfer = true;
 					const filenameFromURL = imageURL.split('/').pop()?.split('?')[0] || '';
 					const response = await fetch(`https://simple-patches.vercel.app/api/proxy-image?url=${encodeURIComponent(imageURL)}&filename=${encodeURIComponent(filenameFromURL)}`);
 					if (!response.ok) throw new Error('Failed to fetch image.');
@@ -1424,7 +1426,9 @@ function initExtraUploadMethods() {
 				} catch (err) {
 					console.error('Image upload failed:', err);
 					alert('Image upload failed.');
-				}
+				} finally {
+                    isPicTransfer = false;
+                }
 			});
 		}
 
