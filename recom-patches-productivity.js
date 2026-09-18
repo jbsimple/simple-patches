@@ -1430,7 +1430,7 @@ async function injectOverview() {
         if (heading) {
             heading.textContent = 'Team Productivity';
         }
-    } else if (content && typeof recentPictureCheckInit === 'function' && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board') && params.has('recentpics') && !params.has('overview')) {
+    } else if (content && typeof recentPictureCheckInit === 'function' && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board') && params.has('recentpics') && !params.has('overview') && !params.has('picturelog')) {
         injectDateSelect('recentPictureCheckInit', content);
         recentPictureCheckInit();
 
@@ -1439,13 +1439,21 @@ async function injectOverview() {
         if (heading) {
             heading.textContent = 'Created Items';
         }
-    } else if (content && typeof injectOverview === 'function' && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board') && params.has('overview') && !params.has('recentpics')) {
+    } else if (content && typeof injectOverview === 'function' && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board') && params.has('overview') && !params.has('recentpics') && !params.has('picturelog')) {
         injectOverview();
 
         document.title = document.title.replace('Productivity', 'Team Overview - Productivity');
 
         if (heading) {
             heading.textContent = 'Team Overview';
+        }
+    } else if (content && typeof pictureLogger_tableModal === 'function' && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board') && params.has('picturelog') && !params.has('overview') && !params.has('recentpics')) {
+        document.getElementById('kt_app_content').innerHTML = '';
+        pictureLogger_tableModal(); // in development
+
+        document.title = document.title.replace('Productivity', 'Team Overview - Productivity');
+        if (heading) {
+            heading.textContent = 'Pictures Overview';
         }
     }
     

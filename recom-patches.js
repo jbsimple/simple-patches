@@ -446,10 +446,7 @@ function injectExtraTheme(observer = true) {
             const nav_sidebar_links = document.getElementById('#kt_app_sidebar_menu');
             if (nav_sidebar_links) {
                 const nameElem = nav_sidebar_links.querySelectorAll('.menu-heading')[0];
-                currentuser = nameElem.textContent
-                                .replace(/hi[\s,]*/i, '')
-                                .trim()
-                                .toLowerCase();
+                currentuser = nameElem.textContent.replace(/hi[\s,]*/i, '').trim().toLowerCase();
                 
                 const links = nav_sidebar_links.querySelectorAll('.menu-link');
                 if (links && links.length > 0 && !mockupProductivity) {
@@ -485,6 +482,19 @@ function injectExtraTheme(observer = true) {
                                     </a>
                                 `;
                                 parentItem.insertAdjacentElement('beforebegin', newItem);
+
+                                if (typeof pictureLogger_tableModal === 'function') {
+                                    const pictureLogModalItem = document.createElement('div');
+                                    pictureLogModalItem.className = 'menu-item';
+                                    pictureLogModalItem.innerHTML = `
+                                        <a class="menu-link" onclick="pictureLogger_tableModal();">
+                                            <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
+                                            <span class="menu-title">Pictures Overview</span>
+                                        </a>
+                                    `;
+                                    // future href="productivity?picturelog"
+                                    parentItem.insertAdjacentElement('beforebegin', newItem);
+                                }
                             }
                         }
                     });
