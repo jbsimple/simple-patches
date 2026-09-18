@@ -493,7 +493,7 @@ function injectExtraTheme(observer = true) {
                                         </a>
                                     `;
                                     // future href="productivity?picturelog"
-                                    parentItem.insertAdjacentElement('beforebegin', newItem);
+                                    parentItem.insertAdjacentElement('beforebegin', pictureLogModalItem);
                                 }
                             }
                         }
