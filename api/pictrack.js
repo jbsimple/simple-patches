@@ -12,10 +12,6 @@ export default async function handler(req, res) {
 
     if (!origin || !allowedOrigins.includes(origin)) { return res.status(403).json({ success: false, error: "Origin not allowed" }); }
 
-    const password = req.headers['x-upload-password'];
-    const correct = process.env.UPLOAD_SECRET;
-    if (!password || password !== correct) { return res.status(401).json({ success: false, error: 'Unauthorized' }); }
-
     if (req.method === 'GET') {
         try {
             const { searchParams } = new URL(req.url, `https://${req.headers.host}`);
@@ -61,6 +57,10 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'POST') {
+        const password = req.headers['x-upload-password'];
+        const correct = process.env.UPLOAD_SECRET;
+        if (!password || password !== correct) { return res.status(401).json({ success: false, error: 'Unauthorized' }); }
+
         try {
             const { item, count, notes, person } = req.body;
             if (!item) { return res.status(400).json({ success: false, error: 'A item is required.' }); }
@@ -107,5 +107,6 @@ export default async function handler(req, res) {
             return res.status(500).json({ success: false, error: 'Failed to create log' });
         }
     }
+    
     return res.status(405).json({ success: false, error: 'Method not allowed' });
 }
