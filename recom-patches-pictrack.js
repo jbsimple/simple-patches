@@ -23,19 +23,19 @@ async function pictureLogger_fetch(filters = {item:null,person:null,date:null}) 
 }
 
 function pictureLogger_init() {
-		// permission to write?
-		if (typeof pictureLogger_password === 'undefined') return;
-		
-		// limit where
-		if (!window.location.href.includes("/products/") && !window.location.href.includes("/product/items/")) return;
-		
-		// find person
-		const kt_header_user_menu_toggle = document.getElementById('kt_header_user_menu_toggle');
-		if (!kt_header_user_menu_toggle) return;
-		const nameElem = kt_header_user_menu_toggle.querySelector('.menu-sub > .menu-item > .menu-content > .d-flex.flex-column > .fw-bold.d-flex.align-items-center.fs-5');
-		if (!nameElem) return
-		const nameElemClone = nameElem.cloneNode(true);
-		const badge = nameElemClone.querySelector('.badge');
+    // permission to write?
+    if (typeof pictureLogger_password === 'undefined') return;
+    
+    // limit where
+    if (!window.location.href.includes("/products/") && !window.location.href.includes("/product/items/")) return;
+    
+    // find person
+    const kt_header_user_menu_toggle = document.getElementById('kt_header_user_menu_toggle');
+    if (!kt_header_user_menu_toggle) return;
+    const nameElem = kt_header_user_menu_toggle.querySelector('.menu-sub > .menu-item > .menu-content > .d-flex.flex-column > .fw-bold.d-flex.align-items-center.fs-5');
+    if (!nameElem) return
+    const nameElemClone = nameElem.cloneNode(true);
+    const badge = nameElemClone.querySelector('.badge');
     if (badge) badge.remove();
     const person = nameElemClone.textContent.trim();
     

@@ -581,12 +581,29 @@ async function injectUserReport() {
 
                 const dateInput = document.getElementById('patches-productivity-dateInput');
                 if (task.toLowerCase() === 'pictures' && dateInput) {
-                    // get date input
-                    console.debug('picture taskdata:', taskData[task]);
-                    const pictureTrackingData = pictureLogger_fetch({
-                        date:document.getElementById('patches-productivity-dateInput').value
-                    });
-                    // to-do
+                    const pictureCount = () => {
+                        // get person
+                        const kt_header_user_menu_toggle = document.getElementById('kt_header_user_menu_toggle');
+                        if (!kt_header_user_menu_toggle) return;
+                        const nameElem = kt_header_user_menu_toggle.querySelector('.menu-sub > .menu-item > .menu-content > .d-flex.flex-column > .fw-bold.d-flex.align-items-center.fs-5');
+                        if (!nameElem) return
+                        const nameElemClone = nameElem.cloneNode(true);
+                        const badge = nameElemClone.querySelector('.badge');
+                        if (badge) badge.remove();
+                        const person = nameElemClone.textContent.trim();
+
+                        const pictureTrackingData = pictureLogger_fetch({
+                            person,
+                            date:document.getElementById('patches-productivity-dateInput').value
+                        });
+                        if (!pictureTrackingData) return;
+                        let count = 0;
+                        pictureTrackingData.forEach(item => {
+                            count += item.count ?? 0;
+                        });
+                        return count;
+                    }
+                    console.debug('[PATCHES] Picture Task Count:', pictureCount ?? 0);
                 }
 
                 let label = `"${eventCode}" while in ${task}`;
