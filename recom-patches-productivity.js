@@ -796,24 +796,30 @@ async function injectTeamReport() {
             Object.keys(userDataMap[user]).forEach(task => {
                 Object.keys(userDataMap[user][task]).forEach(async eventCode => {
                     let { totalUnits, totalTime } = userDataMap[user][task][eventCode];
-
+                    let extraUnits = 0;
                     // get picture task units
                     const dateInput = document.getElementById('patches-productivity-dateInput');
                     if (task.toLowerCase() === 'pictures' && dateInput) {
-                        const pictureCount = async () => {
+                        const pictureStats = async () => {
                             // get person
                             const person = user.trim().split(/\s+/)[0];
 
                             // get data
                             const pictureTrackingData = await pictureLogger_fetch({person, date:dateInput.value});
-                            if (!pictureTrackingData || !pictureTrackingData.data) return;
+                            if (!pictureTrackingData || !pictureTrackingData.data) return {pictureCount:0, pictureItems:0};
 
                             // get sum of count
                             let count = 0;
                             pictureTrackingData.data.forEach(item => { count += item.count ?? 0; });
-                            return count;
+
+                            // return sum and item count
+                            return {pictureCount:count, pictureItems:pictureTrackingData.data.count};
                         }
-                        totalUnits = await pictureCount() ?? 0;
+
+                        const {pictureCount, pictureItems} = await pictureStats() ?? {pictureCount: 0, pictureItems: 0};
+                        totalUnits = pictureCount ?? 0;
+                        extraUnits = pictureItems ?? 0;
+
                         console.debug('[PATCHES] Picture Task Count:', totalUnits);
                     }
 
@@ -834,6 +840,7 @@ async function injectTeamReport() {
                                 <div class="pt-5">
                                     <span class="text-white fw-bolder fs-3x me-2 lh-0">${totalUnits}</span>
                                     <span class="text-white fw-bolder fs-6 lh-0">${timePerUnit} mins/unit</span>
+                                    ${extraUnits !== 0 ? `<span style="display: none;">Edited ${totalUnits} images across ${extraUnits} items.</span>` : ''}
                                 </div>
                             </div>
                         </div>
