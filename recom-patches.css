@@ -449,40 +449,18 @@ div.dataTables_wrapper div.dataTables_processing {
     100% { transform: perspective(400px) rotateY(360deg); }
 }
 
-#kt_app_sidebar .app-sidebar-logo {
-    display: inline-block;
-    transform-origin: center;
-}
-
-#kt_app_sidebar .app-sidebar-logo:hover {
-    animation: var(--logo-animation);
-}
+#kt_app_sidebar .app-sidebar-logo { display: inline-block; transform-origin: center; }
+#kt_app_sidebar .app-sidebar-logo:hover { animation: var(--logo-animation); }
 
 /* fix table selected to not look terrible */
-tr.selected.even > * {
-    box-shadow: inset 0 0 0 9999px color-mix(in srgb, var(--bs-primary) 25%, transparent 75%) !important;
-}
-
-tr.selected.odd > * {
-    box-shadow: inset 0 0 0 9999px color-mix(in srgb, var(--bs-success) 25%, transparent 75%) !important;
-}
+tr.selected.even > * { box-shadow: inset 0 0 0 9999px color-mix(in srgb, var(--bs-primary) 25%, transparent 75%) !important; }
+tr.selected.odd > * { box-shadow: inset 0 0 0 9999px color-mix(in srgb, var(--bs-success) 25%, transparent 75%) !important; }
 
 /* dtTable fix */
-table.dataTable.table-striped>tbody>tr.odd>* {
-    box-shadow: none !important;
-}
-
-table.dataTable.table-striped>tbody>tr.odd {
-    background: var(--bs-table-striped-bg);
-}
-
-table.dataTable.table-striped>tbody>tr.danger {
-    background-color: color-mix(in srgb, var(--bs-danger) 15%, transparent 85%) !important;
-}
-
-table.dataTable.table-striped>tbody>tr.odd.danger {
-    background-color: color-mix(in srgb, var(--bs-danger) 25%, transparent 75%) !important;
-}
+table.dataTable.table-striped>tbody>tr.odd>* { box-shadow: none !important; }
+table.dataTable.table-striped>tbody>tr.odd { background: var(--bs-table-striped-bg); }
+table.dataTable.table-striped>tbody>tr.danger { background-color: color-mix(in srgb, var(--bs-danger) 15%, transparent 85%) !important; }
+table.dataTable.table-striped>tbody>tr.odd.danger { background-color: color-mix(in srgb, var(--bs-danger) 25%, transparent 75%) !important; }
 
 /* toast message css */
 .custom-toast {
@@ -535,14 +513,7 @@ table.dataTable.table-striped>tbody>tr.odd.danger {
 
 #kt_app_header_navbar a[aria-label="System Updates"] { display: none !important; }
 
-.swal2-container .swal2-html-container {
-    max-height: 600px !important;
-}
-
-#kt_calendar_app {
-    max-width: 1500px;
-    margin: auto;
-}
+.swal2-container .swal2-html-container { max-height: 600px !important; }
 
 #kt_scrolltop { display: none !important; }
 
