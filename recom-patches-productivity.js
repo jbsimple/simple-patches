@@ -596,9 +596,9 @@ async function injectUserReport() {
                             person,
                             date:document.getElementById('patches-productivity-dateInput').value
                         });
-                        if (!pictureTrackingData) return;
+                        if (!pictureTrackingData || !pictureTrackingData.data) return;
                         let count = 0;
-                        pictureTrackingData.forEach(item => {
+                        pictureTrackingData.data.forEach(item => {
                             count += item.count ?? 0;
                         });
                         return count;
