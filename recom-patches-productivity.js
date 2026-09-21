@@ -575,10 +575,9 @@ async function injectUserReport() {
 
         Object.keys(taskData).forEach(task => {
             Object.keys(taskData[task]).forEach(async eventCode => {
-                const { totalUnits, totalTime } = taskData[task][eventCode];
-                const timeSpentHours = (totalTime / 60).toFixed(2);
-                const timePerUnit = totalUnits > 0 ? (totalTime / totalUnits).toFixed(2) : "0";
+                let { totalUnits, totalTime } = taskData[task][eventCode];
 
+                // get picture task units
                 const dateInput = document.getElementById('patches-productivity-dateInput');
                 if (task.toLowerCase() === 'pictures' && dateInput) {
                     const pictureCount = async () => {
@@ -601,13 +600,16 @@ async function injectUserReport() {
                         pictureTrackingData.data.forEach(item => { count += item.count ?? 0; });
                         return count;
                     }
-                    console.debug('[PATCHES] Picture Task Count:', await pictureCount() ?? 0);
+                    totalUnits =  await pictureCount() ?? 0;
+                    console.debug('[PATCHES] Picture Task Count:', totalUnits);
                 }
 
+                // average and time spend calculations
+                let timeSpentHours = (totalTime / 60).toFixed(2);
+                let timePerUnit = totalUnits > 0 ? (totalTime / totalUnits).toFixed(2) : "0";
+
                 let label = `"${eventCode}" while in ${task}`;
-                if (eventCode === task) {
-                    label = `${task}`;
-                }
+                if (eventCode === task) { label = `${task}`; }
 
                 const unitBox = `
                     <div class="card card-xl-stretch mb-xl-8" style="--bs-card-bg: rgb(65,40,50) !important; color: white !important; flex: 1; min-width: 400px;">
