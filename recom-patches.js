@@ -1531,14 +1531,16 @@ function adjustToolbar() {
 }
 
 /* new replacement clock in */
-const patches_clockIn_ids = [7,8,5,22,28,29,31];
-//  7 - BREAK
-//  8 - LUNCH
-//  5 - Meeting
-// 22 - Listing
-// 28 - Listing Side Work
-// 29 - Pictures
-// 31 - Pictures Side Work
+const patches_clockIn_ids = [7,8,5,22,28,29,31,65,104];
+//   7 - BREAK
+//   8 - LUNCH
+//   5 - Meeting
+//  22 - Listing
+//  28 - Listing Side Work
+//  29 - Pictures
+//  31 - Pictures Side Work
+//  65 - Listing Put-a-ways
+// 104 - Leting Meeting
 
 function patches_clockIn_error(msg, obj = null) {
     const patches_clockIn_err = document.getElementById('patches_clockIn_err');
