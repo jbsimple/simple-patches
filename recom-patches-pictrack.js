@@ -135,6 +135,9 @@ async function pictureLogger_saveNote(count) {
     if (isNaN(id)) id = null;
     if (params[1]) { type = params[1].replace(/^['"]|['"]$/g, ''); }
 
+    formData.append('id', id);
+    formData.append('type', type);
+
     const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
     if (!csrfMeta || !csrfMeta.hasAttribute('content')) return;
     const csrfToken = csrfMeta.getAttribute('content');
