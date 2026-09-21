@@ -121,6 +121,9 @@ function injectGoods() {
     // new modal handler
     loadPatchScript('recom-patches-modal.js');
 
+    // picture tracking
+    loadPatchScript('recom-patches-pictrack.js');
+
     if (location.pathname.includes('/receiving/queues/listing') || location.pathname.includes('/products/new')) {
 
         loadPatchScript('recom-patches-duplicateCheck.js');
