@@ -640,7 +640,7 @@ function modifiedClockInit() {
             pictureTrackModalBtn.id = 'patches_pictureTrackingModal';
             pictureTrackModalBtn.className = 'btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-primary me-2';
             pictureTrackModalBtn.href = `javascript:pictureLogger_tableModal();`;
-            pictureTrackModalBtn.innerHTML = '<i class="bi bi-chart-mixed fs-2"></i><span class="mobilefix">Picture Productivity</span>';
+            pictureTrackModalBtn.innerHTML = '<i class="bi bi-paste fs-2"></i><span class="mobilefix">Picture Productivity</span>';
             pictureTrackModalBtn.title = 'View Picture Productivity';
             recordTime_parent.insertBefore(pictureTrackModalBtn, recordTime_button);
         }
