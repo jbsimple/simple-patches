@@ -1398,7 +1398,7 @@ async function injectOverview() {
             </li>`;
         }
     }
-    
+
     if (content && window.location.href.includes('/productivity/employee') && !params.has('recentpics')) {
         injectDateSelect('injectUserReport', content);
         injectUserReport();
@@ -1413,7 +1413,7 @@ async function injectOverview() {
                 <a href="/productivity/employee/0" class="text-muted text-hover-primary">My Productivity</a>
             </li>`;
         }
-    } else if (content && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board') && !params.has('recentpics') && !params.has('overview')) {
+    } else if (content && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board') && !params.has('recentpics') && !params.has('overview') && !params.has('picturelog')) {
         injectDateSelect('injectTeamReport', content);
         injectTeamReport();
         document.title = document.title.replace('Productivity', 'Team Productivity');
