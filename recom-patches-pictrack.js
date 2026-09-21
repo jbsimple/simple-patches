@@ -221,7 +221,7 @@ function pictureLogger_tableContainer(date = null) {
             </div>
         </div>
         <div class="mt-3">
-            <button type="button" class="btn btn-secondary" id="rc_table_copy">Copy Table</button>
+            <button type="button" class="btn btn-primary" id="rc_table_copy">Copy Table</button>
         </div>
     `;
  
@@ -351,7 +351,7 @@ function pictureLogger_buildTableHTML(records, dateVal = '') {
  
     return `
         <div class="table-responsive">
-            <table class="table table-bordered table-sm align-middle">
+            <table class="table table-bordered table-sm align-middle" style="margin-bottom: 0 !important;">
                 ${colgroup}
                 <thead>
                     ${theadTop}
