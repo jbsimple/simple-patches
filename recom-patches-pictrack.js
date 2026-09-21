@@ -255,9 +255,7 @@ async function pictureLogger_copyTable(container, copyBtn) {
     if (!rows.length) return;
 
     const bodyRows = Array.from(rows).slice(1);
-    const tsv = bodyRows
-        .map(row => Array.from(row.querySelectorAll('td')).map(td => td.textContent.trim()).join('\t'))
-        .join('\n');
+    const tsv = bodyRows.map(row => Array.from(row.querySelectorAll('td')).map(td => td.textContent.trim()).join('\t')).join('\n');
  
     const originalLabel = copyBtn.textContent;
     try {
@@ -314,14 +312,14 @@ function pictureLogger_buildTableHTML(records, dateVal = '') {
     });
     theadTop += '</tr>';
  
-    let theadSub = '<tr>';
+    let theadSub = '<tr class="text-center">';
     perPerson.forEach((p, i) => {
         theadSub += '<th>Item</th><th>Processed</th><th>Notes</th>';
         if (i === 0 && perPerson.length > 1) theadSub += '<th></th>';
     });
     theadSub += '</tr>';
  
-    let summaryRow = '<tr class="table-active fw-bold">';
+    let summaryRow = '<tr class="table-active text-center fw-bold">';
     perPerson.forEach((p, i) => {
         summaryRow += `<td>${p.totalItems}</td><td>${p.totalProcessed}</td><td></td>`;
         if (i === 0 && perPerson.length > 1) { summaryRow += `<td class="text-center">${pictureLogger_escapeHtml(dateVal)}</td>`; }

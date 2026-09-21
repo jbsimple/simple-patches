@@ -1428,13 +1428,13 @@ async function injectOverview() {
         document.title = document.title.replace('Productivity', 'Team Overview - Productivity');
         if (heading) { heading.textContent = 'Team Overview'; }
     } else if (content && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board') && params.has('picturelog') && !params.has('overview') && !params.has('recentpics')) {
-        content.innerHTML = ``;
+        content.innerHTML = `<div id="picturelog" style="padding:30px;"></div>`;
         document.title = document.title.replace('Productivity', 'Picture Tracking - Productivity');
         if (heading) { heading.textContent = 'Pictures Overview'; }
         // wait for function pictureLogger_tableContainer to be available
         (function check() {
             if (typeof pictureLogger_tableContainer === 'function') {
-                content.appendChild(pictureLogger_tableContainer());
+                document.getElementById('picturelog').appendChild(pictureLogger_tableContainer())
             } else {
                 setTimeout(check, 50);
             }
