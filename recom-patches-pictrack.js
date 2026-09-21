@@ -202,53 +202,34 @@ function pictureLogger_recordModal(person, item, count = 0) {
     });
 }
 
-// table modal
-async function pictureLogger_tableModal(date = null) {
-    const modalEl = document.getElementById('rc_ajax_modal');
-    if (!modalEl) {
-        console.error('[PICTURE LOGGER] Modal element not found.');
-        return;
-    }
- 
+// productivity table
+
+function pictureLogger_tableContainer(date = null) {
     const isoToday = new Date().toISOString().slice(0, 10);
     const selectedDate = date || isoToday;
  
-    modalEl.innerHTML = `
-        <div class="modal-dialog modal-dialog-centered modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Picture Log</h5>
-                    <button type="button" class="btn-close" id="rc_ajax_modal_close" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3 d-flex align-items-center gap-2">
-                        <label for="rc_table_modal_date" class="form-label mb-0">Date</label>
-                        <input type="date" class="form-control w-auto" id="rc_table_modal_date" value="${selectedDate}">
-                    </div>
-                    <div id="rc_table_modal_body">
-                        <div class="text-center py-5">
-                            <div class="spinner-border" role="status"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary me-auto" id="rc_table_modal_copy">Copy Table</button>
-                    <button type="button" class="btn btn-light" id="rc_ajax_modal_cancel">Close</button>
-                </div>
+    const container = document.createElement('div');
+    container.className = 'picture-logger-table-container';
+    container.innerHTML = `
+        <div class="mb-3 d-flex align-items-center gap-2">
+            <label for="rc_table_date" class="form-label mb-0">Date</label>
+            <input type="date" class="form-control w-auto" id="rc_table_date" value="${selectedDate}">
+        </div>
+        <div id="rc_table_body">
+            <div class="text-center py-5">
+                <div class="spinner-border" role="status"></div>
             </div>
+        </div>
+        <div class="mt-3">
+            <button type="button" class="btn btn-secondary" id="rc_table_copy">Copy Table</button>
         </div>
     `;
  
-    const modal = new bootstrap.Modal(modalEl);
-    modal.show();
- 
-    const dateInput = modalEl.querySelector('#rc_table_modal_date');
-    const closeBtn = modalEl.querySelector('#rc_ajax_modal_close');
-    const cancelBtn = modalEl.querySelector('#rc_ajax_modal_cancel');
-    const copyBtn = modalEl.querySelector('#rc_table_modal_copy');
+    const dateInput = container.querySelector('#rc_table_date');
+    const copyBtn = container.querySelector('#rc_table_copy');
  
     async function loadTable(forDate) {
-        const bodyEl = modalEl.querySelector('#rc_table_modal_body');
+        const bodyEl = container.querySelector('#rc_table_body');
         if (!bodyEl) return;
         bodyEl.innerHTML = `<div class="text-center py-5"><div class="spinner-border" role="status"></div></div>`;
         let records = [];
@@ -258,28 +239,21 @@ async function pictureLogger_tableModal(date = null) {
         } catch (err) {
             console.error('[PICTURE LOGGER] Failed to load table data:', err);
         }
-        bodyEl.innerHTML = pictureLogger_buildTableHTML(records);
+        bodyEl.innerHTML = pictureLogger_buildTableHTML(records, forDate);
     }
  
     dateInput.addEventListener('change', () => loadTable(dateInput.value));
-    closeBtn.addEventListener('click', () => modal.hide());
-    cancelBtn.addEventListener('click', () => modal.hide());
-    copyBtn.addEventListener('click', () => pictureLogger_copyTable(modalEl, copyBtn));
+    copyBtn.addEventListener('click', () => pictureLogger_copyTable(container, copyBtn));
  
-    await loadTable(selectedDate);
+    loadTable(selectedDate);
+ 
+    return container;
 }
- 
-/**
- * Copies the item rows of the currently rendered table (everything except
- * the bold summary row) to the clipboard as tab-separated values, so pasting
- * into Excel/Sheets lands each value in its own cell, in the same layout as
- * the on-screen table (including the blank spacer column, if present).
- */
-async function pictureLogger_copyTable(modalEl, copyBtn) {
-    const rows = modalEl.querySelectorAll('#rc_table_modal_body table tbody tr');
+
+async function pictureLogger_copyTable(container, copyBtn) {
+    const rows = container.querySelectorAll('#rc_table_body table tbody tr');
     if (!rows.length) return;
- 
-    // skip the first row (the bold summary row)
+
     const bodyRows = Array.from(rows).slice(1);
     const tsv = bodyRows
         .map(row => Array.from(row.querySelectorAll('td')).map(td => td.textContent.trim()).join('\t'))
@@ -296,19 +270,10 @@ async function pictureLogger_copyTable(modalEl, copyBtn) {
         setTimeout(() => { copyBtn.textContent = originalLabel; }, 1500);
     }
 }
- 
-/**
- * Builds the HTML for the picture-log breakdown table from an array of
- * {item, count, notes, person} records.
- */
-function pictureLogger_buildTableHTML(records) {
-    // pictureLogger_fetch returns records newest-first; process oldest-first
-    // so both the item order and the "first seen" order below are chronological.
+
+function pictureLogger_buildTableHTML(records, dateVal = '') {
     const chronological = [...records].reverse();
  
-    // group by person -> item, summing counts and collecting notes.
-    // itemOrder tracks each item's first-appearance index so item rows print
-    // oldest first rather than alphabetically.
     const byPerson = {};
     const personOrder = [];
     for (const rec of chronological) {
@@ -342,7 +307,6 @@ function pictureLogger_buildTableHTML(records) {
  
     const maxRows = Math.max(...perPerson.map(p => p.itemNames.length), 0);
  
-    // header: person name spans 3 cols, with a 1-col spacer after the first person
     let theadTop = '<tr>';
     perPerson.forEach((p, i) => {
         theadTop += `<th colspan="3" class="text-center align-middle">${pictureLogger_escapeHtml(p.person)}</th>`;
@@ -357,19 +321,13 @@ function pictureLogger_buildTableHTML(records) {
     });
     theadSub += '</tr>';
  
-    // summary row: totals per person, with the selected date shown in the spacer column
     let summaryRow = '<tr class="table-active fw-bold">';
     perPerson.forEach((p, i) => {
         summaryRow += `<td>${p.totalItems}</td><td>${p.totalProcessed}</td><td></td>`;
-        if (i === 0 && perPerson.length > 1) {
-            const dateEl = document.getElementById('rc_table_modal_date');
-            const dateVal = dateEl ? dateEl.value : '';
-            summaryRow += `<td class="text-center">${pictureLogger_escapeHtml(dateVal)}</td>`;
-        }
+        if (i === 0 && perPerson.length > 1) { summaryRow += `<td class="text-center">${pictureLogger_escapeHtml(dateVal)}</td>`; }
     });
     summaryRow += '</tr>';
- 
-    // item rows
+
     let bodyRows = '';
     for (let i = 0; i < maxRows; i++) {
         bodyRows += '<tr>';

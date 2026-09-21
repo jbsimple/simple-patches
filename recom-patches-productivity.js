@@ -1398,18 +1398,12 @@ async function injectOverview() {
             </li>`;
         }
     }
-
-
+    
     if (content && window.location.href.includes('/productivity/employee') && !params.has('recentpics')) {
         injectDateSelect('injectUserReport', content);
         injectUserReport();
-
         document.title = document.title.replace('Employee Productivity', 'My Productivity');
-        
-        if (heading) {
-            heading.textContent = 'My Productivity';
-        }
-
+        if (heading) { heading.textContent = 'My Productivity'; }
         if (breadcrumb) {
             breadcrumb.innerHTML += `<!-- ADDITIONAL -->
             <li class="breadcrumb-item">
@@ -1419,42 +1413,32 @@ async function injectOverview() {
                 <a href="/productivity/employee/0" class="text-muted text-hover-primary">My Productivity</a>
             </li>`;
         }
-        
-    } else if (content && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board') && !params.has('recentpics') && !params.has('overview')) 
-    {
+    } else if (content && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board') && !params.has('recentpics') && !params.has('overview')) {
         injectDateSelect('injectTeamReport', content);
         injectTeamReport();
-
         document.title = document.title.replace('Productivity', 'Team Productivity');
-
-        if (heading) {
-            heading.textContent = 'Team Productivity';
-        }
-    } else if (content && typeof recentPictureCheckInit === 'function' && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board') && params.has('recentpics') && !params.has('overview') && !params.has('picturelog')) {
+        if (heading) { heading.textContent = 'Team Productivity'; }
+    } else if (content && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board') && params.has('recentpics') && !params.has('overview') && !params.has('picturelog')) {
         injectDateSelect('recentPictureCheckInit', content);
         recentPictureCheckInit();
-
         document.title = document.title.replace('Productivity', 'Created Items - Productivity');
-
-        if (heading) {
-            heading.textContent = 'Created Items';
-        }
-    } else if (content && typeof injectOverview === 'function' && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board') && params.has('overview') && !params.has('recentpics') && !params.has('picturelog')) {
+        if (heading) { heading.textContent = 'Created Items'; }
+    } else if (content && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board') && params.has('overview') && !params.has('recentpics') && !params.has('picturelog')) {
         injectOverview();
-
         document.title = document.title.replace('Productivity', 'Team Overview - Productivity');
-
-        if (heading) {
-            heading.textContent = 'Team Overview';
-        }
-    } else if (content && typeof pictureLogger_tableModal === 'function' && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board') && params.has('picturelog') && !params.has('overview') && !params.has('recentpics')) {
-        document.getElementById('kt_app_content').innerHTML = '';
-        pictureLogger_tableModal(); // in development
-
-        document.title = document.title.replace('Productivity', 'Team Overview - Productivity');
-        if (heading) {
-            heading.textContent = 'Pictures Overview';
-        }
+        if (heading) { heading.textContent = 'Team Overview'; }
+    } else if (content && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board') && params.has('picturelog') && !params.has('overview') && !params.has('recentpics')) {
+        content.innerHTML = ``;
+        document.title = document.title.replace('Productivity', 'Picture Tracking - Productivity');
+        if (heading) { heading.textContent = 'Pictures Overview'; }
+        // wait for function pictureLogger_tableContainer to be available
+        (function check() {
+            if (typeof pictureLogger_tableContainer === 'function') {
+                content.appendChild(pictureLogger_tableContainer());
+            } else {
+                setTimeout(check, 50);
+            }
+        })();
     }
     
 })();
