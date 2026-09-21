@@ -371,3 +371,38 @@ function pictureLogger_escapeHtml(str) {
     div.textContent = str;
     return div.innerHTML;
 }
+
+// modal to quick view
+function pictureLogger_tableModal(date = null) {
+    const modalEl = document.getElementById('rc_ajax_modal');
+    if (!modalEl) {
+        console.error('[PICTURE LOGGER] Modal element not found.');
+        return;
+    }
+ 
+    modalEl.innerHTML = `
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Picture Log</h5>
+                    <button type="button" class="btn-close" id="rc_ajax_modal_close" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="rc_table_modal_content"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" id="rc_ajax_modal_cancel">Close</button>
+                </div>
+            </div>
+        </div>
+    `;
+ 
+    const modal = new bootstrap.Modal(modalEl);
+    modal.show();
+ 
+    const closeBtn = modalEl.querySelector('#rc_ajax_modal_close');
+    const cancelBtn = modalEl.querySelector('#rc_ajax_modal_cancel');
+    closeBtn.addEventListener('click', () => modal.hide());
+    cancelBtn.addEventListener('click', () => modal.hide());
+ 
+    const modalBody = modalEl.querySelector('#rc_table_modal_content');
+    modalBody.appendChild(pictureLogger_tableContainer(date));
+}
