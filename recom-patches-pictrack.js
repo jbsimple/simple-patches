@@ -1,4 +1,5 @@
 const pictureLogger_modal = false; // show modal after upload
+const pictureLogger_note = true;
 const pictureLogger_api = 'https://simple-patches.vercel.app/api/pictrack';
 
 async function pictureLogger_fetch(filters = {item:null,person:null,date:null}) {
@@ -79,8 +80,10 @@ function pictureLogger_init() {
                 }
 
                 // record a note
-                let pictureNoteResp = await pictureLogger_saveNote(count);
-                if (pictureNoteResp.success) { console.debug('[PATCHES] Recorded a note in activity log for images.'); }
+                if (pictureLogger_note) {
+                    let pictureNoteResp = await pictureLogger_saveNote(count);
+                    if (pictureNoteResp.success) { console.debug('[PATCHES] Recorded a note in activity log for images.'); }
+                }
 
                 // record it in picture log
                 let pictureLogResp = await pictureLogger_record({item,count,notes,person});
