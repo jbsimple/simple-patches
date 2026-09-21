@@ -305,7 +305,7 @@ function pictureLogger_buildTableHTML(records, dateVal = '') {
 
     let colgroup = '<colgroup>';
     perPerson.forEach((p, i) => {
-        colgroup += '<col style="width:25%"><col style="width:25%"><col style="width:50%">';
+        colgroup += '<col style="width:30%"><col style="width:30%"><col style="width:40%">';
         if (i === 0 && perPerson.length > 1) colgroup += '<col style="width:2%">';
     });
     colgroup += '</colgroup>';
