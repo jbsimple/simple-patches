@@ -110,11 +110,9 @@ async function pictureLogger_saveNote(count) {
 
     // create note message
     if (count === 0) {
-        formData.append('note', 'Transferred Images');
-    } else if (count === 1) {
-        formData.append('note', 'Uploaded 1 Image');
+        formData.append('note', 'Transferred Media');
     } else {
-        formData.append('note', `Uploaded ${count} Images`);
+        formData.append('note', `Uploaded Media (${count})`);
     }
 
     // get id and type for note
