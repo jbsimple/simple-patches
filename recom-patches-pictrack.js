@@ -292,9 +292,7 @@ function pictureLogger_buildTableHTML(records, dateVal = '') {
  
     const people = personOrder.sort();
  
-    if (people.length === 0) {
-        return `<div class="text-center text-muted py-5">No picture logs found for this date.</div>`;
-    }
+    if (people.length === 0) { return `<div class="text-center text-muted py-5">No picture logs found for this date.</div>`; }
  
     const perPerson = people.map(person => {
         const { items, itemOrder } = byPerson[person];
@@ -304,6 +302,14 @@ function pictureLogger_buildTableHTML(records, dateVal = '') {
     });
  
     const maxRows = Math.max(...perPerson.map(p => p.itemNames.length), 0);
+
+    let colgroup = '<colgroup>';
+    perPerson.forEach((p, i) => {
+        colgroup += '<col style="width:25%"><col style="width:25%"><col style="width:50%">';
+        if (i === 0 && perPerson.length > 1) colgroup += '<col style="width:2%">';
+    });
+    colgroup += '</colgroup>';
+
  
     let theadTop = '<tr>';
     perPerson.forEach((p, i) => {
@@ -346,6 +352,7 @@ function pictureLogger_buildTableHTML(records, dateVal = '') {
     return `
         <div class="table-responsive">
             <table class="table table-bordered table-sm align-middle">
+                ${colgroup}
                 <thead>
                     ${theadTop}
                     ${theadSub}
