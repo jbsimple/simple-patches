@@ -574,14 +574,14 @@ async function injectUserReport() {
         summaryWrapper.setAttribute('elem', 'summaryWrapper');
 
         Object.keys(taskData).forEach(task => {
-            Object.keys(taskData[task]).forEach(eventCode => {
+            Object.keys(taskData[task]).forEach(async eventCode => {
                 const { totalUnits, totalTime } = taskData[task][eventCode];
                 const timeSpentHours = (totalTime / 60).toFixed(2);
                 const timePerUnit = totalUnits > 0 ? (totalTime / totalUnits).toFixed(2) : "0";
 
                 const dateInput = document.getElementById('patches-productivity-dateInput');
                 if (task.toLowerCase() === 'pictures' && dateInput) {
-                    const pictureCount = () => {
+                    const pictureCount = async () => {
                         // get person
                         const kt_header_user_menu_toggle = document.getElementById('kt_header_user_menu_toggle');
                         if (!kt_header_user_menu_toggle) return;
@@ -592,18 +592,16 @@ async function injectUserReport() {
                         if (badge) badge.remove();
                         const person = nameElemClone.textContent.trim();
 
-                        const pictureTrackingData = pictureLogger_fetch({
-                            person,
-                            date:document.getElementById('patches-productivity-dateInput').value
-                        });
+                        // get data
+                        const pictureTrackingData = await pictureLogger_fetch({person, date:dateInput.value});
                         if (!pictureTrackingData || !pictureTrackingData.data) return;
+
+                        // get sum of count
                         let count = 0;
-                        pictureTrackingData.data.forEach(item => {
-                            count += item.count ?? 0;
-                        });
+                        pictureTrackingData.data.forEach(item => { count += item.count ?? 0; });
                         return count;
                     }
-                    console.debug('[PATCHES] Picture Task Count:', pictureCount() ?? 0);
+                    console.debug('[PATCHES] Picture Task Count:', await pictureCount() ?? 0);
                 }
 
                 let label = `"${eventCode}" while in ${task}`;
