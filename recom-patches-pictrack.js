@@ -29,9 +29,6 @@ function pictureLogger_init() {
 		// limit where
 		if (!window.location.href.includes("/products/") && !window.location.href.includes("/product/items/")) return;
 		
-		// verify the transfer flag is present
-		if (typeof isPicTransfer !== 'boolean') return;
-		
 		// find person
 		const kt_header_user_menu_toggle = document.getElementById('kt_header_user_menu_toggle');
 		if (!kt_header_user_menu_toggle) return;
@@ -103,10 +100,11 @@ setTimeout(pictureLogger_init, 500);
 
 async function pictureLogger_record({item,count,notes,person}) {
 		if (typeof pictureLogger_password === 'undefined') return;
+        if (typeof isPicTransfer !== 'boolean') return;
 		const postRes = await fetch(pictureLogger_api, {
         method: 'POST',
         headers: {'Content-Type': 'application/json', 'x-upload-password': pictureLogger_password},
-        body: JSON.stringify({item, count, notes, person})
+        body: JSON.stringify({item, count:(isPicTransfer ? 0 : count), notes, person})
     });
     const response = await postRes.json();
     console.debug('[PICTURE LOGGER] Response from DB Update:', response);
