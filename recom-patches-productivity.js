@@ -813,7 +813,7 @@ async function injectTeamReport() {
                             pictureTrackingData.data.forEach(item => { count += item.count ?? 0; });
 
                             // return sum and item count
-                            return {pictureCount:count, pictureItems:pictureTrackingData.data.count};
+                            return {pictureCount:count, pictureItems:pictureTrackingData.data.length};
                         }
 
                         const {pictureCount, pictureItems} = await pictureStats() ?? {pictureCount: 0, pictureItems: 0};
