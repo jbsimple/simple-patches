@@ -634,7 +634,7 @@ async function injectUserReport() {
                 const timeBox = `
                     <div class="card card-xl-stretch mb-xl-8" style="--bs-card-bg: rgb(50,60,85) !important; color: white !important; flex: 1; min-width: 400px;">
                         <div class="card-body d-flex flex-column">
-                            <div class="d-flex flex-column flex-grow-1">
+                            <div class="d-flex flex-column flex-grow-1" style="margin-bottom: 1.5rem;">
                                 <span class="text-white fw-bolder fs-3">Time Spent | ${label}</span>
                             </div>
                             <div class="pt-5">
@@ -854,7 +854,7 @@ async function injectTeamReport() {
                     const timeBox = `
                         <div class="card card-xl-stretch mb-xl-8" style="--bs-card-bg: rgb(50,60,85) !important; color: white !important; flex: 1; min-width: 400px; margin-bottom: 0 !important;">
                             <div class="card-body d-flex flex-column">
-                                <div class="d-flex flex-column flex-grow-1">
+                                <div class="d-flex flex-column flex-grow-1" style="margin-bottom: 1.5rem;">
                                     <span class="text-white fw-bolder fs-3">Time Spent | ${label}</span>
                                 </div>
                                 <div class="pt-5">
