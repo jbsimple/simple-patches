@@ -73,11 +73,6 @@ function setupFromConfig() {
         }
     }
 
-    const patches_bulkUpdateLocationsClock = document.getElementById('patches_bulkUpdateLocationsClock');
-    if (autoLocationUpdate && patches_bulkUpdateLocationsClock) {
-        patches_bulkUpdateLocationsClock.style.removeProperty('display');
-    }
-
     const today = new Date();
     rainbowAnnounce.forEach(announcement => {
         if (today.getDate() === announcement.day && today.getMonth() === (announcement.month - 1) && !panic) {
@@ -641,14 +636,13 @@ function modifiedClockInit() {
         if (task.toLowerCase().includes('pictures')) { bustUserTracker(); }
 
         if (task === 'Pictures' || task === 'Testing') {
-            const updatePuctureLocationsButton = document.createElement('a');
-            updatePuctureLocationsButton.id = 'patches_bulkUpdateLocationsClock';
-            updatePuctureLocationsButton.className = 'btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-primary me-2';
-            updatePuctureLocationsButton.href = `javascript:updatePictureLocations();`;
-            updatePuctureLocationsButton.innerHTML = '<i class="bi bi-arrow-repeat fs-2"></i><span class="mobilefix">Update Locations</span>';
-            updatePuctureLocationsButton.title = 'Update Picture Locations';
-            updatePuctureLocationsButton.style.display = 'none'; // this needs to update if actually true, doing in resolve LOL
-            recordTime_parent.insertBefore(updatePuctureLocationsButton, recordTime_button);
+            const pictureTrackModalBtn = document.createElement('a');
+            pictureTrackModalBtn.id = 'patches_pictureTrackingModal';
+            pictureTrackModalBtn.className = 'btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-primary me-2';
+            pictureTrackModalBtn.href = `javascript:pictureLogger_tableModal();`;
+            pictureTrackModalBtn.innerHTML = '<i class="bi bi-chart-mixed fs-2"></i><span class="mobilefix">Picture Productivity</span>';
+            pictureTrackModalBtn.title = 'View Picture Productivity';
+            recordTime_parent.insertBefore(pictureTrackModalBtn, recordTime_button);
         }
 
         if (task.toLowerCase().includes('lunch') || task.toLowerCase().includes('break')) {
