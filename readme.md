@@ -104,7 +104,8 @@ These are patches added to a special settings box the user can edit.
   - A table prints with the item SKU and image count.
   - Button to delete all images on children.
   - Checkbox to toggle between a delete all and a safe delete.
-    - Safe delete skips conditions that should have images on them (Defective, Incomplete, etc.)
+    - Safe delete skips conditions that should have images on them (Defective, Incomplete, etc.).
+- When media is finished upoading and the user has the password, the image upload it logged for tracking and a note in activity recorded.
 - Modified the image list to be an actual list instead of a grid.
 - Added a button to images in the image grid to copy the image itself to the clipboard; uses vercel image proxy; for pasting into photoshop.
 - On all ASIN inputs, a link is generated under the input field to go to the ASIN on Amazon.
