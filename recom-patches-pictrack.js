@@ -59,44 +59,103 @@ function pictureLogger_init() {
 		const observer = new MutationObserver(async() => {
         const dropbox_isStarted = dropbox.classList.contains('dz-started');
         if (dropbox_wasStarted && !dropbox_isStarted) {
-        		// get current media count
-				    let count = 0;
-				    const product_images_container = document.getElementById('product-images-container');
-				    if (product_images_container) {
-				    		count = product_images_container.querySelectorAll('div[data-id]').length ?? 0;
-				    }
-				    window.addEventListener('beforeunload', pictureLogger_beforeUnload);
-				    let response = null;
-				    try {
-						    if (pictureLogger_modal) {
-						    		const modalResult = await pictureLogger_recordModal(person, item, count);
-								    if (!modalResult) {
-								        console.debug('[PICTURE LOGGER] Cancelled by user.');
-								        return;
-								    }
-								    count = modalResult.count;
-								    let notes = modalResult.notes ?? '';
-				        		response = await pictureLogger_record({item,count,notes,person});
-						    } else {
-						    		response = await pictureLogger_record({item,count,notes:'',person});
-						    }
-		        		
-		        		if (response.success) {
-		        				console.debug('[PICTURE LOGGER] Picture Log Successfully Recorded.');
-		        				if (!pictureLogger_modal) fireToast('Picture Logged', 'Successfully logged your picture upload.', 'primary');
-		        		} else {
-		        				console.error('[PICTURE LOGGER] Failed to record Picture Log.');
-		        				if (!pictureLogger_modal) fireToast('Error Logging Picture', 'Unable to log your picture upload.', 'danger');
-		        		}
-				    } finally {
-		            window.removeEventListener('beforeunload', pictureLogger_beforeUnload);
-		        }
+            // get current media count
+            let count = 0;
+            const product_images_container = document.getElementById('product-images-container');
+            if (product_images_container) { count = product_images_container.querySelectorAll('div[data-id]').length ?? 0; }
+
+            // prevent navigation away until recording done
+            window.addEventListener('beforeunload', pictureLogger_beforeUnload);
+            try {
+                let notes = '';
+                if (pictureLogger_modal) {
+                    const modalResult = await pictureLogger_recordModal(person, item, count);
+                    if (!modalResult) {
+                        console.debug('[PICTURE LOGGER] Cancelled by user.');
+                        return;
+                    }
+                    count = modalResult.count;
+                    notes = modalResult.notes ?? '';
+                }
+
+                // record a note
+                let pictureNoteResp = await pictureLogger_saveNote(count);
+                if (pictureNoteResp.success) { console.debug('[PATCHES] Recorded a note in activity log for images.'); }
+
+                // record it in picture log
+                let pictureLogResp = await pictureLogger_record({item,count,notes,person});
+                if (pictureLogResp.success) {
+                    console.debug('[PICTURE LOGGER] Picture Log Successfully Recorded.');
+                    if (!pictureLogger_modal) fireToast('Picture Logged', 'Successfully logged your picture upload.', 'primary');
+                } else {
+                    console.error('[PICTURE LOGGER] Failed to record Picture Log.');
+                    if (!pictureLogger_modal) fireToast('Error Logging Picture', 'Unable to log your picture upload.', 'danger');
+                }
+            } finally {
+                // now navigation can happen
+                window.removeEventListener('beforeunload', pictureLogger_beforeUnload);
+            }
         }
         dropbox_wasStarted = dropbox_isStarted;
     });
     observer.observe(dropbox, {attributes: true, attributeFilter: ['class']});
 }
 setTimeout(pictureLogger_init, 500);
+
+async function pictureLogger_saveNote(count) {
+    const formData = new FormData();
+
+    // create note message
+    if (count === 0) {
+        formData.append('note', 'Transferred Images');
+    } else if (count === 1) {
+        formData.append('note', 'Uploaded 1 Image');
+    } else {
+        formData.append('note', `Uploaded ${count} Images`);
+    }
+
+    // get id and type for note
+    let id = null;
+    let type = null;
+
+    const rc_product_activity_tab = document.getElementById('rc_product_activity_tab');
+    if (!rc_product_activity_tab) return;
+
+    const link = rc_product_activity_tab.querySelector('a[href*="createNewLogNote"]');
+    if (!link) return;
+
+    const match = link.getAttribute('href').match(/createNewLogNote\(([^)]*)\)/);
+    if (!match) return;
+
+    const params = match[1].split(',').map(p => p.trim());
+    id = parseInt(params[0], 10);
+    if (isNaN(id)) id = null;
+    if (params[1]) { type = params[1].replace(/^['"]|['"]$/g, ''); }
+
+    const csrfMeta = document.querySelector('meta[name="X-CSRF-TOKEN"]');
+    if (!csrfMeta || !csrfMeta.hasAttribute('content')) return;
+    const csrfToken = csrfMeta.getAttribute('content');
+    if (!csrfToken) return;
+
+    // create a note
+    try {
+        const response = await fetch('/ajax/actions/createlognote', {
+            method: 'POST',
+            headers: {'X-Csrf-Token': csrfToken, 'X-Requested-With': 'XMLHttpRequest'},
+            body: formData
+        });
+        const data = await response.json();
+        if (data.success === true) {
+            return data;
+        } else {
+            console.error('[PATCHES] Failed to create note:', data);
+            return null;
+        }
+    } catch (err) {
+        console.error('[PATCHES] Error with Note Request:', err);
+        return null;
+    }
+}
 
 async function pictureLogger_record({item,count,notes,person}) {
 		if (typeof pictureLogger_password === 'undefined') return;

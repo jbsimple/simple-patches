@@ -42,31 +42,32 @@ These are patches added to a special settings box the user can edit.
 - Option to set extra global css rules.
 
 #### Global Patches:
-- When the user is clocked into the Pictures task, an extra button and window is added for bulk location updates.
-  - Textarea to drop a list of SKUs or SIDs to be updated; comma, space or new line separated is accepted.
-  - Progress bar to see how much is done.
-  - Printout for success and failiures.
-- CSS fix to correct spacing issues in header.
-- CSS fix to get rid of light mode logo.
-- CSS fix (that I shouldn't have to do) to fix page height issues not filling the full background.
-- CSS fixes to alter some colors for better dark mode enhancement.
-- Added new button to quickly clock out and record time at the same time.
-  - The activity name mirrors the clock task.
-  - Field to input notes.
-  - Hijacks existing modal layout for data entry (with animations).
-- CSS additions to header and clock buttons to handle the additional buttons.
+- Rrefined picture tracking:
+  - Logs item and image count to a separate database with person and date.
+  - View productivity for each day; how many images were uploaded and how many items got images.
+  - When clocked into 'Pictures' task, button to quickly view picture productviity.
+- Quick Clock In Tasks Modal: Adds quick buttons to the clock in window to commonly used tasks.
+- Record Time and Clock Out Modal: Quickly Record time and clock out from one window, removes extra inputs that don't apply.
+- Added a refresh check to clock in tasks:
+  - Every minute, it checks to see if the clocked in task has changed from another tab.
+  - Also checks for when the system is not responding and shows a warning from outage to recovery.
+- Change to UI-block loading wheel so it appears at the top of the div instead of the middle, and made it larger, so you can see that it is actually loading and not just sitting there.
+- When clocked into the pictures task, there is an activity buster to prevent the logout, always sending system activity useage.
 - Modifications to the Product Modal:
   - Added a label for the product to print the created date.
   - Added a label for the product to print the status, color-coded.
   - Added a label for the product displaying the number of pictures on the product.
   - If the product has images, added a label for the product displaying the filename of the first picture of the product.
+  - If the product has a STOCK image (filename contains 'stock'), a red warning box next to picture account appears.
   - Added a column to the items table for when that item was created.
   - Added a column to the items table for the number of images specifically on the item.
   - Adjusted the width of various columns to make it fit better; shrunk location width, expanded width of created, sku and condition name.
   - Adjusted some of the heading labels to make them shorter, better for width (In Stock and Stock Available).
-- Added a refresh check to clock in tasks, every minute it checks and applies the clock-in task if it has changed.
-- Change to UI-block loading wheel so it appears at the top of the div instead of the middle, and made it larger, so you can see that it is actually loading and not just sitting there.
-- When clocked into the pictures task, there is an activity buster to prevent the logout, always sending system activity useage.
+- CSS fix to correct spacing issues in header.
+- CSS fix to get rid of light mode logo.
+- CSS fix to fix page height issues not filling the full background.
+- CSS fixes to alter some colors for better dark mode enhancement.
+- CSS additions to header and clock buttons to handle the additional buttons.
 
 ### Table Patches:
 - Added an "unsafe" number of results option.
@@ -151,34 +152,12 @@ These are patches added to a special settings box the user can edit.
 - After submitting to generate a new report, the report displays under the original card.
   - If the file is larger than 1MB, the printing is disabled to save performance.
   - Links for products and items are automatically added into the report preview for convenience.
-- Aadded a card to generate a preset report.
-  - Added Listing department productivity reporting preset.
-  - Added Marketing department productivity reporting preset (disabled).
-  - Added a meeting notes collector.
-  - Added a report to get all high quantity items with over QTY 50.
-  - Added a report for all created items (filtered) from a specified date.
-  - Added a report to get all missing pictures; looks at products and items with stock for photos.
-  - Added Missing Picture report for Defective, Incomplete and Imaging Issues (Created last 30 days).
-  - Added a report that gets total inventory stock by SID (disabled).
-  - Added a tool to look up the history of a sid's skus.
-  - Added a tool to look up the history of a sku.
-  - Added a tool to look up the history of an event id.
-  - Added a list of products that have incorrect color attributes (disabled).
-  - Added a picture url report, gets all picture urls for all instock items comma separated.
-  - Added a picture resolution check report, gets all picture urls for all instock items comma separated, gets the picture's resolution.
 - Added a css fix to correct the resize on narrow screens happening too late.
-- Added css rule to flip the order of recents and main reporting tool because recents aren't THAT important.
+- Various report templates with commonly created reports and custom reprting templates.
 
 #### Intergations Errors Page:
-- Added a button to download all search term results into one csv.
-  - Formats error log message into an actual JSON
-  - Does not include pretty print options.
-- Added a button to toggle "pretty print" on the table.
-  - Generates a big report of every SKU edited in the last 30 days, fetches individual ones as needed.
-  - Added links for SKUs.
-  - Added an In Stock count for each error Line.
-  - Added a SID link for each error line.
-  - Added categry for each error line.
+- Link to generate a full report of all error logs.
+- List Delete: Upload a list of error ids to ignore and delete in Bulk. (Will be altered in the future).
 
 #### Other Page Patches:
 - On Dashboard; Added quick link buttons to commonly used functions in the system (that are usually hidden behind a cascade menu).
