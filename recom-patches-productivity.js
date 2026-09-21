@@ -579,6 +579,16 @@ async function injectUserReport() {
                 const timeSpentHours = (totalTime / 60).toFixed(2);
                 const timePerUnit = totalUnits > 0 ? (totalTime / totalUnits).toFixed(2) : "0";
 
+                const dateInput = document.getElementById('patches-productivity-dateInput');
+                if (task.toLowerCase() === 'pictures' && dateInput) {
+                    // get date input
+                    console.debug('picture taskdata:', taskData[task]);
+                    const pictureTrackingData = pictureLogger_fetch({
+                        date:document.getElementById('patches-productivity-dateInput').value
+                    });
+                    // to-do
+                }
+
                 let label = `"${eventCode}" while in ${task}`;
                 if (eventCode === task) {
                     label = `${task}`;
