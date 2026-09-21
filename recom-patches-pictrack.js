@@ -1,5 +1,5 @@
 const pictureLogger_modal = false; // show modal after upload
-const pictureLogger_note = true;
+const pictureLogger_note = false; // record a note in item activity log (adds 3s delay)
 const pictureLogger_api = 'https://simple-patches.vercel.app/api/pictrack';
 
 async function pictureLogger_fetch(filters = {item:null,person:null,date:null}) {
