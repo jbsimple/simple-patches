@@ -1531,7 +1531,7 @@ function adjustToolbar() {
 }
 
 /* new replacement clock in */
-const patches_clockIn_ids = [7,8,5,22,28,29,31,65,104];
+const patches_clockIn_ids = [7,8,5,22,28,29,31,104];
 //   7 - BREAK
 //   8 - LUNCH
 //   5 - Meeting
@@ -1539,8 +1539,7 @@ const patches_clockIn_ids = [7,8,5,22,28,29,31,65,104];
 //  28 - Listing Side Work
 //  29 - Pictures
 //  31 - Pictures Side Work
-//  65 - Listing Put-a-ways
-// 104 - Leting Meeting
+// 104 - Listing Meeting
 
 function patches_clockIn_error(msg, obj = null) {
     const patches_clockIn_err = document.getElementById('patches_clockIn_err');
