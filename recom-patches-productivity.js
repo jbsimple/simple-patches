@@ -578,29 +578,30 @@ async function injectUserReport() {
                 let { totalUnits, totalTime } = taskData[task][eventCode];
 
                 // get picture task units
+                let extraUnits = 0;
+                // get picture task units
                 const dateInput = document.getElementById('patches-productivity-dateInput');
                 if (task.toLowerCase() === 'pictures' && dateInput) {
-                    const pictureCount = async () => {
+                    const pictureStats = async () => {
                         // get person
-                        const kt_header_user_menu_toggle = document.getElementById('kt_header_user_menu_toggle');
-                        if (!kt_header_user_menu_toggle) return;
-                        const nameElem = kt_header_user_menu_toggle.querySelector('.menu-sub > .menu-item > .menu-content > .d-flex.flex-column > .fw-bold.d-flex.align-items-center.fs-5');
-                        if (!nameElem) return
-                        const nameElemClone = nameElem.cloneNode(true);
-                        const badge = nameElemClone.querySelector('.badge');
-                        if (badge) badge.remove();
-                        const person = nameElemClone.textContent.trim();
+                        const person = user.trim().split(/\s+/)[0];
 
                         // get data
                         const pictureTrackingData = await pictureLogger_fetch({person, date:dateInput.value});
-                        if (!pictureTrackingData || !pictureTrackingData.data) return;
+                        if (!pictureTrackingData || !pictureTrackingData.data) return {pictureCount:0, pictureItems:0};
 
                         // get sum of count
                         let count = 0;
                         pictureTrackingData.data.forEach(item => { count += item.count ?? 0; });
-                        return count;
+
+                        // return sum and item count
+                        return {pictureCount:count, pictureItems:pictureTrackingData.data.length};
                     }
-                    totalUnits =  await pictureCount() ?? 0;
+
+                    const {pictureCount, pictureItems} = await pictureStats() ?? {pictureCount: 0, pictureItems: 0};
+                    totalUnits = pictureCount ?? 0;
+                    extraUnits = pictureItems ?? 0;
+
                     console.debug('[PATCHES] Picture Task Count:', totalUnits);
                 }
 
@@ -612,13 +613,13 @@ async function injectUserReport() {
                 if (eventCode === task) { label = `${task}`; }
 
                 const unitBox = `
-                    <div class="card card-xl-stretch mb-xl-8" style="--bs-card-bg: rgb(65,40,50) !important; color: white !important; flex: 1; min-width: 400px;">
+                    <div class="card card-xl-stretch mb-xl-8" style="--bs-card-bg: rgb(65,40,50); color: white !important; flex: 1; min-width: 400px; margin-bottom: 0 !important;">
                         <div class="card-body d-flex flex-column">
                             <div class="d-flex flex-column flex-grow-1" style="margin-bottom: 1.5rem;">
-                                <span class="text-white fw-bolder fs-3">Units Added | ${label}</span>
+                                <span class="text-white fw-bolder fs-3">${task.toLowerCase() === 'pictures' ? 'Images Uplodaded (Items)' : 'Units Added'} | ${label}</span>
                             </div>
                             <div class="pt-5">
-                                <span class="text-white fw-bolder fs-3x me-2 lh-0">${totalUnits}</span>
+                                <span class="text-white fw-bolder fs-3x me-2 lh-0">${totalUnits}${task.toLowerCase() === 'pictures' ? ` (${extraUnits})` : ''}</span>
                                 <span class="text-white fw-bolder fs-6 lh-0">${timePerUnit} mins/unit</span>
                             </div>
                         </div>
@@ -835,12 +836,11 @@ async function injectTeamReport() {
                         <div class="card card-xl-stretch mb-xl-8" style="--bs-card-bg: rgb(65,40,50); color: white !important; flex: 1; min-width: 400px; margin-bottom: 0 !important;">
                             <div class="card-body d-flex flex-column">
                                 <div class="d-flex flex-column flex-grow-1" style="margin-bottom: 1.5rem;">
-                                    <span class="text-white fw-bolder fs-3">Units Added | ${label}</span>
+                                    <span class="text-white fw-bolder fs-3">${task.toLowerCase() === 'pictures' ? 'Images Uplodaded (Items)' : 'Units Added'} | ${label}</span>
                                 </div>
                                 <div class="pt-5">
-                                    <span class="text-white fw-bolder fs-3x me-2 lh-0">${totalUnits}</span>
+                                    <span class="text-white fw-bolder fs-3x me-2 lh-0">${totalUnits}${task.toLowerCase() === 'pictures' ? ` (${extraUnits})` : ''}</span>
                                     <span class="text-white fw-bolder fs-6 lh-0">${timePerUnit} mins/unit</span>
-                                    ${extraUnits !== 0 ? `<span style="display: none;">Edited ${totalUnits} images across ${extraUnits} items.</span>` : ''}
                                 </div>
                             </div>
                         </div>
