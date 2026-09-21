@@ -605,8 +605,8 @@ async function injectUserReport() {
                 }
 
                 // average and time spend calculations
-                let timeSpentHours = (totalTime / 60).toFixed(2);
-                let timePerUnit = totalUnits > 0 ? (totalTime / totalUnits).toFixed(2) : "0";
+                const timeSpentHours = (totalTime / 60).toFixed(2);
+                const timePerUnit = totalUnits > 0 ? (totalTime / totalUnits).toFixed(2) : "0";
 
                 let label = `"${eventCode}" while in ${task}`;
                 if (eventCode === task) { label = `${task}`; }
@@ -794,8 +794,29 @@ async function injectTeamReport() {
             userSummaryWrapper.style.margin = '2rem 30px';
 
             Object.keys(userDataMap[user]).forEach(task => {
-                Object.keys(userDataMap[user][task]).forEach(eventCode => {
-                    const { totalUnits, totalTime } = userDataMap[user][task][eventCode];
+                Object.keys(userDataMap[user][task]).forEach(async eventCode => {
+                    let { totalUnits, totalTime } = userDataMap[user][task][eventCode];
+
+                    // get picture task units
+                    const dateInput = document.getElementById('patches-productivity-dateInput');
+                    if (task.toLowerCase() === 'pictures' && dateInput) {
+                        const pictureCount = async () => {
+                            // get person
+                            const person = user.trim().split(/\s+/)[0];
+
+                            // get data
+                            const pictureTrackingData = await pictureLogger_fetch({person, date:dateInput.value});
+                            if (!pictureTrackingData || !pictureTrackingData.data) return;
+
+                            // get sum of count
+                            let count = 0;
+                            pictureTrackingData.data.forEach(item => { count += item.count ?? 0; });
+                            return count;
+                        }
+                        totalUnits = await pictureCount() ?? 0;
+                        console.debug('[PATCHES] Picture Task Count:', totalUnits);
+                    }
+
                     const timeSpentHours = (totalTime / 60).toFixed(2);
                     const timePerUnit = totalUnits > 0 ? (totalTime / totalUnits).toFixed(2) : "0";
 
