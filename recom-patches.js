@@ -486,18 +486,15 @@ function injectExtraTheme(observer = true) {
                                 `;
                                 parentItem.insertAdjacentElement('beforebegin', newItem);
 
-                                if (typeof pictureLogger_tableModal === 'function') {
-                                    const pictureLogModalItem = document.createElement('div');
-                                    pictureLogModalItem.className = 'menu-item';
-                                    pictureLogModalItem.innerHTML = `
-                                        <a class="menu-link" onclick="pictureLogger_tableModal();">
-                                            <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-                                            <span class="menu-title">Pictures Overview</span>
-                                        </a>
-                                    `;
-                                    // future href="productivity?picturelog"
-                                    parentItem.insertAdjacentElement('beforebegin', pictureLogModalItem);
-                                }
+                                const pictureLogModalItem = document.createElement('div');
+                                pictureLogModalItem.className = 'menu-item';
+                                pictureLogModalItem.innerHTML = `
+                                    <a class="menu-link" href="/productivity?picturelog">
+                                        <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
+                                        <span class="menu-title">Pictures Overview</span>
+                                    </a>
+                                `;
+                                parentItem.insertAdjacentElement('beforebegin', pictureLogModalItem);
                             }
                         }
                     });
