@@ -603,7 +603,7 @@ async function injectUserReport() {
                         });
                         return count;
                     }
-                    console.debug('[PATCHES] Picture Task Count:', pictureCount ?? 0);
+                    console.debug('[PATCHES] Picture Task Count:', pictureCount() ?? 0);
                 }
 
                 let label = `"${eventCode}" while in ${task}`;
