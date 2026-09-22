@@ -489,7 +489,9 @@ function pictureLogger_tableContainer(date = null) {
         }
     });
     todayBtn.addEventListener('click', () => {
-        loadTable();
+        const todayIso = new Date().toISOString().slice(0, 10);
+        dateInput.value = todayIso;
+        loadTable(todayIso);
     })
     personSelect.addEventListener('change', () => renderFilteredTable());
     itemSearchBtn.addEventListener('click', () => renderFilteredTable());
