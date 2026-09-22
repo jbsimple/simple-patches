@@ -476,7 +476,7 @@ function injectExtraTheme(observer = true) {
                                 newItem.innerHTML = `
                                     <a class="menu-link" href="productivity?overview">
                                         <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-                                        <span class="menu-title">Team Overview</span>
+                                        <span class="menu-title">Listing Overview</span>
                                     </a>
                                 `;
                                 parentItem.insertAdjacentElement('beforebegin', newItem);
