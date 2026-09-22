@@ -442,7 +442,7 @@ function pictureLogger_tableModal(date = null) {
     }
  
     modalEl.innerHTML = `
-        <style>#rc_table_modal_content table { max-height: 50vh !important; }</stule>
+        <style>#rc_table_modal_content table { max-height: 50vh !important; }</style>
         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
