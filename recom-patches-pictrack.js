@@ -277,9 +277,10 @@ function pictureLogger_tableContainer(date = null) {
             <div style="flex:1;"></div>
             <div style="display:flex;flex-direction:column;gap:0.25rem;">
                 <label for="rc_table_date" class="form-label mb-0">Date</label>
-                <div style="display:flex;flex-direction:row;gap:0.5rem;">
-                    <button type="button" class="btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-info" id="rc_table_prev_day" title="Jump to previous date with data">&laquo;</button>
+                <div style="display:flex;flex-direction:row;gap:0.25rem;">
+                    <button type="button" class="btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-info" id="rc_table_prev_day" title="Jump to previous date with data"><i class="bi bi-chevron-double-left fs-2"></i></button>
                     <input type="date" class="form-control w-auto" id="rc_table_date" value="${selectedDate}">
+                    <button type="button" class="btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-info" id="rc_table_today" title="Jump to today"><i class="bi bi-chevron-double-right fs-2"></i></button>
                 </div>
             </div>
             <div style="display:flex;flex-direction:column;gap:0.25rem;">
@@ -292,7 +293,7 @@ function pictureLogger_tableContainer(date = null) {
                 <label for="rc_table_item" class="form-label mb-0">Search for Item:</label>
                 <div style="display:flex;flex-direction:row;gap:0.25rem;">
                     <input type="text" class="form-control w-auto" id="rc_table_item" placeholder="SID or SKU">
-                    <button type="button" class="btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-primary" id="rc_table_item_search" title="Search">Search</button>
+                    <button type="button" class="btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-primary" id="rc_table_item_search" title="Search"><i class="bi bi-search fs-2"></i></button>
                 </div>
             </div>
         </div>
@@ -306,6 +307,7 @@ function pictureLogger_tableContainer(date = null) {
     const dateInput = container.querySelector('#rc_table_date');
     const copyBtn = container.querySelector('#rc_table_copy');
     const prevDayBtn = container.querySelector('#rc_table_prev_day');
+    const todayBtn = container.querySelector('#rc_table_today');
     const personSelect = container.querySelector('#rc_table_person');
     const itemInput = container.querySelector('#rc_table_item');
     const itemSearchBtn = container.querySelector('#rc_table_item_search');
@@ -486,6 +488,9 @@ function pictureLogger_tableContainer(date = null) {
             prevDayBtn.textContent = originalLabel;
         }
     });
+    todayBtn.addEventListener('click', () => {
+        loadTable();
+    })
     personSelect.addEventListener('change', () => renderFilteredTable());
     itemSearchBtn.addEventListener('click', () => renderFilteredTable());
     itemInput.addEventListener('keydown', (e) => {
