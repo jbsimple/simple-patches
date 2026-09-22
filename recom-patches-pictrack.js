@@ -400,7 +400,12 @@ function pictureLogger_tableContainer(date = null) {
                 if (name) {
                     const info = p.items[name];
                     const notes = info.notes.join('; ');
-                    bodyRows += `<td>${pictureLogger_escapeHtml(name)}</td><td>${info.count}</td><td>${pictureLogger_escapeHtml(notes)}</td>`;
+                    if (name.startsWith("SC-") || name.startsWith("DEF-")) {
+                        bodyRows += `<td><a target="_blank" href="/product/items/${pictureLogger_escapeHtml(name)}">${pictureLogger_escapeHtml(name)}</a></td>`;
+                    } else {
+                        bodyRows += `<td><a target="_blank" href="/products/${pictureLogger_escapeHtml(name)}">${pictureLogger_escapeHtml(name)}</a></td>`;
+                    }
+                    bodyRows += `<td>${info.count}</td><td>${pictureLogger_escapeHtml(notes)}</td>`;
                 } else {
                     bodyRows += '<td></td><td></td><td></td>';
                 }
