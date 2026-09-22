@@ -636,6 +636,24 @@ function modifiedClockInit() {
         if (task.toLowerCase().includes('pictures')) { bustUserTracker(); }
 
         if (task === 'Pictures' || task === 'Testing') {
+
+            // cookie dismiss message for no password
+            if (typeof pictureLogger_password !== 'string') {
+                const pictrackwarn_dismissKey = 'pictrackwarn_lastClosed';
+                const pictrackwarn_suppressWindowMs = 10 * 60 * 60 * 1000;
+                const pictrackwarn_lastClosedAt = localStorage.getItem(pictrackwarn_dismissKey);
+                if (!pictrackwarn_lastClosedAt || Date.now() - parseInt(pictrackwarn_lastClosedAt, 10) >= pictrackwarn_suppressWindowMs) {
+                    Swal.fire({
+                        title: 'YO!',
+                        html: 'Picture Tracking Password is NOT set.<br>Track your uploads manually or get the password.',
+                        icon: 'warning',
+                        confirmButtonText: 'Got it'
+                    }).then((pictrackwarn_result) => {
+                        if (pictrackwarn_result.isConfirmed || pictrackwarn_result.isDismissed) { localStorage.setItem(pictrackwarn_dismissKey, Date.now().toString()); }
+                    });
+                }
+            }
+
             const pictureTrackModalBtn = document.createElement('a');
             pictureTrackModalBtn.id = 'patches_pictureTrackingModal';
             pictureTrackModalBtn.className = 'btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-primary me-2';
