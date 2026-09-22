@@ -457,13 +457,9 @@ function pictureLogger_tableContainer(date = null) {
             return d.toISOString().slice(0, 10);
         }
 
-        const originalLabel = prevDayBtn.textContent;
         prevDayBtn.disabled = true;
-        prevDayBtn.textContent = '...';
- 
         const maxLookbackDays = 180;
         let cursor = dateInput.value || selectedDate;
- 
         try {
             for (let i = 0; i < maxLookbackDays; i++) {
                 cursor = pictureLogger_shiftDate(cursor, -1);
@@ -485,7 +481,6 @@ function pictureLogger_tableContainer(date = null) {
             fireSwal('UHOH!', `No earlier picture logs found in the last ${maxLookbackDays} days.`, 'error');
         } finally {
             prevDayBtn.disabled = false;
-            prevDayBtn.textContent = originalLabel;
         }
     });
     todayBtn.addEventListener('click', () => {
