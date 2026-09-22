@@ -1485,8 +1485,8 @@ async function injectOverview() {
         if (heading) { heading.textContent = 'Created Items'; }
     } else if (content && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board') && params.has('overview') && !params.has('recentpics') && !params.has('picturelog')) {
         injectOverview();
-        document.title = document.title.replace('Productivity', 'Team Overview - Productivity');
-        if (heading) { heading.textContent = 'Team Overview'; }
+        document.title = document.title.replace('Productivity', 'Listing Overview - Productivity');
+        if (heading) { heading.textContent = 'Listing Overview'; }
     } else if (content && window.location.href.includes('/productivity') && !window.location.href.includes('/productivity/board') && params.has('picturelog') && !params.has('overview') && !params.has('recentpics')) {
         content.innerHTML = `<div id="picturelog" style="padding:30px;"></div>`;
         document.title = document.title.replace('Productivity', 'Picture Tracking - Productivity');
