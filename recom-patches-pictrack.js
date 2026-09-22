@@ -442,7 +442,7 @@ function pictureLogger_tableModal(date = null) {
     }
  
     modalEl.innerHTML = `
-        <style>#rc_ajax_modal #rc_table_body { max-height: 50vh !important; overflow: hidden; overflow-y: auto; }</style>
+        <style>#rc_ajax_modal #rc_table_body { max-height: 50vh !important; overflow: auto; }</style>
         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
