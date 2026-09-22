@@ -275,7 +275,7 @@ function pictureLogger_tableContainer(date = null) {
         <div class="mb-3" style="display:flex;flex-direction:row;gap:1rem;flex-wrap:wrap;align-items:flex-end;">
             <button type="button" class="btn btn-primary" id="rc_table_copy">Copy Table</button>
             <div style="flex:1;"></div>
-            <div style="display:flex;flex-direction:column;gap:0.25rem;">
+            <div class="rc_table_filter" style="display:flex;flex-direction:column;gap:0.25rem;">
                 <label for="rc_table_date" class="form-label mb-0">Date</label>
                 <div style="display:flex;flex-direction:row;gap:0.25rem;">
                     <button type="button" class="btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-info" id="rc_table_prev_day" title="Jump to previous date with data"><i class="bi bi-chevron-double-left fs-2"></i></button>
@@ -283,13 +283,13 @@ function pictureLogger_tableContainer(date = null) {
                     <button type="button" class="btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-info" id="rc_table_today" title="Jump to today"><i class="bi bi-chevron-double-right fs-2"></i></button>
                 </div>
             </div>
-            <div style="display:flex;flex-direction:column;gap:0.25rem;">
+            <div class="rc_table_filter style="display:flex;flex-direction:column;gap:0.25rem;">
                 <label for="rc_table_person" class="form-label mb-0">Person</label>
                 <select class="form-select w-auto" id="rc_table_person">
                     <option value="all">All People</option>
                 </select>
             </div>
-            <div style="display:flex;flex-direction:column;gap:0.25rem;">
+            <div class="rc_table_filter style="display:flex;flex-direction:column;gap:0.25rem;">
                 <label for="rc_table_item" class="form-label mb-0">Search for Item:</label>
                 <div style="display:flex;flex-direction:row;gap:0.25rem;">
                     <input type="text" class="form-control w-auto" id="rc_table_item" placeholder="SID or SKU">
@@ -326,7 +326,6 @@ function pictureLogger_tableContainer(date = null) {
             if (itemVal && !item.toLowerCase().includes(itemVal)) return false;
             return true;
         });
-
 
         const chronological = [...records].reverse();
 
@@ -534,7 +533,7 @@ function pictureLogger_tableModal(date = null) {
     }
  
     modalEl.innerHTML = `
-        <style>#rc_ajax_modal #rc_table_body { max-height: 50vh !important; overflow: auto; }</style>
+        <style>#rc_ajax_modal #rc_table_body { max-height: 50vh !important; overflow: auto; } #rc_ajax_modal .rc_table_filter { display: none !important; }</style>
         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
