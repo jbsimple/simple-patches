@@ -272,9 +272,28 @@ function pictureLogger_tableContainer(date = null) {
     const container = document.createElement('div');
     container.className = 'picture-logger-table-container';
     container.innerHTML = `
-        <div class="mb-3 d-flex align-items-center gap-2">
-            <label for="rc_table_date" class="form-label mb-0">Date</label>
-            <input type="date" class="form-control w-auto" id="rc_table_date" value="${selectedDate}">
+        <div class="mb-3" style="display:flex;flex-direction:row;gap:1rem;flex-wrap:wrap;align-items:flex-end;">
+            <div style="display:flex;flex-direction:column;gap:0.25rem;">
+                <label for="rc_table_date" class="form-label mb-0">Date</label>
+                <div style="display:flex;flex-direction:row;gap:0.25rem;">
+                    <button type="button" class="btn btn-outline-secondary" id="rc_table_prev_day" title="Jump to previous date with data">&laquo;</button>
+                    <input type="date" class="form-control w-auto" id="rc_table_date" value="${selectedDate}">
+                </div>
+            </div>
+            <div style="flex:1;"></div>
+            <div style="display:flex;flex-direction:column;gap:0.25rem;">
+                <label for="rc_table_person" class="form-label mb-0">Person</label>
+                <select class="form-select w-auto" id="rc_table_person">
+                    <option value="all">All People</option>
+                </select>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:0.25rem;">
+                <label for="rc_table_item" class="form-label mb-0">Search for Item:</label>
+                <div style="display:flex;flex-direction:row;gap:0.25rem;">
+                    <input type="text" class="form-control w-auto" id="rc_table_item" placeholder="SID or SKU">
+                    <button type="button" class="btn btn-outline-secondary" id="rc_table_item_search" title="Search">Search</button>
+                </div>
+            </div>
         </div>
         <div id="rc_table_body">
             <div class="text-center py-5">
@@ -288,26 +307,196 @@ function pictureLogger_tableContainer(date = null) {
  
     const dateInput = container.querySelector('#rc_table_date');
     const copyBtn = container.querySelector('#rc_table_copy');
+    const prevDayBtn = container.querySelector('#rc_table_prev_day');
+    const personSelect = container.querySelector('#rc_table_person');
+    const itemInput = container.querySelector('#rc_table_item');
+    const itemSearchBtn = container.querySelector('#rc_table_item_search');
+    const bodyEl = container.querySelector('#rc_table_body');
+
+    let currentRecords = [];
+
+    function renderFilteredTable() {
+        const personVal = personSelect.value;
+        const itemVal = itemInput.value.trim().toLowerCase();
+ 
+        const records = currentRecords.filter(rec => {
+            const person = rec.person || 'Unknown';
+            const item = rec.item || 'Unknown';
+            if (personVal && personVal !== 'all' && person !== personVal) return false;
+            if (itemVal && !item.toLowerCase().includes(itemVal)) return false;
+            return true;
+        });
+
+
+        const chronological = [...records].reverse();
+
+        const byPerson = {};
+        const personOrder = [];
+        for (const rec of chronological) {
+            const person = rec.person || 'Unknown';
+            const item = rec.item || 'Unknown';
+            if (!byPerson[person]) {
+                byPerson[person] = { items: {}, itemOrder: [] };
+                personOrder.push(person);
+            }
+            const personData = byPerson[person];
+            if (!personData.items[item]) {
+                personData.items[item] = { count: 0, notes: [] };
+                personData.itemOrder.push(item);
+            }
+            personData.items[item].count += Number(rec.count) || 0;
+            if (rec.notes) personData.items[item].notes.push(rec.notes);
+        }
+    
+        const people = personOrder.sort();
+    
+        if (people.length === 0) {
+            bodyEl.innerHTML = `<div class="text-center text-muted py-5">No picture logs found for this date.</div>`;
+            return;
+        }
+    
+        const perPerson = people.map(person => {
+            const { items, itemOrder } = byPerson[person];
+            const totalItems = itemOrder.length;
+            const totalProcessed = itemOrder.reduce((sum, name) => sum + items[name].count, 0);
+            return { person, items, itemNames: itemOrder, totalItems, totalProcessed };
+        });
+    
+        const maxRows = Math.max(...perPerson.map(p => p.itemNames.length), 0);
+
+        let colgroup = '<colgroup>';
+        perPerson.forEach((p, i) => {
+            colgroup += '<col style="width:30%"><col style="width:30%"><col style="width:40%">';
+            if (i === 0 && perPerson.length > 1) colgroup += '<col style="width:2%">';
+        });
+        colgroup += '</colgroup>';
+
+    
+        let theadTop = '<tr>';
+        perPerson.forEach((p, i) => {
+            theadTop += `<th colspan="3" class="text-center align-middle">${pictureLogger_escapeHtml(p.person)}</th>`;
+            if (i === 0 && perPerson.length > 1) theadTop += '<th></th>';
+        });
+        theadTop += '</tr>';
+    
+        let theadSub = '<tr class="text-center">';
+        perPerson.forEach((p, i) => {
+            theadSub += '<th>Item</th><th>Processed</th><th>Notes</th>';
+            if (i === 0 && perPerson.length > 1) theadSub += '<th></th>';
+        });
+        theadSub += '</tr>';
+    
+        let summaryRow = '<tr class="table-active text-center fw-bold">';
+        perPerson.forEach((p, i) => {
+            summaryRow += `<td>${p.totalItems}</td><td>${p.totalProcessed}</td><td></td>`;
+            if (i === 0 && perPerson.length > 1) { summaryRow += `<td class="text-center">${pictureLogger_escapeHtml(dateInput.value)}</td>`; }
+        });
+        summaryRow += '</tr>';
+
+        let bodyRows = '';
+        for (let i = 0; i < maxRows; i++) {
+            bodyRows += '<tr>';
+            perPerson.forEach((p, idx) => {
+                const name = p.itemNames[i];
+                if (name) {
+                    const info = p.items[name];
+                    const notes = info.notes.join('; ');
+                    bodyRows += `<td>${pictureLogger_escapeHtml(name)}</td><td>${info.count}</td><td>${pictureLogger_escapeHtml(notes)}</td>`;
+                } else {
+                    bodyRows += '<td></td><td></td><td></td>';
+                }
+                if (idx === 0 && perPerson.length > 1) bodyRows += '<td></td>';
+            });
+            bodyRows += '</tr>';
+        }
+    
+        bodyEl.innerHTML = `
+            <div class="table-responsive">
+                <table class="table table-striped table-sm align-middle" style="margin-bottom: 0 !important;">
+                    ${colgroup}
+                    <thead>
+                        ${theadTop}
+                        ${theadSub}
+                    </thead>
+                    <tbody>
+                        ${summaryRow}
+                        ${bodyRows}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
  
     async function loadTable(forDate) {
         const bodyEl = container.querySelector('#rc_table_body');
         if (!bodyEl) return;
         bodyEl.innerHTML = `<div class="text-center py-5"><div class="spinner-border" role="status"></div></div>`;
-        let records = [];
+
+        currentRecords = [];
         try {
             const result = await pictureLogger_fetch({ date: forDate });
-            records = (result && result.data) || [];
+            currentRecords = (result && result.data) || [];
         } catch (err) {
             console.error('[PICTURE LOGGER] Failed to load table data:', err);
         }
-        bodyEl.innerHTML = pictureLogger_buildTableHTML(records, forDate);
+
+        const persons = Array.from(new Set(currentRecords.map(r => r.person || 'Unknown'))).sort();
+        const prevValue = personSelect.value || 'all';
+        personSelect.innerHTML = '<option value="all">Everyone</option>' + persons.map(p => `<option value="${pictureLogger_escapeHtml(p)}">${pictureLogger_escapeHtml(p)}</option>`).join('');
+        personSelect.value = persons.includes(prevValue) ? prevValue : 'all';
+
+        renderFilteredTable();
     }
  
     dateInput.addEventListener('change', () => loadTable(dateInput.value));
     copyBtn.addEventListener('click', () => pictureLogger_copyTable(container, copyBtn));
+    prevDayBtn.addEventListener('click', async () => {
+        function pictureLogger_shiftDate(dateStr, deltaDays) {
+            const d = new Date(`${dateStr}T12:00:00Z`);
+            d.setUTCDate(d.getUTCDate() + deltaDays);
+            return d.toISOString().slice(0, 10);
+        }
+
+        const originalLabel = prevDayBtn.textContent;
+        prevDayBtn.disabled = true;
+        prevDayBtn.textContent = '...';
  
+        const maxLookbackDays = 180;
+        let cursor = dateInput.value || selectedDate;
+ 
+        try {
+            for (let i = 0; i < maxLookbackDays; i++) {
+                cursor = pictureLogger_shiftDate(cursor, -1);
+                let data = [];
+                try {
+                    const result = await pictureLogger_fetch({ date: cursor });
+                    data = (result && result.data) || [];
+                } catch (err) {
+                    console.error('[PICTURE LOGGER] Failed to check date', cursor, err);
+                    continue;
+                }
+                if (data.length > 0) {
+                    dateInput.value = cursor;
+                    await loadTable(cursor);
+                    return;
+                }
+            }
+
+            fireSwal('UHOH!', `No earlier picture logs found in the last ${maxLookbackDays} days.`, 'error');
+        } finally {
+            prevDayBtn.disabled = false;
+            prevDayBtn.textContent = originalLabel;
+        }
+    });
+    personSelect.addEventListener('change', () => renderFilteredTable());
+    itemSearchBtn.addEventListener('click', () => renderFilteredTable());
+    itemInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            renderFilteredTable();
+        }
+    });
     loadTable(selectedDate);
- 
     return container;
 }
 
@@ -328,103 +517,6 @@ async function pictureLogger_copyTable(container, copyBtn) {
     } finally {
         setTimeout(() => { copyBtn.textContent = originalLabel; }, 1500);
     }
-}
-
-function pictureLogger_buildTableHTML(records, dateVal = '') {
-    const chronological = [...records].reverse();
- 
-    const byPerson = {};
-    const personOrder = [];
-    for (const rec of chronological) {
-        const person = rec.person || 'Unknown';
-        const item = rec.item || 'Unknown';
-        if (!byPerson[person]) {
-            byPerson[person] = { items: {}, itemOrder: [] };
-            personOrder.push(person);
-        }
-        const personData = byPerson[person];
-        if (!personData.items[item]) {
-            personData.items[item] = { count: 0, notes: [] };
-            personData.itemOrder.push(item);
-        }
-        personData.items[item].count += Number(rec.count) || 0;
-        if (rec.notes) personData.items[item].notes.push(rec.notes);
-    }
- 
-    const people = personOrder.sort();
- 
-    if (people.length === 0) { return `<div class="text-center text-muted py-5">No picture logs found for this date.</div>`; }
- 
-    const perPerson = people.map(person => {
-        const { items, itemOrder } = byPerson[person];
-        const totalItems = itemOrder.length;
-        const totalProcessed = itemOrder.reduce((sum, name) => sum + items[name].count, 0);
-        return { person, items, itemNames: itemOrder, totalItems, totalProcessed };
-    });
- 
-    const maxRows = Math.max(...perPerson.map(p => p.itemNames.length), 0);
-
-    let colgroup = '<colgroup>';
-    perPerson.forEach((p, i) => {
-        colgroup += '<col style="width:30%"><col style="width:30%"><col style="width:40%">';
-        if (i === 0 && perPerson.length > 1) colgroup += '<col style="width:2%">';
-    });
-    colgroup += '</colgroup>';
-
- 
-    let theadTop = '<tr>';
-    perPerson.forEach((p, i) => {
-        theadTop += `<th colspan="3" class="text-center align-middle">${pictureLogger_escapeHtml(p.person)}</th>`;
-        if (i === 0 && perPerson.length > 1) theadTop += '<th></th>';
-    });
-    theadTop += '</tr>';
- 
-    let theadSub = '<tr class="text-center">';
-    perPerson.forEach((p, i) => {
-        theadSub += '<th>Item</th><th>Processed</th><th>Notes</th>';
-        if (i === 0 && perPerson.length > 1) theadSub += '<th></th>';
-    });
-    theadSub += '</tr>';
- 
-    let summaryRow = '<tr class="table-active text-center fw-bold">';
-    perPerson.forEach((p, i) => {
-        summaryRow += `<td>${p.totalItems}</td><td>${p.totalProcessed}</td><td></td>`;
-        if (i === 0 && perPerson.length > 1) { summaryRow += `<td class="text-center">${pictureLogger_escapeHtml(dateVal)}</td>`; }
-    });
-    summaryRow += '</tr>';
-
-    let bodyRows = '';
-    for (let i = 0; i < maxRows; i++) {
-        bodyRows += '<tr>';
-        perPerson.forEach((p, idx) => {
-            const name = p.itemNames[i];
-            if (name) {
-                const info = p.items[name];
-                const notes = info.notes.join('; ');
-                bodyRows += `<td>${pictureLogger_escapeHtml(name)}</td><td>${info.count}</td><td>${pictureLogger_escapeHtml(notes)}</td>`;
-            } else {
-                bodyRows += '<td></td><td></td><td></td>';
-            }
-            if (idx === 0 && perPerson.length > 1) bodyRows += '<td></td>';
-        });
-        bodyRows += '</tr>';
-    }
- 
-    return `
-        <div class="table-responsive">
-            <table class="table table-bordered table-sm align-middle" style="margin-bottom: 0 !important;">
-                ${colgroup}
-                <thead>
-                    ${theadTop}
-                    ${theadSub}
-                </thead>
-                <tbody>
-                    ${summaryRow}
-                    ${bodyRows}
-                </tbody>
-            </table>
-        </div>
-    `;
 }
  
 function pictureLogger_escapeHtml(str) {
