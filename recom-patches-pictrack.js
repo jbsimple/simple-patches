@@ -276,7 +276,7 @@ function pictureLogger_tableContainer(date = null) {
             <div style="display:flex;flex-direction:column;gap:0.25rem;">
                 <label for="rc_table_date" class="form-label mb-0">Date</label>
                 <div style="display:flex;flex-direction:row;gap:0.25rem;">
-                    <button type="button" class="btn btn-outline-secondary" id="rc_table_prev_day" title="Jump to previous date with data">&laquo;</button>
+                    <button type="button" class="btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-info" id="rc_table_prev_day" title="Jump to previous date with data">&laquo;</button>
                     <input type="date" class="form-control w-auto" id="rc_table_date" value="${selectedDate}">
                 </div>
             </div>
@@ -291,7 +291,7 @@ function pictureLogger_tableContainer(date = null) {
                 <label for="rc_table_item" class="form-label mb-0">Search for Item:</label>
                 <div style="display:flex;flex-direction:row;gap:0.25rem;">
                     <input type="text" class="form-control w-auto" id="rc_table_item" placeholder="SID or SKU">
-                    <button type="button" class="btn btn-outline-secondary" id="rc_table_item_search" title="Search">Search</button>
+                    <button type="button" class="btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-primary" id="rc_table_item_search" title="Search">Search</button>
                 </div>
             </div>
         </div>
