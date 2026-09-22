@@ -273,14 +273,15 @@ function pictureLogger_tableContainer(date = null) {
     container.className = 'picture-logger-table-container';
     container.innerHTML = `
         <div class="mb-3" style="display:flex;flex-direction:row;gap:1rem;flex-wrap:wrap;align-items:flex-end;">
+            <button type="button" class="btn btn-primary" id="rc_table_copy">Copy Table</button>
+            <div style="flex:1;"></div>
             <div style="display:flex;flex-direction:column;gap:0.25rem;">
                 <label for="rc_table_date" class="form-label mb-0">Date</label>
-                <div style="display:flex;flex-direction:row;gap:0.25rem;">
+                <div style="display:flex;flex-direction:row;gap:0.5rem;">
                     <button type="button" class="btn btn-color-gray-700 btn-active-color-white btn-outline btn-outline-info" id="rc_table_prev_day" title="Jump to previous date with data">&laquo;</button>
                     <input type="date" class="form-control w-auto" id="rc_table_date" value="${selectedDate}">
                 </div>
             </div>
-            <div style="flex:1;"></div>
             <div style="display:flex;flex-direction:column;gap:0.25rem;">
                 <label for="rc_table_person" class="form-label mb-0">Person</label>
                 <select class="form-select w-auto" id="rc_table_person">
@@ -299,9 +300,6 @@ function pictureLogger_tableContainer(date = null) {
             <div class="text-center py-5">
                 <div class="spinner-border" role="status"></div>
             </div>
-        </div>
-        <div class="mt-3">
-            <button type="button" class="btn btn-primary" id="rc_table_copy">Copy Table</button>
         </div>
     `;
  
