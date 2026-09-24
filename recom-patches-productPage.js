@@ -1466,6 +1466,7 @@ async function initItemImageOptions() {
         if (conditionWarnings.length > 0) {
             const noticeBox = document.createElement('div');
             noticeBox.setAttribute('class', 'notice d-flex bg-light-warning rounded border-warning border border-dashed p-6');
+            noticeBox.setAttribute('style', 'margin-bottom: 1.5rem;');
             noticeBox.innerHTML = `
                 <span class="svg-icon svg-icon-2tx svg-icon-warning me-4">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
