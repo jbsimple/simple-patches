@@ -1451,14 +1451,30 @@ async function initItemImageOptions() {
         const WARNING_CONDITIONS = new Set(['6-Defective', '8-Incomplete', '18-Used Phones - Imaging']);
         const skus = await fetchAPI("reports", {
             body: {
-                type: "active_inventory",
+                type: "item_images",
                 page: 1,
                 per_page: 1000,
                 filters: [
-                    {"field": "product_items.in_stock","operator": "gte","value": "-1000"},
-                    {"field": "products.sid","operator": "eq","value": SID}
+                    {
+                        "field": "product_items.status",
+                        "operator": "eq",
+                        "value": "1"
+                    },
+                    {
+                        "field": "products.SID",
+                        "operator": "eq",
+                        "value": SID
+                    },
+                    {
+                        "field": "item_images.url",
+                        "operator": "is_null"
+                    }
                 ],
-                columns: ["product_items.sku","conditions.name","product_items.condition_id",]
+                columns: [
+                    "product_items.sku",
+                    "conditions.name",
+                    "product_items.condition_id"
+                ]
             }
         });
         const rows = skus?.data?.data ?? [];
@@ -1478,7 +1494,7 @@ async function initItemImageOptions() {
                 <div class="d-flex flex-stack flex-grow-1">
                     <div class="fw-bold">
                         <h4 class="text-gray-900 fw-bolder">Please note!</h4>
-                        <div class="fs-6 text-gray-700">This product has conditions ${conditionWarnings.map(sku => `<a href="/product/items/${sku.SKU}" target="_blank">${sku.Condition}</a>`).join(', ')} and requires custom pictures.</div>
+                        <div class="fs-6 text-gray-700">This product has conditions ${conditionWarnings.map(sku => `<a href="/product/items/${sku.SKU}" target="_blank">${sku.Condition}</a>`).join(', ')} without custom images.</div>
                     </div>
                 </div>
             `;
