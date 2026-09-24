@@ -1439,8 +1439,52 @@ waitForElement('#rc_product_media', initExtraUploadMethods);
 
 async function initItemImageOptions() {
     const rc_product_media = document.getElementById('rc_product_media');
-    if (rc_product_media) {
-        await initRow();
+    if (!rc_product_media) return;
+
+    const SID = getTheSid();
+    if (!SID) return;
+
+    await checkForSpecialCondition();
+    await initRow();
+
+    async function checkForSpecialCondition() {
+        const WARNING_CONDITIONS = new Set(['6-Defective', '8-Incomplete', '18-Used Phones - Imaging']);
+        const skus = await fetchAPI("reports", {
+            body: {
+                type: "active_inventory",
+                page: 1,
+                per_page: 1000,
+                filters: [
+                    {"field": "product_items.in_stock","operator": "gte","value": "-1000"},
+                    {"field": "products.sid","operator": "eq","value": SID}
+                ],
+                columns: ["product_items.sku","conditions.name","product_items.condition_id",]
+            }
+        });
+        const rows = skus?.data?.data ?? [];
+        const conditionWarnings = rows.filter(sku => WARNING_CONDITIONS.has(sku.Condition));
+        if (conditionWarnings.length > 0) {
+            const noticeBox = document.createElement('div');
+            noticeBox.setAttribute('class', 'notice d-flex bg-light-warning rounded border-warning border border-dashed p-6');
+            noticeBox.innerHTML = `
+                <span class="svg-icon svg-icon-2tx svg-icon-warning me-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"></rect>
+                        <rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"></rect>
+                        <rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"></rect>
+                    </svg>
+                </span>
+                <div class="d-flex flex-stack flex-grow-1">
+                    <div class="fw-bold">
+                        <h4 class="text-gray-900 fw-bolder">Please note!</h4>
+                        <div class="fs-6 text-gray-700">This product has conditions ${conditionWarnings.map(sku => `<a href="/product/items/${sku.SKU}" target="_blank">${sku.Condition}</a>`).join(', ')} and requires custom pictures.</div>
+                    </div>
+                </div>
+            `;
+            rc_product_media.parentNode.insertBefore(noticeBox, rc_product_media);
+            return true;
+        }
+        return false;
     }
 
     async function initRow(force = false) {
@@ -1454,33 +1498,30 @@ async function initItemImageOptions() {
         itemImagesList.setAttribute('style', 'display: flex; flex-direction: column; gap: 0.25rem; flex: 1;');
 
         let tbody = '';
-        const SID = getTheSid();
-        if (SID !== null) {
-            const sidDetails = await fetchSidDetails(SID, force);
-            let image_counts = [];
-            if (sidDetails.image_counts) { image_counts = sidDetails.image_counts; }
-            image_counts.forEach(item => {
-                if (item.count > 0) {
-                    tbody += `<tr>
-                        <td><a href="/product/items/${item.sku}" target="_blank">${item.sku}</a></td>
-                        <td>${item.count}</td>
-                    </tr>`;
-                }
-            });
+        const sidDetails = await fetchSidDetails(SID, force);
+        let image_counts = [];
+        if (sidDetails.image_counts) { image_counts = sidDetails.image_counts; }
+        image_counts.forEach(item => {
+            if (item.count > 0) {
+                tbody += `<tr>
+                    <td><a href="/product/items/${item.sku}" target="_blank">${item.sku}</a></td>
+                    <td>${item.count}</td>
+                </tr>`;
+            }
+        });
 
-            itemImagesList.innerHTML = `<div class="table-responsive">
-                <table class="table table-row-bordered">
-                    <thead>
-                        <tr class="fw-bold fs-7 text-danger border-bottom border-gray-200 py-4">
-                            <th style="width: calc(100% - 64px) !important;">SKU</th>
-                            <th style="width: 64px !important;">Images</th>
-                        </tr>
-                    </thead>
-                    <tbody>${tbody}</tbody>
-                </table>
-            </div>
-            `;
-        }
+        itemImagesList.innerHTML = `<div class="table-responsive">
+            <table class="table table-row-bordered">
+                <thead>
+                    <tr class="fw-bold fs-7 text-danger border-bottom border-gray-200 py-4">
+                        <th style="width: calc(100% - 64px) !important;">SKU</th>
+                        <th style="width: 64px !important;">Images</th>
+                    </tr>
+                </thead>
+                <tbody>${tbody}</tbody>
+            </table>
+        </div>
+        `;
 
         // break out if no sku images
         if (tbody === '') return null;
