@@ -652,7 +652,7 @@ async function injectUserReport() {
                     <div class="card card-xl-stretch" style="--bs-card-bg: rgb(50,60,85) !important; color: white !important; flex: 1; min-width: 400px;">
                         <div class="card-body d-flex flex-column">
                             <div class="d-flex flex-column flex-grow-1" style="margin-bottom: 1.5rem;">
-                                <span class="text-white fw-bolder fs-3">Time Spent | ${label}</span>
+                                <span class="text-white fw-bolder fs-3">Time Spent | ${task_label}</span>
                             </div>
                             <div class="pt-5">
                                 <span class="text-white fw-bolder fs-3x me-2 lh-0">${totalTime.toFixed(2)} min</span>
