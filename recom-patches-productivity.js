@@ -900,7 +900,7 @@ async function injectTeamReport() {
                     userSummaryWrapper.innerHTML += unitBox + timeBox;
 
                     userDataParsed[user].push({
-                        'name': label,
+                        'name': task_label,
                         'units': totalUnits,
                         'time per unit': timePerUnit,
                         'time spent in minutes': totalTime.toFixed(2),
