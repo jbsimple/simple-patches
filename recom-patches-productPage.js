@@ -1446,8 +1446,9 @@ async function initItemImageOptions() {
 
     console.log('SID:', SID);
 
-    await checkForSpecialCondition();
     await initRow();
+
+    await checkForSpecialCondition();
 
     async function checkForSpecialCondition() {
         const WARNING_CONDITIONS = new Set(['6-Defective', '8-Incomplete', '18-Used Phones - Imaging']);
