@@ -554,9 +554,16 @@ async function injectUserReport() {
         uniqueData.forEach(row => {
             const task = row.Task;
             const eventCode = row.Event_Code;
+
             const timeSpentInMinutes = parseFloat(row.Time_Spent_in_mintues) || 0;
-            const clockIn = row.Time_In;
+
+            // get a real clock in and clock out
             const clockOut = row.Event_Date;
+            const clockOutDate = new Date(clockOut.replace(' ', 'T'));
+            const clockInDate = new Date(clockOutDate.getTime() - timeSpentInMinutes * 60 * 1000);
+            const clockInPad = (n) => String(n).padStart(2, '0');
+            const clockIn = `${clockInDate.getFullYear()}-${clockInPad(clockInDate.getMonth() + 1)}-${clockInPad(clockInDate.getDate())} ` +
+                `${clockInPad(clockInDate.getHours())}:${clockInPad(clockInDate.getMinutes())}:${clockInPad(clockInDate.getSeconds())}`;
 
             if (task === "BREAK" || task === "LUNCH" || eventCode === "Clock In") return;
 
@@ -704,11 +711,15 @@ async function injectTeamReport() {
             const task = row.Task;
             const eventCode = row.Event_Code;
 
-            // this is for picture tracking
-            const clockIn = row.Time_In;
-            const clockOut = row.Event_Date;
-
             const timeSpentInMinutes = parseFloat(row.Time_Spent_in_mintues) || 0;
+
+            // get a real clock in and clock out
+            const clockOut = row.Event_Date;
+            const clockOutDate = new Date(clockOut.replace(' ', 'T'));
+            const clockInDate = new Date(clockOutDate.getTime() - timeSpentInMinutes * 60 * 1000);
+            const clockInPad = (n) => String(n).padStart(2, '0');
+            const clockIn = `${clockInDate.getFullYear()}-${clockInPad(clockInDate.getMonth() + 1)}-${clockInPad(clockInDate.getDate())} ` +
+                `${clockInPad(clockInDate.getHours())}:${clockInPad(clockInDate.getMinutes())}:${clockInPad(clockInDate.getSeconds())}`;
 
             if (task === "BREAK" || task === "LUNCH" || eventCode === 'Clock In') return;
 
