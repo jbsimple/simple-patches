@@ -589,9 +589,6 @@ async function injectUserReport() {
             Object.keys(taskData[task]).forEach(async eventCode => {
                 let { totalUnits, totalTime, clockIn, clockOut } = taskData[task][eventCode];
 
-                console.debug('clockIn:', clockIn);
-                console.debug('clockIn:', clockOut);
-
                 let units_label = 'Units Added';
                 let task_label = `"${eventCode}" while in ${task}`;
                 if (eventCode === task) { task_label = `${task}`; }
@@ -616,12 +613,17 @@ async function injectUserReport() {
                         const pictureTrackingData = await pictureLogger_fetch({person, date:dateInput.value});
                         if (!pictureTrackingData || !pictureTrackingData.data) return;
 
+                        // filter data for clockIn and clockOut
+                        const filteredPictures = pictureTrackingData.data.filter((item) => {
+                            return item.timestamp >= clockIn && item.timestamp <= clockOut;
+                        });
+
                         // get sum of count
                         let count = 0;
-                        pictureTrackingData.data.forEach(item => { count += item.count ?? 0; });
+                        filteredPictures.forEach(item => { count += item.count ?? 0; });
 
                         // return sum and item count
-                        return {pictureCount:count, pictureItems:pictureTrackingData.data.length};
+                        return {pictureCount:count, pictureItems:filteredPictures.length};
                     }
                     const {pictureCount, pictureItems} = await pictureStats() ?? {pictureCount: 0, pictureItems: 0};
                     totalUnits = pictureCount ?? 0;
@@ -854,9 +856,14 @@ async function injectTeamReport() {
                             const pictureTrackingData = await pictureLogger_fetch({person, date:dateInput.value});
                             if (!pictureTrackingData || !pictureTrackingData.data) return {pictureCount:0, pictureItems:0};
 
+                            // filter data for clockIn and clockOut
+                            const filteredPictures = pictureTrackingData.data.filter((item) => {
+                                return item.timestamp >= clockIn && item.timestamp <= clockOut;
+                            });
+
                             // get sum of count
                             let count = 0;
-                            pictureTrackingData.data.forEach(item => { count += item.count ?? 0; });
+                            filteredPictures.forEach(item => { count += item.count ?? 0; });
 
                             // return sum and item count
                             return {pictureCount:count, pictureItems:pictureTrackingData.data.length};
