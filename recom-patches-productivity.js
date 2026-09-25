@@ -613,8 +613,6 @@ async function injectUserReport() {
                         const pictureTrackingData = await pictureLogger_fetch({person, date:dateInput.value});
                         if (!pictureTrackingData || !pictureTrackingData.data) return;
 
-                        // filter data for clockIn and clockOut
-
                         // get sum of count
                         let count = 0;
                         pictureTrackingData.data.forEach(item => { count += item.count ?? 0; });
@@ -874,16 +872,11 @@ async function injectTeamReport() {
                     const timeSpentHours = (totalTime / 60).toFixed(2);
                     const timePerUnit = totalUnits > 0 ? (totalTime / totalUnits).toFixed(2) : "0";
 
-                    let label = `"${eventCode}" while in ${task}`;
-                    if (eventCode === task) {
-                        label = `${task}`;
-                    }
-
                     const unitBox = `
                         <div class="card card-xl-stretch" style="--bs-card-bg: rgb(65,40,50); color: white !important; flex: 1; min-width: 400px; margin-bottom: 0 !important;">
                             <div class="card-body d-flex flex-column">
                                 <div class="d-flex flex-column flex-grow-1" style="margin-bottom: 1.5rem;">
-                                    <span class="text-white fw-bolder fs-3">${units_label} | ${label}</span>
+                                    <span class="text-white fw-bolder fs-3">${units_label} | ${task_label}</span>
                                 </div>
                                 <div class="pt-5">
                                     <span class="text-white fw-bolder fs-3x me-2 lh-0">${units_print}</span>
