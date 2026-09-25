@@ -555,6 +555,8 @@ async function injectUserReport() {
             const task = row.Task;
             const eventCode = row.Event_Code;
             const timeSpentInMinutes = parseFloat(row.Time_Spent_in_mintues) || 0;
+            const clockIn = row.Time_In;
+            const clockOut = row.Time_Out;
 
             if (task === "BREAK" || task === "LUNCH" || eventCode === "Clock In") return;
 
@@ -567,6 +569,9 @@ async function injectUserReport() {
 
             taskData[task][eventCode].totalTime += timeSpentInMinutes;
             taskData[task][eventCode].totalUnits += parseFloat(row.Units) || 0;
+
+            taskData[task][eventCode].clockIn = clockIn ?? '';
+            taskData[task][eventCode].clockOut = clockOut ?? '';
         });
 
         const summaryWrapper = document.createElement('div');
@@ -575,7 +580,10 @@ async function injectUserReport() {
 
         Object.keys(taskData).forEach(task => {
             Object.keys(taskData[task]).forEach(async eventCode => {
-                let { totalUnits, totalTime } = taskData[task][eventCode];
+                let { totalUnits, totalTime, clockIn, clockOut } = taskData[task][eventCode];
+
+                console.debug('clockIn:', clockIn);
+                console.debug('clockIn:', clockOut);
 
                 let units_label = 'Units Added';
                 let task_label = `"${eventCode}" while in ${task}`;
@@ -696,6 +704,10 @@ async function injectTeamReport() {
             const task = row.Task;
             const eventCode = row.Event_Code;
 
+            // this is for picture tracking
+            const clockIn = row.Time_In;
+            const clockOut = row.Time_Out;
+
             const timeSpentInMinutes = parseFloat(row.Time_Spent_in_mintues) || 0;
 
             if (task === "BREAK" || task === "LUNCH" || eventCode === 'Clock In') return;
@@ -712,6 +724,9 @@ async function injectTeamReport() {
             userDataMap[user][task][eventCode].totalTime += timeSpentInMinutes;
 
             userDataMap[user][task][eventCode].totalUnits += parseFloat(row.Units) || 0;
+
+            userDataMap[user][task][eventCode].clockIn = clockIn ?? '';
+            userDataMap[user][task][eventCode].clockOut = clockOut ?? '';
         });
 
         let userDataParsed = {};
@@ -806,7 +821,10 @@ async function injectTeamReport() {
 
             Object.keys(userDataMap[user]).forEach(task => {
                 Object.keys(userDataMap[user][task]).forEach(async eventCode => {
-                    let { totalUnits, totalTime } = userDataMap[user][task][eventCode];
+                    let { totalUnits, totalTime, clockIn, clockOut } = userDataMap[user][task][eventCode];
+
+                    console.debug('clockIn:', clockIn);
+                    console.debug('clockIn:', clockOut);
 
                     let units_label = 'Units Added';
                     let task_label = `"${eventCode}" while in ${task}`;
