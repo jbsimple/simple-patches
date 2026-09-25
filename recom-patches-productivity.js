@@ -580,7 +580,7 @@ async function injectUserReport() {
                 // get picture task units
                 let extraUnits = 0;
                 const dateInput = document.getElementById('patches-productivity-dateInput');
-                if (task.toLowerCase() === 'pictures' && dateInput) {
+                if (task.toLowerCase() === 'pictures' && eventCode === task && dateInput) {
                     const pictureStats = async () => {
                         // get person
                         const kt_header_user_menu_toggle = document.getElementById('kt_header_user_menu_toggle');
@@ -805,7 +805,7 @@ async function injectTeamReport() {
                     let extraUnits = 0;
                     // get picture task units
                     const dateInput = document.getElementById('patches-productivity-dateInput');
-                    if (task.toLowerCase() === 'pictures' && dateInput) {
+                    if (task.toLowerCase() === 'pictures' && eventCode === task && dateInput) {
                         const pictureStats = async () => {
                             // get person
                             const person = user.trim().split(/\s+/)[0];
