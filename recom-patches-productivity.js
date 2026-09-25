@@ -625,7 +625,7 @@ async function injectUserReport() {
                     extraUnits = pictureItems ?? 0;
 
                     units_label = 'Images Uplodaded (Items)';
-                    units_print = `${units_print} (${extraUnits})`;
+                    units_print = `${totalUnits} (${extraUnits})`;
 
                     console.debug('[PATCHES] Picture Task Count:', totalUnits);
                 }
@@ -861,7 +861,7 @@ async function injectTeamReport() {
                         extraUnits = pictureItems ?? 0;
 
                         units_label = 'Images Uplodaded (Items)';
-                        units_print = `${units_print} (${extraUnits})`;
+                        units_print = `${totalUnits} (${extraUnits})`;
 
                         console.debug('[PATCHES] Picture Task Count:', totalUnits);
                     }
