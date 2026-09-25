@@ -1516,6 +1516,7 @@ async function initItemImageOptions() {
 
         let tbody = '';
         const sidDetails = await fetchSidDetails(SID, force);
+        console.log(sidDetails);
         let image_counts = [];
         if (sidDetails.image_counts) { image_counts = sidDetails.image_counts; }
         image_counts.forEach(item => {
