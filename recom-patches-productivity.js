@@ -577,6 +577,11 @@ async function injectUserReport() {
             Object.keys(taskData[task]).forEach(async eventCode => {
                 let { totalUnits, totalTime } = taskData[task][eventCode];
 
+                let units_label = 'Units Added';
+                let task_label = `"${eventCode}" while in ${task}`;
+                if (eventCode === task) { task_label = `${task}`; }
+                let units_print = `${totalUnits}`;
+
                 // get picture task units
                 let extraUnits = 0;
                 const dateInput = document.getElementById('patches-productivity-dateInput');
@@ -607,6 +612,9 @@ async function injectUserReport() {
                     totalUnits = pictureCount ?? 0;
                     extraUnits = pictureItems ?? 0;
 
+                    units_label = 'Images Uplodaded (Items)';
+                    units_print = `${units_print} (${extraUnits})`;
+
                     console.debug('[PATCHES] Picture Task Count:', totalUnits);
                 }
 
@@ -614,17 +622,14 @@ async function injectUserReport() {
                 const timeSpentHours = (totalTime / 60).toFixed(2);
                 const timePerUnit = totalUnits > 0 ? (totalTime / totalUnits).toFixed(2) : "0";
 
-                let label = `"${eventCode}" while in ${task}`;
-                if (eventCode === task) { label = `${task}`; }
-
                 const unitBox = `
                     <div class="card card-xl-stretch" style="--bs-card-bg: rgb(65,40,50); color: white !important; flex: 1; min-width: 400px; margin-bottom: 0 !important;">
                         <div class="card-body d-flex flex-column">
                             <div class="d-flex flex-column flex-grow-1" style="margin-bottom: 1.5rem;">
-                                <span class="text-white fw-bolder fs-3">${task.toLowerCase() === 'pictures' ? 'Images Uplodaded (Items)' : 'Units Added'} | ${label}</span>
+                                <span class="text-white fw-bolder fs-3">${units_label} | ${task_label}</span>
                             </div>
                             <div class="pt-5">
-                                <span class="text-white fw-bolder fs-3x me-2 lh-0">${totalUnits}${task.toLowerCase() === 'pictures' ? ` (${extraUnits})` : ''}</span>
+                                <span class="text-white fw-bolder fs-3x me-2 lh-0">${units_print}</span>
                                 <span class="text-white fw-bolder fs-6 lh-0">${timePerUnit} mins/unit</span>
                             </div>
                         </div>
@@ -802,6 +807,12 @@ async function injectTeamReport() {
             Object.keys(userDataMap[user]).forEach(task => {
                 Object.keys(userDataMap[user][task]).forEach(async eventCode => {
                     let { totalUnits, totalTime } = userDataMap[user][task][eventCode];
+
+                    let units_label = 'Units Added';
+                    let task_label = `"${eventCode}" while in ${task}`;
+                    if (eventCode === task) { task_label = `${task}`; }
+                    let units_print = `${totalUnits}`;
+
                     let extraUnits = 0;
                     // get picture task units
                     const dateInput = document.getElementById('patches-productivity-dateInput');
@@ -826,6 +837,9 @@ async function injectTeamReport() {
                         totalUnits = pictureCount ?? 0;
                         extraUnits = pictureItems ?? 0;
 
+                        units_label = 'Images Uplodaded (Items)';
+                        units_print = `${units_print} (${extraUnits})`;
+
                         console.debug('[PATCHES] Picture Task Count:', totalUnits);
                     }
 
@@ -841,10 +855,10 @@ async function injectTeamReport() {
                         <div class="card card-xl-stretch" style="--bs-card-bg: rgb(65,40,50); color: white !important; flex: 1; min-width: 400px; margin-bottom: 0 !important;">
                             <div class="card-body d-flex flex-column">
                                 <div class="d-flex flex-column flex-grow-1" style="margin-bottom: 1.5rem;">
-                                    <span class="text-white fw-bolder fs-3">${task.toLowerCase() === 'pictures' ? 'Images Uplodaded (Items)' : 'Units Added'} | ${label}</span>
+                                    <span class="text-white fw-bolder fs-3">${units_label} | ${label}</span>
                                 </div>
                                 <div class="pt-5">
-                                    <span class="text-white fw-bolder fs-3x me-2 lh-0">${totalUnits}${task.toLowerCase() === 'pictures' ? ` (${extraUnits})` : ''}</span>
+                                    <span class="text-white fw-bolder fs-3x me-2 lh-0">${units_print}</span>
                                     <span class="text-white fw-bolder fs-6 lh-0">${timePerUnit} mins/unit</span>
                                 </div>
                             </div>
