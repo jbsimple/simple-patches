@@ -556,7 +556,7 @@ async function injectUserReport() {
             const eventCode = row.Event_Code;
             const timeSpentInMinutes = parseFloat(row.Time_Spent_in_mintues) || 0;
             const clockIn = row.Time_In;
-            const clockOut = row.Time_Out;
+            const clockOut = row.Event_Date;
 
             if (task === "BREAK" || task === "LUNCH" || eventCode === "Clock In") return;
 
@@ -706,7 +706,7 @@ async function injectTeamReport() {
 
             // this is for picture tracking
             const clockIn = row.Time_In;
-            const clockOut = row.Time_Out;
+            const clockOut = row.Event_Date;
 
             const timeSpentInMinutes = parseFloat(row.Time_Spent_in_mintues) || 0;
 
