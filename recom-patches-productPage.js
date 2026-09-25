@@ -1444,13 +1444,18 @@ async function initItemImageOptions() {
     const SID = getTheSid();
     if (!SID) return;
 
-    console.log('SID:', SID);
+    const insertBefore = await initRow() ?? rc_product_media;
+    
+    // hault until function from api.js loads
+    const fetchAPIReady = await waitForGlobal('fetchAPI');
+    if (!fetchAPIReady) {
+        fireSwal('OH NO', 'Special Condition Notice failed. Sadge.');
+        console.error('PATCHES - fetchAPI never became available, skipping special condition check.');
+    } else {
+        await checkForSpecialCondition(insertBefore);
+    }
 
-    await initRow();
-
-    await checkForSpecialCondition();
-
-    async function checkForSpecialCondition() {
+    async function checkForSpecialCondition(insertBefore) {
         const WARNING_CONDITIONS = new Set(['6-Defective', '8-Incomplete', '18-Used Phones - Imaging']);
         const skus = await fetchAPI("reports", {
             body: {
@@ -1501,7 +1506,7 @@ async function initItemImageOptions() {
                     </div>
                 </div>
             `;
-            rc_product_media.parentNode.insertBefore(noticeBox, rc_product_media);
+            insertBefore.parentNode.insertBefore(noticeBox, insertBefore);
             return true;
         }
         return false;
@@ -1585,6 +1590,7 @@ async function initItemImageOptions() {
         itemImageOptionRow.appendChild(itemImagesAction);
 
         rc_product_media.parentNode.insertBefore(itemImageOptionRow, rc_product_media);
+        return itemImageOptionRow;
     }
 
     function getTheSid() {
@@ -1605,6 +1611,21 @@ async function initItemImageOptions() {
             }
         }
         return null;
+    }
+
+    function waitForGlobal(name, { timeout = 5000, interval = 50 } = {}) {
+        return new Promise(resolve => {
+            const start = Date.now();
+            (function poll() {
+                if (typeof window[name] === 'function') {
+                    resolve(true);
+                } else if (Date.now() - start >= timeout) {
+                    resolve(false);
+                } else {
+                    setTimeout(poll, interval);
+                }
+            })();
+        });
     }
 
     async function nukeAllSkuImages() {
